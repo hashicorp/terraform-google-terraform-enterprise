@@ -51,4 +51,10 @@ terraform apply
 
 ## Wait for the application to load
 
-The replicated console url will output along with the password. You can log into that dashboard at that url and wait for the application to be ready. This can take up to 30 minutes! Once complete use the `Open` link to set up the admin user and initial organization. 
+The replicated console url will output along with the password. 
+
+![output](output_example.png)
+
+You can log into that dashboard at that url and wait for the application to be ready. This can take up to 30 minutes! Once complete use the `Open` link to set up the admin user and initial organization. 
+
+![application started](app_started.png)
