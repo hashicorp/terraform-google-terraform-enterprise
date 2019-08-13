@@ -22,7 +22,7 @@ cd examples/root-example
 
 ## Install Terraform
 
-1. Install Terraform if it is not already installed (visit [terraform.io](https://terraform.io) for other distributions):
+Install Terraform if it is not already installed (visit [terraform.io](https://terraform.io) for other distributions):
 
 ```
 ../terraform-install.sh
@@ -31,14 +31,14 @@ cd examples/root-example
 ## Set the desired options in the module block
 
 You'll need to update the following settings to your set up:
-	- `project`: name of the project
-	- `creds`: json file name
-	- `publicip`: The IP address to attach to the load balancer
-	- `domain`: domain to use
-	- `dnszone`: the name of the dns zone in gcp
-	- `cert`: the api url of the google certficiate to use
-	- `sslpolicy`: name of the ssl policy to use
-	- `subnet`: subnet to deploy into (this should be reserved for tfe)
+	* `project`: name of the project
+	* `creds`: json file name
+	* `publicip`: The IP address to attach to the load balancer
+	* `domain`: domain to use
+	* `dnszone`: the name of the dns zone in gcp
+	* `cert`: the api url of the google certficiate to use
+	* `sslpolicy`: name of the ssl policy to use
+	* `subnet`: subnet to deploy into (this should be reserved for tfe)
 
  This example is set to spin up a single instance, but the `primary_count` and `worker_count` can be updated to build a cluster instead.  
 
