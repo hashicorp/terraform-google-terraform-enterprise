@@ -10,18 +10,14 @@ This example assumes you have already set up your gcp project with the required 
 	* A DNS Zone in gcp
 	* A license file provided by your Technical Account Manager
 
-With this code you can either create a single instance:
+With this code you can either create a single instance, or a build a cluster:
 
-<insert diagram>
-
-Or a build a cluster:
-
-<insert diagram>
+![basic architecture diagram](tfeha_basic_diagram.jpg)
 
 ## Change to the example directory
 
 ```
-[[ `basename $PWD` != basic ]] && cd examples/basic
+cd examples/root-example
 ```
 
 ## Install Terraform
@@ -32,28 +28,19 @@ Or a build a cluster:
 ../terraform-install.sh
 ```
 
-## Set up the environment
-
-1. Set the project, replace `YOUR_PROJECT` with your project ID:
-
-```
-PROJECT=YOUR_PROJECT
-```
-
-```
-gcloud config set project ${PROJECT}
-```
-
-2. Configure the environment for Terraform:
-
-```
-[[ $CLOUD_SHELL ]] || gcloud auth application-default login
-export GOOGLE_PROJECT=$(gcloud config get-value project)
-```
-
 ## Set the desired options in the module block
 
-You'll need to update the `domain`, `dnszone`, `cert`, `sslpolicy`, `subnet` and `license_file` settings to your set up. This example is set to spin up a single instance, but the `primary_count` and `worker_count` can be updated to build a cluster instead.  
+You'll need to update the following settings to your set up:
+	- `project`: name of the project
+	- `creds`: json file name
+	- `publicip`: The IP address to attach to the load balancer
+	- `domain`: domain to use
+	- `dnszone`: the name of the dns zone in gcp
+	- `cert`: the api url of the google certficiate to use
+	- `sslpolicy`: name of the ssl policy to use
+	- `subnet`: subnet to deploy into (this should be reserved for tfe)
+
+ This example is set to spin up a single instance, but the `primary_count` and `worker_count` can be updated to build a cluster instead.  
 
 ## Run Terraform
 ```
