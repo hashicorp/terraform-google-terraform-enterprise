@@ -31,6 +31,7 @@ Install Terraform if it is not already installed (visit [terraform.io](https://t
 ## Set the desired options in the module block
 
 You'll need to update the following settings to your set up:
+
 	* `project`: name of the project
 	* `creds`: json file name
 	* `publicip`: The IP address to attach to the load balancer
