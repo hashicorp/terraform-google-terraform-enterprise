@@ -1,12 +1,12 @@
 # Terraform-Google-TFE-HA (BETA)
 
-![Terraform Logo](TerraformLogo.png)
+![Terraform Logo](assets/TerraformLogo.png)
 
 This module installs Terraform Enterprise HA BETA onto 1 or more gcp instances in DEMO mode. All data is stored on the instance(s) and is not preserved. 
 
-An Ubuntu Bionic (18.04 LTS) image is chosen by default, but this config support previous version of Ubuntu as well as Red Hat Enterprise Linux 7.2-7.7 (v8 is not supported.)
+An Ubuntu Bionic (18.04 LTS) image is chosen by default, but this config supports previous version of Ubuntu as well as Red Hat Enterprise Linux 7.2-7.7 (v8 is not supported.)
 
-![basic diagram](tfeha_basic_diagram.jpg)
+![basic diagram](assets/tfeha_basic_diagram.jpg)
 _example architecture_
 
 Please contact your Technical Account Manager for more information, and support for any issues you have.
