@@ -2,9 +2,13 @@
 
 ![Terraform Logo](assets/TerraformLogo.png)
 
+## Description
+
 This module installs Terraform Enterprise HA BETA onto 1 or more gcp instances in DEMO mode. All data is stored on the instance(s) and is not preserved. 
 
 An Ubuntu Bionic (18.04 LTS) image is chosen by default, but this config supports previous version of Ubuntu as well as Red Hat Enterprise Linux 7.2-7.7 (v8 is not supported.)
+
+## Architecture
 
 ![basic diagram](assets/gcp_diagram.jpg)
 _example architecture_
