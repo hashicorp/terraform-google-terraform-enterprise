@@ -190,7 +190,7 @@ variable "worker_count" {
 variable "primaryhostname" {
   type        = "string"
   description = "hostname prefix"
-  default     = "ptfe-primary"
+  default     = "tfe-primary"
 }
 
 variable "release_sequence" {
@@ -203,7 +203,7 @@ variable "release_sequence" {
 # Resources
 ###################################################
 
-## random password for the replicated console
+## random password for the installer dashboard 
 resource "random_pet" "console_password" {
   length = 3
 }
