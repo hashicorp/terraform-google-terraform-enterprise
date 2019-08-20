@@ -12,5 +12,6 @@ resource "google_compute_target_https_proxy" "ptfe" {
   url_map          = "${google_compute_url_map.ptfe.self_link}"
   ssl_certificates = ["${var.cert}"]
   ssl_policy       = "${var.sslpolicy}"
+
   #ssl_certificates = ["${file("${path.module}/${var.cert})"]
 }

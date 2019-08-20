@@ -1,14 +1,14 @@
 resource "google_compute_instance_template" "secondary" {
-  name_prefix  = "ptfe-secondary-template-"
-  machine_type = "${var.secondary_machine_type}"
-  region       = "${var.region}"
+  name_prefix    = "ptfe-secondary-template-"
+  machine_type   = "${var.secondary_machine_type}"
+  region         = "${var.region}"
   can_ip_forward = true
 
   disk {
     source_image = "${var.image_family}"
     auto_delete  = true
     boot         = true
-    disk_size_gb = "40"
+    disk_size_gb = "${var.boot_disk_size}"
     disk_type    = "pd-ssd"
   }
 
@@ -37,6 +37,5 @@ resource "google_compute_instance_template" "secondary" {
     repl-data            = "${var.repl_data}"
     release-sequence     = "${var.release_sequence}"
   }
-
   metadata_startup_script = "${file("${path.module}/../../files/install-ptfe.sh")}"
 }
