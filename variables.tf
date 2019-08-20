@@ -2,6 +2,7 @@ locals {
   assistant_port                  = 23010
   rendered_secondary_machine_type = "${var.secondary_machine_type != "" ? var.secondary_machine_type : var.primary_machine_type }"
 }
+
 ###################################################
 # Required variables
 ###################################################
@@ -10,9 +11,9 @@ variable "project" {
   description = "Name of the project to deploy into"
 }
 
-variable "creds" {
+variable "credentials_file" {
   type        = "string"
-  description = "Name of credential file"
+  description = "Path to credential file"
 }
 
 variable "subnet" {
@@ -20,12 +21,12 @@ variable "subnet" {
   description = "name of the subnet to install into"
 }
 
-variable "publicip" {
+variable "public_ip" {
   type        = "string"
   description = "the public IP for the load balancer to use"
 }
 
-variable "frontenddns" {
+variable "frontend_dns" {
   type        = "string"
   description = "DNS name for load balancer"
 }
@@ -35,7 +36,7 @@ variable "domain" {
   description = "domain name"
 }
 
-variable "dnszone" {
+variable "dns_zone" {
   type        = "string"
   description = "Managed DNS Zone name"
 }
@@ -45,12 +46,12 @@ variable "license_file" {
   description = "License file"
 }
 
-variable "cert" {
+variable "certificate" {
   type        = "string"
-  description = "Certificate file or gcp cert link"
+  description = "Path to Certificate file or GCP certificate link"
 }
 
-variable "sslpolicy" {
+variable "ssl_policy" {
   type        = "string"
   description = "SSL policy for the cert"
 }
@@ -65,7 +66,7 @@ variable "external_services" {
   default     = ""
 }
 
-variable "encpasswd" {
+variable "encryption_password" {
   type        = "string"
   description = "encryption password for the vault unseal key. save this!"
   default     = ""
@@ -73,35 +74,35 @@ variable "encpasswd" {
 
 variable "install_type" {
   type        = "string"
-  description = "Switch to production for external services. Defaults to demo mode"
+  description = "Installation type, options are (poc or production). Switch to production for external services."
   default     = "poc"
 }
 
-variable "pg_user" {
+variable "postgresql_user" {
   type        = "string"
   description = "Database username"
   default     = ""
 }
 
-variable "pg_password" {
+variable "postgresql_password" {
   type        = "string"
   description = "Base64 encoded database password"
   default     = ""
 }
 
-variable "pg_netloc" {
+variable "postgresql_address" {
   type        = "string"
   description = "Database connection url"
   default     = ""
 }
 
-variable "pg_dbname" {
+variable "postgresql_database" {
   type        = "string"
   description = "Database name"
   default     = ""
 }
 
-variable "pg_extra_params" {
+variable "postgresql_extra_params" {
   type        = "string"
   description = "Extra connection parameters such as ssl=true"
   default     = ""
@@ -129,7 +130,7 @@ variable "gcs_bucket" {
 # Optional Airgap Variables
 ###################################################
 
-variable "airgapurl" {
+variable "airgap_package_url" {
   type        = "string"
   description = "airgap url"
   default     = "none"
@@ -175,19 +176,25 @@ variable "image_family" {
   default     = "ubuntu-1804-lts"
 }
 
+variable "boot_disk_size" {
+  type        = "string"
+  description = "The size of the boot disk to use for the instances"
+  default     = 40
+}
+
 variable "primary_count" {
   type        = "string"
   description = "Number of primary nodes to run, must be odd number"
   default     = "1"
 }
 
-variable "worker_count" {
+variable "secondary_count" {
   type        = "string"
   description = "Number of secondary nodes to run"
   default     = "0"
 }
 
-variable "primaryhostname" {
+variable "primary_hostname" {
   type        = "string"
   description = "hostname prefix"
   default     = "ptfe-primary"

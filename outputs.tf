@@ -7,17 +7,17 @@ output "replicated_console_url" {
 }
 
 /*output "replicated_console_url" {
-  value = "https://${var.frontenddns}.${substr(data.google_dns_managed_zone.dnszone.dns_name, 0, length(data.google_dns_managed_zone.dnszone.dns_name) - 1)}/dashboard"
+  value = "https://${var.frontend_dns}.${substr(data.google_dns_managed_zone.dnszone.dns_name, 0, length(data.google_dns_managed_zone.dnszone.dns_name) - 1)}/dashboard"
 }*/
 
 output "primary_public_ip" {
-  value = "${var.publicip}"
+  value = "${var.public_ip}"
 }
 
 output "ptfe_endpoint" {
-  value = "https://${var.frontenddns}.${substr(data.google_dns_managed_zone.dnszone.dns_name, 0, length(data.google_dns_managed_zone.dnszone.dns_name) - 1)}"
+  value = "https://${var.frontend_dns}.${substr(data.google_dns_managed_zone.dnszone.dns_name, 0, length(data.google_dns_managed_zone.dnszone.dns_name) - 1)}"
 }
 
 output "ptfe_health_check" {
-  value = "https://${var.frontenddns}.${substr(data.google_dns_managed_zone.dnszone.dns_name, 0, length(data.google_dns_managed_zone.dnszone.dns_name) - 1)}/_health_check"
+  value = "https://${var.frontend_dns}.${substr(data.google_dns_managed_zone.dnszone.dns_name, 0, length(data.google_dns_managed_zone.dnszone.dns_name) - 1)}/_health_check"
 }

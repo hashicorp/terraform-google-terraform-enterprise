@@ -3,30 +3,30 @@ variable "region" {
 }
 
 provider "google" {
-  region      = "${var.region}"
+  region = "${var.region}"
 }
 
 provider "google-beta" {
-  region      = "${var.region}"
+  region = "${var.region}"
 }
 
 module "tfe-beta" {
-  source = "hashicorp/tfe-ha/google"
-  version = "0.0.1"
-  creds = "auth-file-123456678.json"
-  region = "${var.region}"
-  zone = "${var.region}-a"
-  project = "tfe-beta"
-  domain = "example.com"
-  dnszone = "example"
-  publicip = "1.2.3.4"
-  cert = "https://www.googleapis.com/compute/v1/project/terraform-test/global/sslCertificates/tfe"
-  sslpolicy = "tfe-ssl-policy"
-  subnet = "tfe-subnet"
-  frontenddns = "tfe-beta"
+  source           = "hashicorp/tfe-ha/google"
+  version          = "0.0.1-beta"
+  credentials_file = "auth-file-123456678.json"
+  region           = "${var.region}"
+  zone             = "${var.region}-a"
+  project          = "tfe-beta"
+  domain           = "example.com"
+  dns_zone         = "example"
+  public_ip        = "1.2.3.4"
+  certificate      = "https://www.googleapis.com/compute/v1/project/terraform-test/global/sslCertificates/tfe"
+  ssl_policy       = "tfe-ssl-policy"
+  subnet           = "tfe-subnet"
+  frontend_dns     = "tfe-beta"
 
-  primary_count = "1"
-  worker_count  = "0"
+  primary_count   = "1"
+  secondary_count = "0"
 
   license_file = "customer.rli"
 }

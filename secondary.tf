@@ -19,7 +19,7 @@ resource "google_compute_region_instance_group_manager" "secondary" {
   update_strategy    = "NONE"
   region             = "${var.region}"
 
-  target_size = "${var.worker_count}"
+  target_size = "${var.secondary_count}"
 
   named_port {
     name = "https"
