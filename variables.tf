@@ -6,29 +6,15 @@ locals {
 ###################################################
 # Required variables
 ###################################################
-variable "project" {
+
+variable "certificate" {
   type        = "string"
-  description = "Name of the project to deploy into"
+  description = "Path to Certificate file or GCP certificate link"
 }
 
 variable "credentials_file" {
   type        = "string"
   description = "Path to credential file"
-}
-
-variable "subnet" {
-  type        = "string"
-  description = "name of the subnet to install into"
-}
-
-variable "public_ip" {
-  type        = "string"
-  description = "the public IP for the load balancer to use"
-}
-
-variable "frontend_dns" {
-  type        = "string"
-  description = "DNS name for load balancer"
 }
 
 variable "domain" {
@@ -41,14 +27,24 @@ variable "dns_zone" {
   description = "Managed DNS Zone name"
 }
 
+variable "frontend_dns" {
+  type        = "string"
+  description = "DNS name for load balancer"
+}
+
 variable "license_file" {
   type        = "string"
   description = "License file"
 }
 
-variable "certificate" {
+variable "project" {
   type        = "string"
-  description = "Path to Certificate file or GCP certificate link"
+  description = "Name of the project to deploy into"
+}
+
+variable "public_ip" {
+  type        = "string"
+  description = "the public IP for the load balancer to use"
 }
 
 variable "ssl_policy" {
@@ -56,19 +52,24 @@ variable "ssl_policy" {
   description = "SSL policy for the cert"
 }
 
+variable "subnet" {
+  type        = "string"
+  description = "name of the subnet to install into"
+}
+
 ###################################################
 # Optional External Services Variables
 ###################################################
 
-variable "external_services" {
-  type        = "string"
-  description = "object store provider for external services. Allowed values: gcs"
-  default     = ""
-}
-
 variable "encryption_password" {
   type        = "string"
   description = "encryption password for the vault unseal key. save this!"
+  default     = ""
+}
+
+variable "external_services" {
+  type        = "string"
+  description = "object store provider for external services. Allowed values: gcs"
   default     = ""
 }
 
@@ -78,15 +79,21 @@ variable "install_type" {
   default     = "poc"
 }
 
-variable "postgresql_user" {
+variable "gcs_bucket" {
   type        = "string"
-  description = "Database username"
+  description = "Name of the gcp storage bucket"
   default     = ""
 }
 
-variable "postgresql_password" {
+variable "gcs_credentials" {
   type        = "string"
-  description = "Base64 encoded database password"
+  description = "Base64 encoded credentials json to access your gcp storage bucket. Run base64 -i <creds.json> -o <credsb64.json> and then copy the contents of the file into the variable"
+  default     = ""
+}
+
+variable "gcs_project" {
+  type        = "string"
+  description = "Project name where the bucket resides"
   default     = ""
 }
 
@@ -108,21 +115,15 @@ variable "postgresql_extra_params" {
   default     = ""
 }
 
-variable "gcs_credentials" {
+variable "postgresql_password" {
   type        = "string"
-  description = "Base64 encoded credentials json to access your gcp storage bucket. Run base64 -i <creds.json> -o <credsb64.json> and then copy the contents of the file into the variable"
+  description = "Base64 encoded database password"
   default     = ""
 }
 
-variable "gcs_project" {
+variable "postgresql_user" {
   type        = "string"
-  description = "Project name where the bucket resides"
-  default     = ""
-}
-
-variable "gcs_bucket" {
-  type        = "string"
-  description = "Name of the gcp storage bucket"
+  description = "Database username"
   default     = ""
 }
 
@@ -130,44 +131,26 @@ variable "gcs_bucket" {
 # Optional Airgap Variables
 ###################################################
 
-variable "airgap_package_url" {
-  type        = "string"
-  description = "airgap url"
-  default     = "none"
-}
-
 variable "airgap_installer_url" {
   type        = "string"
   description = "URL to replicated's airgap installer package"
   default     = "https://install.terraform.io/installer/replicated-v5.tar.gz"
 }
 
+variable "airgap_package_url" {
+  type        = "string"
+  description = "airgap url"
+  default     = "none"
+}
+
 ###################################################
 # Optional Variables
 ###################################################
 
-variable "region" {
+variable "boot_disk_size" {
   type        = "string"
-  description = "The region to install into."
-  default     = "us-central1"
-}
-
-variable "zone" {
-  type        = "string"
-  description = "Preferred zone"
-  default     = "us-central1-a"
-}
-
-variable "primary_machine_type" {
-  type        = "string"
-  description = "Type of machine to use"
-  default     = "n1-standard-4"
-}
-
-variable "secondary_machine_type" {
-  type        = "string"
-  description = "Type of machine to use for secondary nodes, if unset, will default to primary_machine_type"
-  default     = "n1-standard-4"
+  description = "The size of the boot disk to use for the instances"
+  default     = 40
 }
 
 variable "image_family" {
@@ -176,22 +159,10 @@ variable "image_family" {
   default     = "ubuntu-1804-lts"
 }
 
-variable "boot_disk_size" {
-  type        = "string"
-  description = "The size of the boot disk to use for the instances"
-  default     = 40
-}
-
 variable "primary_count" {
   type        = "string"
   description = "Number of primary nodes to run, must be odd number"
   default     = "1"
-}
-
-variable "secondary_count" {
-  type        = "string"
-  description = "Number of secondary nodes to run"
-  default     = "0"
 }
 
 variable "primary_hostname" {
@@ -200,10 +171,40 @@ variable "primary_hostname" {
   default     = "ptfe-primary"
 }
 
+variable "primary_machine_type" {
+  type        = "string"
+  description = "Type of machine to use"
+  default     = "n1-standard-4"
+}
+
+variable "region" {
+  type        = "string"
+  description = "The region to install into."
+  default     = "us-central1"
+}
+
 variable "release_sequence" {
   type        = "string"
   description = "Replicated release sequence"
   default     = "latest"
+}
+
+variable "secondary_count" {
+  type        = "string"
+  description = "Number of secondary nodes to run"
+  default     = "0"
+}
+
+variable "secondary_machine_type" {
+  type        = "string"
+  description = "Type of machine to use for secondary nodes, if unset, will default to primary_machine_type"
+  default     = "n1-standard-4"
+}
+
+variable "zone" {
+  type        = "string"
+  description = "Preferred zone"
+  default     = "us-central1-a"
 }
 
 ###################################################
