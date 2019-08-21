@@ -42,6 +42,12 @@ variable "image_family" {
   description = "image family"
 }
 
+variable "boot_disk_size" {
+  type        = "string"
+  description = "The size of the boot disk to use for the instances"
+  default     = 40
+}
+
 variable "install_type" {
   type        = "string"
   description = "type of install - poc or production"
