@@ -211,7 +211,7 @@ variable "zone" {
 # Resources
 ###################################################
 
-## random password for the replicated console
+## random password for the installer dashboard 
 resource "random_pet" "console_password" {
   length = 3
 }
