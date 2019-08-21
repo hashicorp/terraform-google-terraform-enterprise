@@ -1,6 +1,6 @@
-# Terraform-Google-TFE-HA (BETA)
+# Terraform Enterprise: High Availability for Google (BETA)
 
-![Terraform Logo](assets/TerraformLogo.png)
+![Terraform Logo](https://github.com/hashicorp/terraform-google-terraform-enterprise/blob/master/assets/TerraformLogo.png?raw=true)
 
 ## Description
 
@@ -10,7 +10,7 @@ An Ubuntu Bionic (18.04 LTS) image is chosen by default, but this config support
 
 ## Architecture
 
-![basic diagram](assets/gcp_diagram.jpg)
+![basic diagram](https://github.com/hashicorp/terraform-google-terraform-enterprise/blob/v0.0.1-beta/assets/gcp_diagram.jpg?raw=true)
 _example architecture_
 
 Please contact your Technical Account Manager for more information, and support for any issues you have.
