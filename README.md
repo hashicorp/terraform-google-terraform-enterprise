@@ -10,7 +10,7 @@ An Ubuntu Bionic (18.04 LTS) image is chosen by default, but this config support
 
 ## Architecture
 
-![basic diagram](https://github.com/hashicorp/terraform-google-tfe-ha/blob/v0.0.1-beta/assets/gcp_diagram.jpg?raw=true)
+![basic diagram](https://github.com/hashicorp/terraform-google-terraform-enterprise/blob/master/assets/gcp_diagram.jpg?raw=true)
 _example architecture_
 
 Please contact your Technical Account Manager for more information, and support for any issues you have.
