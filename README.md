@@ -1,4 +1,4 @@
-# Terraform-Google-TFE-HA (BETA)
+# Terraform Enterprise: High Availability for Google (BETA)
 
 ![Terraform Logo](https://github.com/hashicorp/terraform-google-tfe-ha/blob/v0.0.1-beta/assets/TerraformLogo.png?raw=true)
 
