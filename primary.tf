@@ -24,6 +24,7 @@ resource "google_compute_instance" "primary" {
     //enable-oslogin       = "TRUE"
     bootstrap-token      = "${random_string.bootstrap_token_id.result}.${random_string.bootstrap_token_suffix.result}"
     setup-token          = "${random_string.setup_token.result}"
+    custom_ca_cert       = "${var.ca_cert}"
     cluster-api-endpoint = "${var.primary_hostname}-0:6443"
     primary-pki-url      = "http://${var.primary_hostname}-0:${local.assistant_port}/api/v1/pki-download?token=${random_string.setup_token.result}"
     health-url           = "http://${var.primary_hostname}-0:${local.assistant_port}/healthz"
