@@ -153,6 +153,12 @@ variable "boot_disk_size" {
   default     = 40
 }
 
+variable "ca_cert" {
+  type        = "string"
+  description = "Path to CA certificate file used for the internal `ptfe-proxy` used for outgoing connections"
+  default     = ""
+}
+
 variable "image_family" {
   type        = "string"
   description = "The image family, choose from ubuntu-1604-lts, ubuntu-1804-lts, or rhel-7"
@@ -211,7 +217,7 @@ variable "zone" {
 # Resources
 ###################################################
 
-## random password for the installer dashboard 
+## random password for the installer dashboard
 resource "random_pet" "console_password" {
   length = 3
 }
