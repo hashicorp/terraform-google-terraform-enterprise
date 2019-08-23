@@ -62,3 +62,10 @@ variable "release_sequence" {
   type        = "string"
   description = "Replicated release sequence"
 }
+
+variable "ca_cert_url" {
+  type        = "string"
+  description = "URL to CA certificate file used for the internal `ptfe-proxy` used for outgoing connections"
+  default     = ""
+}
+
