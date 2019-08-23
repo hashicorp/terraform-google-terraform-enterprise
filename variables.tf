@@ -153,9 +153,9 @@ variable "boot_disk_size" {
   default     = 40
 }
 
-variable "ca_cert" {
+variable "ca_cert_url" {
   type        = "string"
-  description = "Path to CA certificate file used for the internal `ptfe-proxy` used for outgoing connections"
+  description = "URL to CA certificate file used for the internal `ptfe-proxy` used for outgoing connections"
   default     = ""
 }
 
