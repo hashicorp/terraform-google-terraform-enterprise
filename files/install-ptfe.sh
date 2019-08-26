@@ -18,6 +18,7 @@ curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/ptf
 curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/installtype" -H "Metadata-Flavor: Google" -o /etc/ptfe/installtype
 curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/repl-data" -H "Metadata-Flavor: Google" -o /etc/ptfe/repl-data
 curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/release-sequence" -H "Metadata-Flavor: Google" -o /etc/ptfe/release-sequence
+curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/custom-ca-cert-url" -H "Metadata-Flavor: Google" -o /etc/ptfe/custom-ca-cert-url
 
 # Only grab the following if it's a primary node
 
@@ -194,6 +195,15 @@ fi
 
 if [[ $(< /etc/ptfe/airgap-installer-url) != none ]]; then
     airgap_installer_url_path="/etc/ptfe/airgap-installer-url"
+fi
+
+if [[ $(< /etc/ptfe/custom-ca-cert-url) != none ]]; then
+  custom_ca_cert_url=$(cat /etc/ptfe/custom-ca-cert-url)
+  custom_ca_cert_file_name=$(echo "${custom_ca_cert_url}" | awk -F '/' '{ print $NF }')
+  pushd /tmp/customer-certs
+  wget --trust-server-files "${custom_ca_cert_url}"
+  mv "${custom_ca_cert_file_name}" cust-ca-certificates.crt
+  popd
 fi
 
 ptfe_install_args=(
