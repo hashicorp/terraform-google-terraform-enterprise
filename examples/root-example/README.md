@@ -12,7 +12,8 @@ This example assumes you have already set up your gcp project with the required 
 
 With this code you can either create a single instance, or a build a cluster:
 
-![basic architecture diagram](tfeha_basic_diagram.jpg)
+![basic diagram](https://github.com/hashicorp/terraform-google-terraform-enterprise/blob/v0.0.1-beta/assets/gcp_diagram.jpg?raw=true)
+_example architecture_
 
 ## Change to the example directory
 
@@ -33,15 +34,17 @@ Install Terraform if it is not already installed (visit [terraform.io](https://t
 You'll need to update the following settings to your set up:
 
 * project: name of the project
-* creds: json file name
-* publicip: The IP address to attach to the load balancer
+* credentials_file: json file name
+* public_ip: The IP address to attach to the load balancer
+* frontend_dns: DNS name for load balancer
 * domain: domain to use
-* dnszone: the name of the dns zone in gcp
-* cert: the api url of the google certficiate to use
-* sslpolicy: name of the ssl policy to use
+* dns_zone: the name of the dns zone in gcp
+* certificate: the api url of the google certficiate to use
+* ssl_policy: name of the ssl policy to use
 * subnet: subnet to deploy into (this should be reserved for tfe)
+* license_file: License file
 
- This example is set to spin up a single instance, but the `primary_count` and `secondary_count` can be updated to build a cluster instead.  
+ This example is set to spin up a single ubuntu instance in demo mode. Please review the top-level (README)[https://github.com/hashicorp/terraform-google-terraform-enterprise/blob/master/README.md] to review other installer options.
 
 ## Run Terraform
 
@@ -52,10 +55,16 @@ terraform apply
 
 ## Wait for the application to load
 
-The replicated console url will output along with the password.
+The installer dashboard url will be output along with the password.
 
-![output](output_example.png)
+```
+application_endpoint = https://tfe.example.com
+application_health_check = https://tfe.example.com/_health_check
+installer_dashboard_password = hideously-stable-baboon
+installer_dashboard_url = https://12.34.56.78:8800
+primary_public_ip = 23.45.67.89
+```
 
-You can log into that dashboard at that url and wait for the application to be ready. This can take up to 30 minutes! Once complete use the `Open` link to set up the admin user and initial organization.
+You can log into that dashboard at that url and wait for the application to be ready. This can take up to 30 minutes! Once complete use the `Open` link to set up the admin user and initial organization. Once the initial admin user and organization are created, you can access and log into the application at the application endpoint.
 
 ![application started](app_started.png)
