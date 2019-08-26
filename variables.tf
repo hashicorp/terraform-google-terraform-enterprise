@@ -156,7 +156,7 @@ variable "boot_disk_size" {
 variable "ca_cert_url" {
   type        = "string"
   description = "URL to CA certificate file used for the internal `ptfe-proxy` used for outgoing connections"
-  default     = ""
+  default     = "none"
 }
 
 variable "image_family" {
