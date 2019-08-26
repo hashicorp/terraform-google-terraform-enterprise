@@ -37,30 +37,41 @@ if [[ $(< /etc/ptfe/role) != "secondary" ]]; then
 fi
 
 if [[ $(< /etc/ptfe/role) == "secondary" ]]; then
-    export PTFEHOSTNAME=$(curl -H "Metadata-Flavor: Google" http://metadata.google.internal/computeMetadata/v1/instance/network-interfaces/0/ip)
+    PTFEHOSTNAME=$(curl -H "Metadata-Flavor: Google" http://metadata.google.internal/computeMetadata/v1/instance/network-interfaces/0/ip)
+    export PTFEHOSTNAME
 fi
 
 chown root:root /etc/ptfe/*
 chown 0400 /etc/ptfe/*
 chown 0444 /etc/ptfe/role
 chown 0444 /etc/ptfe/role-id
-export CONSOLE=`cat /etc/ptfe/repl-data | base64 --decode`
-export RELEASE_SEQUENCE=`cat /etc/ptfe/release-sequence`
+CONSOLE=$(base64 --decode /etc/ptfe/repl-data)
+export CONSOLE
+RELEASE_SEQUENCE=$(cat /etc/ptfe/release-sequence)
+export RELEASE_SEQUENCE
 
 # Store various bits of info as env vars on primary nodes
 if [[ $(< /etc/ptfe/role) != "secondary" ]]; then
     base64 -d /etc/ptfe/replicated-licenseb64 > /etc/replicated.rli
-    PTFEHOSTNAME=`cat /etc/ptfe/hostname`
+    PTFEHOSTNAME=$(cat /etc/ptfe/hostname)
     PTFEHOSTNAME=${PTFEHOSTNAME%?}
     export PTFEHOSTNAME
-    export ENCPASSWD=`cat /etc/ptfe/encpasswd`
-    export PG_USER=`cat /etc/ptfe/pg_user`
-    export PG_PASSWORD=`cat /etc/ptfe/pg_password | base64 --decode`
-    export PG_NETLOC=`cat /etc/ptfe/pg_netloc`
-    export PG_DBNAME=`cat /etc/ptfe/pg_dbname`
-    export PG_EXTRA_PARAMS=`cat /etc/ptfe/pg_extra_params`
-    export GCS_PROJECT=`cat /etc/ptfe/gcs_project`
-    export GCS_BUCKET=`cat /etc/ptfe/gcs_bucket`
+    ENCPASSWD=$(cat /etc/ptfe/encpasswd)
+    export ENCPASSWD
+    PG_USER=$(cat /etc/ptfe/pg_user)
+    export PG_USER
+    PG_PASSWORD=$(base64 --decode /etc/ptfe/pg_password)
+    export PG_PASSWORD
+    PG_NETLOC=$(cat /etc/ptfe/pg_netloc)
+    export PG_NETLOC
+    PG_DBNAME=$(cat /etc/ptfe/pg_dbname)
+    export PG_DBNAME
+    PG_EXTRA_PARAMS=$(cat /etc/ptfe/pg_extra_params)
+    export PG_EXTRA_PARAMS
+    GCS_PROJECT=$(cat /etc/ptfe/gcs_project)
+    export GCS_PROJECT
+    GCS_BUCKET=$(cat /etc/ptfe/gcs_bucket)
+    export GCS_BUCKET
     GCS_CREDS=$(base64 --decode /etc/ptfe/gcs_credentials | jq -c . | sed -e 's/"/\\"/g' -e 's/\\n/\\\\n/g')
     export GCS_CREDS
 fi
