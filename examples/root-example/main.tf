@@ -2,12 +2,16 @@ variable "region" {
   default = "us-central1"
 }
 
+variable "project" {}
+
 provider "google" {
   region = "${var.region}"
+  project = "${var.project}"
 }
 
 provider "google-beta" {
   region = "${var.region}"
+  project = "${var.project}"
 }
 
 module "tfe-beta" {
@@ -16,7 +20,7 @@ module "tfe-beta" {
   credentials_file = "auth-file-123456678.json"
   region           = "${var.region}"
   zone             = "${var.region}-a"
-  project          = "tfe-beta"
+  project          = "${var.project}"
   domain           = "example.com"
   dns_zone         = "example"
   public_ip        = "1.2.3.4"
