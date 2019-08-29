@@ -14,7 +14,7 @@ resource "google_compute_health_check" "autohealing" {
 resource "google_compute_region_instance_group_manager" "secondary" {
   name = "secondary"
 
-  base_instance_name = "ptfe-worker"
+  base_instance_name = "tfe-secondary"
   instance_template  = "${module.instance-template.secondary_template}"
   update_strategy    = "NONE"
   region             = "${var.region}"
