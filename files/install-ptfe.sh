@@ -39,6 +39,8 @@ fi
 if [[ $(< /etc/ptfe/role) == "secondary" ]]; then
     export PTFEHOSTNAME=$(curl -H "Metadata-Flavor: Google" http://metadata.google.internal/computeMetadata/v1/instance/network-interfaces/0/ip)
 fi
+# Using the IP address, as the secondaries don't have DNS entries
+# Primaries have to use their local hostnames as https://frontenddns:8800 will not route through the LB currently
 
 chown root:root /etc/ptfe/*
 chown 0400 /etc/ptfe/*
