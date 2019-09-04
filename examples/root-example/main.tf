@@ -16,7 +16,7 @@ provider "google-beta" {
 
 module "tfe-beta" {
   source           = "hashicorp/terraform-enterprise/google"
-  version          = "0.0.1-beta"
+  version          = "0.0.2-beta"
   credentials_file = "auth-file-123456678.json"
   region           = "${var.region}"
   zone             = "${var.region}-a"
