@@ -62,3 +62,8 @@ variable "release_sequence" {
   type        = "string"
   description = "Replicated release sequence"
 }
+
+variable "prefix" {
+  type        = "string"
+  description = "Prefix for resource names"
+}

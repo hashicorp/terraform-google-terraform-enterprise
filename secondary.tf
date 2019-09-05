@@ -14,7 +14,7 @@ resource "google_compute_health_check" "autohealing" {
 resource "google_compute_region_instance_group_manager" "secondary" {
   name = "secondary"
 
-  base_instance_name = "tfe-secondary"
+  base_instance_name = "${var.prefix}-secondary"
   instance_template  = "${module.instance-template.secondary_template}"
   update_strategy    = "NONE"
   region             = "${var.region}"
@@ -25,8 +25,4 @@ resource "google_compute_region_instance_group_manager" "secondary" {
     name = "https"
     port = 443
   }
-
-  /*lifecycle {
-    create_before_destroy = true
-  }*/
 }

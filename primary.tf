@@ -1,6 +1,6 @@
 resource "google_compute_instance" "primary" {
   count        = "${var.primary_count}"
-  name         = "${var.primary_hostname}-${count.index}"
+  name         = "${var.prefix}-primary-${count.index}"
   machine_type = "${var.primary_machine_type}"
   zone         = "${var.zone}"
 
@@ -24,16 +24,16 @@ resource "google_compute_instance" "primary" {
     //enable-oslogin       = "TRUE"
     bootstrap-token      = "${random_string.bootstrap_token_id.result}.${random_string.bootstrap_token_suffix.result}"
     setup-token          = "${random_string.setup_token.result}"
-    cluster-api-endpoint = "${var.primary_hostname}-0:6443"
-    primary-pki-url      = "http://${var.primary_hostname}-0:${local.assistant_port}/api/v1/pki-download?token=${random_string.setup_token.result}"
-    health-url           = "http://${var.primary_hostname}-0:${local.assistant_port}/healthz"
+    cluster-api-endpoint = "${var.prefix}-primary-0:6443"
+    primary-pki-url      = "http://${var.prefix}-primary-0:${local.assistant_port}/api/v1/pki-download?token=${random_string.setup_token.result}"
+    health-url           = "http://${var.prefix}-primary-0:${local.assistant_port}/healthz"
     ptfe-role            = "${count.index == 0 ? "main" : "primary"}"
     role-id              = "${count.index}"
     b64-license          = "${base64encode(file("${var.license_file}"))}"
     airgap-package-url   = "${var.airgap_package_url}"
     airgap-installer-url = "${var.airgap_installer_url}"
     repl-data            = "${base64encode("${random_pet.console_password.id}")}"
-    ptfe-hostname        = "${var.primary_hostname}-${count.index}.${data.google_dns_managed_zone.dnszone.dns_name}"
+    ptfe-hostname        = "${var.prefix}-primary-${count.index}.${data.google_dns_managed_zone.dnszone.dns_name}"
     encpasswd            = "${var.encryption_password}"
     release-sequence     = "${var.release_sequence}"
     installtype          = "${var.install_type}"
@@ -56,7 +56,7 @@ data "google_dns_managed_zone" "dnszone" {
 
 resource "google_dns_record_set" "primarydns" {
   count = "${var.primary_count}"
-  name  = "${var.primary_hostname}-${count.index}.${data.google_dns_managed_zone.dnszone.dns_name}"
+  name  = "${var.prefix}-primary-${count.index}.${data.google_dns_managed_zone.dnszone.dns_name}"
   type  = "A"
   ttl   = 300
 
@@ -66,7 +66,7 @@ resource "google_dns_record_set" "primarydns" {
 }
 
 resource "google_compute_instance_group" "primaries" {
-  name        = "primary-group"
+  name        = "${var.prefix}-primary-group"
   description = "primary-servers"
   zone        = "${var.zone}"
 
@@ -80,9 +80,5 @@ resource "google_compute_instance_group" "primaries" {
   named_port {
     name = "dashboard"
     port = 8800
-  }
-
-  lifecycle {
-    create_before_destroy = true
   }
 }

@@ -32,3 +32,8 @@ variable "frontenddns" {
   type        = "string"
   description = "front end url name"
 }
+
+variable "prefix" {
+  type        = "string"
+  description = "Prefix for resource names"
+}

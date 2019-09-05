@@ -13,4 +13,5 @@ module "instance-template" {
   repl_data              = "${base64encode("${random_pet.console_password.id}")}"
   release_sequence       = "${var.release_sequence}"
   boot_disk_size         = "${var.boot_disk_size}"
+  prefix                 = "${var.prefix}"
 }
