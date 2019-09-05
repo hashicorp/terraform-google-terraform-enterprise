@@ -38,4 +38,8 @@ resource "google_compute_instance_template" "secondary" {
     release-sequence     = "${var.release_sequence}"
   }
   metadata_startup_script = "${file("${path.module}/../../files/install-ptfe.sh")}"
+
+  labels = {
+    "Name" = "${var.prefix}"
+  }
 }

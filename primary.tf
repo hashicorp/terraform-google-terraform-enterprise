@@ -48,6 +48,10 @@ resource "google_compute_instance" "primary" {
   }
 
   metadata_startup_script = "${file("${path.module}/files/install-ptfe.sh")}"
+
+  labels = {
+    "Name" = "${var.prefix}"
+  }
 }
 
 data "google_dns_managed_zone" "dnszone" {
