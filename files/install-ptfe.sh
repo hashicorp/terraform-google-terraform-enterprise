@@ -200,9 +200,14 @@ fi
 if [[ $(< /etc/ptfe/custom-ca-cert-url) != none ]]; then
   custom_ca_cert_url=$(cat /etc/ptfe/custom-ca-cert-url)
   custom_ca_cert_file_name=$(echo "${custom_ca_cert_url}" | awk -F '/' '{ print $NF }')
-  pushd /tmp/customer-certs
+  # Setting up a tmp directory to do this `jq` transform to leave artifcats if anything goes "boom".
+  mkdir -p /tmp/ptfe/customer-certs
+  pushd /tmp/ptfe/customer-certs
   wget --trust-server-files "${custom_ca_cert_url}"
   mv "${custom_ca_cert_file_name}" cust-ca-certificates.crt
+  cp /etc/replicated-ptfe.conf ./replicated-ptfe.conf.original
+  jq ". + { ca_certs: { value: \"$(cat cust-ca-certificates.crt)\" } }" -- replicated-ptfe.conf.original
+  cp ./replicated-ptfe.conf.original /etc/replicated-ptfe.conf
   popd
 fi
 
