@@ -206,8 +206,8 @@ if [[ $(< /etc/ptfe/custom-ca-cert-url) != none ]]; then
   wget --trust-server-files "${custom_ca_cert_url}"
   mv "${custom_ca_cert_file_name}" cust-ca-certificates.crt
   cp /etc/replicated-ptfe.conf ./replicated-ptfe.conf.original
-  jq ". + { ca_certs: { value: \"$(cat cust-ca-certificates.crt)\" } }" -- replicated-ptfe.conf.original
-  cp ./replicated-ptfe.conf.original /etc/replicated-ptfe.conf
+  jq ". + { ca_certs: { value: \"$(cat cust-ca-certificates.crt)\" } }" -- replicated-ptfe.conf.original > repliacted-ptfe.conf.updated
+  cp ./replicated-ptfe.conf.updated /etc/replicated-ptfe.conf
   popd
 fi
 
