@@ -210,22 +210,25 @@ if [[ $(< /etc/ptfe/custom-ca-cert-url) != none ]]; then
   if wget --trust-server-files "${custom_ca_cert_url}" >> ./wget_output.log 2>&1;
   then
     if [ -f "${ca_tmp_dir}/${custom_ca_cert_file_name}" ];
+    then
       if openssl x509 -in "${custom_ca_cert_file_name}" -text -noout;
+      then
         mv "${custom_ca_cert_file_name}" cust-ca-certificates.crt
         cp /etc/${replicated_conf_file} ./${replicated_conf_file}.original
         jq ". + { ca_certs: { value: \"$(cat cust-ca-certificates.crt)\" } }" -- ${replicated_conf_file}.original > ${replicated_conf_file}.updated
         if jq -e . > /dev/null 2>&1 -- ${replicated_conf_file}.updated;
+        then
+          cp ./${replicated_conf_file}.updated /etc/${replicated_conf_file}
+        else
           echo "The updated ${replicated_conf_file} file is not valid JSON." | tee -a "${local_messages_file}"
           echo "Review ${ca_tmp_dir}/${replicated_conf_file}.original and ${ca_tmp_dir}/${replicated_conf_file}.updated." | tee -a "${local_messages_file}"
           echo "" | tee -a "${local_messages_file}"
-        then
-          cp ./${replicated_conf_file}.updated /etc/${replicated_conf_file}
         fi
-      then
+      else
         echo "The certificate file wasn't able to validated via openssl" | tee -a "${local_messages_file}"
         echo "" | tee -a "${local_messages_file}"
       fi
-    then
+    else
       echo "The filename ${custom_ca_cert_file_name} was not what ${custom_ca_cert_url} downloaded." | tee -a "${local_messages_file}"
       echo "Inspect the ${ca_tmp_dir} directory to verify the file that was downloaded." | tee -a "${local_messages_file}"
       echo "" | tee -a "${local_messages_file}"
