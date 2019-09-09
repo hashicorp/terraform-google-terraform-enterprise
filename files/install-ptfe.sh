@@ -202,29 +202,38 @@ if [[ $(< /etc/ptfe/custom-ca-cert-url) != none ]]; then
   custom_ca_cert_file_name=$(echo "${custom_ca_cert_url}" | awk -F '/' '{ print $NF }')
   ca_tmp_dir="/tmp/ptfe/customer-certs"
   replicated_conf_file="replicated-ptfe.conf"
-  # Setting up a tmp directory to do this `jq` transform to leave artifcats if anything goes "boom".
+  local_messages_file="local_messages.log"
+  # Setting up a tmp directory to do this `jq` transform to leave artifacts if anything goes "boom".
   mkdir -p "${ca_tmp_dir}"
   pushd "${ca_tmp_dir}"
-  wget --trust-server-files "${custom_ca_cert_url}" >> ./wget_output.log 2>&1
+  touch ${local_messages_file}
   if wget --trust-server-files "${custom_ca_cert_url}" >> ./wget_output.log 2>&1;
   then
-    echo "There was an error downloading the file ${custom_ca_cert_file_name} from ${custom_ca_cert_url}."
-    echo "See the ${ca_tmp_dir}/wget_output.log file."
-  else
     if [ -f "${ca_tmp_dir}/${custom_ca_cert_file_name}" ];
-      echo "The filename ${custom_ca_cert_file_name} was not what ${custom_ca_cert_url} downloaded."
-      echo "Inspect the ${ca_tmp_dir} directory to verify the file that was downloaded."
-    then
-      mv "${custom_ca_cert_file_name}" cust-ca-certificates.crt
-      cp /etc/${replicated_conf_file} ./${replicated_conf_file}.original
-      jq ". + { ca_certs: { value: \"$(cat cust-ca-certificates.crt)\" } }" -- ${replicated_conf_file}.original > ${replicated_conf_file}.updated
-      if jq -e . > /dev/null 2>&1 -- ${replicated_conf_file}.updated;
-        echo "The updated ${replicated_conf_file} file is not valid JSON."
-        echo "Review ${ca_tmp_dir}/${replicated_conf_file}.original and ${ca_tmp_dir}/${replicated_conf_file}.updated."
+      if openssl x509 -in "${custom_ca_cert_file_name}" -text -noout;
+        mv "${custom_ca_cert_file_name}" cust-ca-certificates.crt
+        cp /etc/${replicated_conf_file} ./${replicated_conf_file}.original
+        jq ". + { ca_certs: { value: \"$(cat cust-ca-certificates.crt)\" } }" -- ${replicated_conf_file}.original > ${replicated_conf_file}.updated
+        if jq -e . > /dev/null 2>&1 -- ${replicated_conf_file}.updated;
+          echo "The updated ${replicated_conf_file} file is not valid JSON." | tee -a "${local_messages_file}"
+          echo "Review ${ca_tmp_dir}/${replicated_conf_file}.original and ${ca_tmp_dir}/${replicated_conf_file}.updated." | tee -a "${local_messages_file}"
+          echo "" | tee -a "${local_messages_file}"
+        then
+          cp ./${replicated_conf_file}.updated /etc/${replicated_conf_file}
+        fi
       then
-        cp ./${replicated_conf_file}.updated /etc/${replicated_conf_file}
+        echo "The certificate file wasn't able to validated via openssl" | tee -a "${local_messages_file}"
+        echo "" | tee -a "${local_messages_file}"
       fi
+    then
+      echo "The filename ${custom_ca_cert_file_name} was not what ${custom_ca_cert_url} downloaded." | tee -a "${local_messages_file}"
+      echo "Inspect the ${ca_tmp_dir} directory to verify the file that was downloaded." | tee -a "${local_messages_file}"
+      echo "" | tee -a "${local_messages_file}"
     fi
+  else
+    echo "There was an error downloading the file ${custom_ca_cert_file_name} from ${custom_ca_cert_url}." | tee -a "${local_messages_file}"
+    echo "See the ${ca_tmp_dir}/wget_output.log file." | tee -a "${local_messages_file}"
+    echo "" | tee -a "${local_messages_file}"
   fi
 
   popd
