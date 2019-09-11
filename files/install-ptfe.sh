@@ -197,7 +197,8 @@ if [[ $(< /etc/ptfe/airgap-installer-url) != none ]]; then
     airgap_installer_url_path="/etc/ptfe/airgap-installer-url"
 fi
 
-if [[ $(< /etc/ptfe/custom-ca-cert-url) != none ]]; then
+if [[ -n $(< /etc/ptfe/custom-ca-cert-url) && \
+      $(< /etc/ptfe/custom-ca-cert-url) != none ]]; then
   custom_ca_cert_url=$(cat /etc/ptfe/custom-ca-cert-url)
   custom_ca_cert_file_name=$(echo "${custom_ca_cert_url}" | awk -F '/' '{ print $NF }')
   ca_tmp_dir="/tmp/ptfe/customer-certs"
