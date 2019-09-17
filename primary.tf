@@ -27,6 +27,7 @@ resource "google_compute_instance" "primary" {
     cluster-api-endpoint = "${var.prefix}-primary-0:6443"
     primary-pki-url      = "http://${var.prefix}-primary-0:${local.assistant_port}/api/v1/pki-download?token=${random_string.setup_token.result}"
     health-url           = "http://${var.prefix}-primary-0:${local.assistant_port}/healthz"
+    custom-ca-cert-url   = "${var.ca_cert_url}"
     ptfe-role            = "${count.index == 0 ? "main" : "primary"}"
     role-id              = "${count.index}"
     b64-license          = "${base64encode(file("${var.license_file}"))}"

@@ -59,7 +59,7 @@ resource "google_compute_health_check" "primary" {
   timeout_sec        = 4
 
   https_health_check {
-    request_path  = "/healthz"
-    port          = "6443"
+    request_path = "/healthz"
+    port         = "6443"
   }
 }

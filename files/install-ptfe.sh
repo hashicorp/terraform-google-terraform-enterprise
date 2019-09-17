@@ -18,6 +18,7 @@ curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/ptf
 curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/installtype" -H "Metadata-Flavor: Google" -o /etc/ptfe/installtype
 curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/repl-data" -H "Metadata-Flavor: Google" -o /etc/ptfe/repl-data
 curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/release-sequence" -H "Metadata-Flavor: Google" -o /etc/ptfe/release-sequence
+curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/custom-ca-cert-url" -H "Metadata-Flavor: Google" -o /etc/ptfe/custom-ca-cert-url
 
 # Only grab the following if it's a primary node
 
@@ -37,7 +38,8 @@ if [[ $(< /etc/ptfe/role) != "secondary" ]]; then
 fi
 
 if [[ $(< /etc/ptfe/role) == "secondary" ]]; then
-    export PTFEHOSTNAME=$(curl -H "Metadata-Flavor: Google" http://metadata.google.internal/computeMetadata/v1/instance/network-interfaces/0/ip)
+    PTFEHOSTNAME=$(curl -H "Metadata-Flavor: Google" http://metadata.google.internal/computeMetadata/v1/instance/network-interfaces/0/ip)
+    export PTFEHOSTNAME
 fi
 # Using the IP address, as the secondaries don't have DNS entries
 # Primaries have to use their local hostnames as https://frontenddns:8800 will not route through the LB currently
@@ -46,23 +48,33 @@ chown root:root /etc/ptfe/*
 chown 0400 /etc/ptfe/*
 chown 0444 /etc/ptfe/role
 chown 0444 /etc/ptfe/role-id
-export CONSOLE=`cat /etc/ptfe/repl-data | base64 --decode`
-export RELEASE_SEQUENCE=`cat /etc/ptfe/release-sequence`
+CONSOLE=$(base64 --decode /etc/ptfe/repl-data)
+export CONSOLE
+RELEASE_SEQUENCE=$(cat /etc/ptfe/release-sequence)
+export RELEASE_SEQUENCE
 
 # Store various bits of info as env vars on primary nodes
 if [[ $(< /etc/ptfe/role) != "secondary" ]]; then
     base64 -d /etc/ptfe/replicated-licenseb64 > /etc/replicated.rli
-    PTFEHOSTNAME=`cat /etc/ptfe/hostname`
+    PTFEHOSTNAME=$(cat /etc/ptfe/hostname)
     PTFEHOSTNAME=${PTFEHOSTNAME%?}
     export PTFEHOSTNAME
-    export ENCPASSWD=`cat /etc/ptfe/encpasswd`
-    export PG_USER=`cat /etc/ptfe/pg_user`
-    export PG_PASSWORD=`cat /etc/ptfe/pg_password | base64 --decode`
-    export PG_NETLOC=`cat /etc/ptfe/pg_netloc`
-    export PG_DBNAME=`cat /etc/ptfe/pg_dbname`
-    export PG_EXTRA_PARAMS=`cat /etc/ptfe/pg_extra_params`
-    export GCS_PROJECT=`cat /etc/ptfe/gcs_project`
-    export GCS_BUCKET=`cat /etc/ptfe/gcs_bucket`
+    ENCPASSWD=$(cat /etc/ptfe/encpasswd)
+    export ENCPASSWD
+    PG_USER=$(cat /etc/ptfe/pg_user)
+    export PG_USER
+    PG_PASSWORD=$(base64 --decode /etc/ptfe/pg_password)
+    export PG_PASSWORD
+    PG_NETLOC=$(cat /etc/ptfe/pg_netloc)
+    export PG_NETLOC
+    PG_DBNAME=$(cat /etc/ptfe/pg_dbname)
+    export PG_DBNAME
+    PG_EXTRA_PARAMS=$(cat /etc/ptfe/pg_extra_params)
+    export PG_EXTRA_PARAMS
+    GCS_PROJECT=$(cat /etc/ptfe/gcs_project)
+    export GCS_PROJECT
+    GCS_BUCKET=$(cat /etc/ptfe/gcs_bucket)
+    export GCS_BUCKET
     GCS_CREDS=$(base64 --decode /etc/ptfe/gcs_credentials | jq -c . | sed -e 's/"/\\"/g' -e 's/\\n/\\\\n/g')
     export GCS_CREDS
 fi
@@ -185,6 +197,52 @@ fi
 
 if [[ $(< /etc/ptfe/airgap-installer-url) != none ]]; then
     airgap_installer_url_path="/etc/ptfe/airgap-installer-url"
+fi
+
+if [[ -n $(< /etc/ptfe/custom-ca-cert-url) && \
+      $(< /etc/ptfe/custom-ca-cert-url) != none ]]; then
+  custom_ca_cert_url=$(cat /etc/ptfe/custom-ca-cert-url)
+  custom_ca_cert_file_name=$(echo "${custom_ca_cert_url}" | awk -F '/' '{ print $NF }')
+  ca_tmp_dir="/tmp/ptfe/customer-certs"
+  replicated_conf_file="replicated-ptfe.conf"
+  local_messages_file="local_messages.log"
+  # Setting up a tmp directory to do this `jq` transform to leave artifacts if anything goes "boom".
+  mkdir -p "${ca_tmp_dir}"
+  pushd "${ca_tmp_dir}"
+  touch ${local_messages_file}
+  if wget --trust-server-files "${custom_ca_cert_url}" >> ./wget_output.log 2>&1;
+  then
+    if [ -f "${ca_tmp_dir}/${custom_ca_cert_file_name}" ];
+    then
+      if openssl x509 -in "${custom_ca_cert_file_name}" -text -noout;
+      then
+        mv "${custom_ca_cert_file_name}" cust-ca-certificates.crt
+        cp /etc/${replicated_conf_file} ./${replicated_conf_file}.original
+        jq ". + { ca_certs: { value: \"$(cat cust-ca-certificates.crt)\" } }" -- ${replicated_conf_file}.original > ${replicated_conf_file}.updated
+        if jq -e . > /dev/null 2>&1 -- ${replicated_conf_file}.updated;
+        then
+          cp ./${replicated_conf_file}.updated /etc/${replicated_conf_file}
+        else
+          echo "The updated ${replicated_conf_file} file is not valid JSON." | tee -a "${local_messages_file}"
+          echo "Review ${ca_tmp_dir}/${replicated_conf_file}.original and ${ca_tmp_dir}/${replicated_conf_file}.updated." | tee -a "${local_messages_file}"
+          echo "" | tee -a "${local_messages_file}"
+        fi
+      else
+        echo "The certificate file wasn't able to validated via openssl" | tee -a "${local_messages_file}"
+        echo "" | tee -a "${local_messages_file}"
+      fi
+    else
+      echo "The filename ${custom_ca_cert_file_name} was not what ${custom_ca_cert_url} downloaded." | tee -a "${local_messages_file}"
+      echo "Inspect the ${ca_tmp_dir} directory to verify the file that was downloaded." | tee -a "${local_messages_file}"
+      echo "" | tee -a "${local_messages_file}"
+    fi
+  else
+    echo "There was an error downloading the file ${custom_ca_cert_file_name} from ${custom_ca_cert_url}." | tee -a "${local_messages_file}"
+    echo "See the ${ca_tmp_dir}/wget_output.log file." | tee -a "${local_messages_file}"
+    echo "" | tee -a "${local_messages_file}"
+  fi
+
+  popd
 fi
 
 ptfe_install_args=(
