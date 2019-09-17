@@ -7,4 +7,5 @@ module "lb" {
   primary_instances = "${google_compute_instance.primary.*.self_link}"
   instance_group    = "${google_compute_instance_group.primaries.self_link}"
   frontenddns       = "${var.frontend_dns}"
+  prefix            = "${var.prefix}"
 }

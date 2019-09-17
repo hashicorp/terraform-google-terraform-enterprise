@@ -171,10 +171,10 @@ variable "primary_count" {
   default     = "1"
 }
 
-variable "primary_hostname" {
+variable "prefix" {
   type        = "string"
-  description = "hostname prefix"
-  default     = "ptfe-primary"
+  description = "Resource and instance prefix"
+  default     = "tfe"
 }
 
 variable "primary_machine_type" {

@@ -1,5 +1,5 @@
 resource "google_compute_instance_template" "secondary" {
-  name_prefix    = "ptfe-secondary-template-"
+  name_prefix    = "${var.prefix}-secondary-template-"
   machine_type   = "${var.secondary_machine_type}"
   region         = "${var.region}"
   can_ip_forward = true
@@ -39,4 +39,8 @@ resource "google_compute_instance_template" "secondary" {
     release-sequence     = "${var.release_sequence}"
   }
   metadata_startup_script = "${file("${path.module}/../../files/install-ptfe.sh")}"
+
+  labels = {
+    "Name" = "${var.prefix}"
+  }
 }

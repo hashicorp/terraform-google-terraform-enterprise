@@ -1,6 +1,6 @@
-resource "google_compute_url_map" "ptfe" {
-  name        = "ptfe-urlmap"
-  description = "ptfe"
+resource "google_compute_url_map" "tfe" {
+  name        = "${var.prefix}-urlmap"
+  description = "tfe"
 
   default_service = "${google_compute_backend_service.primary.self_link}"
 
@@ -26,7 +26,7 @@ resource "google_compute_url_map" "ptfe" {
 }
 
 resource "google_compute_backend_service" "dashboard" {
-  name        = "dashboard"
+  name        = "${var.prefix}-dashboard"
   port_name   = "dashboard"
   protocol    = "HTTPS"
   timeout_sec = 10
@@ -40,7 +40,7 @@ resource "google_compute_backend_service" "dashboard" {
 }
 
 resource "google_compute_backend_service" "primary" {
-  name        = "primary-backend"
+  name        = "${var.prefix}-primary-backend"
   port_name   = "https"
   protocol    = "HTTPS"
   timeout_sec = 10
@@ -54,7 +54,7 @@ resource "google_compute_backend_service" "primary" {
 }
 
 resource "google_compute_health_check" "primary" {
-  name               = "primary-healthcheck"
+  name               = "${var.prefix}-primary-healthcheck"
   check_interval_sec = 5
   timeout_sec        = 4
 
@@ -63,11 +63,3 @@ resource "google_compute_health_check" "primary" {
     port         = "6443"
   }
 }
-
-/*
-
-add named port block to instance group definition (repl 8800)
-then specify that named port in the backend service definition
-
-*/
-
