@@ -1,5 +1,5 @@
 resource "google_compute_instance" "primary" {
-  count        = "${var.primary_count}"
+  count        = "3"
   name         = "${var.prefix}-primary-${count.index}"
   machine_type = "${var.primary_machine_type}"
   zone         = "${var.zone}"
