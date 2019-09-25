@@ -57,6 +57,7 @@ resource "google_compute_instance" "primary" {
 
 data "google_dns_managed_zone" "dnszone" {
   name = "${var.dns_zone}"
+  project = "${var.dns_project == "" ? var.project : var.dns_project}"
 }
 
 resource "google_dns_record_set" "primarydns" {
@@ -64,6 +65,7 @@ resource "google_dns_record_set" "primarydns" {
   name  = "${var.prefix}-primary-${count.index}.${data.google_dns_managed_zone.dnszone.dns_name}"
   type  = "A"
   ttl   = 300
+  project = "${var.dns_project == "" ? var.project : var.dns_project}"
 
   managed_zone = "${data.google_dns_managed_zone.dnszone.name}"
 

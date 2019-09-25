@@ -213,6 +213,12 @@ variable "zone" {
   default     = "us-central1-a"
 }
 
+variable "dns_project" {
+  type        = "string"
+  description = "Name of project where the DNS zone resides"
+  default     = ""
+}
+
 ###################################################
 # Resources
 ###################################################
