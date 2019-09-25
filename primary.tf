@@ -1,5 +1,5 @@
 resource "google_compute_instance" "primary" {
-  count        = "3"
+  count        = "${var.install_type == "ipm" ? 3 : var.primary_count}"
   name         = "${var.prefix}-primary-${count.index}"
   machine_type = "${var.primary_machine_type}"
   zone         = "${var.zone}"

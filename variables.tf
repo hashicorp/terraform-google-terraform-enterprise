@@ -167,7 +167,7 @@ variable "image_family" {
 
 variable "primary_count" {
   type        = "string"
-  description = "Currently unused. Must have 3 primary nodes."
+  description = "Number of primary nodes to run, must be odd number - 3 or 5 recommended."
   default     = "3"
 }
 
