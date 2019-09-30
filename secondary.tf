@@ -16,7 +16,6 @@ resource "google_compute_region_instance_group_manager" "secondary" {
 
   base_instance_name = "${var.prefix}-secondary"
   instance_template  = "${module.instance-template.secondary_template}"
-  update_strategy    = "NONE"
   region             = "${var.region}"
 
   target_size = "${var.secondary_count}"

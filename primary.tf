@@ -1,5 +1,8 @@
 resource "google_compute_instance" "primary" {
-  count        = "${var.primary_count}"
+  /* The number of primaries must be hard coded to 3 when Internal Production Mode
+  is selected. Currently, that mode does not support scaling. In other modes, the 
+  cluster can be scaled according the primary_count variable. */
+  count        = "${var.install_type == "ipm" ? 3 : var.primary_count}"
   name         = "${var.prefix}-primary-${count.index}"
   machine_type = "${var.primary_machine_type}"
   zone         = "${var.zone}"
