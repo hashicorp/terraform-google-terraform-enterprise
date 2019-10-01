@@ -1,8 +1,8 @@
 resource "google_compute_instance" "primary" {
-  /* The number of primaries must be hard coded to 3 when Internal Production Mode
-  is selected. Currently, that mode does not support scaling. In other modes, the 
-  cluster can be scaled according the primary_count variable. */
-  count        = "${var.install_type == "ipm" ? 3 : var.primary_count}"
+  # The number of primaries must be hard coded to 3 when Internal Production Mode
+  # is selected. Currently, that mode does not support scaling. In other modes, the 
+  count = "${var.install_type == "ipm" ? 3 : var.primary_count}"
+
   name         = "${var.prefix}-primary-${count.index}"
   machine_type = "${var.primary_machine_type}"
   zone         = "${var.zone}"
@@ -59,15 +59,15 @@ resource "google_compute_instance" "primary" {
 }
 
 data "google_dns_managed_zone" "dnszone" {
-  name = "${var.dns_zone}"
+  name    = "${var.dns_zone}"
   project = "${var.dns_project == "" ? var.project : var.dns_project}"
 }
 
 resource "google_dns_record_set" "primarydns" {
-  count = "${var.primary_count}"
-  name  = "${var.prefix}-primary-${count.index}.${data.google_dns_managed_zone.dnszone.dns_name}"
-  type  = "A"
-  ttl   = 300
+  count   = "${var.primary_count}"
+  name    = "${var.prefix}-primary-${count.index}.${data.google_dns_managed_zone.dnszone.dns_name}"
+  type    = "A"
+  ttl     = 300
   project = "${var.dns_project == "" ? var.project : var.dns_project}"
 
   managed_zone = "${data.google_dns_managed_zone.dnszone.name}"
