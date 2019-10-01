@@ -5,12 +5,12 @@ variable "region" {
 variable "project" {}
 
 provider "google" {
-  region = "${var.region}"
+  region  = "${var.region}"
   project = "${var.project}"
 }
 
 provider "google-beta" {
-  region = "${var.region}"
+  region  = "${var.region}"
   project = "${var.project}"
 }
 
