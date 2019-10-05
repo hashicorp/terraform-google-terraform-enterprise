@@ -294,7 +294,7 @@ if [ "x${role}x" == "xmainx" ]; then
     fi
 
     #If a custom weave CIDR is provided, set the necessary arguement
-    if [[ $(< /etc/ptfe/weave-cidr) != none ]]; then
+    if [[ $(< /etc/ptfe/weave-cidr) != "" ]]; then
         ptfe_install_args+=(
             "--weaveCIDR=$(cat /etc/ptfe/weave-cidr)"
         )
