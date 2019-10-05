@@ -301,7 +301,7 @@ if [ "x${role}x" == "xmainx" ]; then
     fi
 
     #If a custom Replicated service CIDR is provided, set the necessary argument
-    if [[ $(< /etc/ptfe/repl-cidr) != none ]]; then
+    if [[ $(< /etc/ptfe/repl-cidr) != "" ]]; then
         ptfe_install_args+=(
             "--replCIDR=$(cat /etc/ptfe/repl-cidr)"
         )
