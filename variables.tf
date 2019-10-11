@@ -219,8 +219,6 @@ variable "dns_project" {
   default     = ""
 }
 
-<<<<<<< Updated upstream
-=======
 variable "weave_cidr" {
   type        = "string"
   description = "Specify a non-standard CIDR range for weave. The default is 172.18.0.0/16"
@@ -233,7 +231,6 @@ variable "repl_cidr" {
   default     = ""
 }
 
->>>>>>> Stashed changes
 ###################################################
 # Resources
 ###################################################
