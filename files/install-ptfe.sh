@@ -296,14 +296,14 @@ if [ "x${role}x" == "xmainx" ]; then
     #If a custom weave CIDR is provided, set the necessary arguement
     if [[ $(< /etc/ptfe/weave-cidr) != "" ]]; then
         ptfe_install_args+=(
-            "--weaveCIDR=$(cat /etc/ptfe/weave-cidr)"
+            "--ip-alloc-range=$(cat /etc/ptfe/weave-cidr)"
         )
     fi
 
     #If a custom Replicated service CIDR is provided, set the necessary argument
     if [[ $(< /etc/ptfe/repl-cidr) != "" ]]; then
         ptfe_install_args+=(
-            "--replCIDR=$(cat /etc/ptfe/repl-cidr)"
+            "--service-cidr=$(cat /etc/ptfe/repl-cidr)"
         )
     fi
 fi
@@ -328,4 +328,5 @@ if [ "x${role}x" == "xsecondaryx" ]; then
     export verb
 fi
 
+echo "Running 'ptfe install $verb ${ptfe_install_args[@]}'"
 ptfe install $verb "${ptfe_install_args[@]}"

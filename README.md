@@ -53,7 +53,7 @@ Please contact your Technical Account Manager for more information, and support 
 | repl\_cidr | Specify a non-standard CIDR range for the replicated services. The default is `10.96.0.0/12` | string | `""` | no |
 | secondary\_count | Number of secondary nodes to run | string | `"0"` | no |
 | secondary\_machine\_type | Type of machine to use for secondary nodes, if unset, will default to primary_machine_type | string | `"n1-standard-4"` | no |
-| weave\_cidr | Specify a non-standard CIDR range for weave. The default is `172.18.0.0/16` | string | `""` | no |
+| weave\_cidr | Specify a non-standard CIDR range for weave. The default is `10.32.0.0/12` | string | `""` | no |
 | zone | Preferred zone | string | `"us-central1-a"` | no |
 
 ## Outputs
