@@ -54,7 +54,7 @@ resource "google_compute_instance" "primary" {
   metadata_startup_script = "${file("${path.module}/files/install-ptfe.sh")}"
 
   labels = {
-    "Name" = "${var.prefix}"
+    "name" = "${var.prefix}"
   }
 }
 
