@@ -162,7 +162,7 @@ variable "ca_cert_url" {
 variable "image_family" {
   type        = "string"
   description = "The image family, choose from ubuntu-1604-lts, ubuntu-1804-lts, or rhel-7"
-  default     = "ubuntu-1804-lts"
+  default     = "ubuntu-1604-lts"
 }
 
 variable "primary_count" {
