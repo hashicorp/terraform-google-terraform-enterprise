@@ -178,6 +178,11 @@ if [ -f /etc/redhat-release ]; then
   yum -y install docker
   systemctl enable docker
   systemctl start docker
+else
+  apt-get -y update
+  apt-get install -y jq chrony ipvsadm unzip wget
+  CONF=/etc/chrony/chrony.conf
+  SERVICE=chrony
 fi
 
 pushd /tmp
