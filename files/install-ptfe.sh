@@ -175,7 +175,9 @@ if [ -f /etc/redhat-release ]; then
   mkdir -p /lib/tc
   mount --bind /usr/lib64/tc/ /lib/tc/
   sed -i -e 's/^SELINUX=enforcing/SELINUX=permissive/' /etc/sysconfig/selinux
-  yum -y install docker
+  curl -sfSL -o /usr/bin/jq https://github.com/stedolan/jq/releases/download/jq-1.5/jq-linux64
+  chmod +x /usr/bin/jq
+  yum -y install docker ipvsadm wget unzip
   systemctl enable docker
   systemctl start docker
 else
