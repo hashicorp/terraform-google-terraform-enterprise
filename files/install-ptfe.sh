@@ -276,25 +276,25 @@ if [ "x${role}x" == "xmainx" ]; then
         pushd /var/lib/ptfe
         curl -sfSL -o ptfe.airgap "$(< "$airgap_url_path")"
         airgap_path=$( readlink -f ptfe.airgap )
-        curl -sfSL -o replicated.tar.gz "$(< "${airgap_installer_url_path}")"
+        curl -sfSL -o replicated.tar.gz "$(< "$airgap_installer_url_path")"
         replicated_installer_path=$( readlink -f replicated.tar.gz )
         popd
 
         # replace the airgap path URL with the file path from above
-        jq \
-            --arg airgap_path "${airgap_path}" \
-            '. += {
-                "LicenseBootstrapAirgapPackagePath": $airgap_path
-            }' \
-            \
-            /etc/replicated.conf.tmpl \
-            > /etc/replicated.conf
+        #jq \
+        #    --arg airgap_path "${airgap_path}" \
+        #    '. += {
+        #        "LicenseBootstrapAirgapPackagePath": $airgap_path
+        #    }' \
+        #    \
+        #    /etc/replicated.conf.tmpl \
+        #    > /etc/replicated.conf
 
         # main with airgap
         ptfe_install_args+=(
             # --no-proxy
             "--public-address=$(curl -H "Metadata-Flavor: Google" http://metadata.google.internal/computeMetadata/v1/instance/network-interfaces/0/access-configs/0/external-ip)"
-            "--airgap-installer ${replicated_installer_path}"
+            "--airgap-installer $replicated_installer_path"
         )
     fi
 fi
