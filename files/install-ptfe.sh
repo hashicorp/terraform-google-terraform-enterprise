@@ -294,7 +294,7 @@ if [ "x${role}x" == "xmainx" ]; then
         ptfe_install_args+=(
             # --no-proxy
             "--public-address=$(curl -H "Metadata-Flavor: Google" http://metadata.google.internal/computeMetadata/v1/instance/network-interfaces/0/access-configs/0/external-ip)"
-            "--airgap-installer $replicated_installer_path"
+            "--airgap-installer=$replicated_installer_path"
         )
     fi
 fi
