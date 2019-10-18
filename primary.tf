@@ -1,6 +1,6 @@
 resource "google_compute_instance" "primary" {
   # The number of primaries must be hard coded to 3 when Internal Production Mode
-  # is selected. Currently, that mode does not support scaling. In other modes, the 
+  # is selected. Currently, that mode does not support scaling. In other modes, the
   count = "${var.install_type == "ipm" ? 3 : var.primary_count}"
 
   name         = "${var.prefix}-primary-${count.index}"
@@ -30,7 +30,7 @@ resource "google_compute_instance" "primary" {
     cluster-api-endpoint = "${var.prefix}-primary-0:6443"
     primary-pki-url      = "http://${var.prefix}-primary-0:${local.assistant_port}/api/v1/pki-download?token=${random_string.setup_token.result}"
     health-url           = "http://${var.prefix}-primary-0:${local.assistant_port}/healthz"
-    custom-ca-cert-url   = "${var.ca_cert_url}"
+    custom-ca-cert-url   = "${var.ca_bundle_url}"
     ptfe-role            = "${count.index == 0 ? "main" : "primary"}"
     role-id              = "${count.index}"
     b64-license          = "${base64encode(file("${var.license_file}"))}"
