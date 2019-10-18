@@ -30,9 +30,9 @@ Please contact your Technical Account Manager for more information, and support 
 | ssl\_policy | SSL policy for the cert | string | n/a | yes |
 | subnet | name of the subnet to install into | string | n/a | yes |
 | airgap\_installer\_url | URL to replicated's airgap installer package | string | `"https://install.terraform.io/installer/replicated-v5.tar.gz"` | no |
-| ca_bundle_url | URL to CA certificate file used for the internal `ptfe-proxy` used for outgoing connections| string | `"none"` | no |
 | airgap\_package\_url | airgap url | string | `"none"` | no |
 | boot\_disk\_size | The size of the boot disk to use for the instances | string | `"40"` | no |
+| ca_bundle_url | URL to Custom CA bundle used for outgoing connections | string | `"none"` | no |
 | encryption\_password | encryption password for the vault unseal key. save this! | string | `""` | no |
 | external\_services | object store provider for external services. Allowed values: gcs | string | `""` | no |
 | gcs\_bucket | Name of the gcp storage bucket | string | `""` | no |
