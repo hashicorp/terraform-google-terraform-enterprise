@@ -91,4 +91,6 @@ resource "google_compute_instance_group" "primaries" {
     name = "dashboard"
     port = 8800
   }
+
+  depends_on = ["google_compute_instance.primary"]
 }
