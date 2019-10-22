@@ -32,6 +32,8 @@ if [[ $(< /etc/ptfe/role) != "secondary" ]]; then
     curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/gcs_credentials" -H "Metadata-Flavor: Google" -o /etc/ptfe/gcs_credentials
     curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/gcs_project" -H "Metadata-Flavor: Google" -o /etc/ptfe/gcs_project
     curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/gcs_bucket" -H "Metadata-Flavor: Google" -o /etc/ptfe/gcs_bucket
+    curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/weave_cidr" -H "Metadata-Flavor: Google" -o /etc/ptfe/weave-cidr
+    curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/repl_cidr" -H "Metadata-Flavor: Google" -o /etc/ptfe/repl-cidr
 fi
 
 if [[ $(< /etc/ptfe/role) == "secondary" ]]; then
@@ -232,18 +234,23 @@ if [[ $(< /etc/ptfe/airgap-installer-url) != none ]]; then
     airgap_installer_url_path="/etc/ptfe/airgap-installer-url"
 fi
 
+# ------------------------------------------------------------------------------
+# Custom CA certificate download and configuration block
+# ------------------------------------------------------------------------------
 if [[ -n $(< /etc/ptfe/custom-ca-cert-url) && \
       $(< /etc/ptfe/custom-ca-cert-url) != none ]]; then
-  custom_ca_cert_url=$(cat /etc/ptfe/custom-ca-cert-url)
-  custom_ca_cert_file_name=$(echo "${custom_ca_cert_url}" | awk -F '/' '{ print $NF }')
-  ca_tmp_dir="/tmp/ptfe/customer-certs"
+  custom_ca_bundle_url=$(cat /etc/ptfe/custom-ca-cert-url)
+  custom_ca_cert_file_name=$(echo "${custom_ca_bundle_url}" | awk -F '/' '{ print $NF }')
+  ca_tmp_dir="/tmp/ptfe-customer-certs"
   replicated_conf_file="replicated-ptfe.conf"
   local_messages_file="local_messages.log"
-  # Setting up a tmp directory to do this `jq` transform to leave artifacts if anything goes "boom".
+  # Setting up a tmp directory to do this `jq` transform to leave artifacts if anything goes "boom",
+  # since we're trusting user input to be both a working URL and a valid certificate.
+  # These artifacts will live in /tmp/ptfe/customer-certs/{local_messages.log,wget_output.log} files.
   mkdir -p "${ca_tmp_dir}"
   pushd "${ca_tmp_dir}"
   touch ${local_messages_file}
-  if wget --trust-server-files "${custom_ca_cert_url}" >> ./wget_output.log 2>&1;
+  if wget --trust-server-names "${custom_ca_bundle_url}" >> ./wget_output.log 2>&1;
   then
     if [ -f "${ca_tmp_dir}/${custom_ca_cert_file_name}" ];
     then
@@ -265,12 +272,12 @@ if [[ -n $(< /etc/ptfe/custom-ca-cert-url) && \
         echo "" | tee -a "${local_messages_file}"
       fi
     else
-      echo "The filename ${custom_ca_cert_file_name} was not what ${custom_ca_cert_url} downloaded." | tee -a "${local_messages_file}"
+      echo "The filename ${custom_ca_cert_file_name} was not what ${custom_ca_bundle_url} downloaded." | tee -a "${local_messages_file}"
       echo "Inspect the ${ca_tmp_dir} directory to verify the file that was downloaded." | tee -a "${local_messages_file}"
       echo "" | tee -a "${local_messages_file}"
     fi
   else
-    echo "There was an error downloading the file ${custom_ca_cert_file_name} from ${custom_ca_cert_url}." | tee -a "${local_messages_file}"
+    echo "There was an error downloading the file ${custom_ca_cert_file_name} from ${custom_ca_bundle_url}." | tee -a "${local_messages_file}"
     echo "See the ${ca_tmp_dir}/wget_output.log file." | tee -a "${local_messages_file}"
     echo "" | tee -a "${local_messages_file}"
   fi
@@ -323,6 +330,20 @@ if [ "x${role}x" == "xmainx" ]; then
             "--airgap-installer=$replicated_installer_path"
         )
     fi
+
+    #If a custom weave CIDR is provided, set the necessary arguement
+    if [[ $(< /etc/ptfe/weave-cidr) != "" ]]; then
+        ptfe_install_args+=(
+            "--ip-alloc-range=$(cat /etc/ptfe/weave-cidr)"
+        )
+    fi
+
+    #If a custom Replicated service CIDR is provided, set the necessary argument
+    if [[ $(< /etc/ptfe/repl-cidr) != "" ]]; then
+        ptfe_install_args+=(
+            "--service-cidr=$(cat /etc/ptfe/repl-cidr)"
+        )
+    fi
 fi
 
 if [ "x${role}x" != "xsecondaryx" ]; then
@@ -345,4 +366,5 @@ if [ "x${role}x" == "xsecondaryx" ]; then
     export verb
 fi
 
+echo "Running 'ptfe install $verb ${ptfe_install_args[@]}'"
 ptfe install $verb "${ptfe_install_args[@]}"

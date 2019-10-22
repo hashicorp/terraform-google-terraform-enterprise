@@ -153,9 +153,9 @@ variable "boot_disk_size" {
   default     = 40
 }
 
-variable "ca_cert_url" {
+variable "ca_bundle_url" {
   type        = "string"
-  description = "URL to CA certificate file used for the internal `ptfe-proxy` used for outgoing connections"
+  description = "URL to Custom CA bundle used for outgoing connections"
   default     = "none"
 }
 
@@ -221,7 +221,7 @@ variable "dns_project" {
 
 variable "weave_cidr" {
   type        = "string"
-  description = "Specify a non-standard CIDR range for weave. The default is 172.18.0.0/16"
+  description = "Specify a non-standard CIDR range for weave. The default is 10.32.0.0/12"
   default     = ""
 }
 

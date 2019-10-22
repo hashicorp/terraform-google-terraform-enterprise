@@ -30,9 +30,9 @@ Please contact your Technical Account Manager for more information, and support 
 | ssl\_policy | SSL policy for the cert | string | n/a | yes |
 | subnet | name of the subnet to install into | string | n/a | yes |
 | airgap\_installer\_url | URL to replicated's airgap installer package | string | `"https://install.terraform.io/installer/replicated-v5.tar.gz"` | no |
-| ca_cert_url | URL to CA certificate file used for the internal `ptfe-proxy` used for outgoing connections| string | `"none"` | no |
 | airgap\_package\_url | airgap url | string | `"none"` | no |
 | boot\_disk\_size | The size of the boot disk to use for the instances | string | `"40"` | no |
+| ca_bundle_url | URL to Custom CA bundle used for outgoing connections | string | `"none"` | no |
 | encryption\_password | encryption password for the vault unseal key. save this! | string | `""` | no |
 | external\_services | object store provider for external services. Allowed values: gcs | string | `""` | no |
 | gcs\_bucket | Name of the gcp storage bucket | string | `""` | no |
@@ -50,8 +50,10 @@ Please contact your Technical Account Manager for more information, and support 
 | primary\_machine\_type | Type of machine to use | string | `"n1-standard-4"` | no |
 | region | The region to install into. | string | `"us-central1"` | no |
 | release\_sequence | Replicated release sequence | string | `"latest"` | no |
+| repl\_cidr | Specify a non-standard CIDR range for the replicated services. The default is `10.96.0.0/12` | string | `""` | no |
 | secondary\_count | Number of secondary nodes to run | string | `"0"` | no |
 | secondary\_machine\_type | Type of machine to use for secondary nodes, if unset, will default to primary_machine_type | string | `"n1-standard-4"` | no |
+| weave\_cidr | Specify a non-standard CIDR range for weave. The default is `10.32.0.0/12` | string | `""` | no |
 | zone | Preferred zone | string | `"us-central1-a"` | no |
 
 ## Outputs
