@@ -295,6 +295,12 @@ ptfe_install_args=(
     "--private-address=$(curl -H "Metadata-Flavor: Google" http://metadata.google.internal/computeMetadata/v1/instance/network-interfaces/0/ip)"
 )
 
+if [[ $(</etc/ptfe/airgap-package-url) != "none" ]]; then
+  ptfe_install_args+=(
+    --airgap
+  )
+fi
+
 if [ "x${role}x" == "xmainx" ]; then
     verb="setup"
     export verb
