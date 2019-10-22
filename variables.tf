@@ -93,7 +93,7 @@ variable "gcs_credentials" {
 
 variable "gcs_project" {
   type        = "string"
-  description = "Project name where the bucket resides"
+  description = "Project name where the bucket resides, if left blank will use project provided above"
   default     = ""
 }
 

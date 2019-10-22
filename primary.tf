@@ -47,7 +47,7 @@ resource "google_compute_instance" "primary" {
     pg_dbname            = "${var.postgresql_database}"
     pg_extra_params      = "${var.postgresql_extra_params}"
     gcs_credentials      = "${var.gcs_credentials == "" ? base64encode(file("${var.credentials_file}")) : var.gcs_credentials}"
-    gcs_project          = "${var.gcs_project}"
+    gcs_project          = "${var.gcs_project == "" ? var.project : var.gcs_project}"
     gcs_bucket           = "${var.gcs_bucket}"
   }
 
@@ -91,4 +91,6 @@ resource "google_compute_instance_group" "primaries" {
     name = "dashboard"
     port = 8800
   }
+
+  depends_on = ["google_compute_instance.primary"]
 }
