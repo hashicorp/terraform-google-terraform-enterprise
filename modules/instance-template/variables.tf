@@ -68,7 +68,7 @@ variable "prefix" {
   description = "Prefix for resource names"
 }
 
-variable "ca_cert_url" {
+variable "ca_bundle_url" {
   type        = "string"
   description = "URL to CA certificate file used for the internal `ptfe-proxy` used for outgoing connections"
   default     = "none"

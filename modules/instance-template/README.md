@@ -16,7 +16,7 @@
 | secondary\_machine\_type | Type of machine to use | string | n/a | yes |
 | setup\_token | setup token | string | n/a | yes |
 | boot\_disk\_size | The size of the boot disk to use for the instances | string | `"40"` | no |
-| ca_cert_url | URL to CA certificate file used for the internal `ptfe-proxy` used for outgoing connections| string | `"none"` | no |
+| ca_bundle_url | URL to CA certificate file used for the internal `ptfe-proxy` used for outgoing connections| string | `"none"` | no |
 
 ## Outputs
 
