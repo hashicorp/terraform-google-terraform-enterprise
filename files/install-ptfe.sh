@@ -2,9 +2,6 @@
 
 set -e -u -o pipefail
 
-# Install pre-reqs
-apt-get update -y
-apt-get install -y jq chrony ipvsadm unzip wget
 # Grab all the install/config data from gcp's metadata store
 mkdir /etc/ptfe
 curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/ptfe-role" -H "Metadata-Flavor: Google" -o /etc/ptfe/role
