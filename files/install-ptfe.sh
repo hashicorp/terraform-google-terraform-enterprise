@@ -177,9 +177,16 @@ if [ -f /etc/redhat-release ]; then
   mkdir -p /lib/tc
   mount --bind /usr/lib64/tc/ /lib/tc/
   sed -i -e 's/^SELINUX=enforcing/SELINUX=permissive/' /etc/sysconfig/selinux
-  yum -y install docker
+  curl -sfSL -o /usr/bin/jq https://github.com/stedolan/jq/releases/download/jq-1.5/jq-linux64
+  chmod +x /usr/bin/jq
+  yum -y install docker ipvsadm wget unzip
   systemctl enable docker
   systemctl start docker
+else
+  apt-get -y update
+  apt-get install -y jq chrony ipvsadm unzip wget
+  CONF=/etc/chrony/chrony.conf
+  SERVICE=chrony
 fi
 
 pushd /tmp
@@ -201,18 +208,23 @@ if [[ $(< /etc/ptfe/airgap-installer-url) != none ]]; then
     airgap_installer_url_path="/etc/ptfe/airgap-installer-url"
 fi
 
+# ------------------------------------------------------------------------------
+# Custom CA certificate download and configuration block
+# ------------------------------------------------------------------------------
 if [[ -n $(< /etc/ptfe/custom-ca-cert-url) && \
       $(< /etc/ptfe/custom-ca-cert-url) != none ]]; then
-  custom_ca_cert_url=$(cat /etc/ptfe/custom-ca-cert-url)
-  custom_ca_cert_file_name=$(echo "${custom_ca_cert_url}" | awk -F '/' '{ print $NF }')
-  ca_tmp_dir="/tmp/ptfe/customer-certs"
+  custom_ca_bundle_url=$(cat /etc/ptfe/custom-ca-cert-url)
+  custom_ca_cert_file_name=$(echo "${custom_ca_bundle_url}" | awk -F '/' '{ print $NF }')
+  ca_tmp_dir="/tmp/ptfe-customer-certs"
   replicated_conf_file="replicated-ptfe.conf"
   local_messages_file="local_messages.log"
-  # Setting up a tmp directory to do this `jq` transform to leave artifacts if anything goes "boom".
+  # Setting up a tmp directory to do this `jq` transform to leave artifacts if anything goes "boom",
+  # since we're trusting user input to be both a working URL and a valid certificate.
+  # These artifacts will live in /tmp/ptfe/customer-certs/{local_messages.log,wget_output.log} files.
   mkdir -p "${ca_tmp_dir}"
   pushd "${ca_tmp_dir}"
   touch ${local_messages_file}
-  if wget --trust-server-files "${custom_ca_cert_url}" >> ./wget_output.log 2>&1;
+  if wget --trust-server-names "${custom_ca_bundle_url}" >> ./wget_output.log 2>&1;
   then
     if [ -f "${ca_tmp_dir}/${custom_ca_cert_file_name}" ];
     then
@@ -234,12 +246,12 @@ if [[ -n $(< /etc/ptfe/custom-ca-cert-url) && \
         echo "" | tee -a "${local_messages_file}"
       fi
     else
-      echo "The filename ${custom_ca_cert_file_name} was not what ${custom_ca_cert_url} downloaded." | tee -a "${local_messages_file}"
+      echo "The filename ${custom_ca_cert_file_name} was not what ${custom_ca_bundle_url} downloaded." | tee -a "${local_messages_file}"
       echo "Inspect the ${ca_tmp_dir} directory to verify the file that was downloaded." | tee -a "${local_messages_file}"
       echo "" | tee -a "${local_messages_file}"
     fi
   else
-    echo "There was an error downloading the file ${custom_ca_cert_file_name} from ${custom_ca_cert_url}." | tee -a "${local_messages_file}"
+    echo "There was an error downloading the file ${custom_ca_cert_file_name} from ${custom_ca_bundle_url}." | tee -a "${local_messages_file}"
     echo "See the ${ca_tmp_dir}/wget_output.log file." | tee -a "${local_messages_file}"
     echo "" | tee -a "${local_messages_file}"
   fi
@@ -271,25 +283,25 @@ if [ "x${role}x" == "xmainx" ]; then
         pushd /var/lib/ptfe
         curl -sfSL -o ptfe.airgap "$(< "$airgap_url_path")"
         airgap_path=$( readlink -f ptfe.airgap )
-        curl -sfSL -o replicated.tar.gz "$(< "${airgap_installer_url_path}")"
+        curl -sfSL -o replicated.tar.gz "$(< "$airgap_installer_url_path")"
         replicated_installer_path=$( readlink -f replicated.tar.gz )
         popd
 
         # replace the airgap path URL with the file path from above
-        jq \
-            --arg airgap_path "${airgap_path}" \
-            '. += {
-                "LicenseBootstrapAirgapPackagePath": $airgap_path
-            }' \
-            \
-            /etc/replicated.conf.tmpl \
-            > /etc/replicated.conf
+        #jq \
+        #    --arg airgap_path "${airgap_path}" \
+        #    '. += {
+        #        "LicenseBootstrapAirgapPackagePath": $airgap_path
+        #    }' \
+        #    \
+        #    /etc/replicated.conf.tmpl \
+        #    > /etc/replicated.conf
 
         # main with airgap
         ptfe_install_args+=(
             # --no-proxy
             "--public-address=$(curl -H "Metadata-Flavor: Google" http://metadata.google.internal/computeMetadata/v1/instance/network-interfaces/0/access-configs/0/external-ip)"
-            "--airgap-installer ${replicated_installer_path}"
+            "--airgap-installer=$replicated_installer_path"
         )
     fi
 

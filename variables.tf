@@ -93,7 +93,7 @@ variable "gcs_credentials" {
 
 variable "gcs_project" {
   type        = "string"
-  description = "Project name where the bucket resides"
+  description = "Project name where the bucket resides, if left blank will use project provided above"
   default     = ""
 }
 
@@ -153,16 +153,16 @@ variable "boot_disk_size" {
   default     = 40
 }
 
-variable "ca_cert_url" {
+variable "ca_bundle_url" {
   type        = "string"
-  description = "URL to CA certificate file used for the internal `ptfe-proxy` used for outgoing connections"
+  description = "URL to Custom CA bundle used for outgoing connections"
   default     = "none"
 }
 
 variable "image_family" {
   type        = "string"
   description = "The image family, choose from ubuntu-1604-lts, ubuntu-1804-lts, or rhel-7"
-  default     = "ubuntu-1804-lts"
+  default     = "ubuntu-1604-lts"
 }
 
 variable "primary_count" {

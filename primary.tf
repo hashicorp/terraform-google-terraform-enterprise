@@ -1,6 +1,6 @@
 resource "google_compute_instance" "primary" {
   # The number of primaries must be hard coded to 3 when Internal Production Mode
-  # is selected. Currently, that mode does not support scaling. In other modes, the 
+  # is selected. Currently, that mode does not support scaling. In other modes, the
   count = "${var.install_type == "ipm" ? 3 : var.primary_count}"
 
   name         = "${var.prefix}-primary-${count.index}"
@@ -30,7 +30,7 @@ resource "google_compute_instance" "primary" {
     cluster-api-endpoint = "${var.prefix}-primary-0:6443"
     primary-pki-url      = "http://${var.prefix}-primary-0:${local.assistant_port}/api/v1/pki-download?token=${random_string.setup_token.result}"
     health-url           = "http://${var.prefix}-primary-0:${local.assistant_port}/healthz"
-    custom-ca-cert-url   = "${var.ca_cert_url}"
+    custom-ca-cert-url   = "${var.ca_bundle_url}"
     ptfe-role            = "${count.index == 0 ? "main" : "primary"}"
     role-id              = "${count.index}"
     b64-license          = "${base64encode(file("${var.license_file}"))}"
@@ -47,7 +47,7 @@ resource "google_compute_instance" "primary" {
     pg_dbname            = "${var.postgresql_database}"
     pg_extra_params      = "${var.postgresql_extra_params}"
     gcs_credentials      = "${var.gcs_credentials == "" ? base64encode(file("${var.credentials_file}")) : var.gcs_credentials}"
-    gcs_project          = "${var.gcs_project}"
+    gcs_project          = "${var.gcs_project == "" ? var.project : var.gcs_project}"
     gcs_bucket           = "${var.gcs_bucket}"
     weave_cidr           = "${var.weave_cidr}"
     repl_cidr            = "${var.repl_cidr}"
@@ -56,7 +56,7 @@ resource "google_compute_instance" "primary" {
   metadata_startup_script = "${file("${path.module}/files/install-ptfe.sh")}"
 
   labels = {
-    "Name" = "${var.prefix}"
+    "name" = "${var.prefix}"
   }
 }
 
@@ -93,4 +93,6 @@ resource "google_compute_instance_group" "primaries" {
     name = "dashboard"
     port = 8800
   }
+
+  depends_on = ["google_compute_instance.primary"]
 }
