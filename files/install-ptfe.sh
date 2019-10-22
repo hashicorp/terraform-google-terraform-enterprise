@@ -60,22 +60,24 @@ if [[ $(< /etc/ptfe/role) != "secondary" ]]; then
     export PTFEHOSTNAME
     ENCPASSWD=$(cat /etc/ptfe/encpasswd)
     export ENCPASSWD
-    PG_USER=$(cat /etc/ptfe/pg_user)
-    export PG_USER
-    PG_PASSWORD=$(base64 --decode /etc/ptfe/pg_password)
-    export PG_PASSWORD
-    PG_NETLOC=$(cat /etc/ptfe/pg_netloc)
-    export PG_NETLOC
-    PG_DBNAME=$(cat /etc/ptfe/pg_dbname)
-    export PG_DBNAME
-    PG_EXTRA_PARAMS=$(cat /etc/ptfe/pg_extra_params)
-    export PG_EXTRA_PARAMS
-    GCS_PROJECT=$(cat /etc/ptfe/gcs_project)
-    export GCS_PROJECT
-    GCS_BUCKET=$(cat /etc/ptfe/gcs_bucket)
-    export GCS_BUCKET
-    GCS_CREDS=$(base64 --decode /etc/ptfe/gcs_credentials | jq -c . | sed -e 's/"/\\"/g' -e 's/\\n/\\\\n/g')
-    export GCS_CREDS
+    if [[ $(< /etc/ptfe/installtype) == "production" ]]; then
+        PG_USER=$(cat /etc/ptfe/pg_user)
+        export PG_USER
+        PG_PASSWORD=$(base64 --decode /etc/ptfe/pg_password)
+        export PG_PASSWORD
+        PG_NETLOC=$(cat /etc/ptfe/pg_netloc)
+        export PG_NETLOC
+        PG_DBNAME=$(cat /etc/ptfe/pg_dbname)
+        export PG_DBNAME
+        PG_EXTRA_PARAMS=$(cat /etc/ptfe/pg_extra_params)
+        export PG_EXTRA_PARAMS
+        GCS_PROJECT=$(cat /etc/ptfe/gcs_project)
+        export GCS_PROJECT
+        GCS_BUCKET=$(cat /etc/ptfe/gcs_bucket)
+        export GCS_BUCKET
+        GCS_CREDS=$(base64 --decode /etc/ptfe/gcs_credentials | jq -c . | sed -e 's/"/\\"/g' -e 's/\\n/\\\\n/g')
+        export GCS_CREDS
+    fi
 fi
 
 # Setup the config files that will be used during the install
