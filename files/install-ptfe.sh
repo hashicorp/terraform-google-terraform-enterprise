@@ -141,7 +141,8 @@ chown root:root /etc/replicated-ptfe.conf
 chmod 0644 /etc/replicated-ptfe.conf
 
 if [[ $(< /etc/ptfe/release-sequence) != latest ]]; then
-    /bin/cat <<EOF >/etc/replicated.conf
+    if [[ $(< /etc/ptfe/airgap-package-url) != none ]]; then
+        /bin/cat <<EOF >/etc/replicated.conf
 {
     "DaemonAuthenticationType":     "password",
     "DaemonAuthenticationPassword": "$CONSOLE",
@@ -152,7 +153,34 @@ if [[ $(< /etc/ptfe/release-sequence) != latest ]]; then
     "ReleaseSequence":              $RELEASE_SEQUENCE
 }
 EOF
+    else
+        /bin/cat <<EOF >/etc/replicated.conf
+{
+    "DaemonAuthenticationType":     "password",
+    "DaemonAuthenticationPassword": "$CONSOLE",
+    "TlsBootstrapType":             "self-signed",
+    "BypassPreflightChecks":        true,
+    "ImportSettingsFrom":           "/etc/replicated-ptfe.conf",
+    "LicenseFileLocation":          "/etc/replicated.rli",
+    "LicenseBootstrapAirgapPackagePath":    "/var/lib/ptfe/ptfe.airgap",
+    "ReleaseSequence":              $RELEASE_SEQUENCE
+}
+EOF
+    fi
 
+else
+    if [[ $(< /etc/ptfe/airgap-package-url) != none ]]; then
+        /bin/cat <<EOF >/etc/replicated.conf
+{
+    "DaemonAuthenticationType":     "password",
+    "DaemonAuthenticationPassword": "$CONSOLE",
+    "TlsBootstrapType":             "self-signed",
+    "BypassPreflightChecks":        true,
+    "ImportSettingsFrom":           "/etc/replicated-ptfe.conf",
+    "LicenseBootstrapAirgapPackagePath":    "/var/lib/ptfe/ptfe.airgap",
+    "LicenseFileLocation":          "/etc/replicated.rli"
+}
+EOF
 else
 /bin/cat <<EOF >/etc/replicated.conf
 {
@@ -164,6 +192,7 @@ else
     "LicenseFileLocation":          "/etc/replicated.rli"
 }
 EOF
+fi
 fi
 
 chown root:root /etc/replicated.conf
