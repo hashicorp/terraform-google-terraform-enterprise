@@ -49,6 +49,8 @@ resource "google_compute_instance" "primary" {
     gcs_credentials      = "${var.gcs_credentials == "" ? base64encode(file("${var.credentials_file}")) : var.gcs_credentials}"
     gcs_project          = "${var.gcs_project == "" ? var.project : var.gcs_project}"
     gcs_bucket           = "${var.gcs_bucket}"
+    weave_cidr           = "${var.weave_cidr}"
+    repl_cidr            = "${var.repl_cidr}"
   }
 
   metadata_startup_script = "${file("${path.module}/files/install-ptfe.sh")}"

@@ -35,6 +35,8 @@ if [[ $(< /etc/ptfe/role) != "secondary" ]]; then
     curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/gcs_credentials" -H "Metadata-Flavor: Google" -o /etc/ptfe/gcs_credentials
     curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/gcs_project" -H "Metadata-Flavor: Google" -o /etc/ptfe/gcs_project
     curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/gcs_bucket" -H "Metadata-Flavor: Google" -o /etc/ptfe/gcs_bucket
+    curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/weave_cidr" -H "Metadata-Flavor: Google" -o /etc/ptfe/weave-cidr
+    curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/repl_cidr" -H "Metadata-Flavor: Google" -o /etc/ptfe/repl-cidr
 fi
 
 if [[ $(< /etc/ptfe/role) == "secondary" ]]; then
@@ -302,6 +304,20 @@ if [ "x${role}x" == "xmainx" ]; then
             "--airgap-installer=$replicated_installer_path"
         )
     fi
+
+    #If a custom weave CIDR is provided, set the necessary arguement
+    if [[ $(< /etc/ptfe/weave-cidr) != "" ]]; then
+        ptfe_install_args+=(
+            "--ip-alloc-range=$(cat /etc/ptfe/weave-cidr)"
+        )
+    fi
+
+    #If a custom Replicated service CIDR is provided, set the necessary argument
+    if [[ $(< /etc/ptfe/repl-cidr) != "" ]]; then
+        ptfe_install_args+=(
+            "--service-cidr=$(cat /etc/ptfe/repl-cidr)"
+        )
+    fi
 fi
 
 if [ "x${role}x" != "xsecondaryx" ]; then
@@ -324,4 +340,5 @@ if [ "x${role}x" == "xsecondaryx" ]; then
     export verb
 fi
 
+echo "Running 'ptfe install $verb ${ptfe_install_args[@]}'"
 ptfe install $verb "${ptfe_install_args[@]}"

@@ -50,8 +50,10 @@ Please contact your Technical Account Manager for more information, and support 
 | primary\_machine\_type | Type of machine to use | string | `"n1-standard-4"` | no |
 | region | The region to install into. | string | `"us-central1"` | no |
 | release\_sequence | Replicated release sequence | string | `"latest"` | no |
+| repl\_cidr | Specify a non-standard CIDR range for the replicated services. The default is `10.96.0.0/12` | string | `""` | no |
 | secondary\_count | Number of secondary nodes to run | string | `"0"` | no |
 | secondary\_machine\_type | Type of machine to use for secondary nodes, if unset, will default to primary_machine_type | string | `"n1-standard-4"` | no |
+| weave\_cidr | Specify a non-standard CIDR range for weave. The default is `10.32.0.0/12` | string | `""` | no |
 | zone | Preferred zone | string | `"us-central1-a"` | no |
 
 ## Outputs
