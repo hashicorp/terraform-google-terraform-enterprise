@@ -4,7 +4,7 @@ module "instance-template" {
   secondary_machine_type = "${local.rendered_secondary_machine_type}"
 
   ptfe_subnet             = "${var.subnet}"
-  cluster_endpoint        = "${var.prefix}-primary-0"
+  cluster_endpoint        = "${var.prefix}-primary-0-${random_string.postfix.result}"
   bootstrap_token_id      = "${random_string.bootstrap_token_id.result}"
   bootstrap_token_suffix  = "${random_string.bootstrap_token_suffix.result}"
   setup_token             = "${random_string.setup_token.result}"

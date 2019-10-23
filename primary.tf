@@ -1,9 +1,17 @@
+resource "random_string" "postfix" {
+  # There is a bug with unmanaged instance groups, adding a random string to the end
+  # of the primary instance name is a work around.
+  length  = "4"
+  special = false
+  upper   = false
+}
+
 resource "google_compute_instance" "primary" {
   # The number of primaries must be hard coded to 3 when Internal Production Mode
-  # is selected. Currently, that mode does not support scaling. In other modes, the
+  # is selected. Currently, that mode does not support scaling.
   count = "${var.install_type == "ipm" ? 3 : var.primary_count}"
 
-  name         = "${var.prefix}-primary-${count.index}"
+  name         = "${var.prefix}-primary-${count.index}-${random_string.postfix.result}"
   machine_type = "${var.primary_machine_type}"
   zone         = "${var.zone}"
 
@@ -27,9 +35,9 @@ resource "google_compute_instance" "primary" {
     //enable-oslogin       = "TRUE"
     bootstrap-token      = "${random_string.bootstrap_token_id.result}.${random_string.bootstrap_token_suffix.result}"
     setup-token          = "${random_string.setup_token.result}"
-    cluster-api-endpoint = "${var.prefix}-primary-0:6443"
-    primary-pki-url      = "http://${var.prefix}-primary-0:${local.assistant_port}/api/v1/pki-download?token=${random_string.setup_token.result}"
-    health-url           = "http://${var.prefix}-primary-0:${local.assistant_port}/healthz"
+    cluster-api-endpoint = "${var.prefix}-primary-0-${random_string.postfix.result}:6443"
+    primary-pki-url      = "http://${var.prefix}-primary-0-${random_string.postfix.result}:${local.assistant_port}/api/v1/pki-download?token=${random_string.setup_token.result}"
+    health-url           = "http://${var.prefix}-primary-0-${random_string.postfix.result}:${local.assistant_port}/healthz"
     custom-ca-cert-url   = "${var.ca_bundle_url}"
     ptfe-role            = "${count.index == 0 ? "main" : "primary"}"
     role-id              = "${count.index}"
@@ -37,7 +45,7 @@ resource "google_compute_instance" "primary" {
     airgap-package-url   = "${var.airgap_package_url}"
     airgap-installer-url = "${var.airgap_installer_url}"
     repl-data            = "${base64encode("${random_pet.console_password.id}")}"
-    ptfe-hostname        = "${var.prefix}-primary-${count.index}.${data.google_dns_managed_zone.dnszone.dns_name}"
+    ptfe-hostname        = "${var.prefix}-primary-${count.index}-${random_string.postfix.result}.${data.google_dns_managed_zone.dnszone.dns_name}"
     encpasswd            = "${var.encryption_password}"
     release-sequence     = "${var.release_sequence}"
     installtype          = "${var.install_type}"
@@ -67,7 +75,7 @@ data "google_dns_managed_zone" "dnszone" {
 
 resource "google_dns_record_set" "primarydns" {
   count   = "${var.primary_count}"
-  name    = "${var.prefix}-primary-${count.index}.${data.google_dns_managed_zone.dnszone.dns_name}"
+  name    = "${var.prefix}-primary-${count.index}-${random_string.postfix.result}.${data.google_dns_managed_zone.dnszone.dns_name}"
   type    = "A"
   ttl     = 300
   project = "${var.dns_project == "" ? var.project : var.dns_project}"

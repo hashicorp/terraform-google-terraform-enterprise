@@ -20,10 +20,6 @@ resource "google_compute_instance_template" "secondary" {
     }
   }
 
-  /*lifecycle {
-    create_before_destroy = true
-  }*/
-
   metadata = {
     //enable-oslogin       = "TRUE"
     bootstrap-token      = "${var.bootstrap_token_id}.${var.bootstrap_token_suffix}"
