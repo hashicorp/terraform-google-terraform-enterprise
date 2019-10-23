@@ -73,3 +73,33 @@ variable "ca_bundle_url" {
   description = "URL to CA certificate file used for the internal `ptfe-proxy` used for outgoing connections"
   default     = "none"
 }
+
+variable "airgap_package_url" {}
+
+variable "airgap_installer_url" {}
+
+variable "encryption_password" {}
+
+variable "postgresql_user" {}
+
+variable "postgresql_password" {}
+
+variable "postgresql_address" {}
+
+variable "postgresql_database" {}
+
+variable "postgresql_extra_params" {}
+
+variable "gcs_credentials" {}
+
+variable "credentials_file" {}
+
+variable "project" {}
+
+variable "gcs_project" {}
+
+variable "gcs_bucket" {}
+
+variable "weave_cidr" {}
+
+variable "repl_cidr" {}

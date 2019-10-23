@@ -16,25 +16,20 @@ curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/ins
 curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/repl-data" -H "Metadata-Flavor: Google" -o /etc/ptfe/repl-data
 curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/release-sequence" -H "Metadata-Flavor: Google" -o /etc/ptfe/release-sequence
 curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/custom-ca-cert-url" -H "Metadata-Flavor: Google" -o /etc/ptfe/custom-ca-cert-url
-
-# Only grab the following if it's a primary node
-
-if [[ $(< /etc/ptfe/role) != "secondary" ]]; then
-    curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/b64-license" -H "Metadata-Flavor: Google" -o /etc/ptfe/replicated-licenseb64
-    curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/airgap-package-url" -H "Metadata-Flavor: Google" -o /etc/ptfe/airgap-package-url
-    curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/airgap-installer-url" -H "Metadata-Flavor: Google" -o /etc/ptfe/airgap-installer-url
-    curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/encpasswd" -H "Metadata-Flavor: Google" -o /etc/ptfe/encpasswd
-    curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/pg_user" -H "Metadata-Flavor: Google" -o /etc/ptfe/pg_user
-    curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/pg_password" -H "Metadata-Flavor: Google" -o /etc/ptfe/pg_password
-    curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/pg_netloc" -H "Metadata-Flavor: Google" -o /etc/ptfe/pg_netloc
-    curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/pg_dbname" -H "Metadata-Flavor: Google" -o /etc/ptfe/pg_dbname
-    curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/pg_extra_params" -H "Metadata-Flavor: Google" -o /etc/ptfe/pg_extra_params
-    curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/gcs_credentials" -H "Metadata-Flavor: Google" -o /etc/ptfe/gcs_credentials
-    curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/gcs_project" -H "Metadata-Flavor: Google" -o /etc/ptfe/gcs_project
-    curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/gcs_bucket" -H "Metadata-Flavor: Google" -o /etc/ptfe/gcs_bucket
-    curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/weave_cidr" -H "Metadata-Flavor: Google" -o /etc/ptfe/weave-cidr
-    curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/repl_cidr" -H "Metadata-Flavor: Google" -o /etc/ptfe/repl-cidr
-fi
+curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/airgap-package-url" -H "Metadata-Flavor: Google" -o /etc/ptfe/airgap-package-url
+curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/b64-license" -H "Metadata-Flavor: Google" -o /etc/ptfe/replicated-licenseb64
+curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/airgap-installer-url" -H "Metadata-Flavor: Google" -o /etc/ptfe/airgap-installer-url
+curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/encpasswd" -H "Metadata-Flavor: Google" -o /etc/ptfe/encpasswd
+curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/pg_user" -H "Metadata-Flavor: Google" -o /etc/ptfe/pg_user
+curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/pg_password" -H "Metadata-Flavor: Google" -o /etc/ptfe/pg_password
+curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/pg_netloc" -H "Metadata-Flavor: Google" -o /etc/ptfe/pg_netloc
+curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/pg_dbname" -H "Metadata-Flavor: Google" -o /etc/ptfe/pg_dbname
+curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/pg_extra_params" -H "Metadata-Flavor: Google" -o /etc/ptfe/pg_extra_params
+curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/gcs_credentials" -H "Metadata-Flavor: Google" -o /etc/ptfe/gcs_credentials
+curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/gcs_project" -H "Metadata-Flavor: Google" -o /etc/ptfe/gcs_project
+curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/gcs_bucket" -H "Metadata-Flavor: Google" -o /etc/ptfe/gcs_bucket
+curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/weave_cidr" -H "Metadata-Flavor: Google" -o /etc/ptfe/weave-cidr
+curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/repl_cidr" -H "Metadata-Flavor: Google" -o /etc/ptfe/repl-cidr
 
 if [[ $(< /etc/ptfe/role) == "secondary" ]]; then
     PTFEHOSTNAME=$(curl -H "Metadata-Flavor: Google" http://metadata.google.internal/computeMetadata/v1/instance/network-interfaces/0/ip)
