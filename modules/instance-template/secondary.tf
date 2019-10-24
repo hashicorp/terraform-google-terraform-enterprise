@@ -28,6 +28,7 @@ resource "google_compute_instance_template" "secondary" {
     cluster-api-endpoint = "${var.cluster_endpoint}:6443"
     primary-pki-url      = "http://${var.cluster_endpoint}:${local.assistant_port}/api/v1/pki-download?token=${var.setup_token}"
     health-url           = "http://${var.cluster_endpoint}:${local.assistant_port}/healthz"
+    b64-license          = "${var.b64-license}"
     ptfe-role            = "secondary"
     role-id              = "0"
     ptfe-install-url     = "${var.ptfe_install_url}"

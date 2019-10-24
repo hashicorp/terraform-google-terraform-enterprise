@@ -79,6 +79,8 @@ variable "ca_bundle_url" {
   default     = "none"
 }
 
+variable "b64-license" {}
+
 variable "airgap_package_url" {}
 
 variable "airgap_installer_url" {}
