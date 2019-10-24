@@ -10,7 +10,6 @@ module "instance-template" {
   setup_token             = "${random_string.setup_token.result}"
   image_family            = "${var.image_family}"
   b64-license             = "${base64encode(file("${var.license_file}"))}"
-  #install_type            = "${var.install_type}"
   repl_data               = "${base64encode("${random_pet.console_password.id}")}"
   release_sequence        = "${var.release_sequence}"
   boot_disk_size          = "${var.boot_disk_size}"

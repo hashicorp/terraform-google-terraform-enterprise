@@ -50,7 +50,6 @@ resource "google_compute_instance" "primary" {
     ptfe-hostname        = "${var.prefix}-primary-${count.index}-${random_string.postfix.result}.${data.google_dns_managed_zone.dnszone.dns_name}"
     encpasswd            = "${var.encryption_password}"
     release-sequence     = "${var.release_sequence}"
-    #installtype          = "${var.install_type}"
     pg_user              = "${var.postgresql_user}"
     pg_password          = "${var.postgresql_password}"
     pg_netloc            = "${var.postgresql_address}"

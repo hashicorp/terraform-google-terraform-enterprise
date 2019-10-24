@@ -73,12 +73,6 @@ variable "external_services" {
   default     = ""
 }
 
-#variable "install_type" {
-#  type        = "string"
-#  description = "Installation type, options are (poc or production). Switch to production for external services."
-#  default     = "poc"
-#}
-
 variable "gcs_bucket" {
   type        = "string"
   description = "Name of the gcp storage bucket"

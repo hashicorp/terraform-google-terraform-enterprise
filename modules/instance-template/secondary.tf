@@ -33,7 +33,6 @@ resource "google_compute_instance_template" "secondary" {
     role-id              = "0"
     ptfe-install-url     = "${var.ptfe_install_url}"
     jq-url               = "${var.jq_url}"
-    #installtype          = "${var.install_type}"
     repl-data            = "${var.repl_data}"
     release-sequence     = "${var.release_sequence}"
     airgap-package-url   = "${var.airgap_package_url}"
