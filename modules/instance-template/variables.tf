@@ -48,9 +48,14 @@ variable "boot_disk_size" {
   default     = 40
 }
 
-variable "install_type" {
+variable "ptfe_install_url" {
   type        = "string"
-  description = "type of install - poc or production"
+  description = "Location of the ptfe install tool zip file"
+}
+
+variable "jq_url" {
+  type        = "string"
+  description = "Location of the jq package"
 }
 
 variable "repl_data" {
@@ -73,3 +78,35 @@ variable "ca_bundle_url" {
   description = "URL to CA certificate file used for the internal `ptfe-proxy` used for outgoing connections"
   default     = "none"
 }
+
+variable "b64-license" {}
+
+variable "airgap_package_url" {}
+
+variable "airgap_installer_url" {}
+
+variable "encryption_password" {}
+
+variable "postgresql_user" {}
+
+variable "postgresql_password" {}
+
+variable "postgresql_address" {}
+
+variable "postgresql_database" {}
+
+variable "postgresql_extra_params" {}
+
+variable "gcs_credentials" {}
+
+variable "credentials_file" {}
+
+variable "project" {}
+
+variable "gcs_project" {}
+
+variable "gcs_bucket" {}
+
+variable "weave_cidr" {}
+
+variable "repl_cidr" {}
