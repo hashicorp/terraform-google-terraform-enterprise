@@ -58,7 +58,7 @@ variable "subnet" {
 }
 
 ###################################################
-# Optional External Services Variables
+# Optional Variables you should probably set
 ###################################################
 
 variable "encryption_password" {
@@ -66,6 +66,40 @@ variable "encryption_password" {
   description = "encryption password for the vault unseal key. save this!"
   default     = ""
 }
+
+variable "prefix" {
+  type        = "string"
+  description = "Resource and instance prefix"
+  default     = "tfe"
+}
+
+variable "primary_count" {
+  type        = "string"
+  description = "Number of primary nodes to run, must be odd number - 3 or 5 recommended."
+  default     = "3"
+}
+
+variable "secondary_count" {
+  type        = "string"
+  description = "Number of secondary nodes to run"
+  default     = "0"
+}
+
+variable "region" {
+  type        = "string"
+  description = "The region to install into."
+  default     = "us-central1"
+}
+
+variable "zone" {
+  type        = "string"
+  description = "Preferred zone"
+  default     = "us-central1-a"
+}
+
+###################################################
+# Optional External Services Variables
+###################################################
 
 variable "external_services" {
   type        = "string"
@@ -171,40 +205,10 @@ variable "image_family" {
   default     = "ubuntu-1804-lts"
 }
 
-variable "primary_count" {
-  type        = "string"
-  description = "Number of primary nodes to run, must be odd number - 3 or 5 recommended."
-  default     = "3"
-}
-
-variable "prefix" {
-  type        = "string"
-  description = "Resource and instance prefix"
-  default     = "tfe"
-}
-
 variable "primary_machine_type" {
   type        = "string"
   description = "Type of machine to use"
   default     = "n1-standard-4"
-}
-
-variable "region" {
-  type        = "string"
-  description = "The region to install into."
-  default     = "us-central1"
-}
-
-variable "release_sequence" {
-  type        = "string"
-  description = "Replicated release sequence"
-  default     = "latest"
-}
-
-variable "secondary_count" {
-  type        = "string"
-  description = "Number of secondary nodes to run"
-  default     = "0"
 }
 
 variable "secondary_machine_type" {
@@ -213,10 +217,10 @@ variable "secondary_machine_type" {
   default     = "n1-standard-4"
 }
 
-variable "zone" {
+variable "release_sequence" {
   type        = "string"
-  description = "Preferred zone"
-  default     = "us-central1-a"
+  description = "Replicated release sequence"
+  default     = "latest"
 }
 
 variable "dns_project" {
