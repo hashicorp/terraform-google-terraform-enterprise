@@ -46,7 +46,6 @@ You'll need to update the following settings to your set up:
 * license_file: your TFE license
 * encryption_password: In order to re-use external services, you need to set/pass and encryption password
 * image_family: the name of the RHEL image to use - 7.6 is the latest currently supported
-* external_services: set this to gcs (for google cloud storage)
 * gcs_bucket: name of the bucket to use. This example assume the bucket resides in the same project. 
 * postgresql_address: Connection address for the postgresql server
 * postgresql_database: Name of the database to use

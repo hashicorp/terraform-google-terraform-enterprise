@@ -36,7 +36,6 @@ module "tfe-beta" {
 
   image_family = "rhel-7-v20190729"
 
-  external_services   = "gcs"
   gcs_bucket          = "tfe-bucket"
   postgresql_address  = "192.168.100.100"
   postgresql_database = "tfe-beta-db"

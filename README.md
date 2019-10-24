@@ -29,7 +29,6 @@ Please contact your Technical Account Manager for more information, and support 
 | dns\_zone | Managed DNS Zone name | string | n/a | yes |
 | domain | domain name | string | n/a | yes |
 | encryption\_password | encryption password for the vault unseal key. save this! | string | `""` | no |
-| external\_services | object store provider for external services. Allowed values: gcs | string | `""` | no |
 | frontend\_dns | DNS name for load balancer | string | n/a | yes |
 | gcs\_bucket | Name of the gcp storage bucket | string | `""` | no |
 | gcs\_credentials | Base64 encoded credentials json to access your gcp storage bucket. Run base64 -i <creds.json> -o <credsb64.json> and then copy the contents of the file into the variable | string | `""` | no |
