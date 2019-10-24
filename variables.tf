@@ -101,12 +101,6 @@ variable "zone" {
 # Optional External Services Variables
 ###################################################
 
-variable "external_services" {
-  type        = "string"
-  description = "object store provider for external services. Allowed values: gcs"
-  default     = ""
-}
-
 variable "gcs_bucket" {
   type        = "string"
   description = "Name of the gcp storage bucket"
