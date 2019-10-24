@@ -86,7 +86,11 @@ if [[ $(< /etc/ptfe/pg_user) != none ]]; then
     export PG_NETLOC
     PG_DBNAME=$(cat /etc/ptfe/pg_dbname)
     export PG_DBNAME
-    PG_EXTRA_PARAMS=$(cat /etc/ptfe/pg_extra_params)
+    if [ -f /etc/ptfe/pg_extra_params ]; then
+        PG_EXTRA_PARAMS=$(cat /etc/ptfe/pg_extra_params)
+    else
+        PG_EXTRA_PARAMS=
+    fi
     export PG_EXTRA_PARAMS
     GCS_PROJECT=$(cat /etc/ptfe/gcs_project)
     export GCS_PROJECT
