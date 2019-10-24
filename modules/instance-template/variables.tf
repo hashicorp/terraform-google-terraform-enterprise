@@ -48,9 +48,14 @@ variable "boot_disk_size" {
   default     = 40
 }
 
-variable "install_type" {
+variable "ptfe_install_url" {
   type        = "string"
-  description = "type of install - poc or production"
+  description = "Location of the ptfe install tool zip file"
+}
+
+variable "jq_url" {
+  type        = "string"
+  description = "Location of the jq package"
 }
 
 variable "repl_data" {

@@ -12,7 +12,9 @@ curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/pri
 curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/health-url" -H "Metadata-Flavor: Google" -o /etc/ptfe/health-url
 curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/role-id" -H "Metadata-Flavor: Google" -o /etc/ptfe/role-id
 curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/ptfe-hostname" -H "Metadata-Flavor: Google" -o /etc/ptfe/hostname
-curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/installtype" -H "Metadata-Flavor: Google" -o /etc/ptfe/installtype
+curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/ptfe-install-url" -H "Metadata-Flavor: Google" -o /etc/ptfe/ptfe-install-url
+curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/jq-url" -H "Metadata-Flavor: Google" -o /etc/ptfe/jq-url
+#curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/installtype" -H "Metadata-Flavor: Google" -o /etc/ptfe/installtype
 curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/repl-data" -H "Metadata-Flavor: Google" -o /etc/ptfe/repl-data
 curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/release-sequence" -H "Metadata-Flavor: Google" -o /etc/ptfe/release-sequence
 curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/custom-ca-cert-url" -H "Metadata-Flavor: Google" -o /etc/ptfe/custom-ca-cert-url
@@ -46,37 +48,59 @@ CONSOLE=$(base64 --decode /etc/ptfe/repl-data)
 export CONSOLE
 RELEASE_SEQUENCE=$(cat /etc/ptfe/release-sequence)
 export RELEASE_SEQUENCE
+PTFE_INSTALL_URL=$(cat /etc/ptfe/ptfe-install-url)
+JQ_URL=$(cat /etc/ptfe/jq-url)
 
 # Store various bits of info as env vars on primary nodes
-if [[ $(< /etc/ptfe/role) != "secondary" ]]; then
-    base64 -d /etc/ptfe/replicated-licenseb64 > /etc/replicated.rli
-    PTFEHOSTNAME=$(cat /etc/ptfe/hostname)
-    PTFEHOSTNAME=${PTFEHOSTNAME%?}
-    export PTFEHOSTNAME
-    ENCPASSWD=$(cat /etc/ptfe/encpasswd)
-    export ENCPASSWD
-    if [[ $(< /etc/ptfe/installtype) == "production" ]]; then
-        PG_USER=$(cat /etc/ptfe/pg_user)
-        export PG_USER
-        PG_PASSWORD=$(base64 --decode /etc/ptfe/pg_password)
-        export PG_PASSWORD
-        PG_NETLOC=$(cat /etc/ptfe/pg_netloc)
-        export PG_NETLOC
-        PG_DBNAME=$(cat /etc/ptfe/pg_dbname)
-        export PG_DBNAME
-        PG_EXTRA_PARAMS=$(cat /etc/ptfe/pg_extra_params)
-        export PG_EXTRA_PARAMS
-        GCS_PROJECT=$(cat /etc/ptfe/gcs_project)
-        export GCS_PROJECT
-        GCS_BUCKET=$(cat /etc/ptfe/gcs_bucket)
-        export GCS_BUCKET
-        GCS_CREDS=$(base64 --decode /etc/ptfe/gcs_credentials | jq -c . | sed -e 's/"/\\"/g' -e 's/\\n/\\\\n/g')
-        export GCS_CREDS
-    fi
+#if [[ $(< /etc/ptfe/role) != "secondary" ]]; then
+base64 -d /etc/ptfe/replicated-licenseb64 > /etc/replicated.rli
+PTFEHOSTNAME=$(cat /etc/ptfe/hostname)
+PTFEHOSTNAME=${PTFEHOSTNAME%?}
+export PTFEHOSTNAME
+ENCPASSWD=$(cat /etc/ptfe/encpasswd)
+export ENCPASSWD
+if [[ $(< /etc/ptfe/pg_user) != none ]]; then
+    PG_USER=$(cat /etc/ptfe/pg_user)
+    export PG_USER
+    PG_PASSWORD=$(base64 --decode /etc/ptfe/pg_password)
+    export PG_PASSWORD
+    PG_NETLOC=$(cat /etc/ptfe/pg_netloc)
+    export PG_NETLOC
+    PG_DBNAME=$(cat /etc/ptfe/pg_dbname)
+    export PG_DBNAME
+    PG_EXTRA_PARAMS=$(cat /etc/ptfe/pg_extra_params)
+    export PG_EXTRA_PARAMS
+    GCS_PROJECT=$(cat /etc/ptfe/gcs_project)
+    export GCS_PROJECT
+    GCS_BUCKET=$(cat /etc/ptfe/gcs_bucket)
+    export GCS_BUCKET
+    GCS_CREDS=$(base64 --decode /etc/ptfe/gcs_credentials | jq -c . | sed -e 's/"/\\"/g' -e 's/\\n/\\\\n/g')
+    export GCS_CREDS
+fi
+
+# OS specific configs
+if [ -f /etc/redhat-release ]; then
+  setenforce 0
+  mkdir -p /lib/tc
+  mount --bind /usr/lib64/tc/ /lib/tc/
+  sed -i -e 's/^SELINUX=enforcing/SELINUX=permissive/' /etc/sysconfig/selinux
+  if [[ $(< /etc/ptfe/airgap-package-url) == none ]]; then
+    #curl -sfSL -o /usr/bin/jq https://github.com/stedolan/jq/releases/download/jq-1.5/jq-linux64
+    curl -sfSL -o /usr/bin/jq $JQ_URL
+    chmod +x /usr/bin/jq
+  fi
+  yum -y install docker ipvsadm wget unzip
+  systemctl enable docker
+  systemctl start docker
+else
+  apt-get -y update
+  apt-get install -y jq chrony ipvsadm unzip wget
+  CONF=/etc/chrony/chrony.conf
+  SERVICE=chrony
 fi
 
 # Setup the config files that will be used during the install
-if [[ $(< /etc/ptfe/installtype) == "poc" ]]; then
+if [[ $(< /etc/ptfe/pg_user) == none ]]; then
     /bin/cat <<EOF >/etc/replicated-ptfe.conf
 {
     "hostname": {
@@ -194,26 +218,9 @@ fi
 chown root:root /etc/replicated.conf
 chmod 0644 /etc/replicated.conf
 
-# OS specific configs
-if [ -f /etc/redhat-release ]; then
-  setenforce 0
-  mkdir -p /lib/tc
-  mount --bind /usr/lib64/tc/ /lib/tc/
-  sed -i -e 's/^SELINUX=enforcing/SELINUX=permissive/' /etc/sysconfig/selinux
-  curl -sfSL -o /usr/bin/jq https://github.com/stedolan/jq/releases/download/jq-1.5/jq-linux64
-  chmod +x /usr/bin/jq
-  yum -y install docker ipvsadm wget unzip
-  systemctl enable docker
-  systemctl start docker
-else
-  apt-get -y update
-  apt-get install -y jq chrony ipvsadm unzip wget
-  CONF=/etc/chrony/chrony.conf
-  SERVICE=chrony
-fi
-
 pushd /tmp
-  wget -O ptfe.zip https://install.terraform.io/installer/ptfe.zip
+  #wget -O ptfe.zip https://install.terraform.io/installer/ptfe.zip
+  wget -O ptfe.zip $PTFE_INSTALL_URL
   unzip ptfe.zip
   cp ptfe /usr/bin
   chmod a+x /usr/bin/ptfe
@@ -290,11 +297,28 @@ ptfe_install_args=(
     "--private-address=$(curl -H "Metadata-Flavor: Google" http://metadata.google.internal/computeMetadata/v1/instance/network-interfaces/0/ip)"
 )
 
-if [[ $(</etc/ptfe/airgap-package-url) != "none" ]]; then
-  ptfe_install_args+=(
-    --airgap
-  )
-fi
+#if [[ $(</etc/ptfe/airgap-package-url) != none ]]; then
+#  ptfe_install_args+=(
+#    --airgap
+#  )
+#fi
+
+if [[ $(< /etc/ptfe/airgap-package-url) != none ]]; then
+        mkdir -p /var/lib/ptfe
+        pushd /var/lib/ptfe
+        curl -sfSL -o ptfe.airgap "$(< "$airgap_url_path")"
+        airgap_path=$( readlink -f ptfe.airgap )
+        curl -sfSL -o replicated.tar.gz "$(< "$airgap_installer_url_path")"
+        replicated_installer_path=$( readlink -f replicated.tar.gz )
+        popd
+
+        ptfe_install_args+=(
+            # --no-proxy
+            #"--public-address=$(curl -H "Metadata-Flavor: Google" http://metadata.google.internal/computeMetadata/v1/instance/network-interfaces/0/access-configs/0/external-ip)"
+            "--airgap-installer=$replicated_installer_path"
+            "--airgap"
+        )
+    fi
 
 if [ "x${role}x" == "xmainx" ]; then
     verb="setup"
@@ -308,29 +332,29 @@ if [ "x${role}x" == "xmainx" ]; then
     # We also setup the replicated.conf.tmpl to include the path to the downloaded
     # airgap file.
     if [[ $(< /etc/ptfe/airgap-package-url) != none ]]; then
-        mkdir -p /var/lib/ptfe
-        pushd /var/lib/ptfe
-        curl -sfSL -o ptfe.airgap "$(< "$airgap_url_path")"
-        airgap_path=$( readlink -f ptfe.airgap )
-        curl -sfSL -o replicated.tar.gz "$(< "$airgap_installer_url_path")"
-        replicated_installer_path=$( readlink -f replicated.tar.gz )
-        popd
-
-        # replace the airgap path URL with the file path from above
-        #jq \
-        #    --arg airgap_path "${airgap_path}" \
-        #    '. += {
-        #        "LicenseBootstrapAirgapPackagePath": $airgap_path
-        #    }' \
-        #    \
-        #    /etc/replicated.conf.tmpl \
-        #    > /etc/replicated.conf
-
-        # main with airgap
+    #    mkdir -p /var/lib/ptfe
+    #    pushd /var/lib/ptfe
+    #    curl -sfSL -o ptfe.airgap "$(< "$airgap_url_path")"
+    #    airgap_path=$( readlink -f ptfe.airgap )
+    #    curl -sfSL -o replicated.tar.gz "$(< "$airgap_installer_url_path")"
+    #    replicated_installer_path=$( readlink -f replicated.tar.gz )
+    #    popd
+#
+    #    # replace the airgap path URL with the file path from above
+    #    #jq \
+    #    #    --arg airgap_path "${airgap_path}" \
+    #    #    '. += {
+    #    #        "LicenseBootstrapAirgapPackagePath": $airgap_path
+    #    #    }' \
+    #    #    \
+    #    #    /etc/replicated.conf.tmpl \
+    #    #    > /etc/replicated.conf
+#
+    #    # main with airgap
         ptfe_install_args+=(
-            # --no-proxy
+    #        # --no-proxy
             "--public-address=$(curl -H "Metadata-Flavor: Google" http://metadata.google.internal/computeMetadata/v1/instance/network-interfaces/0/access-configs/0/external-ip)"
-            "--airgap-installer=$replicated_installer_path"
+    #        "--airgap-installer=$replicated_installer_path"
         )
     fi
 

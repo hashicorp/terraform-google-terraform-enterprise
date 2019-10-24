@@ -9,7 +9,7 @@ module "instance-template" {
   bootstrap_token_suffix  = "${random_string.bootstrap_token_suffix.result}"
   setup_token             = "${random_string.setup_token.result}"
   image_family            = "${var.image_family}"
-  install_type            = "${var.install_type}"
+  #install_type            = "${var.install_type}"
   repl_data               = "${base64encode("${random_pet.console_password.id}")}"
   release_sequence        = "${var.release_sequence}"
   boot_disk_size          = "${var.boot_disk_size}"
@@ -29,4 +29,6 @@ module "instance-template" {
   gcs_bucket              = "${var.gcs_bucket}"
   weave_cidr              = "${var.weave_cidr}"
   repl_cidr               = "${var.repl_cidr}"
+  ptfe_install_url        = "${var.ptfe_install_url}"
+  jq_url                  = "${var.jq_url}"
 }

@@ -9,7 +9,7 @@ resource "random_string" "postfix" {
 resource "google_compute_instance" "primary" {
   # The number of primaries must be hard coded to 3 when Internal Production Mode
   # is selected. Currently, that mode does not support scaling.
-  count = "${var.install_type == "ipm" ? 3 : var.primary_count}"
+  count = "${var.postgresql_user == "none" ? 3 : var.primary_count}"
 
   name         = "${var.prefix}-primary-${count.index}-${random_string.postfix.result}"
   machine_type = "${var.primary_machine_type}"
@@ -41,6 +41,8 @@ resource "google_compute_instance" "primary" {
     custom-ca-cert-url   = "${var.ca_bundle_url}"
     ptfe-role            = "${count.index == 0 ? "main" : "primary"}"
     role-id              = "${count.index}"
+    ptfe-install-url     = "${var.ptfe_install_url}"
+    jq-url               = "${var.jq_url}"
     b64-license          = "${base64encode(file("${var.license_file}"))}"
     airgap-package-url   = "${var.airgap_package_url}"
     airgap-installer-url = "${var.airgap_installer_url}"
@@ -48,7 +50,7 @@ resource "google_compute_instance" "primary" {
     ptfe-hostname        = "${var.prefix}-primary-${count.index}-${random_string.postfix.result}.${data.google_dns_managed_zone.dnszone.dns_name}"
     encpasswd            = "${var.encryption_password}"
     release-sequence     = "${var.release_sequence}"
-    installtype          = "${var.install_type}"
+    #installtype          = "${var.install_type}"
     pg_user              = "${var.postgresql_user}"
     pg_password          = "${var.postgresql_password}"
     pg_netloc            = "${var.postgresql_address}"

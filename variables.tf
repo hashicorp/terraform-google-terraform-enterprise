@@ -73,11 +73,11 @@ variable "external_services" {
   default     = ""
 }
 
-variable "install_type" {
-  type        = "string"
-  description = "Installation type, options are (poc or production). Switch to production for external services."
-  default     = "poc"
-}
+#variable "install_type" {
+#  type        = "string"
+#  description = "Installation type, options are (poc or production). Switch to production for external services."
+#  default     = "poc"
+#}
 
 variable "gcs_bucket" {
   type        = "string"
@@ -124,7 +124,7 @@ variable "postgresql_password" {
 variable "postgresql_user" {
   type        = "string"
   description = "Database username"
-  default     = ""
+  default     = "none"
 }
 
 ###################################################
@@ -141,6 +141,18 @@ variable "airgap_package_url" {
   type        = "string"
   description = "airgap url"
   default     = "none"
+}
+
+variable "ptfe_install_url" {
+  type        = "string"
+  description = "Location of the ptfe install tool zip file"
+  default     = "https://install.terraform.io/installer/ptfe.zip"
+}
+
+variable "jq_url" {
+  type        = "string"
+  description = "Location of the jq package"
+  default     = "https://github.com/stedolan/jq/releases/download/jq-1.5/jq-linux64"
 }
 
 ###################################################
