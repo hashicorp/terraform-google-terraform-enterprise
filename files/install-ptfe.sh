@@ -51,6 +51,24 @@ export RELEASE_SEQUENCE
 PTFE_INSTALL_URL=$(cat /etc/ptfe/ptfe-install-url)
 JQ_URL=$(cat /etc/ptfe/jq-url)
 
+# OS specific configs
+if [ -f /etc/redhat-release ]; then
+  setenforce 0
+  mkdir -p /lib/tc
+  mount --bind /usr/lib64/tc/ /lib/tc/
+  sed -i -e 's/^SELINUX=enforcing/SELINUX=permissive/' /etc/sysconfig/selinux
+  curl -sfSL -o /usr/bin/jq $JQ_URL
+  chmod +x /usr/bin/jq
+  yum -y install docker ipvsadm wget unzip
+  systemctl enable docker
+  systemctl start docker
+else
+  apt-get -y update
+  apt-get install -y jq chrony ipvsadm unzip wget
+  CONF=/etc/chrony/chrony.conf
+  SERVICE=chrony
+fi
+
 # Store various bits of info as env vars on primary nodes
 #if [[ $(< /etc/ptfe/role) != "secondary" ]]; then
 base64 -d /etc/ptfe/replicated-licenseb64 > /etc/replicated.rli
@@ -76,27 +94,6 @@ if [[ $(< /etc/ptfe/pg_user) != none ]]; then
     export GCS_BUCKET
     GCS_CREDS=$(base64 --decode /etc/ptfe/gcs_credentials | jq -c . | sed -e 's/"/\\"/g' -e 's/\\n/\\\\n/g')
     export GCS_CREDS
-fi
-
-# OS specific configs
-if [ -f /etc/redhat-release ]; then
-  setenforce 0
-  mkdir -p /lib/tc
-  mount --bind /usr/lib64/tc/ /lib/tc/
-  sed -i -e 's/^SELINUX=enforcing/SELINUX=permissive/' /etc/sysconfig/selinux
-  if [[ $(< /etc/ptfe/airgap-package-url) == none ]]; then
-    #curl -sfSL -o /usr/bin/jq https://github.com/stedolan/jq/releases/download/jq-1.5/jq-linux64
-    curl -sfSL -o /usr/bin/jq $JQ_URL
-    chmod +x /usr/bin/jq
-  fi
-  yum -y install docker ipvsadm wget unzip
-  systemctl enable docker
-  systemctl start docker
-else
-  apt-get -y update
-  apt-get install -y jq chrony ipvsadm unzip wget
-  CONF=/etc/chrony/chrony.conf
-  SERVICE=chrony
 fi
 
 # Setup the config files that will be used during the install
