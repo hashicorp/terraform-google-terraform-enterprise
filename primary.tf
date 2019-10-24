@@ -1,7 +1,8 @@
 resource "random_string" "postfix" {
   # There is a bug with unmanaged instance groups, adding a random string to the end
   # of the primary instance name is a work around.
-  length  = "4"
+  length = "4"
+
   special = false
   upper   = false
 }

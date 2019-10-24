@@ -49,7 +49,9 @@ resource "google_compute_instance_template" "secondary" {
     weave_cidr           = "${var.weave_cidr}"
     repl_cidr            = "${var.repl_cidr}"
   }
+
   metadata_startup_script = "${file("${path.module}/../../files/install-ptfe.sh")}"
+
   labels = {
     "name" = "${var.prefix}"
   }
