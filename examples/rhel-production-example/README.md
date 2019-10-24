@@ -1,4 +1,4 @@
-# Terraform Enterprise HA (Beta) Example
+# Terraform Enterprise HA (Beta) Example - RedHat Enterprise Linux in Production Mode
 
 This example assumes you have already set up your gcp project with the required prereqs:
 
@@ -10,14 +10,14 @@ This example assumes you have already set up your gcp project with the required 
 * A DNS Zone in gcp
 * A license file provided by your Technical Account Manager
 
-With this example you will create a five node cluster, and can easily add secondaries:
+With this example you will create a five node cluster, running RedHat Enterprise Linux 7.6, using external services (also known as Production Mode):
 
-![basic architecture diagram](https://github.com/hashicorp/terraform-google-terraform-enterprise/blob/v0.0.3-beta/assets/gcp_diagram.jpg?raw=true)
+![basic architecture diagram](https://github.com/hashicorp/terraform-google-terraform-enterprise/blob/v0.0.3-beta/assets/gcp_prod_diagram.png?raw=true)
 
 ## Change to the example directory
 
 ```bash
-cd examples/root-example
+cd examples/rhel-production-example
 ```
 
 ## Install Terraform
@@ -33,17 +33,28 @@ Install Terraform if it is not already installed (visit [terraform.io](https://t
 You'll need to update the following settings to your set up:
 
 * project: name of the project
-* creds: json file name
-* publicip: The IP address to attach to the load balancer
+* credentials_file: json file name
+* region: where to create the resources
+* zone: where to create the resources
+* public_ip: The IP address to attach to the load balancer
 * domain: domain to use
-* dnszone: the name of the dns zone in gcp
-* cert: the api url of the google certficiate to use
-* sslpolicy: name of the ssl policy to use
+* dns_zone: the name of the dns zone in gcp
+* certificate: the api url of the google certficiate to use
+* ssl_policy: name of the ssl policy to use
 * subnet: subnet to deploy into (this should be reserved for tfe)
 * frontend_dns: DNS name for load balancer
 * license_file: your TFE license
+* encryption_password: In order to re-use external services, you need to set/pass and encryption password
+* image_family: the name of the RHEL image to use - 7.6 is the latest currently supported
+* external_services: set this to gcs (for google cloud storage)
+* gcs_bucket: name of the bucket to use. This example assume the bucket resides in the same project. 
+* postgresql_address: Connection address for the postgresql server
+* postgresql_database: Name of the database to use
+* postgresql_user: Username to connect with
+* postgresql_password: base64 encrypted password.
 
- This example is set to spin up a five node instance of 3 primaries and 2 secondaries, but the `primary_count` and `secondary_count` can be updated to build a larger cluster instead.  
+
+ This example is set to spin up a five node instance of 3 primaries and 2 secondaries, but the `primary_count` and `secondary_count` can be updated to build a larger or smaller cluster. The number of primaries should not go below 3, however.  
 
 ## Run Terraform
 

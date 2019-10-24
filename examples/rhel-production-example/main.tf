@@ -33,6 +33,15 @@ module "tfe-beta" {
   secondary_count = "2"
 
   license_file = "customer.rli"
+
+  image_family        = "rhel-7-v20190729"
+
+  external_services   = "gcs"
+  gcs_bucket          = "tfe-bucket"
+  postgresql_address  = "192.168.100.100"
+  postgresql_database = "tfe-beta-db"
+  postgresql_user     = "postgres"
+  postgresql_password = "RdJeirkEZGdvCg==" 
 }
 
 output "tfe-beta" {
