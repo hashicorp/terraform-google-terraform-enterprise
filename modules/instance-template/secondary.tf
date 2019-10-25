@@ -30,6 +30,8 @@ resource "google_compute_instance_template" "secondary" {
     health-url           = "http://${var.cluster_endpoint}:${local.assistant_port}/healthz"
     b64-license          = "${var.b64-license}"
     ptfe-role            = "secondary"
+    assistant-host       = "${var.assistant-host}"
+    assistant-token      = "${var.assistant-token}"
     role-id              = "0"
     ptfe-install-url     = "${var.ptfe_install_url}"
     jq-url               = "${var.jq_url}"

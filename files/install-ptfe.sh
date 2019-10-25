@@ -11,6 +11,8 @@ curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/clu
 curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/primary-pki-url" -H "Metadata-Flavor: Google" -o /etc/ptfe/primary-pki-url
 curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/health-url" -H "Metadata-Flavor: Google" -o /etc/ptfe/health-url
 curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/role-id" -H "Metadata-Flavor: Google" -o /etc/ptfe/role-id
+curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/assistant-host" -H "Metadata-Flavor: Google" -o /etc/ptfe/assistant-host
+curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/assistant-token" -H "Metadata-Flavor: Google" -o /etc/ptfe/assistant-token
 curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/ptfe-hostname" -H "Metadata-Flavor: Google" -o /etc/ptfe/hostname
 curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/ptfe-install-url" -H "Metadata-Flavor: Google" -o /etc/ptfe/ptfe-install-url
 curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/jq-url" -H "Metadata-Flavor: Google" -o /etc/ptfe/jq-url
@@ -236,14 +238,18 @@ if [[ $(< /etc/ptfe/airgap-installer-url) != none ]]; then
     airgap_installer_url_path="/etc/ptfe/airgap-installer-url"
 fi
 
+health_url="$(cat /etc/ptfe/health-url)"
+role_id="$(cat /etc/ptfe/role-id)"
 
 
 ptfe_install_args=(
     -DD
     "--bootstrap-token=$(cat /etc/ptfe/bootstrap-token)" \
     "--cluster-api-endpoint=$(cat /etc/ptfe/cluster-api-endpoint)" \
-    --health-url "$(cat /etc/ptfe/health-url)"
+    --health-url "$health_url"
     "--private-address=$(curl -H "Metadata-Flavor: Google" http://metadata.google.internal/computeMetadata/v1/instance/network-interfaces/0/ip)"
+    --assistant-host "$(cat /etc/ptfe/assistant-host)"
+    --assistant-token "$(cat /etc/ptfe/assistant-token)"
 )
 
 if [[ $(< /etc/ptfe/airgap-package-url) != none ]]; then
@@ -342,12 +348,15 @@ if [ "x${role}x" == "xmainx" ]; then
 
     popd
     fi
+else
+    echo "Waiting for cluster to start before continuing..."
+    ptfe install join --role-id "$role_id" --health-url "$health_url" --wait-for-cluster
 fi
 
 if [ "x${role}x" != "xsecondaryx" ]; then
     ptfe_install_args+=(
         --primary-pki-url "$(cat /etc/ptfe/primary-pki-url)"
-        --role-id "$(cat /etc/ptfe/role-id)"
+        --role-id "$role_id"
     )
 fi
 

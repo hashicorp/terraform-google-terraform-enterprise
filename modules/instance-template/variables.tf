@@ -79,6 +79,10 @@ variable "ca_bundle_url" {
   default     = "none"
 }
 
+variable "assistant-host" {}
+
+variable "assistant-token" {}
+
 variable "b64-license" {}
 
 variable "airgap_package_url" {}

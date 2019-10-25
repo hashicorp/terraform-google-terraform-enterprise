@@ -8,6 +8,8 @@ module "instance-template" {
   bootstrap_token_id      = "${random_string.bootstrap_token_id.result}"
   bootstrap_token_suffix  = "${random_string.bootstrap_token_suffix.result}"
   setup_token             = "${random_string.setup_token.result}"
+  assistant-host          = "http://${var.prefix}-primary-0-${random_string.postfix.result}:${local.assistant_port}"
+  assistant-token         = "${random_string.setup_token.result}"
   image_family            = "${var.image_family}"
   b64-license             = "${base64encode(file("${var.license_file}"))}"
   repl_data               = "${base64encode("${random_pet.console_password.id}")}"
