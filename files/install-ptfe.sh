@@ -18,6 +18,7 @@ curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/ptf
 curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/jq-url" -H "Metadata-Flavor: Google" -o /etc/ptfe/jq-url
 curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/repl-data" -H "Metadata-Flavor: Google" -o /etc/ptfe/repl-data
 curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/release-sequence" -H "Metadata-Flavor: Google" -o /etc/ptfe/release-sequence
+curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/http_proxy_url" -H "Metadata-Flavor: Google" -o /etc/ptfe/http_proxy_url
 curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/custom-ca-cert-url" -H "Metadata-Flavor: Google" -o /etc/ptfe/custom-ca-cert-url
 curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/airgap-package-url" -H "Metadata-Flavor: Google" -o /etc/ptfe/airgap-package-url
 curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/b64-license" -H "Metadata-Flavor: Google" -o /etc/ptfe/replicated-licenseb64
@@ -51,6 +52,28 @@ RELEASE_SEQUENCE=$(cat /etc/ptfe/release-sequence)
 export RELEASE_SEQUENCE
 PTFE_INSTALL_URL=$(cat /etc/ptfe/ptfe-install-url)
 JQ_URL=$(cat /etc/ptfe/jq-url)
+
+# Set proxy variables, if needed.
+if [[ $(< /etc/ptfe/http_proxy_url) != none ]]; then
+    http_proxy=$(cat /etc/ptfe/proxy-url)
+    https_proxy=$(cat /etc/ptfe/proxy-url)
+    export http_proxy
+    export https_proxy
+    export no_proxy=10.0.0.0/8,127.0.0.1,35.191.0.0/16,209.85.152.0/22,209.85.204.0/22,130.211.0.0/22
+
+    /bin/cat <<EOF >/etc/profile.d/proxy.sh
+http_proxy="$http_proxy"
+https_proxy="$http_proxy"
+no_proxy=10.0.0.0/8,127.0.0.1,35.191.0.0/16,209.85.152.0/22,209.85.204.0/22,130.211.0.0/22
+EOF
+
+    if [ ! -f /etc/redhat-release ]; then
+        /bin/cat <<EOF >/etc/apt/apt.conf.d/00_aaa_proxy.conf
+Acquire::http::proxy "$http_proxy_url";
+Acquire::https::proxy "$http_proxy_url";
+EOF
+    fi
+fi
 
 # OS specific configs
 if [ -f /etc/redhat-release ]; then
@@ -260,6 +283,12 @@ if [ "x${role}x" == "xmainx" ]; then
         --cluster
         "--auth-token=@/etc/ptfe/setup-token"
     )
+
+    if [[ $(< /etc/ptfe/http_proxy_url) != none ]]; then
+        ptfe_install_args+=(
+            "--additional-no-proxy=$no_proxy"
+            )
+    fi
     # If we are airgapping, then set the arguments needed for Replicated.
     # We also setup the replicated.conf.tmpl to include the path to the downloaded
     # airgap file.

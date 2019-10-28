@@ -212,6 +212,12 @@ variable "secondary_machine_type" {
   default     = "n1-standard-4"
 }
 
+variable "http_proxy_url" {
+  type        = "string"
+  description = "HTTP(S) proxy url"
+  default     = "none"
+}
+
 variable "release_sequence" {
   type        = "string"
   description = "Replicated release sequence"

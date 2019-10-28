@@ -36,6 +36,7 @@ resource "google_compute_instance_template" "secondary" {
     ptfe-install-url     = "${var.ptfe_install_url}"
     jq-url               = "${var.jq_url}"
     repl-data            = "${var.repl_data}"
+    http_proxy_url       = "${var.http_proxy_url}"
     release-sequence     = "${var.release_sequence}"
     airgap-package-url   = "${var.airgap_package_url}"
     airgap-installer-url = "${var.airgap_installer_url}"

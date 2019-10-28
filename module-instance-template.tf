@@ -16,6 +16,7 @@ module "instance-template" {
   release_sequence        = "${var.release_sequence}"
   boot_disk_size          = "${var.boot_disk_size}"
   prefix                  = "${var.prefix}"
+  http_proxy_url          = "${var.http_proxy_url}"
   airgap_package_url      = "${var.airgap_package_url}"
   airgap_installer_url    = "${var.airgap_installer_url}"
   encryption_password     = "${var.encryption_password}"
