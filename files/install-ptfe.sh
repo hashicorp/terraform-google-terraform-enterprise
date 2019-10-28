@@ -301,7 +301,7 @@ if [ "x${role}x" == "xmainx" ]; then
         pushd /var/lib/ptfe
         airgap_url="$(< "$airgap_url_path")"
         echo "Downloading airgap package from $airgap_url"
-        ptfe util download "$airgap_url" /var/lib/ptfe.airgap
+        ptfe util download "$airgap_url" /var/lib/ptfe/ptfe.airgap
         popd 
     fi
 
