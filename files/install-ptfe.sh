@@ -252,21 +252,6 @@ ptfe_install_args=(
     --assistant-token "$(cat /etc/ptfe/assistant-token)"
 )
 
-if [[ $(< /etc/ptfe/airgap-package-url) != none ]]; then
-        mkdir -p /var/lib/ptfe
-        pushd /var/lib/ptfe
-        curl -sfSL -o ptfe.airgap "$(< "$airgap_url_path")"
-        airgap_path=$( readlink -f ptfe.airgap )
-        curl -sfSL -o replicated.tar.gz "$(< "$airgap_installer_url_path")"
-        replicated_installer_path=$( readlink -f replicated.tar.gz )
-        popd
-
-        ptfe_install_args+=(
-            "--airgap-installer=$replicated_installer_path"
-            "--airgap"
-        )
-    fi
-
 if [ "x${role}x" == "xmainx" ]; then
     verb="setup"
     export verb
@@ -282,6 +267,13 @@ if [ "x${role}x" == "xmainx" ]; then
         ptfe_install_args+=(
             "--public-address=$(curl -H "Metadata-Flavor: Google" http://metadata.google.internal/computeMetadata/v1/instance/network-interfaces/0/access-configs/0/external-ip)"
         )
+
+        mkdir -p /var/lib/ptfe
+        pushd /var/lib/ptfe
+        airgap_url="$(< "$airgap_url_path")"
+        echo "Downloading airgap package from $airgap_url"
+        ptfe util download "$airgap_url" /var/lib/ptfe.airgap
+        popd 
     fi
 
     #If a custom weave CIDR is provided, set the necessary arguement
@@ -372,6 +364,20 @@ if [ "x${role}x" == "xsecondaryx" ]; then
     verb="join"
     export verb
 fi
+
+if [[ $(< /etc/ptfe/airgap-package-url) != none ]]; then
+    mkdir -p /var/lib/ptfe
+    pushd /var/lib/ptfe
+    airgap_installer_url="$(< "$airgap_installer_url_path")"
+    echo "Downloading airgap installer from $airgap_installer_url"
+    ptfe util download "$airgap_installer_url" /var/lib/ptfe/replicated.tar.gz
+    popd
+
+    ptfe_install_args+=(
+        --airgap-installer /var/lib/ptfe/replicated.tar.gz
+        --airgap
+    )
+    fi
 
 echo "Running 'ptfe install $verb ${ptfe_install_args[@]}'"
 ptfe install $verb "${ptfe_install_args[@]}"
