@@ -11,11 +11,14 @@ curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/clu
 curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/primary-pki-url" -H "Metadata-Flavor: Google" -o /etc/ptfe/primary-pki-url
 curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/health-url" -H "Metadata-Flavor: Google" -o /etc/ptfe/health-url
 curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/role-id" -H "Metadata-Flavor: Google" -o /etc/ptfe/role-id
+curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/assistant-host" -H "Metadata-Flavor: Google" -o /etc/ptfe/assistant-host
+curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/assistant-token" -H "Metadata-Flavor: Google" -o /etc/ptfe/assistant-token
 curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/ptfe-hostname" -H "Metadata-Flavor: Google" -o /etc/ptfe/hostname
 curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/ptfe-install-url" -H "Metadata-Flavor: Google" -o /etc/ptfe/ptfe-install-url
 curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/jq-url" -H "Metadata-Flavor: Google" -o /etc/ptfe/jq-url
 curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/repl-data" -H "Metadata-Flavor: Google" -o /etc/ptfe/repl-data
 curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/release-sequence" -H "Metadata-Flavor: Google" -o /etc/ptfe/release-sequence
+curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/http_proxy_url" -H "Metadata-Flavor: Google" -o /etc/ptfe/http_proxy_url
 curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/custom-ca-cert-url" -H "Metadata-Flavor: Google" -o /etc/ptfe/custom-ca-cert-url
 curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/airgap-package-url" -H "Metadata-Flavor: Google" -o /etc/ptfe/airgap-package-url
 curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/b64-license" -H "Metadata-Flavor: Google" -o /etc/ptfe/replicated-licenseb64
@@ -49,6 +52,28 @@ RELEASE_SEQUENCE=$(cat /etc/ptfe/release-sequence)
 export RELEASE_SEQUENCE
 PTFE_INSTALL_URL=$(cat /etc/ptfe/ptfe-install-url)
 JQ_URL=$(cat /etc/ptfe/jq-url)
+
+# Set proxy variables, if needed.
+if [[ $(< /etc/ptfe/http_proxy_url) != none ]]; then
+    http_proxy=$(cat /etc/ptfe/proxy-url)
+    https_proxy=$(cat /etc/ptfe/proxy-url)
+    export http_proxy
+    export https_proxy
+    export no_proxy=10.0.0.0/8,127.0.0.1,35.191.0.0/16,209.85.152.0/22,209.85.204.0/22,130.211.0.0/22
+
+    /bin/cat <<EOF >/etc/profile.d/proxy.sh
+http_proxy="$http_proxy"
+https_proxy="$http_proxy"
+no_proxy=10.0.0.0/8,127.0.0.1,35.191.0.0/16,209.85.152.0/22,209.85.204.0/22,130.211.0.0/22
+EOF
+
+    if [ ! -f /etc/redhat-release ]; then
+        /bin/cat <<EOF >/etc/apt/apt.conf.d/00_aaa_proxy.conf
+Acquire::http::proxy "$http_proxy_url";
+Acquire::https::proxy "$http_proxy_url";
+EOF
+    fi
+fi
 
 # OS specific configs
 if [ -f /etc/redhat-release ]; then
@@ -236,30 +261,19 @@ if [[ $(< /etc/ptfe/airgap-installer-url) != none ]]; then
     airgap_installer_url_path="/etc/ptfe/airgap-installer-url"
 fi
 
+health_url="$(cat /etc/ptfe/health-url)"
+role_id="$(cat /etc/ptfe/role-id)"
 
 
 ptfe_install_args=(
     -DD
     "--bootstrap-token=$(cat /etc/ptfe/bootstrap-token)" \
     "--cluster-api-endpoint=$(cat /etc/ptfe/cluster-api-endpoint)" \
-    --health-url "$(cat /etc/ptfe/health-url)"
+    --health-url "$health_url"
     "--private-address=$(curl -H "Metadata-Flavor: Google" http://metadata.google.internal/computeMetadata/v1/instance/network-interfaces/0/ip)"
+    --assistant-host "$(cat /etc/ptfe/assistant-host)"
+    --assistant-token "$(cat /etc/ptfe/assistant-token)"
 )
-
-if [[ $(< /etc/ptfe/airgap-package-url) != none ]]; then
-        mkdir -p /var/lib/ptfe
-        pushd /var/lib/ptfe
-        curl -sfSL -o ptfe.airgap "$(< "$airgap_url_path")"
-        airgap_path=$( readlink -f ptfe.airgap )
-        curl -sfSL -o replicated.tar.gz "$(< "$airgap_installer_url_path")"
-        replicated_installer_path=$( readlink -f replicated.tar.gz )
-        popd
-
-        ptfe_install_args+=(
-            "--airgap-installer=$replicated_installer_path"
-            "--airgap"
-        )
-    fi
 
 if [ "x${role}x" == "xmainx" ]; then
     verb="setup"
@@ -269,6 +283,12 @@ if [ "x${role}x" == "xmainx" ]; then
         --cluster
         "--auth-token=@/etc/ptfe/setup-token"
     )
+
+    if [[ $(< /etc/ptfe/http_proxy_url) != none ]]; then
+        ptfe_install_args+=(
+            "--additional-no-proxy=$no_proxy"
+            )
+    fi
     # If we are airgapping, then set the arguments needed for Replicated.
     # We also setup the replicated.conf.tmpl to include the path to the downloaded
     # airgap file.
@@ -276,6 +296,13 @@ if [ "x${role}x" == "xmainx" ]; then
         ptfe_install_args+=(
             "--public-address=$(curl -H "Metadata-Flavor: Google" http://metadata.google.internal/computeMetadata/v1/instance/network-interfaces/0/access-configs/0/external-ip)"
         )
+
+        mkdir -p /var/lib/ptfe
+        pushd /var/lib/ptfe
+        airgap_url="$(< "$airgap_url_path")"
+        echo "Downloading airgap package from $airgap_url"
+        ptfe util download "$airgap_url" /var/lib/ptfe/ptfe.airgap
+        popd 
     fi
 
     #If a custom weave CIDR is provided, set the necessary arguement
@@ -342,12 +369,15 @@ if [ "x${role}x" == "xmainx" ]; then
 
     popd
     fi
+else
+    echo "Waiting for cluster to start before continuing..."
+    ptfe install join --role-id "$role_id" --health-url "$health_url" --wait-for-cluster
 fi
 
 if [ "x${role}x" != "xsecondaryx" ]; then
     ptfe_install_args+=(
         --primary-pki-url "$(cat /etc/ptfe/primary-pki-url)"
-        --role-id "$(cat /etc/ptfe/role-id)"
+        --role-id "$role_id"
     )
 fi
 
@@ -363,6 +393,20 @@ if [ "x${role}x" == "xsecondaryx" ]; then
     verb="join"
     export verb
 fi
+
+if [[ $(< /etc/ptfe/airgap-package-url) != none ]]; then
+    mkdir -p /var/lib/ptfe
+    pushd /var/lib/ptfe
+    airgap_installer_url="$(< "$airgap_installer_url_path")"
+    echo "Downloading airgap installer from $airgap_installer_url"
+    ptfe util download "$airgap_installer_url" /var/lib/ptfe/replicated.tar.gz
+    popd
+
+    ptfe_install_args+=(
+        --airgap-installer /var/lib/ptfe/replicated.tar.gz
+        --airgap
+    )
+    fi
 
 echo "Running 'ptfe install $verb ${ptfe_install_args[@]}'"
 ptfe install $verb "${ptfe_install_args[@]}"

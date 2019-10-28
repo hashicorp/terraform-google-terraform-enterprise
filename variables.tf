@@ -1,6 +1,7 @@
 locals {
   assistant_port                  = 23010
   rendered_secondary_machine_type = "${var.secondary_machine_type != "" ? var.secondary_machine_type : var.primary_machine_type }"
+  internal_airgap_url             = "http://${var.prefix}-primary-0-${random_string.postfix.result}:${local.assistant_port}/setup-files/replicated.tar.gz?token=${random_string.setup_token.result}"
 }
 
 ###################################################
@@ -209,6 +210,12 @@ variable "secondary_machine_type" {
   type        = "string"
   description = "Type of machine to use for secondary nodes, if unset, will default to primary_machine_type"
   default     = "n1-standard-4"
+}
+
+variable "http_proxy_url" {
+  type        = "string"
+  description = "HTTP(S) proxy url"
+  default     = "none"
 }
 
 variable "release_sequence" {

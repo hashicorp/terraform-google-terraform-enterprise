@@ -79,6 +79,15 @@ variable "ca_bundle_url" {
   default     = "none"
 }
 
+variable "http_proxy_url" {
+  type        = "string"
+  description = "HTTP(S) proxy url"
+}
+
+variable "assistant-host" {}
+
+variable "assistant-token" {}
+
 variable "b64-license" {}
 
 variable "airgap_package_url" {}
