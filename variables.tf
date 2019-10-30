@@ -169,7 +169,7 @@ variable "airgap_package_url" {
 variable "ptfe_install_url" {
   type        = "string"
   description = "Location of the ptfe install tool zip file"
-  default     = "https://install.terraform.io/installer/ptfe.zip"
+  default     = "https://install.terraform.io/installer/ptfe-0.1.zip"
 }
 
 variable "jq_url" {
