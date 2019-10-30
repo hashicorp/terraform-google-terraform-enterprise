@@ -13,11 +13,6 @@ variable "instance_group" {
   description = "primary instance group"
 }
 
-variable "primary_instances" {
-  type        = "list"
-  description = "primary instances"
-}
-
 variable "domain" {
   type        = "string"
   description = "domain"
