@@ -20,20 +20,21 @@
 | ca\_bundle\_url | URL to Custom CA bundle used for outgoing connections | string | `"none"` | no |
 | dns\_project | Name of project where the DNS zone resides | string | `""` | no |
 | encryption\_password | encryption password for the vault unseal key. save this! | string | `""` | no |
-| external\_services | object store provider for external services. Allowed values: gcs | string | `""` | no |
 | gcs\_bucket | Name of the gcp storage bucket | string | `""` | no |
 | gcs\_credentials | Base64 encoded credentials json to access your gcp storage bucket. Run base64 -i <creds.json> -o <credsb64.json> and then copy the contents of the file into the variable | string | `""` | no |
 | gcs\_project | Project name where the bucket resides, if left blank will use project provided above | string | `""` | no |
+| http\_proxy\_url | HTTP(S) proxy url | string | `"none"` | no |
 | image\_family | The image family, choose from ubuntu-1604-lts, ubuntu-1804-lts, or rhel-7 | string | `"ubuntu-1804-lts"` | no |
-| install\_type | Installation type, options are (poc or production). Switch to production for external services. | string | `"poc"` | no |
+| jq\_url | Location of the jq package | string | `"https://github.com/stedolan/jq/releases/download/jq-1.5/jq-linux64"` | no |
 | postgresql\_address | Database connection url | string | `""` | no |
 | postgresql\_database | Database name | string | `""` | no |
 | postgresql\_extra\_params | Extra connection parameters such as ssl=true | string | `""` | no |
 | postgresql\_password | Base64 encoded database password | string | `""` | no |
-| postgresql\_user | Database username | string | `""` | no |
+| postgresql\_user | Database username | string | `"none"` | no |
 | prefix | Resource and instance prefix | string | `"tfe"` | no |
 | primary\_count | Number of primary nodes to run, must be odd number - 3 or 5 recommended. | string | `"3"` | no |
 | primary\_machine\_type | Type of machine to use | string | `"n1-standard-4"` | no |
+| ptfe\_install\_url | Location of the ptfe install tool zip file | string | `"https://install.terraform.io/installer/ptfe-0.1.zip"` | no |
 | region | The region to install into. | string | `"us-central1"` | no |
 | release\_sequence | Replicated release sequence | string | `"latest"` | no |
 | repl\_cidr | Specify a non-standard CIDR range for the replicated services. The default is 10.96.0.0/12 | string | `""` | no |
