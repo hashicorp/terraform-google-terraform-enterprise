@@ -6,7 +6,7 @@
 
 This module installs Terraform Enterprise Clustering onto one or more gcp instances.
 
-An Ubuntu Bionic (18.04 LTS) image is chosen by default, but this config supports previous version of Ubuntu as well as Red Hat Enterprise Linux 7.2-7.7 (v8 is not supported.)
+An Ubuntu Bionic (18.04 LTS) image is chosen by default, but this config supports previous version of Ubuntu as well as Red Hat Enterprise Linux 7.2-7.6 (v8 are not supported.)
 
 ## Architecture
 
