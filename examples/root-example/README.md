@@ -1,4 +1,4 @@
-# Terraform Enterprise HA (Beta) Example
+# Terraform Enterprise Clustering Example
 
 This example assumes you have already set up your gcp project with the required prereqs:
 
@@ -12,7 +12,7 @@ This example assumes you have already set up your gcp project with the required 
 
 With this example you will create a five node cluster, and can easily add secondaries:
 
-![basic architecture diagram](https://github.com/hashicorp/terraform-google-terraform-enterprise/blob/v0.0.3-beta/assets/gcp_diagram.jpg?raw=true)
+![basic architecture diagram](https://github.com/hashicorp/terraform-google-terraform-enterprise/blob/master/assets/gcp_diagram.jpg?raw=true)
 
 ## Change to the example directory
 
@@ -43,7 +43,7 @@ You'll need to update the following settings to your set up:
 * frontend_dns: DNS name for load balancer
 * license_file: your TFE license
 
- This example is set to spin up a five node instance of 3 primaries and 2 secondaries, but the `primary_count` and `secondary_count` can be updated to build a larger cluster instead.  
+ This example is set to spin up a five node instance of 3 primaries and 2 secondaries, but the `primary_count` and `secondary_count` can be updated to build a larger cluster instead.
 
 ## Run Terraform
 

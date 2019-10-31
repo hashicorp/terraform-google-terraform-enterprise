@@ -14,9 +14,9 @@ provider "google-beta" {
   project = "${var.project}"
 }
 
-module "tfe-beta" {
+module "tfe-cluster" {
   source           = "hashicorp/terraform-enterprise/google"
-  version          = "0.0.3-beta"
+  version          = "0.1.0"
   credentials_file = "auth-file-123456678.json"
   region           = "${var.region}"
   zone             = "${var.region}-a"
@@ -27,7 +27,7 @@ module "tfe-beta" {
   certificate      = "https://www.googleapis.com/compute/v1/project/terraform-test/global/sslCertificates/tfe"
   ssl_policy       = "tfe-ssl-policy"
   subnet           = "tfe-subnet"
-  frontend_dns     = "tfe-beta"
+  frontend_dns     = "tfe-cluster"
 
   primary_count   = "3"
   secondary_count = "2"
@@ -38,17 +38,17 @@ module "tfe-beta" {
 
   gcs_bucket          = "tfe-bucket"
   postgresql_address  = "192.168.100.100"
-  postgresql_database = "tfe-beta-db"
+  postgresql_database = "tfe-cluster-db"
   postgresql_user     = "postgres"
   postgresql_password = "RdJeirkEZGdvCg=="
 }
 
-output "tfe-beta" {
+output "tfe-cluster" {
   value = {
-    application_endpoint         = "${module.tfe-beta.application_endpoint}"
-    application_health_check     = "${module.tfe-beta.application_health_check}"
-    installer_dashboard_password = "${module.tfe-beta.installer_dashboard_password}"
-    installer_dashboard__url     = "${module.tfe-beta.installer_dashboard_url}"
-    primary_public_ip            = "${module.tfe-beta.primary_public_ip}"
+    application_endpoint         = "${module.tfe-cluster.application_endpoint}"
+    application_health_check     = "${module.tfe-cluster.application_health_check}"
+    installer_dashboard_password = "${module.tfe-cluster.installer_dashboard_password}"
+    installer_dashboard__url     = "${module.tfe-cluster.installer_dashboard_url}"
+    primary_public_ip            = "${module.tfe-cluster.primary_public_ip}"
   }
 }
