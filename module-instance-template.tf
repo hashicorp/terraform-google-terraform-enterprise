@@ -19,7 +19,7 @@ module "instance-template" {
   http_proxy_url          = "${var.http_proxy_url}"
   airgap_package_url      = "${var.airgap_package_url}"
   airgap_installer_url    = "${var.airgap_installer_url}"
-  encryption_password     = "${var.encryption_password}"
+  encryption_password     = "${local.encryption_password}"
   postgresql_user         = "${var.postgresql_user}"
   postgresql_password     = "${var.postgresql_password}"
   postgresql_address      = "${var.postgresql_address}"

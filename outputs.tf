@@ -22,3 +22,8 @@ output "primary_public_ip" {
   value       = "${var.public_ip}"
   description = "The Public IP for the load balancer to use."
 }
+
+output "encryption_password" {
+  value       = "${local.encryption_password}"
+  description = "If you did not specify an encryption password, this was used."
+}

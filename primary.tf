@@ -52,7 +52,7 @@ resource "google_compute_instance" "primary" {
     airgap-installer-url = "${var.airgap_package_url == "none" ? "none" : count.index == 0 ? var.airgap_installer_url : local.internal_airgap_url}"
     repl-data            = "${base64encode("${random_pet.console_password.id}")}"
     ptfe-hostname        = "${var.prefix}-primary-${count.index}-${random_string.postfix.result}.${data.google_dns_managed_zone.dnszone.dns_name}"
-    encpasswd            = "${var.encryption_password}"
+    encpasswd            = "${local.encryption_password}"
     release-sequence     = "${var.release_sequence}"
     pg_user              = "${var.postgresql_user}"
     pg_password          = "${var.postgresql_password}"
