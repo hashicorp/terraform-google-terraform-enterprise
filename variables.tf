@@ -2,6 +2,7 @@ locals {
   assistant_port                  = 23010
   rendered_secondary_machine_type = "${var.secondary_machine_type != "" ? var.secondary_machine_type : var.primary_machine_type }"
   internal_airgap_url             = "http://${var.prefix}-primary-0-${random_string.postfix.result}:${local.assistant_port}/setup-files/replicated.tar.gz?token=${random_string.setup_token.result}"
+  encryption_password             = "${var.encryption_password != "" ? var.encryption_password : random_string.default_enc_password.result}"
 }
 
 ###################################################
@@ -266,5 +267,11 @@ resource "random_string" "bootstrap_token_suffix" {
 resource "random_string" "setup_token" {
   length  = 32
   upper   = false
+  special = false
+}
+
+resource "random_string" "default_enc_password" {
+  length  = 32
+  upper   = true
   special = false
 }
