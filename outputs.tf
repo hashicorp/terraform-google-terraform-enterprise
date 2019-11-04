@@ -24,6 +24,6 @@ output "primary_public_ip" {
 }
 
 output "encryption_password" {
-  value       = "${random_string.default_enc_password.result}"
+  value       = "${local.encryption_password}"
   description = "If you did not specify an encryption password, this was used."
 }
