@@ -18,10 +18,23 @@ resource "google_compute_region_instance_group_manager" "secondary" {
   instance_template  = "${module.instance-template.secondary_template}"
   region             = "${var.region}"
 
-  target_size = "${var.secondary_count}"
-
   named_port {
     name = "https"
     port = 443
+  }
+}
+
+resource "google_compute_region_autoscaler" "secondary" {
+  name   = "secondary-autoscaler"
+  target = "${google_compute_region_instance_group_manager.secondary.self_link}"
+
+  autoscaling_policy {
+    max_replicas      = "${var.max_secondaries}"
+    min_replicas      = "${var.min_secondaries}"
+    cooldown_period   = 300
+
+    cpu_utilization {
+      target = "${var.autoscaler_cpu}"
+    }
   }
 }

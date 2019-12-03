@@ -81,10 +81,22 @@ variable "primary_count" {
   default     = "3"
 }
 
-variable "secondary_count" {
+variable "max_secondaries" {
   type        = "string"
-  description = "Number of secondary nodes to run"
+  description = "The maximum number of secondaries in the autoscaling group"
+  default     = "3"
+}
+
+variable "min_secondaries" {
+  type        = "string"
+  description = "The minimum number of secondaries in the autoscaling group"
   default     = "0"
+}
+
+variable "autoscaler_cpu" {
+  type        = "string"
+  description = "The cpu threshold at which the autoscaling group to build another instance"
+  default     = "0.7"
 }
 
 variable "region" {
