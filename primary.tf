@@ -55,7 +55,7 @@ resource "google_compute_instance" "primary" {
     encpasswd            = "${local.encryption_password}"
     release-sequence     = "${var.release_sequence}"
     pg_user              = "${var.postgresql_user}"
-    pg_password          = "${var.postgresql_password}"
+    pg_password          = "${base64encode("${var.postgresql_password}")}"
     pg_netloc            = "${var.postgresql_address}"
     pg_dbname            = "${var.postgresql_database}"
     pg_extra_params      = "${var.postgresql_extra_params}"
