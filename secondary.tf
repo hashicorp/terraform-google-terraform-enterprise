@@ -12,7 +12,7 @@ resource "google_compute_health_check" "autohealing" {
 }
 
 resource "google_compute_region_instance_group_manager" "secondary" {
-  name = "secondary"
+  name = "${var.prefix}-secondary"
 
   base_instance_name = "${var.prefix}-secondary"
   instance_template  = "${module.instance-template.secondary_template}"
