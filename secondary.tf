@@ -29,9 +29,9 @@ resource "google_compute_region_autoscaler" "secondary" {
   target = "${google_compute_region_instance_group_manager.secondary.self_link}"
 
   autoscaling_policy {
-    max_replicas      = "${var.max_secondaries}"
-    min_replicas      = "${var.min_secondaries}"
-    cooldown_period   = 300
+    max_replicas    = "${var.max_secondaries}"
+    min_replicas    = "${var.min_secondaries}"
+    cooldown_period = 300
 
     cpu_utilization {
       target = "${var.autoscaler_cpu}"
