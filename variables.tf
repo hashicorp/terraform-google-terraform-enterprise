@@ -93,7 +93,7 @@ variable "min_secondaries" {
   default     = "0"
 }
 
-variable "autoscaler_cpu" {
+variable "autoscaler_cpu_threshold" {
   type        = "string"
   description = "The cpu threshold at which the autoscaling group to build another instance"
   default     = "0.7"

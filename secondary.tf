@@ -34,7 +34,7 @@ resource "google_compute_region_autoscaler" "secondary" {
     cooldown_period = 300
 
     cpu_utilization {
-      target = "${var.autoscaler_cpu}"
+      target = "${var.autoscaler_cpu_threshold}"
     }
   }
 }
