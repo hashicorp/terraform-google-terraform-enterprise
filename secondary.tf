@@ -1,5 +1,5 @@
 resource "google_compute_health_check" "autohealing" {
-  name                = "autohealing-health-check"
+  name                = "${var.prefix}-autohealing-health-check"
   check_interval_sec  = 5
   timeout_sec         = 5
   healthy_threshold   = 2
