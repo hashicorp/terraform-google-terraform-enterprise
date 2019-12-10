@@ -3,7 +3,7 @@ resource "google_compute_health_check" "autohealing" {
   check_interval_sec  = 5
   timeout_sec         = 5
   healthy_threshold   = 2
-  unhealthy_threshold = 10                         # 50 seconds
+  unhealthy_threshold = 10                                       # 50 seconds
 
   http_health_check {
     request_path = "/_health_check"
