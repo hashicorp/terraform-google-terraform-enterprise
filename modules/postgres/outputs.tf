@@ -1,9 +1,9 @@
 output "database_name" {
-  value = google_sql_database_instance.tfe-psql-db.name
+  value = google_sql_database.tfe.name
 }
 
 output "address" {
-  value = google_sql_database_instance.tfe-psql-db.first_ip_address
+  value = google_sql_database_instance.tfe.first_ip_address
 }
 
 output "user" {
