@@ -1,0 +1,41 @@
+# Terraform Enterprise: Clustering
+
+## Inputs
+
+| Name | Description | Type | Default | Required |
+|------|-------------|------|---------|:-----:|
+| dnszone | Managed DNS Zone name | `string` | n/a | yes |
+| install\_id | Identifier for install to apply to resources | `string` | n/a | yes |
+| license\_file | License file | `string` | n/a | yes |
+| project | Name of the project to deploy into | `string` | n/a | yes |
+| subnet | name of the subnet to install into | `string` | n/a | yes |
+| airgap\_installer\_url | URL to replicated's airgap installer package | `string` | `"https://install.terraform.io/installer/replicated-v5.tar.gz"` | no |
+| airgap\_package\_url | airgap url | `string` | `"none"` | no |
+| autoscaler\_cpu\_threshold | The cpu threshold at which the autoscaling group to build another instance | `string` | `"0.7"` | no |
+| boot\_disk\_size | The size of the boot disk to use for the instances | `string` | `40` | no |
+| ca\_bundle\_url | URL to Custom CA bundle used for outgoing connections | `string` | `"none"` | no |
+| dns\_project | Name of the project that the DNS lives within (default to project) | `string` | `""` | no |
+| encryption\_password | encryption password for the vault unseal key. save this! | `string` | `""` | no |
+| gcs\_bucket | Name of the gcp storage bucket | `string` | `""` | no |
+| gcs\_credentials | Base64 encoded credentials json to access your gcp storage bucket. Run base64 -i <creds.json> -o <credsb64.json> and then copy the contents of the file into the variable | `string` | `""` | no |
+| gcs\_project | Project name where the bucket resides, if left blank will use project provided above | `string` | `""` | no |
+| http\_proxy\_url | HTTP(S) proxy url | `string` | `"none"` | no |
+| image\_family | The image family, choose from ubuntu-1604-lts, ubuntu-1804-lts, or rhel-7 | `string` | `"ubuntu-1804-lts"` | no |
+| jq\_url | Location of the jq package | `string` | `"https://github.com/stedolan/jq/releases/download/jq-1.5/jq-linux64"` | no |
+| labels | Labels to apply to the storage bucket | `map(string)` | `{}` | no |
+| max\_secondaries | The maximum number of secondaries in the autoscaling group | `string` | `"3"` | no |
+| min\_secondaries | The minimum number of secondaries in the autoscaling group | `string` | `"1"` | no |
+| postgresql\_address | Database connection url | `string` | `""` | no |
+| postgresql\_database | Database name | `string` | `""` | no |
+| postgresql\_extra\_params | Extra connection parameters such as ssl=true | `string` | `""` | no |
+| postgresql\_password | Base64 encoded database password | `string` | `""` | no |
+| postgresql\_user | Database username | `string` | `"none"` | no |
+| prefix | Prefix for resources | `string` | `"tfe-"` | no |
+| primary\_machine\_type | Type of machine to use | `string` | `"n1-standard-4"` | no |
+| ptfe\_install\_url | Location of the ptfe install tool zip file | `string` | `"https://install.terraform.io/installer/ptfe-0.1.zip"` | no |
+| region | The region to install into. | `string` | `"us-central1"` | no |
+| release\_sequence | Replicated release sequence | `string` | `"latest"` | no |
+| repl\_cidr | Specify a non-standard CIDR range for the replicated services. The default is 10.96.0.0/12 | `string` | `""` | no |
+| secondary\_machine\_type | Type of machine to use for secondary nodes, if unset, will default to primary\_machine\_type | `string` | `"n1-standard-4"` | no |
+| weave\_cidr | Specify a non-standard CIDR range for weave. The default is 10.32.0.0/12 | `string` | `""` | no |
+

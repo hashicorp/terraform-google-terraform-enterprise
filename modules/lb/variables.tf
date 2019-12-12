@@ -1,34 +1,26 @@
-variable "publicIP" {
-  type        = "string"
-  description = "External-facing IP address for PTFE application"
+variable "install_id" {
+  type        = string
+  description = "Identifier for install to apply to resources"
+}
+
+variable "prefix" {
+  type        = string
+  description = "Prefix for resources"
+  default     = "tfe-"
 }
 
 variable "cert" {
-  type        = "string"
+  type        = string
   description = "certificate for the load balancer"
 }
 
 variable "instance_group" {
-  type        = "string"
+  type        = string
   description = "primary instance group"
 }
 
-variable "domain" {
-  type        = "string"
-  description = "domain"
-}
-
-variable "sslpolicy" {
-  type        = "string"
-  description = "SSL policy for the cert"
-}
-
-variable "frontenddns" {
-  type        = "string"
-  description = "front end url name"
-}
-
-variable "prefix" {
-  type        = "string"
-  description = "Prefix for resource names"
+variable "ssl_policy" {
+  type        = string
+  description = "SSL policy for the cert. Default to TLS 1.2 Only"
+  default     = ""
 }

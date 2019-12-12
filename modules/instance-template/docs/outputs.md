@@ -4,5 +4,5 @@
 
 | Name | Description |
 |------|-------------|
-| secondary\_template |  |
+| secondary\_template | n/a |
 
