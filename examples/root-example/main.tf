@@ -16,7 +16,7 @@ provider "google-beta" {
 
 module "tfe-cluster" {
   source           = "hashicorp/terraform-enterprise/google"
-  version          = "0.1.0"
+  version          = "0.1.1"
   credentials_file = "auth-file-123456678.json"
   region           = "${var.region}"
   zone             = "${var.region}-a"
@@ -43,6 +43,6 @@ output "tfe-cluster" {
     installer_dashboard_password = "${module.tfe-cluster.installer_dashboard_password}"
     installer_dashboard__url     = "${module.tfe-cluster.installer_dashboard_url}"
     primary_public_ip            = "${module.tfe-cluster.primary_public_ip}"
-    encryption_password          = "${module.tfe-beta.encryption_password}"
+    encryption_password          = "${module.tfe-cluster.encryption_password}"
   }
 }
