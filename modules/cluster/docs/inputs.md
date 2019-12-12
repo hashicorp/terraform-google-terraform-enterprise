@@ -4,7 +4,7 @@
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:-----:|
-| dnszone | Managed DNS Zone name | `string` | n/a | yes |
+| access\_fqdn | The fully qualified domain name that the cluster will be accessed with | `string` | n/a | yes |
 | install\_id | Identifier for install to apply to resources | `string` | n/a | yes |
 | license\_file | License file | `string` | n/a | yes |
 | project | Name of the project to deploy into | `string` | n/a | yes |
@@ -14,7 +14,6 @@
 | autoscaler\_cpu\_threshold | The cpu threshold at which the autoscaling group to build another instance | `string` | `"0.7"` | no |
 | boot\_disk\_size | The size of the boot disk to use for the instances | `string` | `40` | no |
 | ca\_bundle\_url | URL to Custom CA bundle used for outgoing connections | `string` | `"none"` | no |
-| dns\_project | Name of the project that the DNS lives within (default to project) | `string` | `""` | no |
 | encryption\_password | encryption password for the vault unseal key. save this! | `string` | `""` | no |
 | gcs\_bucket | Name of the gcp storage bucket | `string` | `""` | no |
 | gcs\_credentials | Base64 encoded credentials json to access your gcp storage bucket. Run base64 -i <creds.json> -o <credsb64.json> and then copy the contents of the file into the variable | `string` | `""` | no |

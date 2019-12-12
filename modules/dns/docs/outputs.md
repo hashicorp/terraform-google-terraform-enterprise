@@ -5,5 +5,5 @@
 | Name | Description |
 |------|-------------|
 | dns\_zone | n/a |
-| domain\_name | n/a |
+| fqdn | n/a |
 
