@@ -26,6 +26,8 @@
 | http\_proxy\_url | HTTP(S) proxy url | string | `"none"` | no |
 | image\_family | The image family, choose from ubuntu-1604-lts, ubuntu-1804-lts, or rhel-7 | string | `"ubuntu-1804-lts"` | no |
 | jq\_url | Location of the jq package | string | `"https://github.com/stedolan/jq/releases/download/jq-1.5/jq-linux64"` | no |
+| max\_secondaries | The maximum number of secondaries in the autoscaling group | string | `"3"` | no |
+| min\_secondaries | The minimum number of secondaries in the autoscaling group | string | `"1"` | no |
 | postgresql\_address | Database connection url | string | `""` | no |
 | postgresql\_database | Database name | string | `""` | no |
 | postgresql\_extra\_params | Extra connection parameters such as ssl=true | string | `""` | no |
@@ -38,7 +40,6 @@
 | region | The region to install into. | string | `"us-central1"` | no |
 | release\_sequence | Replicated release sequence | string | `"latest"` | no |
 | repl\_cidr | Specify a non-standard CIDR range for the replicated services. The default is 10.96.0.0/12 | string | `""` | no |
-| secondary\_count | Number of secondary nodes to run | string | `"0"` | no |
 | secondary\_machine\_type | Type of machine to use for secondary nodes, if unset, will default to primary_machine_type | string | `"n1-standard-4"` | no |
 | weave\_cidr | Specify a non-standard CIDR range for weave. The default is 10.32.0.0/12 | string | `""` | no |
 | zone | Preferred zone | string | `"us-central1-a"` | no |
