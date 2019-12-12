@@ -93,38 +93,10 @@ variable "repl_cidr" {
 # Required variables
 ###################################################
 
-/*
-variable "certificate" {
+variable "access_fqdn" {
   type        = string
-  description = "Path to Certificate file or GCP certificate link"
+  description = "The fully qualified domain name that the cluster will be accessed with"
 }
-*/
-
-/*
-variable "credentials_file" {
-  type        = string
-  description = "Path to credential file"
-}
-*/
-
-/*
-variable "domain" {
-  type        = string
-  description = "domain name"
-}
-*/
-
-variable "dnszone" {
-  type        = string
-  description = "Managed DNS Zone name"
-}
-
-/*
-variable "frontend_dns" {
-  type        = string
-  description = "DNS name for load balancer"
-}
-*/
 
 variable "license_file" {
   type        = string
@@ -135,26 +107,6 @@ variable "project" {
   type        = string
   description = "Name of the project to deploy into"
 }
-
-variable "dns_project" {
-  type        = string
-  description = "Name of the project that the DNS lives within (default to project)"
-  default     = ""
-}
-
-/*
-variable "public_ip" {
-  type        = string
-  description = "the public IP for the load balancer to use"
-}
-*/
-
-/*
-variable "ssl_policy" {
-  type        = string
-  description = "SSL policy for the cert"
-}
-*/
 
 ###################################################
 # Optional Variables you should probably set

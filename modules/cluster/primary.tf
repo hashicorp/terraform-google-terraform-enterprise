@@ -35,7 +35,7 @@ resource "google_compute_instance" "primary" {
   metadata = merge(local.common_metadata, {
     ptfe-role            = count.index == 0 ? "main" : "primary"
     role-id              = count.index
-    ptfe-hostname        = "${var.prefix}primary-${count.index}-${var.install_id}.${data.google_dns_managed_zone.dnszone.dns_name}"
+    ptfe-hostname        = var.access_fqdn
     airgap-installer-url = var.airgap_package_url == "none" ? "none" : count.index == 0 ? var.airgap_installer_url : local.internal_airgap_url
   })
 
@@ -44,30 +44,6 @@ resource "google_compute_instance" "primary" {
   labels = {
     "name" = var.prefix
   }
-}
-
-locals {
-  dns_project = var.dns_project == "" ? var.project : var.dns_project
-}
-
-data "google_dns_managed_zone" "dnszone" {
-  name    = var.dnszone
-  project = local.dns_project
-}
-
-resource "google_dns_record_set" "primarydns" {
-  count   = local.primary_count
-  name    = "${var.prefix}primary-${count.index}-${var.install_id}.${data.google_dns_managed_zone.dnszone.dns_name}"
-  type    = "A"
-  ttl     = 300
-  project = local.dns_project
-
-  managed_zone = data.google_dns_managed_zone.dnszone.name
-
-  rrdatas = [element(
-    google_compute_instance.primary.*.network_interface.0.access_config.0.nat_ip,
-    count.index,
-  )]
 }
 
 resource "google_compute_instance_group" "primaries" {
