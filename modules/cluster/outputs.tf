@@ -44,3 +44,12 @@ output "encryption_password" {
 output "instance_group" {
   value = google_compute_instance_group.primaries.self_link
 }
+
+output "primary_addresses" {
+  value = [for primary in google_compute_instance.primary.* :
+    {
+      hostname = primary.name,
+      address  = primary.network_interface.0.access_config.0.nat_ip,
+    }
+  ]
+}
