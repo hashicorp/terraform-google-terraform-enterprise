@@ -79,7 +79,7 @@ module "dns-primaries" {
   primaries = module.cluster.primary_addresses
 }
 
-# Create a certificate to attach to the Load Balancer
+# Create a certificate to attach to the Load Balancer using the GCP Managed Certificate service
 module "cert" {
   source     = "./modules/cert"
   install_id = local.install_id
