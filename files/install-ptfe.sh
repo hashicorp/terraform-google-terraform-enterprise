@@ -55,16 +55,21 @@ JQ_URL=$(cat /etc/ptfe/jq-url)
 
 # Set proxy variables, if needed.
 if [[ $(< /etc/ptfe/http_proxy_url) != none ]]; then
-    http_proxy=$(cat /etc/ptfe/proxy-url)
-    https_proxy=$(cat /etc/ptfe/proxy-url)
+    http_proxy=$(cat /etc/ptfe/http_proxy_url)
+    https_proxy=$(cat /etc/ptfe/http_proxy_url)
     export http_proxy
     export https_proxy
     export no_proxy=10.0.0.0/8,127.0.0.1,35.191.0.0/16,209.85.152.0/22,209.85.204.0/22,130.211.0.0/22
+    if [[ $(< /etc/ptfe/repl-cidr) != "" ]]; then
+        repl_cidr=$(cat /etc/ptfe/repl-cidr)
+        export repl_cidr
+        export no_proxy=$no_proxy,$repl_cidr
+    fi
 
     /bin/cat <<EOF >/etc/profile.d/proxy.sh
 http_proxy="$http_proxy"
 https_proxy="$http_proxy"
-no_proxy=10.0.0.0/8,127.0.0.1,35.191.0.0/16,209.85.152.0/22,209.85.204.0/22,130.211.0.0/22
+no_proxy="$no_proxy"
 EOF
 
     if [ ! -f /etc/redhat-release ]; then

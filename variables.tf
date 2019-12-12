@@ -90,7 +90,7 @@ variable "max_secondaries" {
 variable "min_secondaries" {
   type        = "string"
   description = "The minimum number of secondaries in the autoscaling group"
-  default     = "0"
+  default     = "1"
 }
 
 variable "autoscaler_cpu_threshold" {

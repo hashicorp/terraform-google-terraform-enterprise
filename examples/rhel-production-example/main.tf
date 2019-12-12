@@ -30,7 +30,8 @@ module "tfe-cluster" {
   frontend_dns     = "tfe-cluster"
 
   primary_count   = "3"
-  secondary_count = "2"
+  min_secondaries = "1"
+  max_secondaries = "2"
 
   license_file = "customer.rli"
 
