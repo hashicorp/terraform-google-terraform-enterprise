@@ -1,1 +1,7 @@
+.terraform/
 work
+tmp/
+*.tfstate
+*.tfstate.*
+terraform.tfvars
+*.rli

@@ -9,18 +9,17 @@ variable "prefix" {
   default     = "tfe-"
 }
 
-variable "cert" {
+variable "dnszone" {
   type        = string
-  description = "certificate for the load balancer"
+  description = "name of the managed dns zone"
 }
 
-variable "instance_group" {
+variable "hostname" {
   type        = string
-  description = "primary instance group"
+  description = "DNS hostname for load balancer, appended with the zone's domain"
 }
 
-variable "ssl_policy" {
+variable "address" {
   type        = string
-  description = "SSL policy for the cert. Default to TLS 1.2 Only"
-  default     = ""
+  description = "IP Address to associate with the hostname"
 }
