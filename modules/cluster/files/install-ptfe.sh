@@ -96,7 +96,6 @@ fi
 # Store various bits of info as env vars
 base64 -d /etc/ptfe/replicated-licenseb64 > /etc/replicated.rli
 PTFEHOSTNAME=$(cat /etc/ptfe/hostname)
-PTFEHOSTNAME=${PTFEHOSTNAME%?}
 export PTFEHOSTNAME
 ENCPASSWD=$(cat /etc/ptfe/encpasswd)
 export ENCPASSWD
