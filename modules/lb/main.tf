@@ -24,7 +24,7 @@ resource "google_compute_health_check" "application" {
 
 resource "google_compute_url_map" "tfe" {
   name        = "${var.prefix}urlmap-${var.install_id}"
-  description = "Terraform Enteprise"
+  description = "Terraform Enterprise"
 
   default_service = google_compute_backend_service.application.self_link
 }

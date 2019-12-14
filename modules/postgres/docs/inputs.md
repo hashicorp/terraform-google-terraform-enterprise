@@ -12,5 +12,4 @@
 | postgresql\_password | Password for Postgres Database | `string` | `""` | no |
 | postgresql\_user | Username for Postgres Database | `string` | `"tfepsqluser"` | no |
 | prefix | Prefix for resources | `string` | `"tfe-"` | no |
-| region | The region to install into. | `string` | `"us-central1"` | no |
 

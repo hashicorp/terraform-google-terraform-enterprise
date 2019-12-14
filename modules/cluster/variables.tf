@@ -136,6 +136,7 @@ variable "autoscaler_cpu_threshold" {
   default     = "0.7"
 }
 
+
 ###################################################
 # Optional External Services Variables
 ###################################################
