@@ -11,5 +11,5 @@ variable "prefix" {
 
 variable "domain_name" {
   type        = string
-  description = "The fully qualified domain name of to create the cert for "
+  description = "The fully qualified domain name of to create the cert for"
 }
