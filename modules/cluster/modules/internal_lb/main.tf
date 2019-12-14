@@ -38,7 +38,7 @@ resource "google_compute_region_backend_service" "internal" {
 resource "google_compute_health_check" "http" {
   name = "${var.prefix}internal-lb-check-${var.install_id}"
 
-  http_health_check {
+  tcp_health_check {
     port = local.healthcheck_port
   }
 }

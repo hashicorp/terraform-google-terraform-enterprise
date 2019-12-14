@@ -17,9 +17,8 @@ resource "google_compute_health_check" "application" {
   check_interval_sec = 5
   timeout_sec        = 4
 
-  https_health_check {
-    request_path = "/"
-    port         = "443"
+  tcp_health_check {
+    port = "443"
   }
 }
 
