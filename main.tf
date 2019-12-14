@@ -40,6 +40,7 @@ module "service-account" {
   source     = "./modules/service-account"
   install_id = local.install_id
   prefix     = var.prefix
+  bucket     = module.gcs.bucket_name
 }
 
 # Configures the TFE cluster itself. Data is stored in the configured
