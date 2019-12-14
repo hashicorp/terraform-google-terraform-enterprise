@@ -3,6 +3,7 @@ resource "google_compute_global_address" "private_ip_address" {
 
   name          = "${var.prefix}private-ip-address-${var.install_id}"
   purpose       = "VPC_PEERING"
+  address       = "10.200.1.0"
   address_type  = "INTERNAL"
   prefix_length = 24
   network       = var.network_url
