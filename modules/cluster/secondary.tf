@@ -1,18 +1,5 @@
-resource "google_compute_health_check" "autohealing" {
-  name                = "autohealing-health-check"
-  check_interval_sec  = 5
-  timeout_sec         = 5
-  healthy_threshold   = 2
-  unhealthy_threshold = 10 # 50 seconds
-
-  http_health_check {
-    request_path = "/_health_check"
-    port         = "443"
-  }
-}
-
 resource "google_compute_instance_template" "secondary" {
-  name_prefix    = "${var.prefix}-secondary-template-"
+  name_prefix    = "${var.prefix}secondary-template-"
   machine_type   = var.secondary_machine_type
   region         = var.region
   can_ip_forward = true
@@ -47,16 +34,14 @@ resource "google_compute_instance_template" "secondary" {
 }
 
 resource "google_compute_region_instance_group_manager" "secondary" {
-  name = "secondary"
+  name = "${var.prefix}secondary-${var.install_id}"
 
-  base_instance_name = "${var.prefix}-secondary"
+  base_instance_name = "${var.prefix}secondary-${var.install_id}"
   region             = var.region
 
   version {
     instance_template = google_compute_instance_template.secondary.self_link
   }
-
-  target_size = var.secondary_count
 
   named_port {
     name = "https"
@@ -64,3 +49,17 @@ resource "google_compute_region_instance_group_manager" "secondary" {
   }
 }
 
+resource "google_compute_region_autoscaler" "secondary" {
+  name   = "${var.prefix}secondary-autoscaler-${var.install_id}"
+  target = google_compute_region_instance_group_manager.secondary.self_link
+
+  autoscaling_policy {
+    max_replicas    = var.max_secondaries
+    min_replicas    = var.min_secondaries
+    cooldown_period = 300
+
+    cpu_utilization {
+      target = var.autoscaler_cpu_threshold
+    }
+  }
+}
