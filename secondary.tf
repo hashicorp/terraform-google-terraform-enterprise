@@ -25,7 +25,7 @@ resource "google_compute_region_instance_group_manager" "secondary" {
 }
 
 resource "google_compute_region_autoscaler" "secondary" {
-  name   = "secondary-autoscaler"
+  name   = "${var.prefix}-secondary-autoscaler"
   target = "${google_compute_region_instance_group_manager.secondary.self_link}"
 
   autoscaling_policy {
