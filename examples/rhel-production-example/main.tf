@@ -16,7 +16,7 @@ provider "google-beta" {
 
 module "tfe-cluster" {
   source           = "hashicorp/terraform-enterprise/google"
-  version          = "0.1.0"
+  version          = "0.1.2"
   credentials_file = "auth-file-123456678.json"
   region           = "${var.region}"
   zone             = "${var.region}-a"
