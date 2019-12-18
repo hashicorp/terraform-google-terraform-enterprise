@@ -1,10 +1,46 @@
 locals {
   ports            = ["80", "443", "6443", "23010"]
-  healthcheck_port = "23010"
+  healthcheck_port = 6443
 }
 
 data "google_compute_subnetwork" "internal" {
   name = var.subnet
+}
+
+resource "google_compute_address" "primaries" {
+  name         = "${var.prefix}primaries-lb-${var.install_id}"
+  address_type = "INTERNAL"
+  subnetwork   = data.google_compute_subnetwork.internal.self_link
+}
+
+resource "google_compute_health_check" "cluster-api" {
+  name = "${var.prefix}cluster-api-check-${var.install_id}"
+
+  tcp_health_check {
+    port = 6443
+  }
+}
+
+resource "google_compute_region_backend_service" "primaries" {
+  name          = "${var.prefix}primaries-lb-${var.install_id}"
+  protocol      = "TCP"
+  timeout_sec   = 10
+  health_checks = [google_compute_health_check.cluster-api.self_link]
+
+  backend {
+    group = var.primaries
+  }
+}
+
+resource "google_compute_forwarding_rule" "primaries" {
+  name                  = "${var.prefix}primaries-lb-${var.install_id}"
+  network               = data.google_compute_subnetwork.internal.network
+  subnetwork            = data.google_compute_subnetwork.internal.self_link
+  load_balancing_scheme = "INTERNAL"
+  backend_service       = google_compute_region_backend_service.primaries.self_link
+  ip_address            = google_compute_address.primaries.address
+  ip_protocol           = "TCP"
+  ports                 = local.ports
 }
 
 resource "google_compute_address" "internal" {
@@ -28,14 +64,14 @@ resource "google_compute_region_backend_service" "internal" {
   name          = "${var.prefix}internal-lb-${var.install_id}"
   protocol      = "TCP"
   timeout_sec   = 10
-  health_checks = [google_compute_health_check.http.self_link]
+  health_checks = [google_compute_health_check.tcp.self_link]
 
   backend {
     group = google_compute_region_instance_group_manager.haproxy.instance_group
   }
 }
 
-resource "google_compute_health_check" "http" {
+resource "google_compute_health_check" "tcp" {
   name = "${var.prefix}internal-lb-check-${var.install_id}"
 
   tcp_health_check {

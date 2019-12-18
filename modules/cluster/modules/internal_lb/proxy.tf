@@ -25,15 +25,15 @@ resource "google_compute_instance_template" "haproxy" {
 
   network_interface {
     subnetwork = var.subnet
-
-    access_config {
-      // Public IP
-    }
   }
 
-  metadata_startup_script = templatefile("${path.module}/files/setup-haproxy.sh", {
-    hostnames = var.primary_hostnames
+  metadata_startup_script = templatefile("${path.module}/files/setup-proxy.sh", {
+    host = google_compute_address.primaries.address
   })
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 resource "google_compute_region_instance_group_manager" "haproxy" {

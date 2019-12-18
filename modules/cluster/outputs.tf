@@ -1,55 +1,32 @@
-/*
-
-output "application_endpoint" {
-  value = "https://${var.frontend_dns}.${substr(
-    data.google_dns_managed_zone.dnszone.dns_name,
-    0,
-    length(data.google_dns_managed_zone.dnszone.dns_name) - 1,
-  )}"
-  description = "The URI to access the Terraform Enterprise Application."
-}
-
-output "application_health_check" {
-  value = "https://${var.frontend_dns}.${substr(
-    data.google_dns_managed_zone.dnszone.dns_name,
-    0,
-    length(data.google_dns_managed_zone.dnszone.dns_name) - 1,
-  )}/_health_check"
-  description = "The URI for the Terraform Enterprise Application health check."
-}
-*/
-
 output "installer_dashboard_password" {
-  value       = random_pet.console_password.id
   description = "The password to access the installer dashboard."
+  value       = random_pet.console_password.id
 }
 
 output "installer_dashboard_url" {
-  value       = "https://${google_compute_instance.primary[0].network_interface[0].access_config[0].nat_ip}:8800"
   description = "The URL to access the installer dashboard."
+  value       = "https://${google_compute_instance.primary[0].network_interface[0].access_config[0].nat_ip}:8800"
 }
 
-/*
-output "primary_public_ip" {
-  value       = var.public_ip
-  description = "The Public IP for the load balancer to use."
-}
-*/
-
-output "encryption_password" {
-  value       = local.encryption_password
-  description = "If you did not specify an encryption password, this was used."
+output "application_endpoints" {
+  description = "Network Endpoints Group that for the application services"
+  value       = google_compute_network_endpoint_group.https.self_link
 }
 
-output "instance_group" {
-  value = google_compute_instance_group.primaries.self_link
+output "cluster_api_endpoint" {
+  description = "Internal address of the cluster api address used for internal communication"
+  value       = module.internal_lb.address
 }
 
-output "primary_addresses" {
-  value = [for primary in google_compute_instance.primary.* :
-    {
-      hostname = primary.name,
-      address  = primary.network_interface.0.access_config.0.nat_ip,
-    }
-  ]
+output "application_addresses" {
+  description = "IP addresses of primaries that are running the application on port 443"
+  value       = [for primary in google_compute_instance.primary.* : primary.network_interface.0.network_ip]
+}
+output "primary_external_addresses" {
+  description = "External IP addresses of primaries for updating DNS"
+
+  value = [for primary in google_compute_instance.primary.* : {
+    hostname = primary.name,
+    address  = primary.network_interface.0.access_config.0.nat_ip,
+  }]
 }

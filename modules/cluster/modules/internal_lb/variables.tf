@@ -13,9 +13,9 @@ variable "region" {
   description = "GCP Region"
 }
 
-variable "primary_hostnames" {
-  type        = list(string)
-  description = "Hostnames of the primaries to load balance to"
+variable "primaries" {
+  type        = string
+  description = "GCP Instance Group for the primaries"
 }
 
 variable "prefix" {
