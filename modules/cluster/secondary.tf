@@ -20,13 +20,10 @@ resource "google_compute_instance_template" "secondary" {
     }
   }
 
-  metadata = merge(local.common_metadata, {
-    ptfe-role            = "secondary"
-    role-id              = "0"
-    airgap-installer-url = var.airgap_package_url == "none" ? "none" : local.internal_airgap_url
-  })
-
-  metadata_startup_script = file("${path.module}/files/install-ptfe.sh")
+  metadata = {
+    user-data          = var.cluster-config.secondary_cloudinit
+    user-data-encoding = "base64"
+  }
 
   labels = {
     "name" = var.prefix

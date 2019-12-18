@@ -6,6 +6,7 @@ data "template_file" "proxy_sh" {
   template = file("${path.module}/templates/cloud-init/proxy.sh")
 
   vars = {
+    no_proxy  = join(",", compact(["10.0.0.0/8", "127.0.0.1", "169.254.169.254", var.repl_cidr]))
     proxy_url = var.http_proxy_url
   }
 }
@@ -87,4 +88,3 @@ data "template_cloudinit_config" "config_secondary" {
     content      = data.template_file.cloud_config_secondary.rendered
   }
 }
-

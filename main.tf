@@ -43,6 +43,39 @@ module "service-account" {
   bucket     = module.gcs.bucket_name
 }
 
+module "external_config" {
+  source = "./modules/external-config"
+
+  gcs_bucket          = module.gcs.bucket_name
+  gcs_credentials     = base64decode(module.service-account.credentials)
+  gcs_project         = var.project
+  postgresql_address  = module.postgres.address
+  postgresql_database = module.postgres.database_name
+  postgresql_password = module.postgres.password
+  postgresql_user     = module.postgres.user
+}
+
+module "common_config" {
+  source = "./modules/common-config"
+
+  external_name = module.dns.fqdn
+  services_config = {
+    config       = module.external_config.services_config.config
+    service_type = module.external_config.services_config.service_type
+  }
+}
+
+module "configs" {
+  source = "./modules/configs"
+
+  cluster_api_endpoint = ""
+  common-config = {
+    application_config = module.common_config.application_config
+    ca_certs           = module.common_config.ca_certs
+  }
+  license_file = var.license_file
+}
+
 # Configures the TFE cluster itself. Data is stored in the configured
 # GCS bucket and Postgres Database.
 module "cluster" {
@@ -67,6 +100,11 @@ module "cluster" {
   postgresql_database = module.postgres.database_name
   postgresql_user     = module.postgres.user
   postgresql_password = module.postgres.password
+
+  cluster-config = {
+    primary_cloudinit   = module.configs.primary_cloudinit
+    secondary_cloudinit = module.configs.secondary_cloudinit
+  }
 }
 
 # Configures DNS entries for the primaries as a convenience
@@ -110,4 +148,3 @@ module "dns" {
   dnszone  = var.dnszone
   hostname = var.hostname
 }
-
