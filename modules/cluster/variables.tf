@@ -233,11 +233,6 @@ variable "jq_url" {
 # Resources
 ###################################################
 
-## random password for the installer dashboard
-resource "random_pet" "console_password" {
-  length = 3
-}
-
 resource "random_string" "bootstrap_token_id" {
   length  = 6
   upper   = false
@@ -253,11 +248,5 @@ resource "random_string" "bootstrap_token_suffix" {
 resource "random_string" "setup_token" {
   length  = 32
   upper   = false
-  special = false
-}
-
-resource "random_string" "default_enc_password" {
-  length  = 32
-  upper   = true
   special = false
 }
