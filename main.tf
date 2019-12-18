@@ -7,6 +7,10 @@ module "gcs" {
   region = var.region
 }
 
+# Network creation:
+# This section creates the various aspects of the networking required
+# to run the cluster.
+
 # Configure a Compute Network and Subnetwork to deploy resources into.
 module "vpc" {
   source     = "./modules/vpc"
@@ -68,7 +72,7 @@ module "common_config" {
 module "configs" {
   source = "./modules/configs"
 
-  cluster_api_endpoint = ""
+  cluster_api_endpoint = module.cluster.cluster_api_endpoint
   common-config = {
     application_config = module.common_config.application_config
     ca_certs           = module.common_config.ca_certs
@@ -83,12 +87,16 @@ module "cluster" {
   install_id = local.install_id
   prefix     = var.prefix
 
-  license_file = var.license_file
-
   project = var.project
   region  = var.region
+  subnet  = module.vpc.subnet_name
 
-  subnet = module.vpc.subnet_name
+  cluster-config = {
+    primary_cloudinit   = module.configs.primary_cloudinit
+    secondary_cloudinit = module.configs.secondary_cloudinit
+  }
+
+  license_file = var.license_file
 
   access_fqdn = module.dns.fqdn
 
@@ -100,11 +108,6 @@ module "cluster" {
   postgresql_database = module.postgres.database_name
   postgresql_user     = module.postgres.user
   postgresql_password = module.postgres.password
-
-  cluster-config = {
-    primary_cloudinit   = module.configs.primary_cloudinit
-    secondary_cloudinit = module.configs.secondary_cloudinit
-  }
 }
 
 # Configures DNS entries for the primaries as a convenience
@@ -115,7 +118,7 @@ module "dns-primaries" {
 
   project   = var.project
   dnszone   = var.dnszone
-  primaries = module.cluster.primary_addresses
+  primaries = module.cluster.primary_external_addresses
 }
 
 # Create a certificate to attach to the Load Balancer using the GCP Managed Certificate service
@@ -135,7 +138,7 @@ module "loadbalancer" {
   prefix     = var.prefix
 
   cert           = module.cert.certificate
-  instance_group = module.cluster.instance_group
+  instance_group = module.cluster.application_endpoints
 }
 
 # Configures DNS entries for the load balancer for cluster access
