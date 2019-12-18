@@ -29,13 +29,13 @@ variable "postgresql_machinetype" {
 variable "postgresql_dbname" {
   type        = string
   description = "Name of Postgres Database"
-  default     = "ptfe"
+  default     = "tfe"
 }
 
 variable "postgresql_user" {
   type        = string
   description = "Username for Postgres Database"
-  default     = "tfepsqluser"
+  default     = "tfe"
 }
 
 variable "postgresql_password" {

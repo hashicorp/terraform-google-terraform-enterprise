@@ -20,7 +20,7 @@ resource "google_service_networking_connection" "private_vpc_connection" {
 
 resource "google_sql_database_instance" "tfe" {
   provider         = google-beta
-  name             = "${var.prefix}postgres-${var.install_id}"
+  name             = "${var.prefix}tfe-${var.install_id}"
   database_version = "POSTGRES_9_6"
 
   depends_on = [google_service_networking_connection.private_vpc_connection]
@@ -34,6 +34,8 @@ resource "google_sql_database_instance" "tfe" {
       ipv4_enabled    = false
       private_network = var.network_url
     }
+
+    user_labels = var.labels
   }
 }
 
