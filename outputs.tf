@@ -6,6 +6,6 @@ output "dashboard_url" {
   value = module.cluster.installer_dashboard_url
 }
 
-output "dashboard_pasword" {
+output "dashboard_password" {
   value = module.cluster-config.console_password
 }
