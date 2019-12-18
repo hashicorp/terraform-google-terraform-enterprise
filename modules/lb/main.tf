@@ -45,7 +45,7 @@ resource "google_compute_target_https_proxy" "tfe" {
 }
 
 resource "google_compute_global_address" "application" {
-  name = "${var.prefix}-tfe-${var.install_id}"
+  name = "${var.prefix}tfe-${var.install_id}"
 }
 
 resource "google_compute_global_forwarding_rule" "https" {
