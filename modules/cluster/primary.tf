@@ -32,14 +32,10 @@ resource "google_compute_instance" "primary" {
     }
   }
 
-  metadata = merge(local.common_metadata, {
-    ptfe-role            = count.index == 0 ? "main" : "primary"
-    role-id              = count.index
-    ptfe-hostname        = var.access_fqdn
-    airgap-installer-url = var.airgap_package_url == "none" ? "none" : count.index == 0 ? var.airgap_installer_url : local.internal_airgap_url
-  })
-
-  metadata_startup_script = file("${path.module}/files/install-ptfe.sh")
+  metadata = {
+    user-data          = var.cluster-config.primary_cloudinit[count.index]
+    user-data-encoding = "base64"
+  }
 
   labels = {
     "name" = var.prefix
