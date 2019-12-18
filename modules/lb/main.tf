@@ -7,8 +7,10 @@ resource "google_compute_backend_service" "application" {
   health_checks = [google_compute_health_check.application.self_link]
 
   backend {
-    description = "TFE Application"
-    group       = var.instance_group
+    description    = "TFE Application"
+    balancing_mode = "RATE"
+    group          = var.instance_group
+    max_rate       = 1000
   }
 }
 
