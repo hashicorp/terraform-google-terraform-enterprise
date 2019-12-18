@@ -7,6 +7,10 @@ module "gcs" {
   region = var.region
 }
 
+# Network creation:
+# This section creates the various aspects of the networking required
+# to run the cluster.
+
 # Configure a Compute Network and Subnetwork to deploy resources into.
 module "vpc" {
   source     = "./modules/vpc"
@@ -43,6 +47,34 @@ module "service-account" {
   bucket     = module.gcs.bucket_name
 }
 
+module "app-config" {
+  source = "./modules/external-config"
+
+  gcs_bucket      = module.gcs.bucket_name
+  gcs_project     = var.project
+  gcs_credentials = module.service-account.credentials
+
+  postgresql_address  = module.postgres.address
+  postgresql_database = module.postgres.database_name
+  postgresql_user     = module.postgres.user
+  postgresql_password = module.postgres.password
+}
+
+module "common-config" {
+  source = "./modules/common-config"
+
+  services_config = module.app-config.services_config
+  external_name   = module.dns.fqdn
+}
+
+module "cluster-config" {
+  source = "./modules/configs"
+
+  license_file         = var.license_file
+  cluster_api_endpoint = module.cluster.cluster_api_endpoint
+  common-config        = module.common-config
+}
+
 # Configures the TFE cluster itself. Data is stored in the configured
 # GCS bucket and Postgres Database.
 module "cluster" {
@@ -50,12 +82,13 @@ module "cluster" {
   install_id = local.install_id
   prefix     = var.prefix
 
-  license_file = var.license_file
-
   project = var.project
   region  = var.region
+  subnet  = module.vpc.subnet_name
 
-  subnet = module.vpc.subnet_name
+  cluster-config = module.cluster-config
+
+  license_file = var.license_file
 
   access_fqdn = module.dns.fqdn
 
@@ -77,7 +110,7 @@ module "dns-primaries" {
 
   project   = var.project
   dnszone   = var.dnszone
-  primaries = module.cluster.primary_addresses
+  primaries = module.cluster.primary_external_addresses
 }
 
 # Create a certificate to attach to the Load Balancer using the GCP Managed Certificate service
@@ -97,7 +130,7 @@ module "loadbalancer" {
   prefix     = var.prefix
 
   cert           = module.cert.certificate
-  instance_group = module.cluster.instance_group
+  instance_group = module.cluster.application_endpoints
 }
 
 # Configures DNS entries for the load balancer for cluster access
