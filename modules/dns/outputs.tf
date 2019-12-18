@@ -3,5 +3,5 @@ output "fqdn" {
 }
 
 output "dns_zone" {
-  value = "${data.google_dns_managed_zone.dnszone.name}"
+  value = data.google_dns_managed_zone.dnszone.name
 }
