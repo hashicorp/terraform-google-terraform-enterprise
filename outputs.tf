@@ -7,5 +7,5 @@ output "dashboard_url" {
 }
 
 output "dashboard_pasword" {
-  value = module.cluster.installer_dashboard_password
+  value = module.cluster-config.console_password
 }

@@ -1,8 +1,3 @@
-output "installer_dashboard_password" {
-  description = "The password to access the installer dashboard."
-  value       = random_pet.console_password.id
-}
-
 output "installer_dashboard_url" {
   description = "The URL to access the installer dashboard."
   value       = "https://${google_compute_instance.primary[0].network_interface[0].access_config[0].nat_ip}:8800"
