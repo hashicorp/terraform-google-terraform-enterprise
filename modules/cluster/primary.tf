@@ -54,5 +54,38 @@ resource "google_compute_instance_group" "primaries" {
     port = 443
   }
 
+  named_port {
+    name = "cluster"
+    port = 6443
+  }
+
+  named_port {
+    name = "assist"
+    port = 23010
+  }
+
   depends_on = [google_compute_instance.primary]
 }
+
+data "google_compute_subnetwork" "internal" {
+  name = var.subnet
+}
+
+resource "google_compute_network_endpoint_group" "https" {
+  name         = "${var.prefix}primary-cluster-${var.install_id}"
+  subnetwork   = var.subnet
+  network      = data.google_compute_subnetwork.internal.network
+  default_port = "443"
+  zone         = local.zone
+}
+
+resource "google_compute_network_endpoint" "https" {
+  count                  = local.primary_count
+  network_endpoint_group = google_compute_network_endpoint_group.https.name
+
+  instance   = google_compute_instance.primary[count.index].name
+  port       = 443
+  ip_address = google_compute_instance.primary[count.index].network_interface[0].network_ip
+  zone       = local.zone
+}
+

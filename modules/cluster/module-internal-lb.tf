@@ -4,6 +4,6 @@ module "internal_lb" {
   prefix     = var.prefix
   region     = var.region
 
-  subnet            = var.subnet
-  primary_hostnames = google_compute_instance.primary.*.name
+  subnet    = var.subnet
+  primaries = google_compute_instance_group.primaries.self_link
 }
