@@ -1,3 +1,3 @@
 output "credentials" {
-  value = google_service_account_key.tfe.private_key
+  value = base64decode(google_service_account_key.tfe.private_key)
 }
