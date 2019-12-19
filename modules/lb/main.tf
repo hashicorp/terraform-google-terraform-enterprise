@@ -32,6 +32,7 @@ resource "google_compute_url_map" "tfe" {
 }
 
 resource "google_compute_ssl_policy" "default_policy" {
+  count           = var.ssl_policy == "" ? 1 : 0
   name            = "${var.prefix}tfe-${var.install_id}"
   profile         = "RESTRICTED"
   min_tls_version = "TLS_1_2"
@@ -41,7 +42,7 @@ resource "google_compute_target_https_proxy" "tfe" {
   name             = "${var.prefix}https-${var.install_id}"
   url_map          = google_compute_url_map.tfe.self_link
   ssl_certificates = [var.cert]
-  ssl_policy       = var.ssl_policy != "" ? var.ssl_policy : google_compute_ssl_policy.default_policy.self_link
+  ssl_policy       = var.ssl_policy != "" ? var.ssl_policy : google_compute_ssl_policy.default_policy[0].self_link
 }
 
 resource "google_compute_global_address" "application" {
