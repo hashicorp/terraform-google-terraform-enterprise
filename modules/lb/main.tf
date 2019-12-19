@@ -32,7 +32,7 @@ resource "google_compute_url_map" "tfe" {
 }
 
 resource "google_compute_ssl_policy" "default_policy" {
-  name            = "ptfe-ssl-policy"
+  name            = "${var.prefix}tfe-${var.install_id}"
   profile         = "RESTRICTED"
   min_tls_version = "TLS_1_2"
 }
@@ -56,4 +56,3 @@ resource "google_compute_global_forwarding_rule" "https" {
 
   load_balancing_scheme = "EXTERNAL"
 }
-
