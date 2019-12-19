@@ -37,6 +37,9 @@ module "postgres" {
   prefix     = var.prefix
 
   network_url = module.vpc.network_url
+
+  postgresql_availability_type = var.postgresql_availability_type
+  postgresql_backup_start_time = var.postgresql_backup_start_time
 }
 
 # Create a GCP service account to access our GCS bucket

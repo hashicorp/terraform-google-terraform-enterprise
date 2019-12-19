@@ -28,11 +28,17 @@ resource "google_sql_database_instance" "tfe" {
   settings {
     # Second-generation instance tiers are based on the machine
     # type. See argument reference below.
-    tier = var.postgresql_machinetype
+    tier              = var.postgresql_machinetype
+    availability_type = var.postgresql_availability_type
 
     ip_configuration {
       ipv4_enabled    = false
       private_network = var.network_url
+    }
+
+    backup_configuration {
+      enabled    = var.postgresql_backup_start_time == "" ? false : true
+      start_time = var.postgresql_backup_start_time
     }
 
     user_labels = var.labels
@@ -59,4 +65,3 @@ resource "google_sql_user" "tfe" {
 
   password = local.password
 }
-
