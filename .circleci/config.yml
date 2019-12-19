@@ -35,8 +35,5 @@ jobs:
           name: create fake tfvars file and provider stub
           command: echo -e "license_file = \"~/fake.rli\"\ncredentials_file = \"~/fake_creds.json\"\ndnszone = \"fake-zone\"\nproject = \"fake-project\"\n" > terraform.tfvars
       - run:
-          name: create provider stub
-          command: echo -e "provider \"google\" {\n  region = \"us-west-2\"\n}\n" > provider.tf
-      - run:
           name: init configs and check if valid
           command: terraform init && terraform validate
