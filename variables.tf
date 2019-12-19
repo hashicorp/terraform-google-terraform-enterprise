@@ -41,3 +41,25 @@ variable "prefix" {
   description = "Prefix to apply to all resources names"
   default     = "tfe-"
 }
+
+###################################################
+# Cluster secondary scaling
+###################################################
+
+variable "max_secondaries" {
+  type        = string
+  description = "The maximum number of secondaries in the autoscaling group"
+  default     = "3"
+}
+
+variable "min_secondaries" {
+  type        = string
+  description = "The minimum number of secondaries in the autoscaling group"
+  default     = "0"
+}
+
+variable "autoscaler_cpu_threshold" {
+  type        = string
+  description = "The cpu threshold at which the autoscaling group to build another instance"
+  default     = "0.7"
+}
