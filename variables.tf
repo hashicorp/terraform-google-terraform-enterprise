@@ -41,3 +41,19 @@ variable "prefix" {
   description = "Prefix to apply to all resources names"
   default     = "tfe-"
 }
+
+###################################################
+# Postgresql options
+###################################################
+
+variable "postgresql_availability_type" {
+  type        = string
+  description = "This specifies whether a PostgreSQL instance should be set up for high availability (REGIONAL) or single zone (ZONAL)"
+  default     = "ZONAL"
+}
+
+variable "postgresql_backup_start_time" {
+  type        = string
+  description = "HH:MM format time indicating when backup configuration starts."
+  default     = ""
+}

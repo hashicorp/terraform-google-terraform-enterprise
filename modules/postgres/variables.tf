@@ -43,3 +43,15 @@ variable "postgresql_password" {
   description = "Password for Postgres Database"
   default     = ""
 }
+
+variable "postgresql_availability_type" {
+  type        = string
+  description = "This specifies whether a PostgreSQL instance should be set up for high availability (REGIONAL) or single zone (ZONAL)"
+  default     = "ZONAL"
+}
+
+variable "postgresql_backup_start_time" {
+  type        = string
+  description = "HH:MM format time indicating when backup configuration starts."
+  default     = ""
+}
