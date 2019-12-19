@@ -10,7 +10,7 @@ workflows:
 jobs:
   format_check:
     docker:
-      - image: "hashicorp/terraform:0.11.14"
+      - image: "hashicorp/terraform:0.12.17"
     steps:
       - checkout
       - run:
@@ -19,7 +19,7 @@ jobs:
   validation_check:
     working_directory: ~
     docker:
-      - image: "hashicorp/terraform:0.11.14"
+      - image: "hashicorp/terraform:0.12.17"
     steps:
       - checkout
       - run:
@@ -33,10 +33,7 @@ jobs:
           command: touch ~/fake.cer
       - run:
           name: create fake tfvars file and provider stub
-          command: echo -e "license_file = \"~/fake.rli\"\ncredentials_file = \"~/fake_creds.json\"\ncertificate = \"~/fake.cer\"\ndomain = \"example.com\"\nfrontend_dns = \"tfe.example.com\"\npublic_ip = \"10.0.0.1\"\nssl_policy = \"fake-policy\"\nsubnet = \"fake-subnet\"\ndns_zone = \"fake-zone\"\nproject = \"fake-project\"\n" > terraform.tfvars
-      - run:
-          name: create provider stub
-          command: echo -e "provider \"google\" {\n  region = \"us-west-2\"\n}\n" > provider.tf
+          command: echo -e "license_file = \"~/fake.rli\"\ncredentials_file = \"~/fake_creds.json\"\ndnszone = \"fake-zone\"\nproject = \"fake-project\"\n" > terraform.tfvars
       - run:
           name: init configs and check if valid
           command: terraform init && terraform validate

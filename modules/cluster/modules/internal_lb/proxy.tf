@@ -1,5 +1,5 @@
 resource "google_compute_health_check" "autohealing" {
-  name                = "${var.prefix}haproxy-health-check"
+  name                = "${var.prefix}haproxy-health-check-${var.install_id}"
   check_interval_sec  = 5
   timeout_sec         = 5
   healthy_threshold   = 2
@@ -53,4 +53,3 @@ resource "google_compute_region_instance_group_manager" "haproxy" {
     port = 6443
   }
 }
-

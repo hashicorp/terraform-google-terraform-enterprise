@@ -103,6 +103,10 @@ module "cluster" {
   postgresql_database = module.postgres.database_name
   postgresql_user     = module.postgres.user
   postgresql_password = module.postgres.password
+
+  max_secondaries          = var.max_secondaries
+  min_secondaries          = var.min_secondaries
+  autoscaler_cpu_threshold = var.autoscaler_cpu_threshold
 }
 
 # Configures DNS entries for the primaries as a convenience
@@ -146,4 +150,3 @@ module "dns" {
   dnszone  = var.dnszone
   hostname = var.hostname
 }
-
