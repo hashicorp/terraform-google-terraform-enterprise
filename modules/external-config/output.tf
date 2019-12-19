@@ -35,7 +35,10 @@ output "services_config" {
       }
 
       gcs_credentials = {
-        value = var.gcs_credentials
+        # This is required because when we use the value later, it needs to be one line otherwise
+        # the templating breaks inside kubernetes. That should be addressed as well, but until then
+        # we do it here.
+        value = replace(var.gcs_credentials, "\n", "")
       }
 
       gcs_project = {
