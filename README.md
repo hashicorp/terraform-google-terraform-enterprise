@@ -15,17 +15,38 @@ _example architecture_
 
 Please contact your Technical Account Manager for more information, and support for any issues you have.
 
-## Examples
+## Usage
+
+The following sections describe aspects of using this
+module.
+
+### Permissions
+
+The following roles must be assigned to the GCP identity
+used to provision this module:
+
+- Cloud SQL Admin: `roles/cloudsql.admin`
+- Compute Admin: `roles/compute.admin`
+- Service Account Admin:
+  `roles/iam.serviceAccountAdmin`
+- DNS Administrator: `roles/dns.admin`
+- Service Networking Admin:
+  `roles/servicenetworking.networksAdmin`
+- Service Account Key Admin:
+  `roles/iam.serviceAccountKeyAdmin`
+- Storage Admin: `roles/storage.admin`
+
+### Examples
 
 Please see the [examples directory](https://github.com/hashicorp/terraform-google-terraform-enterprise/tree/master/examples/) for more extensive examples.
 
-## Inputs
+### Inputs
 
 Please see the [inputs documentation](https://registry.terraform.io/modules/hashicorp/terraform-enterprise/google/?tab=inputs)
 
 Repository versions of the inputs documentation can be found in [docs/inputs.md](docs/inputs.md)
 
-## Outputs
+### Outputs
 
 Please see the [outputs documentation](https://registry.terraform.io/modules/hashicorp/terraform-enterprise/google/?tab=outputs)
 
