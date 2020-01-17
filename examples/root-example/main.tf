@@ -1,9 +1,3 @@
-variable "region" {
-  default = "us-central1"
-}
-
-variable "project" {}
-
 provider "google" {
   region  = "${var.region}"
   project = "${var.project}"
