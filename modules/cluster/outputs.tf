@@ -1,6 +1,8 @@
 output "installer_dashboard_url" {
   description = "The URL to access the installer dashboard."
-  value       = "https://${google_compute_instance.primary[0].network_interface[0].access_config[0].nat_ip}:8800"
+  value = length(google_compute_instance.primary) > 0 ? (
+    "https://${google_compute_instance.primary[0].network_interface[0].access_config[0].nat_ip}:8800"
+  ) : ""
 }
 
 output "application_endpoints" {
