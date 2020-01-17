@@ -21,7 +21,8 @@ provider "template" {
 }
 
 module "tfe-cluster" {
-  source = "../.."
+  source  = "hashicorp/terraform-enterprise/google"
+  version = "0.1.0"
 
   credentials  = var.credentials
   dnszone      = var.dnszone
