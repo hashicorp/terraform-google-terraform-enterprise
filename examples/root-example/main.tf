@@ -12,6 +12,14 @@ provider "google-beta" {
   project = "${var.project}"
 }
 
+provider "random" {
+  version = "~> 2.2"
+}
+
+provider "template" {
+  version = "~> 2.1"
+}
+
 module "tfe-cluster" {
   source = "../.."
 
