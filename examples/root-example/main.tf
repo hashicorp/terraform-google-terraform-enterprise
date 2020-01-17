@@ -1,15 +1,15 @@
 provider "google" {
   version = "~> 3.0"
 
-  region  = "${var.region}"
-  project = "${var.project}"
+  region  = var.region
+  project = var.project
 }
 
 provider "google-beta" {
   version = "~> 3.0"
 
-  region  = "${var.region}"
-  project = "${var.project}"
+  region  = var.region
+  project = var.project
 }
 
 provider "random" {
@@ -24,9 +24,9 @@ module "tfe-cluster" {
   source           = "hashicorp/terraform-enterprise/google"
   version          = "0.1.1"
   credentials_file = "auth-file-123456678.json"
-  region           = "${var.region}"
+  region           = var.region
   zone             = "${var.region}-a"
-  project          = "${var.project}"
+  project          = var.project
   domain           = "example.com"
   dns_zone         = "example"
   public_ip        = "1.2.3.4"
