@@ -23,9 +23,9 @@ provider "template" {
 module "tfe-cluster" {
   source = "../.."
 
-  credentials  = "auth-file-123456678.json"
-  dnszone      = "example"
-  license_file = "customer.rli"
+  credentials  = var.credentials
+  dnszone      = var.dnszone
+  license_file = var.license_file
   project      = var.project
 
   region = var.region
