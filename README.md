@@ -20,6 +20,22 @@ Please contact your Technical Account Manager for more information, and support 
 The following sections describe aspects of using this
 module.
 
+### Permissions
+
+The following roles must be assigned to the GCP identity
+used to provision this module:
+
+- Cloud SQL Admin: `roles/cloudsql.admin`
+- Compute Admin: `roles/compute.admin`
+- Service Account Admin:
+  `roles/iam.serviceAccountAdmin`
+- DNS Administrator: `roles/dns.admin`
+- Service Networking Admin:
+  `roles/servicenetworking.networksAdmin`
+- Service Account Key Admin:
+  `roles/iam.serviceAccountKeyAdmin`
+- Storage Admin: `roles/storage.admin`
+
 ### Examples
 
 Please see the [examples directory](https://github.com/hashicorp/terraform-google-terraform-enterprise/tree/master/examples/) for more extensive examples.
