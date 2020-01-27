@@ -24,3 +24,7 @@ variable "prefix" {
   default     = "tfe-"
 }
 
+variable "vpc_name" {
+  type        = string
+  description = "Name of Google Compute Network to attach to resources"
+}

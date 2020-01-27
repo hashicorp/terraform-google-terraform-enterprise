@@ -85,9 +85,7 @@ module "cluster" {
   install_id = local.install_id
   prefix     = var.prefix
 
-  project = var.project
-  region  = var.region
-  subnet  = module.vpc.subnet_name
+  project  = var.project
 
   cluster-config = module.cluster-config
 
