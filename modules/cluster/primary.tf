@@ -67,14 +67,10 @@ resource "google_compute_instance_group" "primaries" {
   depends_on = [google_compute_instance.primary]
 }
 
-data "google_compute_subnetwork" "internal" {
-  name = var.subnet
-}
-
 resource "google_compute_network_endpoint_group" "https" {
   name         = "${var.prefix}primary-cluster-${var.install_id}"
   subnetwork   = var.subnet
-  network      = data.google_compute_subnetwork.internal.network
+  network      = var.vpc_name
   default_port = "443"
   zone         = local.zone
 }
@@ -88,4 +84,3 @@ resource "google_compute_network_endpoint" "https" {
   ip_address = google_compute_instance.primary[count.index].network_interface[0].network_ip
   zone       = local.zone
 }
-

@@ -34,7 +34,7 @@ resource "google_compute_region_backend_service" "primaries" {
 
 resource "google_compute_forwarding_rule" "primaries" {
   name                  = "${var.prefix}primaries-lb-${var.install_id}"
-  network               = data.google_compute_subnetwork.internal.network
+  network               = var.vpc_name
   subnetwork            = data.google_compute_subnetwork.internal.self_link
   load_balancing_scheme = "INTERNAL"
   backend_service       = google_compute_region_backend_service.primaries.self_link
@@ -51,7 +51,7 @@ resource "google_compute_address" "internal" {
 
 resource "google_compute_forwarding_rule" "internal" {
   name                  = "${var.prefix}internal-lb-${var.install_id}"
-  network               = data.google_compute_subnetwork.internal.network
+  network               = var.vpc_name
   subnetwork            = data.google_compute_subnetwork.internal.self_link
   load_balancing_scheme = "INTERNAL"
   backend_service       = google_compute_region_backend_service.internal.self_link
@@ -81,7 +81,7 @@ resource "google_compute_health_check" "tcp" {
 
 resource "google_compute_firewall" "internal-ilb-fw" {
   name    = "${var.prefix}internal-lb-fw-${var.install_id}"
-  network = data.google_compute_subnetwork.internal.network
+  network = var.vpc_name
 
   allow {
     protocol = "tcp"
@@ -93,7 +93,7 @@ resource "google_compute_firewall" "internal-ilb-fw" {
 
 resource "google_compute_firewall" "internal-hc" {
   name    = "${var.prefix}internal-lb-hc-${var.install_id}"
-  network = data.google_compute_subnetwork.internal.network
+  network = var.vpc_name
 
   allow {
     protocol = "tcp"

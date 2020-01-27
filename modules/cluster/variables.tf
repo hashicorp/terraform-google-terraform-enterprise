@@ -115,6 +115,11 @@ variable "project" {
   description = "Name of the project to deploy into"
 }
 
+variable "vpc_name" {
+  type        = string
+  description = "Name of Google Compute Network to attach to resources"
+}
+
 ###################################################
 # Optional Variables you should probably set
 ###################################################
