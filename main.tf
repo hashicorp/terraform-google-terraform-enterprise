@@ -88,7 +88,7 @@ module "cluster" {
   project  = var.project
   region   = var.region
   subnet   = module.vpc.subnet_name
-  vpc_name = var.vpc_name
+  vpc_name = module.vpc.vpc_name
 
   cluster-config = module.cluster-config
 
