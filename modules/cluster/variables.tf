@@ -4,7 +4,7 @@ locals {
   internal_airgap_url             = "http://${module.internal_lb.address}:${local.assistant_port}/setup-files/replicated.tar.gz?token=${random_string.setup_token.result}"
 }
 
-### 
+###
 
 variable "install_id" {
   type        = string
@@ -113,6 +113,11 @@ variable "license_file" {
 variable "project" {
   type        = string
   description = "Name of the project to deploy into"
+}
+
+variable "vpc_name" {
+  type        = string
+  description = "Name of Google Compute Network to attach to resources"
 }
 
 ###################################################
@@ -250,4 +255,3 @@ resource "random_string" "setup_token" {
   upper   = false
   special = false
 }
-

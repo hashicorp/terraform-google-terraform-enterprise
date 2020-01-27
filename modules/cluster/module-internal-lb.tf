@@ -5,5 +5,6 @@ module "internal_lb" {
   region     = var.region
 
   subnet    = var.subnet
+  vpc_name  = var.vpc_name
   primaries = google_compute_instance_group.primaries.self_link
 }
