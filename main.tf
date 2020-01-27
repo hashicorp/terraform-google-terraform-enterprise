@@ -86,6 +86,8 @@ module "cluster" {
   prefix     = var.prefix
 
   project  = var.project
+  region   = var.region
+  subnet   = module.vpc.subnet_name
 
   cluster-config = module.cluster-config
 
