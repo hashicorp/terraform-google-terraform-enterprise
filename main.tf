@@ -92,8 +92,7 @@ module "cluster" {
 
   project  = var.project
   region   = var.region
-  subnet   = module.vpc.subnet_name
-  vpc_name = module.vpc.vpc_name
+  subnet   = module.vpc.subnet
 
   cluster-config = {
     primary_cloudinit   = module.configs.primary_cloudinit

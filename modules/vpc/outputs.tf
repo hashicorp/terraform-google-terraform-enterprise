@@ -21,3 +21,7 @@ output "network_url" {
 output "subnetwork_url" {
   value = google_compute_network.tfe_vpc.self_link
 }
+
+output "subnet" {
+  value = google_compute_subnetwork.tfe_subnet
+}

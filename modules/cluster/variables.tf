@@ -12,8 +12,8 @@ variable "install_id" {
 }
 
 variable "subnet" {
-  type        = string
-  description = "name of the subnet to install into"
+  type        = object({ ip_cidr_range = string, network = string, self_link = string })
+  description = "GCP Subnetwork to attach resources to"
 }
 
 variable "prefix" {
@@ -113,11 +113,6 @@ variable "license_file" {
 variable "project" {
   type        = string
   description = "Name of the project to deploy into"
-}
-
-variable "vpc_name" {
-  type        = string
-  description = "Name of Google Compute Network to attach to resources"
 }
 
 ###################################################

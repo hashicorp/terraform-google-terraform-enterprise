@@ -3,14 +3,10 @@ locals {
   healthcheck_port = 6443
 }
 
-data "google_compute_subnetwork" "internal" {
-  name = var.subnet
-}
-
 resource "google_compute_address" "primaries" {
   name         = "${var.prefix}primaries-lb-${var.install_id}"
   address_type = "INTERNAL"
-  subnetwork   = data.google_compute_subnetwork.internal.self_link
+  subnetwork   = var.subnet.self_link
 }
 
 resource "google_compute_health_check" "cluster-api" {
@@ -34,8 +30,8 @@ resource "google_compute_region_backend_service" "primaries" {
 
 resource "google_compute_forwarding_rule" "primaries" {
   name                  = "${var.prefix}primaries-lb-${var.install_id}"
-  network               = var.vpc_name
-  subnetwork            = data.google_compute_subnetwork.internal.self_link
+  network               = var.subnet.network
+  subnetwork            = var.subnet.self_link
   load_balancing_scheme = "INTERNAL"
   backend_service       = google_compute_region_backend_service.primaries.self_link
   ip_address            = google_compute_address.primaries.address
@@ -46,13 +42,13 @@ resource "google_compute_forwarding_rule" "primaries" {
 resource "google_compute_address" "internal" {
   name         = "${var.prefix}internal-lb-${var.install_id}"
   address_type = "INTERNAL"
-  subnetwork   = data.google_compute_subnetwork.internal.self_link
+  subnetwork   = var.subnet.self_link
 }
 
 resource "google_compute_forwarding_rule" "internal" {
   name                  = "${var.prefix}internal-lb-${var.install_id}"
-  network               = var.vpc_name
-  subnetwork            = data.google_compute_subnetwork.internal.self_link
+  network               = var.subnet.network
+  subnetwork            = var.subnet.self_link
   load_balancing_scheme = "INTERNAL"
   backend_service       = google_compute_region_backend_service.internal.self_link
   ip_address            = google_compute_address.internal.address
@@ -81,19 +77,19 @@ resource "google_compute_health_check" "tcp" {
 
 resource "google_compute_firewall" "internal-ilb-fw" {
   name    = "${var.prefix}internal-lb-fw-${var.install_id}"
-  network = var.vpc_name
+  network = var.subnet.network
 
   allow {
     protocol = "tcp"
     ports    = local.ports
   }
 
-  source_ranges = [data.google_compute_subnetwork.internal.ip_cidr_range]
+  source_ranges = [var.subnet.ip_cidr_range]
 }
 
 resource "google_compute_firewall" "internal-hc" {
   name    = "${var.prefix}internal-lb-hc-${var.install_id}"
-  network = var.vpc_name
+  network = var.subnet.network
 
   allow {
     protocol = "tcp"
