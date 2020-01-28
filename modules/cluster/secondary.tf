@@ -13,7 +13,7 @@ resource "google_compute_instance_template" "secondary" {
   }
 
   network_interface {
-    subnetwork = var.subnet
+    subnetwork = var.subnet.self_link
 
     access_config {
       // Public IP

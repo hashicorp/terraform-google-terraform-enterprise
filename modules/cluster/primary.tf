@@ -25,7 +25,7 @@ resource "google_compute_instance" "primary" {
   }
 
   network_interface {
-    subnetwork = var.subnet
+    subnetwork = var.subnet.self_link
 
     access_config {
       // public IP
@@ -69,8 +69,8 @@ resource "google_compute_instance_group" "primaries" {
 
 resource "google_compute_network_endpoint_group" "https" {
   name         = "${var.prefix}primary-cluster-${var.install_id}"
-  subnetwork   = var.subnet
-  network      = var.vpc_name
+  subnetwork   = var.subnet.self_link
+  network      = var.subnet.network
   default_port = "443"
   zone         = local.zone
 }
