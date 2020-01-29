@@ -4,8 +4,8 @@ variable "install_id" {
 }
 
 variable "subnet" {
-  type        = string
-  description = "GCP Subnetwork Name for Load Balancer"
+  type        = object({ ip_cidr_range = string, network = string, self_link = string })
+  description = "GCP Subnetwork for Load Balancer"
 }
 
 variable "region" {
@@ -22,9 +22,4 @@ variable "prefix" {
   type        = string
   description = "Prefix for resources"
   default     = "tfe-"
-}
-
-variable "vpc_name" {
-  type        = string
-  description = "Name of Google Compute Network to attach to resources"
 }

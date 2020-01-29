@@ -24,7 +24,7 @@ resource "google_compute_instance_template" "haproxy" {
   }
 
   network_interface {
-    subnetwork = var.subnet
+    subnetwork = var.subnet.self_link
   }
 
   metadata_startup_script = templatefile("${path.module}/files/setup-proxy.sh", {
