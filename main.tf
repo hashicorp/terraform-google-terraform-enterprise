@@ -90,9 +90,9 @@ module "cluster" {
   install_id = local.install_id
   prefix     = var.prefix
 
-  project  = var.project
-  region   = var.region
-  subnet   = module.vpc.subnet
+  project = var.project
+  region  = var.region
+  subnet  = module.vpc.subnet
 
   cluster-config = {
     primary_cloudinit   = module.configs.primary_cloudinit
