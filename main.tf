@@ -75,7 +75,12 @@ module "cluster-config" {
 
   license_file         = var.license_file
   cluster_api_endpoint = module.cluster.cluster_api_endpoint
-  common-config        = module.common-config
+  # Expand module.common-config to avoid a cycle on destroy
+  # https://github.com/hashicorp/terraform/issues/21662#issuecomment-503206685
+  common-config = {
+    application_config = module.common-config.application_config,
+    ca_certs           = module.common-config.ca_certs,
+  }
 }
 
 # Configures the TFE cluster itself. Data is stored in the configured
@@ -89,7 +94,12 @@ module "cluster" {
   region  = var.region
   subnet  = module.vpc.subnet
 
-  cluster-config = module.cluster-config
+  # Expand module.cluster-config to avoid a cycle on destroy
+  # https://github.com/hashicorp/terraform/issues/21662#issuecomment-503206685
+  cluster-config = {
+    primary_cloudinit   = module.cluster-config.primary_cloudinit
+    secondary_cloudinit = module.cluster-config.secondary_cloudinit
+  }
 
   license_file = var.license_file
 
