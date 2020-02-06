@@ -135,8 +135,14 @@ if [[ $(< /etc/ptfe/pg_user) == none ]]; then
     "hostname": {
         "value": "$PTFEHOSTNAME"
     },
+    "enc_password": {
+        "value": "$ENCPASSWD"
+    },
     "installation_type": {
-        "value": "poc"
+        "value": "production"
+    },
+    "production_type": {
+        "value": "internal"
     }
 }
 EOF
