@@ -1,54 +1,125 @@
-# Terraform Enterprise: Clustering for Google
+# Terraform Enterprise on GCP
 
 ![Terraform Logo](https://github.com/hashicorp/terraform-google-terraform-enterprise/blob/master/assets/TerraformLogo.png?raw=true)
 
-## Description
+This module is the official way for HashiCorp customers to
+provision a Terraform Cluster on GCP. The root module makes all the
+decisions for you, and makes deploying a three node cluster as simple
+as:
 
-This module installs Terraform Enterprise Clustering onto one or more gcp instances.
+```hcl
+module "terraform_enterprise" {
+  source  = "hashicorp/terraform-enterprise/google"
+  version = "~> 1.0"
 
-An Ubuntu Bionic (18.04 LTS) image is chosen by default, but this config supports previous version of Ubuntu as well as Red Hat Enterprise Linux 7.2-7.6 (v8 are not supported.)
+  credentials  = "my-service-account-key.json"
+  dnszone      = "my-dns-zone"
+  license_path = “my-company.rli”
+  project      = "my-project"
+}
+```
 
-## Architecture
+Have unique requirements? You can build a bespoke cluster using the
+[customization options](#customization-options) listed below.
 
-![basic diagram](https://github.com/hashicorp/terraform-google-terraform-enterprise/blob/master/assets/gcp_diagram.jpg?raw=true)
-_example architecture_
+## Prerequisites
 
-Please contact your Technical Account Manager for more information, and support for any issues you have.
-
-## Usage
-
-The following sections describe aspects of using this
-module.
+- The latest version of Terraform 0.12
+  [installed](https://learn.hashicorp.com/terraform/getting-started/install)
+  on your machine
+- A Terraform Enterprise license provided by your Account Manager at
+  HashiCorp
+- A GCP account with sufficient permissions to provision infrastructure
 
 ### Permissions
 
-The following roles must be assigned to the GCP identity
+The following permissions are required by the GCP account which will be
 used to provision this module:
 
-- Cloud SQL Admin: `roles/cloudsql.admin`
-- Compute Admin: `roles/compute.admin`
-- Service Account Admin:
-  `roles/iam.serviceAccountAdmin`
-- DNS Administrator: `roles/dns.admin`
-- Service Networking Admin:
-  `roles/servicenetworking.networksAdmin`
-- Service Account Key Admin:
-  `roles/iam.serviceAccountKeyAdmin`
-- Service Account User: `roles/iam.serviceAccountUser`
-- Storage Admin: `roles/storage.admin`
+- Cloud SQL Admin (roles/cloudsql.admin )
+- Compute Admin (roles/compute.admin )
+- DNS Administrator (roles/dns.admin )
+- Service Account Admin (roles/iam.serviceAccountAdmin )
+- Service Account Key Admin (roles/iam.serviceAccountKeyAdmin )
+- Service Account User (roles/iam.serviceAccountUser )
+- Service Networking Admin (roles/servicenetworking.networksAdmin )
+- Storage Admin (roles/storage.admin )
 
-### Examples
+## How to Use the Module
 
-Please see the [examples directory](https://github.com/hashicorp/terraform-google-terraform-enterprise/tree/master/examples/) for more extensive examples.
+1. Clone the [quickstart repository](#) and use it as your working
+   directory.
 
-### Inputs
+   ```sh
+   ~/$ git clone https://github.com/hashicorp/quickstart.git
+   Cloning into 'quickstart'...
 
-Please see the [inputs documentation](https://registry.terraform.io/modules/hashicorp/terraform-enterprise/google/?tab=inputs)
+   ~/$ cd quickstart
+   ```
 
-Repository versions of the inputs documentation can be found in [docs/inputs.md](docs/inputs.md)
+1. Copy the license you received from HashiCorp to the quickstart
+   directory.
 
-### Outputs
+   ```sh
+   ~/quickstart$ cp ~/Downloads/my-company.rli .
+   ```
 
-Please see the [outputs documentation](https://registry.terraform.io/modules/hashicorp/terraform-enterprise/google/?tab=outputs)
+1. Run terraform plan and inspect the results.
 
-Repository versions of the outputs documentation can be found in [docs/outputs.md](docs/outputs.md)
+   ```sh
+   ~/quickstart terraform plan -out create.tfplan
+   ```
+
+1. Run terraform apply and verify the result.
+
+   ```sh
+   ~/quickstart terraform apply create.tfplan
+   ```
+
+1. Make note of the dashboard_url and dashboard_password outputs, as you
+   will need them later to finish configuring the application in your
+   browser.
+
+   ```sh
+   ~/quickstart terraform output dashboard_url
+   ~/quickstart terraform output dashboard_password
+   ```
+
+Wait for GCP to finish provisioning infrastructure, which can take up
+to 10 minutes. Once the cluster is ready, you can finish configuring
+the application in your browser.
+
+### Customization Options
+
+#### Use Your Own Network
+
+To be completed...
+
+#### Change the Number of Nodes In the Cluster
+
+To be completed...
+
+#### Total Control
+
+You can use the included network, external-services, and cluster
+submodules to build a custom cluster that meets your organization’s
+requirements.  Need some pointers? The following examples document
+common installation patterns:
+
+- [Using the default arguments](https://registry.terraform.io/modules/hashicorp/terraform-enterprise/google/0.1.2/examples/root-example)
+
+- [Using RedHat Enterprise Linux as the operating system](https://registry.terraform.io/modules/hashicorp/terraform-enterprise/google/0.1.2/examples/rhel-production-example)
+
+## What makes up the cluster?
+
+![architecture diagram](https://raw.githubusercontent.com/hashicorp/terraform-google-terraform-enterprise/v0.1.2/assets/gcp_diagram.jpg?raw=true)
+
+More details can be found in the
+[GCP Reference Architecture](https://www.terraform.io/docs/enterprise/before-installing/cluster-architecture.html)
+from our public docs.
+
+## FAQ
+
+### Why are you using a GLB and an ILB?
+
+To be completed...
