@@ -1,7 +1,5 @@
 # Terraform Enterprise on GCP
 
-![Terraform Logo](https://github.com/hashicorp/terraform-google-terraform-enterprise/blob/master/assets/TerraformLogo.png?raw=true)
-
 This module is the official way for HashiCorp customers to
 provision a Terraform Cluster on GCP. The root module makes all the
 decisions for you, and makes deploying a three node cluster as simple
