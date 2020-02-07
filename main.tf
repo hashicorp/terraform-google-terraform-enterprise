@@ -74,7 +74,7 @@ module "cluster-config" {
   source = "./modules/configs"
 
   license_file         = var.license_file
-  cluster_api_endpoint = module.cluster.cluster_api_endpoint
+  cluster_api_endpoint = module.internal_lb.address
   # Expand module.common-config to avoid a cycle on destroy
   # https://github.com/hashicorp/terraform/issues/21662#issuecomment-503206685
   common-config = {
@@ -117,6 +117,17 @@ module "cluster" {
   max_secondaries          = var.max_secondaries
   min_secondaries          = var.min_secondaries
   autoscaler_cpu_threshold = var.autoscaler_cpu_threshold
+}
+
+module "internal_lb" {
+  source = "./modules/internal_lb"
+
+  install_id = local.install_id
+  primaries  = module.cluster.primaries.self_link
+  region     = var.region
+  subnet     = module.vpc.subnet
+
+  prefix = var.prefix
 }
 
 # Configures DNS entries for the primaries as a convenience
