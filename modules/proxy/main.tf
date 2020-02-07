@@ -1,6 +1,5 @@
 locals {
-  ports            = ["80", "443", "${local.healthcheck_port}", "23010"]
-  healthcheck_port = 6443
+  ports = concat(var.ports, [var.k8s_api_port])
 }
 
 resource "google_compute_address" "load_balancer_out" {
@@ -13,7 +12,7 @@ resource "google_compute_health_check" "cluster-api" {
   name = "${var.prefix}cluster-api-check-${var.install_id}"
 
   tcp_health_check {
-    port = local.healthcheck_port
+    port = var.k8s_api_port
   }
 }
 
@@ -71,7 +70,7 @@ resource "google_compute_health_check" "tcp" {
   name = "${var.prefix}lb-in-check-${var.install_id}"
 
   tcp_health_check {
-    port = local.healthcheck_port
+    port = var.k8s_api_port
   }
 }
 
@@ -93,7 +92,7 @@ resource "google_compute_firewall" "load_balancer_in_healthcheck" {
 
   allow {
     protocol = "tcp"
-    ports    = [local.healthcheck_port]
+    ports    = [var.k8s_api_port]
   }
 
   source_ranges = ["35.191.0.0/16", "209.85.152.0/22", "209.85.204.0/22", "130.211.0.0/22"]
@@ -107,7 +106,7 @@ resource "google_compute_health_check" "autohealing" {
   unhealthy_threshold = 10 # 50 ds
 
   tcp_health_check {
-    port = local.healthcheck_port
+    port = var.k8s_api_port
   }
 }
 
@@ -128,9 +127,14 @@ resource "google_compute_instance_template" "node" {
     subnetwork = var.subnet.self_link
   }
 
-  metadata_startup_script = templatefile("${path.module}/files/setup-proxy.sh", {
-    host = google_compute_address.load_balancer_out.address
-  })
+  metadata_startup_script = templatefile(
+    "${path.module}/templates/setup-proxy.tmpl",
+    {
+      cluster_assistant_port = var.cluster_assistant_port,
+      host                   = google_compute_address.load_balancer_out.address,
+      k8s_api_port           = var.k8s_api_port,
+    }
+  )
 
   lifecycle {
     create_before_destroy = true
@@ -151,6 +155,6 @@ resource "google_compute_region_instance_group_manager" "node" {
 
   named_port {
     name = "https"
-    port = local.healthcheck_port
+    port = var.k8s_api_port
   }
 }

@@ -1,6 +1,26 @@
+variable "cluster_assistant_port" {
+  type        = number
+  description = "The port of the Cluster Assistant."
+  default     = 23010
+}
+
+variable "k8s_api_port" {
+  type        = number
+  description = "The port of the Kubernetes API."
+  default     = 6443
+}
+
 variable "install_id" {
   type        = string
   description = "Identifier for install to apply to resources"
+}
+
+variable "ports" {
+  type        = list(number)
+  description = <<-EOD
+  Only packets addressed to these ports will be forwarded through the proxy. var.k8s_api_port will be added to this list.
+  EOD
+  default     = [80, 443, 23010]
 }
 
 variable "subnet" {
