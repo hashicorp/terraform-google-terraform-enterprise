@@ -124,6 +124,7 @@ module "proxy" {
 
   install_id = local.install_id
   primaries  = module.cluster.primaries.self_link
+  project    = var.project
   region     = var.region
   subnet     = module.vpc.subnet
 
