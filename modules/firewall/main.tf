@@ -12,6 +12,18 @@ resource "google_compute_firewall" "application" {
   description = "Allow the ingress of traffic within the network."
 }
 
+resource "google_compute_firewall" "weave_fast_datapath" {
+  name    = "${var.prefix}weave-fast-datapath"
+  network = var.vpc_network_self_link
+
+  allow {
+    protocol = "esp"
+  }
+  description   = "Weave fast datapath traffic."
+  direction     = "INGRESS"
+  source_ranges = [var.vpc_subnetwork_ip_cidr_range]
+}
+
 resource "google_compute_firewall" "health_checks" {
   name    = "${var.prefix}health-checks"
   network = var.vpc_network_self_link
