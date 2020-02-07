@@ -38,18 +38,6 @@ resource "google_compute_forwarding_rule" "load_balancer_out" {
   ports                 = local.ports
 }
 
-resource "google_compute_health_check" "autohealing" {
-  name                = "${var.prefix}node-health-check-${var.install_id}"
-  check_interval_sec  = 5
-  timeout_sec         = 5
-  healthy_threshold   = 2
-  unhealthy_threshold = 10 # 50 ds
-
-  tcp_health_check {
-    port = var.k8s_api_port
-  }
-}
-
 resource "google_compute_health_check" "tcp" {
   name = "${var.prefix}lb-in-check-${var.install_id}"
 
