@@ -39,25 +39,25 @@ resource "google_compute_forwarding_rule" "load_balancer_out" {
   ports                 = local.ports
 }
 
-resource "google_compute_address" "internal" {
-  name         = "${var.prefix}internal-lb-${var.install_id}"
+resource "google_compute_address" "load_balancer_in" {
+  name         = "${var.prefix}lb-in-${var.install_id}"
   address_type = "INTERNAL"
   subnetwork   = var.subnet.self_link
 }
 
-resource "google_compute_forwarding_rule" "internal" {
-  name                  = "${var.prefix}internal-lb-${var.install_id}"
+resource "google_compute_forwarding_rule" "load_balancer_in" {
+  name                  = "${var.prefix}lb-in-${var.install_id}"
   network               = var.subnet.network
   subnetwork            = var.subnet.self_link
   load_balancing_scheme = "INTERNAL"
-  backend_service       = google_compute_region_backend_service.internal.self_link
-  ip_address            = google_compute_address.internal.address
+  backend_service       = google_compute_region_backend_service.load_balancer_in.self_link
+  ip_address            = google_compute_address.load_balancer_in.address
   ip_protocol           = "TCP"
   ports                 = local.ports
 }
 
-resource "google_compute_region_backend_service" "internal" {
-  name          = "${var.prefix}internal-lb-${var.install_id}"
+resource "google_compute_region_backend_service" "load_balancer_in" {
+  name          = "${var.prefix}lb-in-${var.install_id}"
   protocol      = "TCP"
   timeout_sec   = 10
   health_checks = [google_compute_health_check.tcp.self_link]
@@ -68,15 +68,15 @@ resource "google_compute_region_backend_service" "internal" {
 }
 
 resource "google_compute_health_check" "tcp" {
-  name = "${var.prefix}internal-lb-check-${var.install_id}"
+  name = "${var.prefix}lb-in-check-${var.install_id}"
 
   tcp_health_check {
     port = local.healthcheck_port
   }
 }
 
-resource "google_compute_firewall" "internal-ilb-fw" {
-  name    = "${var.prefix}internal-lb-fw-${var.install_id}"
+resource "google_compute_firewall" "load_balancer_in" {
+  name    = "${var.prefix}lb-in-fw-${var.install_id}"
   network = var.subnet.network
 
   allow {
@@ -87,8 +87,8 @@ resource "google_compute_firewall" "internal-ilb-fw" {
   source_ranges = [var.subnet.ip_cidr_range]
 }
 
-resource "google_compute_firewall" "internal-hc" {
-  name    = "${var.prefix}internal-lb-hc-${var.install_id}"
+resource "google_compute_firewall" "load_balancer_in_healthcheck" {
+  name    = "${var.prefix}lb-in-hc-${var.install_id}"
   network = var.subnet.network
 
   allow {
