@@ -63,7 +63,7 @@ resource "google_compute_region_backend_service" "load_balancer_in" {
   health_checks = [google_compute_health_check.tcp.self_link]
 
   backend {
-    group = google_compute_region_instance_group_manager.haproxy.instance_group
+    group = google_compute_region_instance_group_manager.node.instance_group
   }
 }
 
@@ -100,7 +100,7 @@ resource "google_compute_firewall" "load_balancer_in_healthcheck" {
 }
 
 resource "google_compute_health_check" "autohealing" {
-  name                = "${var.prefix}haproxy-health-check-${var.install_id}"
+  name                = "${var.prefix}node-health-check-${var.install_id}"
   check_interval_sec  = 5
   timeout_sec         = 5
   healthy_threshold   = 2
@@ -111,8 +111,8 @@ resource "google_compute_health_check" "autohealing" {
   }
 }
 
-resource "google_compute_instance_template" "haproxy" {
-  name_prefix    = "${var.prefix}haproxy-template-"
+resource "google_compute_instance_template" "node" {
+  name_prefix    = "${var.prefix}node-template-"
   machine_type   = "n1-standard-1"
   can_ip_forward = true
 
@@ -137,14 +137,14 @@ resource "google_compute_instance_template" "haproxy" {
   }
 }
 
-resource "google_compute_region_instance_group_manager" "haproxy" {
-  name   = "${var.prefix}haproxy-${var.install_id}"
+resource "google_compute_region_instance_group_manager" "node" {
+  name   = "${var.prefix}node-${var.install_id}"
   region = var.region
 
-  base_instance_name = "${var.prefix}haproxy-${var.install_id}"
+  base_instance_name = "${var.prefix}node-${var.install_id}"
 
   version {
-    instance_template = google_compute_instance_template.haproxy.self_link
+    instance_template = google_compute_instance_template.node.self_link
   }
 
   target_size = 2
