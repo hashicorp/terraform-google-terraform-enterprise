@@ -23,6 +23,11 @@ variable "ports" {
   default     = [80, 443, 23010]
 }
 
+variable "project" {
+  type        = string
+  description = "Name of the project to deploy into"
+}
+
 variable "subnet" {
   type        = object({ ip_cidr_range = string, network = string, self_link = string })
   description = "GCP Subnetwork for Load Balancer"
