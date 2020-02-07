@@ -122,27 +122,3 @@ resource "google_compute_forwarding_rule" "load_balancer_in" {
   ip_protocol           = "TCP"
   ports                 = local.ports
 }
-
-resource "google_compute_firewall" "load_balancer_in" {
-  name    = "${var.prefix}lb-in-fw-${var.install_id}"
-  network = var.subnet.network
-
-  allow {
-    protocol = "tcp"
-    ports    = local.ports
-  }
-
-  source_ranges = [var.subnet.ip_cidr_range]
-}
-
-resource "google_compute_firewall" "load_balancer_in_healthcheck" {
-  name    = "${var.prefix}lb-in-hc-${var.install_id}"
-  network = var.subnet.network
-
-  allow {
-    protocol = "tcp"
-    ports    = [var.k8s_api_port]
-  }
-
-  source_ranges = ["35.191.0.0/16", "209.85.152.0/22", "209.85.204.0/22", "130.211.0.0/22"]
-}
