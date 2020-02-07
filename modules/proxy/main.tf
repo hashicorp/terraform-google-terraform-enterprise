@@ -1,9 +1,10 @@
 locals {
-  ports = concat(var.ports, [var.k8s_api_port])
+  ports  = concat(var.ports, [var.k8s_api_port])
+  prefix = "${var.prefix}proxy"
 }
 
-resource "google_compute_health_check" "cluster-api" {
-  name = "${var.prefix}cluster-api-check-${var.install_id}"
+resource "google_compute_health_check" "load_balancer_out" {
+  name = "${local.prefix}-lb-out-${var.install_id}"
 
   tcp_health_check {
     port = var.k8s_api_port
@@ -11,10 +12,10 @@ resource "google_compute_health_check" "cluster-api" {
 }
 
 resource "google_compute_region_backend_service" "load_balancer_out" {
-  name          = "${var.prefix}lb-out-${var.install_id}"
+  name          = "${local.prefix}-lb-out-${var.install_id}"
   protocol      = "TCP"
   timeout_sec   = 10
-  health_checks = [google_compute_health_check.cluster-api.self_link]
+  health_checks = [google_compute_health_check.load_balancer_out.self_link]
 
   backend {
     group = var.primaries
@@ -22,13 +23,13 @@ resource "google_compute_region_backend_service" "load_balancer_out" {
 }
 
 resource "google_compute_address" "load_balancer_out" {
-  name         = "${var.prefix}lb-out-${var.install_id}"
+  name         = "${local.prefix}-lb-out-${var.install_id}"
   address_type = "INTERNAL"
   subnetwork   = var.subnet.self_link
 }
 
 resource "google_compute_forwarding_rule" "load_balancer_out" {
-  name                  = "${var.prefix}lb-out-${var.install_id}"
+  name                  = "${local.prefix}-lb-out-${var.install_id}"
   network               = var.subnet.network
   subnetwork            = var.subnet.self_link
   load_balancing_scheme = "INTERNAL"
@@ -38,8 +39,8 @@ resource "google_compute_forwarding_rule" "load_balancer_out" {
   ports                 = local.ports
 }
 
-resource "google_compute_health_check" "tcp" {
-  name = "${var.prefix}lb-in-check-${var.install_id}"
+resource "google_compute_health_check" "load_balancer_in" {
+  name = "${local.prefix}-lb-in-${var.install_id}"
 
   tcp_health_check {
     port = var.k8s_api_port
@@ -47,7 +48,7 @@ resource "google_compute_health_check" "tcp" {
 }
 
 resource "google_compute_instance_template" "node" {
-  name_prefix    = "${var.prefix}node-template-"
+  name_prefix    = "${local.prefix}-node-${var.install_id}-"
   machine_type   = "n1-standard-1"
   can_ip_forward = true
 
@@ -78,10 +79,10 @@ resource "google_compute_instance_template" "node" {
 }
 
 resource "google_compute_region_instance_group_manager" "node" {
-  name   = "${var.prefix}node-${var.install_id}"
+  name   = "${local.prefix}-node-${var.install_id}"
   region = var.region
 
-  base_instance_name = "${var.prefix}node-${var.install_id}"
+  base_instance_name = "${local.prefix}-node-${var.install_id}"
 
   version {
     instance_template = google_compute_instance_template.node.self_link
@@ -96,10 +97,10 @@ resource "google_compute_region_instance_group_manager" "node" {
 }
 
 resource "google_compute_region_backend_service" "load_balancer_in" {
-  name          = "${var.prefix}lb-in-${var.install_id}"
+  name          = "${local.prefix}-lb-in-${var.install_id}"
   protocol      = "TCP"
   timeout_sec   = 10
-  health_checks = [google_compute_health_check.tcp.self_link]
+  health_checks = [google_compute_health_check.load_balancer_in.self_link]
 
   backend {
     group = google_compute_region_instance_group_manager.node.instance_group
@@ -107,13 +108,13 @@ resource "google_compute_region_backend_service" "load_balancer_in" {
 }
 
 resource "google_compute_address" "load_balancer_in" {
-  name         = "${var.prefix}lb-in-${var.install_id}"
+  name         = "${local.prefix}-lb-in-${var.install_id}"
   address_type = "INTERNAL"
   subnetwork   = var.subnet.self_link
 }
 
 resource "google_compute_forwarding_rule" "load_balancer_in" {
-  name                  = "${var.prefix}lb-in-${var.install_id}"
+  name                  = "${local.prefix}-lb-in-${var.install_id}"
   network               = var.subnet.network
   subnetwork            = var.subnet.self_link
   load_balancing_scheme = "INTERNAL"
