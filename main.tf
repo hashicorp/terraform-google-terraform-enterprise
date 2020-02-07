@@ -75,7 +75,7 @@ module "common_config" {
 module "configs" {
   source = "./modules/configs"
 
-  cluster_api_endpoint = module.internal_lb.address
+  cluster_api_endpoint = module.proxy.address
   common-config = {
     application_config = module.common_config.application_config
     ca_certs           = module.common_config.ca_certs
@@ -117,8 +117,8 @@ module "cluster" {
   autoscaler_cpu_threshold = var.autoscaler_cpu_threshold
 }
 
-module "internal_lb" {
-  source = "./modules/internal_lb"
+module "proxy" {
+  source = "./modules/proxy"
 
   install_id = local.install_id
   primaries  = module.cluster.primaries.self_link

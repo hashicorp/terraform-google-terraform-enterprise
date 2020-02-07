@@ -20,7 +20,7 @@ provider "template" {
   version = "~> 2.1"
 }
 
-module "tfe-cluster" {
+module "terraform_enterprise" {
   source  = "hashicorp/terraform-enterprise/google"
   version = "0.1.0"
 
