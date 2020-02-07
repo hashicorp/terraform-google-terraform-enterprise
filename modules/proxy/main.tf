@@ -1,5 +1,5 @@
 locals {
-  ports            = ["80", "443", "6443", "23010"]
+  ports            = ["80", "443", "${local.healthcheck_port}", "23010"]
   healthcheck_port = 6443
 }
 
@@ -13,7 +13,7 @@ resource "google_compute_health_check" "cluster-api" {
   name = "${var.prefix}cluster-api-check-${var.install_id}"
 
   tcp_health_check {
-    port = 6443
+    port = local.healthcheck_port
   }
 }
 
@@ -107,7 +107,7 @@ resource "google_compute_health_check" "autohealing" {
   unhealthy_threshold = 10 # 50 ds
 
   tcp_health_check {
-    port = "6443"
+    port = local.healthcheck_port
   }
 }
 
@@ -151,6 +151,6 @@ resource "google_compute_region_instance_group_manager" "haproxy" {
 
   named_port {
     name = "https"
-    port = 6443
+    port = local.healthcheck_port
   }
 }
