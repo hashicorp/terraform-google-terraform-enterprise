@@ -9,7 +9,7 @@
 | install\_id | Identifier for install to apply to resources | `string` | n/a | yes |
 | license\_file | License file | `string` | n/a | yes |
 | project | Name of the project to deploy into | `string` | n/a | yes |
-| subnet | name of the subnet to install into | `string` | n/a | yes |
+| subnet | GCP Subnetwork to attach resources to | `object({ ip_cidr_range = string, network = string, self_link = string })` | n/a | yes |
 | airgap\_installer\_url | URL to replicated's airgap installer package | `string` | `"https://install.terraform.io/installer/replicated-v5.tar.gz"` | no |
 | airgap\_package\_url | airgap url | `string` | `"none"` | no |
 | autoscaler\_cpu\_threshold | The cpu threshold at which the autoscaling group to build another instance | `string` | `"0.7"` | no |

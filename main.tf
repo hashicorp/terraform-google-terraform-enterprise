@@ -75,7 +75,7 @@ module "common_config" {
 module "configs" {
   source = "./modules/configs"
 
-  cluster_api_endpoint = module.cluster.cluster_api_endpoint
+  cluster_api_endpoint = module.internal_lb.address
   common-config = {
     application_config = module.common_config.application_config
     ca_certs           = module.common_config.ca_certs
@@ -115,6 +115,17 @@ module "cluster" {
   max_secondaries          = var.max_secondaries
   min_secondaries          = var.min_secondaries
   autoscaler_cpu_threshold = var.autoscaler_cpu_threshold
+}
+
+module "internal_lb" {
+  source = "./modules/internal_lb"
+
+  install_id = local.install_id
+  primaries  = module.cluster.primaries.self_link
+  region     = var.region
+  subnet     = module.vpc.subnet
+
+  prefix = var.prefix
 }
 
 # Configures DNS entries for the primaries as a convenience

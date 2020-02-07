@@ -1,5 +1,5 @@
-output "tfe-cluster" {
-  value = module.tfe-cluster
+output "terraform_enterprise" {
+  value = module.terraform_enterprise
 
   description = "Cluster information."
 }

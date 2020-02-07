@@ -5,6 +5,7 @@
 | Name | Description |
 |------|-------------|
 | network\_url | n/a |
+| subnet | n/a |
 | subnet\_ip\_range | n/a |
 | subnet\_name | n/a |
 | subnetwork\_url | n/a |
