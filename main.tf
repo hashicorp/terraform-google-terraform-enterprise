@@ -120,11 +120,11 @@ module "cluster" {
 module "proxy" {
   source = "./modules/proxy"
 
-  install_id = local.install_id
-  primaries  = module.cluster.primaries.self_link
-  project    = var.project
-  region     = var.region
-  subnet     = module.vpc.subnet
+  install_id               = local.install_id
+  primaries_instance_group = module.cluster.primaries.self_link
+  project                  = var.project
+  region                   = var.region
+  subnet                   = module.vpc.subnet
 
   prefix = var.prefix
 }
