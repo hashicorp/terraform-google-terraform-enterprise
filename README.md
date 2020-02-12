@@ -99,10 +99,9 @@ To be completed...
 
 #### Total Control
 
-You can use the included network, external-services, and cluster
-submodules to build a custom cluster that meets your organization’s
-requirements.  Need some pointers? The following examples document
-common installation patterns:
+You can use the included submodules to build a custom cluster that
+meets your organization’s requirements. Need some pointers? The
+following examples document common installation patterns:
 
 - [Using the default arguments](https://registry.terraform.io/modules/hashicorp/terraform-enterprise/google/0.1.2/examples/root-example)
 
