@@ -109,7 +109,7 @@ following examples document common installation patterns:
 
 - [Using RedHat Enterprise Linux as the operating system](examples/rhel-production-example)
 
-## What makes up the cluster?
+## What Makes Up the Cluster?
 
 ![architecture diagram](https://raw.githubusercontent.com/hashicorp/terraform-google-terraform-enterprise/v0.1.2/assets/gcp_diagram.jpg?raw=true)
 
