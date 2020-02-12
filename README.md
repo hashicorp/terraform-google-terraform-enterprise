@@ -65,13 +65,13 @@ used to provision this module:
 1. Run terraform plan and inspect the results.
 
    ```sh
-   ~/quickstart terraform plan -out create.tfplan
+   ~/quickstart$ terraform plan -out create.tfplan
    ```
 
 1. Run terraform apply and verify the result.
 
    ```sh
-   ~/quickstart terraform apply create.tfplan
+   ~/quickstart$ terraform apply create.tfplan
    ```
 
 1. Make note of the dashboard_url and dashboard_password outputs, as you
@@ -79,8 +79,8 @@ used to provision this module:
    browser.
 
    ```sh
-   ~/quickstart terraform output dashboard_url
-   ~/quickstart terraform output dashboard_password
+   ~/quickstart$ terraform output dashboard_url
+   ~/quickstart$ terraform output dashboard_password
    ```
 
 Wait for GCP to finish provisioning infrastructure, which can take up
