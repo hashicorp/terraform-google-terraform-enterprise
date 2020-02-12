@@ -103,9 +103,9 @@ You can use the included submodules to build a custom cluster that
 meets your organization’s requirements. Need some pointers? The
 following examples document common installation patterns:
 
-- [Using the default arguments](https://registry.terraform.io/modules/hashicorp/terraform-enterprise/google/0.1.2/examples/root-example)
+- [Using the default arguments](examples/root-example)
 
-- [Using RedHat Enterprise Linux as the operating system](https://registry.terraform.io/modules/hashicorp/terraform-enterprise/google/0.1.2/examples/rhel-production-example)
+- [Using RedHat Enterprise Linux as the operating system](examples/rhel-production-example)
 
 ## What makes up the cluster?
 
