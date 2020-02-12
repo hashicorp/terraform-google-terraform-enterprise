@@ -1,7 +1,7 @@
 # Terraform Enterprise on GCP
 
 This module is the official way for HashiCorp customers to
-provision a Terraform Cluster on GCP. The root module makes all the
+provision a Terraform Enterprise cluster on GCP. The root module makes all the
 decisions for you, and makes deploying a three node cluster as simple
 as:
 
