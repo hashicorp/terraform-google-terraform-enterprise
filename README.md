@@ -95,7 +95,9 @@ To be completed...
 
 #### Change the Number of Nodes In the Cluster
 
-To be completed...
+The minimum number and maximum number of secondary nodes in the cluster
+can be changed respectively with the `min_secondaries` and
+`max_secondaries` variables.
 
 #### Total Control
 
