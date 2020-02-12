@@ -38,7 +38,7 @@ variable "region" {
   description = "GCP Region"
 }
 
-variable "primaries" {
+variable "primaries_instance_group" {
   type        = string
   description = "GCP Instance Group for the primaries"
 }
