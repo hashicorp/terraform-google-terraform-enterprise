@@ -1,7 +1,6 @@
 locals {
   assistant_port                  = 23010
   rendered_secondary_machine_type = var.secondary_machine_type != "" ? var.secondary_machine_type : var.primary_machine_type
-  internal_airgap_url             = "http://${module.internal_lb.address}:${local.assistant_port}/setup-files/replicated.tar.gz?token=${random_string.setup_token.result}"
 }
 
 ###
