@@ -17,9 +17,7 @@ variable "install_id" {
 
 variable "ports" {
   type        = list(number)
-  description = <<-EOD
-  Only packets addressed to these ports will be forwarded through the proxy. var.k8s_api_port will be added to this list.
-  EOD
+  description = "Only packets addressed to these ports will be forwarded through the proxy. var.k8s_api_port will be added to this list."
   default     = [80, 443, 23010]
 }
 
