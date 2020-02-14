@@ -28,6 +28,12 @@ resource "google_compute_instance_template" "secondary" {
   labels = {
     "name" = var.prefix
   }
+
+  service_account {
+    scopes = ["cloud-platform"]
+
+    email = var.secondary_service_account_email
+  }
 }
 
 resource "google_compute_region_instance_group_manager" "secondary" {

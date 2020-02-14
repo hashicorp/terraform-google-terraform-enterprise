@@ -15,3 +15,9 @@ output "primary" {
 
   description = "The service account to be attached to the primary VM instance template."
 }
+
+output "secondary" {
+  value = google_service_account.secondary
+
+  description = "The service account to be attached to the secondary VM instance template."
+}

@@ -19,3 +19,12 @@ resource "google_service_account" "primary" {
   display_name = "TFE Primary"
   description  = "The identity of the TFE primary compute instances."
 }
+
+resource "google_service_account" "secondary" {
+  account_id = "${var.prefix}secondary-${var.install_id}"
+
+  project = var.project
+
+  display_name = "TFE Secondary"
+  description  = "The identity of the TFE secondary compute instances."
+}
