@@ -1,3 +1,3 @@
 output "bucket_name" {
-  value = google_storage_bucket.tfe-bucket.name
+  value = google_storage_bucket.main.name
 }

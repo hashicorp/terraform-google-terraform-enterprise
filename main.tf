@@ -1,9 +1,11 @@
 # Create a GCS bucket to store our critical application state into.
 module "gcs" {
-  source     = "./modules/gcs"
-  install_id = local.install_id
-  prefix     = var.prefix
+  source = "./modules/gcs"
 
+  install_id            = local.install_id
+  service_account_email = module.service-account.bucket.email
+
+  prefix = var.prefix
   region = var.region
 }
 
@@ -49,7 +51,6 @@ module "postgres" {
 module "service-account" {
   source = "./modules/service-account"
 
-  bucket     = module.gcs.bucket_name
   install_id = local.install_id
   project    = var.project
 

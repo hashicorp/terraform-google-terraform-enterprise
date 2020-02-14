@@ -20,3 +20,8 @@ variable "labels" {
   description = "Labels to apply to the storage bucket"
   default     = {}
 }
+
+variable "service_account_email" {
+  type = string
+  description = "The email address of the service account which will be used to access the storage bucket."
+}
