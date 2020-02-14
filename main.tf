@@ -3,7 +3,7 @@ module "gcs" {
   source = "./modules/gcs"
 
   install_id            = local.install_id
-  service_account_email = module.service-account.bucket.email
+  service_account_email = module.service_accounts.bucket.email
 
   prefix = var.prefix
   region = var.region
@@ -27,7 +27,7 @@ module "firewall" {
   source = "./modules/firewall"
 
   install_id              = local.install_id
-  primary_service_account = module.service-account.primary.email
+  primary_service_account = module.service_accounts.primary.email
   project                 = var.project
   subnet_ip_range         = module.vpc.subnet_ip_range
   vpc_name                = module.vpc.vpc_name
@@ -48,8 +48,8 @@ module "postgres" {
 }
 
 # Create a GCP service account to access our GCS bucket
-module "service-account" {
-  source = "./modules/service-account"
+module "service_accounts" {
+  source = "./modules/service-accounts"
 
   install_id = local.install_id
   project    = var.project
@@ -62,7 +62,7 @@ module "app-config" {
 
   gcs_bucket      = module.gcs.bucket_name
   gcs_project     = var.project
-  gcs_credentials = module.service-account.credentials
+  gcs_credentials = module.service_accounts.credentials
 
   postgresql_address  = module.postgres.address
   postgresql_database = module.postgres.database_name
@@ -104,13 +104,13 @@ module "cluster" {
   }
   install_id                    = local.install_id
   license_file                  = var.license_file
-  primary_service_account_email = module.service-account.primary.email
+  primary_service_account_email = module.service_accounts.primary.email
   project                       = var.project
   subnet                        = module.vpc.subnet
 
   autoscaler_cpu_threshold = var.autoscaler_cpu_threshold
   gcs_bucket               = module.gcs.bucket_name
-  gcs_credentials          = module.service-account.credentials
+  gcs_credentials          = module.service_accounts.credentials
   gcs_project              = var.project
   max_secondaries          = var.max_secondaries
   min_secondaries          = var.min_secondaries
