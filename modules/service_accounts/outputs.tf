@@ -1,5 +1,5 @@
 output "bucket" {
-  value = google_service_account.primary
+  value = google_service_account.bucket
 
   description = "The service account which will be used to access the storage bucket."
 }
