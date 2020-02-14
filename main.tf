@@ -26,9 +26,10 @@ module "vpc" {
 module "firewall" {
   source = "./modules/firewall"
 
-  prefix                       = var.prefix
-  vpc_network_self_link        = module.vpc.network.self_link
-  vpc_subnetwork_ip_cidr_range = module.vpc.subnetwork.ip_cidr_range
+  prefix                                = var.prefix
+  service_account_primary_cluster_email = module.service_account.primary_cluster.email
+  vpc_network_self_link                 = module.vpc.network.self_link
+  vpc_subnetwork_ip_cidr_range          = module.vpc.subnetwork.ip_cidr_range
 }
 
 # Create a PostgreSQL database in which application data will be stored.
@@ -70,6 +71,7 @@ module "primary_cluster" {
 
   cloud_init_configs       = module.cloud_init.primary_configs
   prefix                   = var.prefix
+  service_account_email    = module.service_account.primary_cluster.email
   vpc_network_self_link    = module.vpc.network.self_link
   vpc_subnetwork_project   = module.vpc.subnetwork.project
   vpc_subnetwork_self_link = module.vpc.subnetwork.self_link

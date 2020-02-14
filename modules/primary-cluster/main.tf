@@ -30,6 +30,11 @@ resource "google_compute_instance" "main" {
     user-data          = var.cloud_init_configs[count.index]
     user-data-encoding = "base64"
   }
+  service_account {
+    scopes = ["cloud-platform"]
+
+    email = var.service_account_email
+  }
 }
 
 resource "google_compute_instance_group" "main" {

@@ -32,6 +32,11 @@ variable "prefix" {
   type        = string
 }
 
+variable "service_account_email" {
+  type        = string
+  description = "The email address of the service account to be attached to the compute instances."
+}
+
 variable "vpc_network_self_link" {
   description = "The self link of the network to which resources will be attached."
   type        = string

@@ -20,3 +20,10 @@ resource "google_storage_bucket_iam_member" "member-bucket" {
   role   = "roles/storage.legacyBucketReader"
   member = "serviceAccount:${google_service_account.storage.email}"
 }
+
+resource "google_service_account" "primary_cluster" {
+  account_id = "${var.prefix}primaries"
+
+  display_name = "TFE Primary Cluster"
+  description  = "The identity to be associated with the TFE primary compute instances."
+}

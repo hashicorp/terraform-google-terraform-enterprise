@@ -20,6 +20,11 @@ variable "ports" {
   type        = list(string)
 }
 
+variable "service_account_primary_cluster_email" {
+  type        = string
+  description = "The service account applied to the primary compute instances which will receive traffic from the external network."
+}
+
 variable "vpc_subnetwork_ip_cidr_range" {
   description = "The range of IP addresses in the subnetwork from which traffic will be authorized to flow, expressed in CIDR notation."
   type        = string
