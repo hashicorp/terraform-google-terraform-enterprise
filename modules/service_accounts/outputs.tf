@@ -4,8 +4,10 @@ output "bucket" {
   description = "The service account which will be used to access the storage bucket."
 }
 
-output "credentials" {
-  value = base64decode(google_service_account_key.tfe.private_key)
+output "bucket_credentials" {
+  value = base64decode(google_service_account_key.bucket.private_key)
+
+  description = "The private key of the storage bucket service account."
 }
 
 output "primary" {

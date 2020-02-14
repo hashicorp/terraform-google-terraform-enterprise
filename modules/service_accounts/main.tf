@@ -1,13 +1,14 @@
-resource "google_service_account" "tfe" {
-  account_id = "${var.prefix}storage-${var.install_id}"
+resource "google_service_account" "bucket" {
+  account_id = "${var.prefix}bucket-${var.install_id}"
 
   project = var.project
 
-  display_name = "TFE Service Account to access GCS"
+  description  = "The identity which manges the TFE storage bucket."
+  display_name = "TFE Bucket"
 }
 
-resource "google_service_account_key" "tfe" {
-  service_account_id = google_service_account.tfe.name
+resource "google_service_account_key" "bucket" {
+  service_account_id = google_service_account.bucket.name
 }
 
 resource "google_service_account" "primary" {
@@ -16,5 +17,5 @@ resource "google_service_account" "primary" {
   project = var.project
 
   display_name = "TFE Primary"
-  description  = "The identity to be attached to the TFE primary compute instances."
+  description  = "The identity of the TFE primary compute instances."
 }

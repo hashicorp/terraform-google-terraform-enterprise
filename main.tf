@@ -62,7 +62,7 @@ module "app-config" {
 
   gcs_bucket      = module.gcs.bucket_name
   gcs_project     = var.project
-  gcs_credentials = module.service_accounts.credentials
+  gcs_credentials = module.service_accounts.bucket_credentials
 
   postgresql_address  = module.postgres.address
   postgresql_database = module.postgres.database_name
@@ -110,7 +110,7 @@ module "cluster" {
 
   autoscaler_cpu_threshold = var.autoscaler_cpu_threshold
   gcs_bucket               = module.gcs.bucket_name
-  gcs_credentials          = module.service_accounts.credentials
+  gcs_credentials          = module.service_accounts.bucket_credentials
   gcs_project              = var.project
   max_secondaries          = var.max_secondaries
   min_secondaries          = var.min_secondaries
