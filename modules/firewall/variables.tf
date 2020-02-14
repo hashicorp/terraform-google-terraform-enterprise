@@ -22,7 +22,7 @@ variable "ports" {
 
 variable "service_account_primary_cluster_email" {
   type        = string
-  description = "The service account applied to the primary compute instances which will receive traffic from the external network."
+  description = "The service account associated with the primary compute instances which will receive traffic from the external network."
 }
 
 variable "vpc_subnetwork_ip_cidr_range" {

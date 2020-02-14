@@ -2,7 +2,8 @@
 module "storage" {
   source = "./modules/storage"
 
-  prefix = var.prefix
+  prefix                = var.prefix
+  service_account_email = module.service_account.storage.email
 
   labels = var.labels
 }

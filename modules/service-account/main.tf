@@ -9,18 +9,6 @@ resource "google_service_account_key" "storage" {
   service_account_id = google_service_account.storage.name
 }
 
-resource "google_storage_bucket_iam_member" "member-object" {
-  bucket = var.storage_bucket_name
-  role   = "roles/storage.objectAdmin"
-  member = "serviceAccount:${google_service_account.storage.email}"
-}
-
-resource "google_storage_bucket_iam_member" "member-bucket" {
-  bucket = var.storage_bucket_name
-  role   = "roles/storage.legacyBucketReader"
-  member = "serviceAccount:${google_service_account.storage.email}"
-}
-
 resource "google_service_account" "primary_cluster" {
   account_id = "${var.prefix}primaries"
 

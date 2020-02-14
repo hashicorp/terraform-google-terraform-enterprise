@@ -14,3 +14,8 @@ variable "prefix" {
   description = "The prefix which will be prepended to the names of resources."
   type        = string
 }
+
+variable "service_account_email" {
+  type        = string
+  description = "The email address of the service account which will be authorized to access the storage bucket."
+}
