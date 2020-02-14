@@ -25,6 +25,11 @@ resource "google_compute_instance_template" "main" {
     user-data          = var.cloud_init_config
     user-data-encoding = "base64"
   }
+  service_account {
+    scopes = ["cloud-platform"]
+
+    email = var.service_account_email
+  }
 }
 
 resource "google_compute_region_instance_group_manager" "main" {

@@ -4,6 +4,12 @@ output "primary_cluster" {
   description = "The service account to be associated with the primary cluster."
 }
 
+output "secondary_cluster" {
+  value = google_service_account.secondary_cluster
+
+  description = "The service account to be associated with the secondary cluster."
+}
+
 output "storage" {
   value = google_service_account.storage
 

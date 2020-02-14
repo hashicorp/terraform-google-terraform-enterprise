@@ -99,6 +99,7 @@ module "secondary_cluster" {
   source = "./modules/secondary-cluster"
 
   cloud_init_config        = module.cloud_init.secondary_config
+  service_account_email    = module.service_account.secondary_cluster.email
   prefix                   = var.prefix
   vpc_network_self_link    = module.vpc.network.self_link
   vpc_subnetwork_project   = module.vpc.subnetwork.project
