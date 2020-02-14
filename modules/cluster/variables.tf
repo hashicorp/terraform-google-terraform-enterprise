@@ -109,6 +109,11 @@ variable "license_file" {
   description = "License file"
 }
 
+variable "primary_service_account_email" {
+  type        = string
+  description = "The email address of the service account to be attached to the primary compute instances."
+}
+
 variable "project" {
   type        = string
   description = "Name of the project to deploy into"

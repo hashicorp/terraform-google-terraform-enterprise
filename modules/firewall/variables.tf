@@ -30,3 +30,13 @@ variable "prefix" {
   description = "Name to attach to your VPC"
   default     = "tfe-"
 }
+
+variable "primary_service_account" {
+  type        = string
+  description = "The service account applied to the primary compute instances which will receive traffic from the external network."
+}
+
+variable "project" {
+  type        = string
+  description = "The ID of the project in which the resources will be created."
+}

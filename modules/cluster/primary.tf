@@ -40,6 +40,11 @@ resource "google_compute_instance" "primary" {
   labels = {
     "name" = var.prefix
   }
+  service_account {
+    scopes = ["cloud-platform"]
+
+    email = var.primary_service_account_email
+  }
 }
 
 resource "google_compute_instance_group" "primaries" {

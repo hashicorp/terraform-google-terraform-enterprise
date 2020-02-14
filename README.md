@@ -34,6 +34,7 @@ used to provision this module:
   `roles/servicenetworking.networksAdmin`
 - Service Account Key Admin:
   `roles/iam.serviceAccountKeyAdmin`
+- Service Account User: `roles/iam.serviceAccountUser`
 - Storage Admin: `roles/storage.admin`
 
 ### Examples

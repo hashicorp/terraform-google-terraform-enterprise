@@ -22,12 +22,15 @@ module "vpc" {
 
 # Configure a firewall the network to allow access to cluster's ports.
 module "firewall" {
-  source     = "./modules/firewall"
-  install_id = local.install_id
-  prefix     = var.prefix
+  source = "./modules/firewall"
 
-  vpc_name        = module.vpc.vpc_name
-  subnet_ip_range = module.vpc.subnet_ip_range
+  install_id              = local.install_id
+  primary_service_account = module.service-account.primary.email
+  project                 = var.project
+  subnet_ip_range         = module.vpc.subnet_ip_range
+  vpc_name                = module.vpc.vpc_name
+
+  prefix = var.prefix
 }
 
 # Create a CloudSQL Postgres database to use
@@ -44,10 +47,13 @@ module "postgres" {
 
 # Create a GCP service account to access our GCS bucket
 module "service-account" {
-  source     = "./modules/service-account"
-  install_id = local.install_id
-  prefix     = var.prefix
+  source = "./modules/service-account"
+
   bucket     = module.gcs.bucket_name
+  install_id = local.install_id
+  project    = var.project
+
+  prefix = var.prefix
 }
 
 module "app-config" {
@@ -86,37 +92,33 @@ module "cluster-config" {
 # Configures the TFE cluster itself. Data is stored in the configured
 # GCS bucket and Postgres Database.
 module "cluster" {
-  source     = "./modules/cluster"
-  install_id = local.install_id
-  prefix     = var.prefix
+  source = "./modules/cluster"
 
-  project = var.project
-  region  = var.region
-  subnet  = module.vpc.subnet
-
+  access_fqdn = module.dns.fqdn
   # Expand module.cluster-config to avoid a cycle on destroy
   # https://github.com/hashicorp/terraform/issues/21662#issuecomment-503206685
   cluster-config = {
     primary_cloudinit   = module.cluster-config.primary_cloudinit
     secondary_cloudinit = module.cluster-config.secondary_cloudinit
   }
+  install_id                    = local.install_id
+  license_file                  = var.license_file
+  primary_service_account_email = module.service-account.primary.email
+  project                       = var.project
+  subnet                        = module.vpc.subnet
 
-  license_file = var.license_file
-
-  access_fqdn = module.dns.fqdn
-
-  gcs_bucket      = module.gcs.bucket_name
-  gcs_project     = var.project
-  gcs_credentials = module.service-account.credentials
-
-  postgresql_address  = module.postgres.address
-  postgresql_database = module.postgres.database_name
-  postgresql_user     = module.postgres.user
-  postgresql_password = module.postgres.password
-
+  autoscaler_cpu_threshold = var.autoscaler_cpu_threshold
+  gcs_bucket               = module.gcs.bucket_name
+  gcs_credentials          = module.service-account.credentials
+  gcs_project              = var.project
   max_secondaries          = var.max_secondaries
   min_secondaries          = var.min_secondaries
-  autoscaler_cpu_threshold = var.autoscaler_cpu_threshold
+  postgresql_address       = module.postgres.address
+  postgresql_database      = module.postgres.database_name
+  postgresql_password      = module.postgres.password
+  postgresql_user          = module.postgres.user
+  prefix                   = var.prefix
+  region                   = var.region
 }
 
 module "proxy" {
