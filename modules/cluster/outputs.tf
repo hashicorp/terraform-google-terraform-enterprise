@@ -8,11 +8,6 @@ output "installer_dashboard_url" {
   ) : ""
 }
 
-output "application_endpoints" {
-  description = "Network Endpoints Group that for the application services"
-  value       = google_compute_network_endpoint_group.https.self_link
-}
-
 output "application_addresses" {
   description = "IP addresses of primaries that are running the application on port 443"
   value       = [for primary in google_compute_instance.primary.* : primary.network_interface.0.network_ip]
@@ -26,8 +21,14 @@ output "primary_external_addresses" {
   }]
 }
 
-output "primaries" {
-  description = "The primary cluster compute instance group."
+output "primary_instance_group" {
+  value = google_compute_instance_group.primary
 
-  value = google_compute_instance_group.primaries
+  description = "The primary compute instance group."
+}
+
+output "secondary_region_instance_group_manager" {
+  value = google_compute_region_instance_group_manager.secondary
+
+  description = "The secondary compute regional instance group manager."
 }

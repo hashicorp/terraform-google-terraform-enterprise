@@ -9,14 +9,24 @@ variable "prefix" {
   default     = "tfe-"
 }
 
+variable "project" {
+  type = string
+  description = "The project in which resources will be created."
+}
+
 variable "cert" {
   type        = string
   description = "certificate for the load balancer"
 }
 
-variable "instance_group" {
+variable "primary_group" {
   type        = string
-  description = "primary instance group"
+  description = "The ID of the primary compute instance group or the primary network endpoint group."
+}
+
+variable "secondary_group" {
+  type        = string
+  description = "The ID of the secondary compute instance group or the secondary network endpoint group."
 }
 
 variable "ssl_policy" {

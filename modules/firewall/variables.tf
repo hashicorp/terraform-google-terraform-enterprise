@@ -31,12 +31,17 @@ variable "prefix" {
   default     = "tfe-"
 }
 
-variable "primary_service_account" {
+variable "primary_service_account_email" {
   type        = string
-  description = "The service account applied to the primary compute instances which will receive traffic from the external network."
+  description = "The email address of the primary service account."
 }
 
 variable "project" {
   type        = string
   description = "The ID of the project in which the resources will be created."
+}
+
+variable "secondary_service_account_email" {
+  type        = string
+  description = "The email address of the secondary service account."
 }

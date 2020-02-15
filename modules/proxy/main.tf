@@ -18,7 +18,7 @@ resource "google_compute_region_backend_service" "load_balancer_out" {
   name          = "${local.prefix}-lb-out-${var.install_id}"
 
   backend {
-    group = var.primaries_instance_group
+    group = var.primary_instance_group
 
     description = "Target the primary compute instance group."
   }

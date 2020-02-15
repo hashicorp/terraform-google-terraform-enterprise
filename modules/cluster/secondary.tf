@@ -37,14 +37,16 @@ resource "google_compute_instance_template" "secondary" {
 }
 
 resource "google_compute_region_instance_group_manager" "secondary" {
-  name = "${var.prefix}secondary-${var.install_id}"
-
   base_instance_name = "${var.prefix}secondary-${var.install_id}"
+  name               = "${var.prefix}secondary-${var.install_id}"
   region             = var.region
-
   version {
     instance_template = google_compute_instance_template.secondary.self_link
   }
+
+  project = var.project
+
+  description = "The group of TFE secondary compute instances."
 
   named_port {
     name = "https"

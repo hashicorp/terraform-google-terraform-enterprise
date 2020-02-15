@@ -14,7 +14,26 @@ resource "google_compute_firewall" "external_to_primaries" {
   description             = "Allow ingress of traffic from the external network to the primary compute instances."
   direction               = "INGRESS"
   enable_logging          = true
-  target_service_accounts = [var.primary_service_account]
+  target_service_accounts = [var.primary_service_account_email]
+}
+
+resource "google_compute_firewall" "external_to_secondaries" {
+  name    = "${var.prefix}-external-to-secondaries-${var.install_id}"
+  network = var.vpc_name
+  project = var.project
+
+  allow {
+    protocol = "tcp"
+    ports = [
+      22,
+      443,
+      8800,
+    ]
+  }
+  description             = "Allow ingress of traffic from the external network to the secondary compute instances."
+  direction               = "INGRESS"
+  enable_logging          = true
+  target_service_accounts = [var.secondary_service_account_email]
 }
 
 resource "google_compute_firewall" "tfe" {

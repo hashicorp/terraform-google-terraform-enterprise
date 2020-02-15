@@ -35,6 +35,12 @@ variable "region" {
   default     = "us-central1"
 }
 
+variable "zone" {
+  type        = string
+  description = "The zone in which resources will be created."
+  default     = "us-central1-a"
+}
+
 variable "labels" {
   type        = map(string)
   description = "Labels to apply to the storage bucket"

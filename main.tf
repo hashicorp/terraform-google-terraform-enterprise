@@ -26,11 +26,12 @@ module "vpc" {
 module "firewall" {
   source = "./modules/firewall"
 
-  install_id              = local.install_id
-  primary_service_account = module.service_accounts.primary.email
-  project                 = var.project
-  subnet_ip_range         = module.vpc.subnet_ip_range
-  vpc_name                = module.vpc.vpc_name
+  install_id                      = local.install_id
+  primary_service_account_email   = module.service_accounts.primary.email
+  project                         = var.project
+  secondary_service_account_email = module.service_accounts.secondary.email
+  subnet_ip_range                 = module.vpc.subnet_ip_range
+  vpc_name                        = module.vpc.vpc_name
 
   prefix = var.prefix
 }
@@ -90,6 +91,12 @@ module "cluster-config" {
   }
 }
 
+data "google_compute_zones" "available" {
+  region = var.region
+
+  status = "UP"
+}
+
 # Configures the TFE cluster itself. Data is stored in the configured
 # GCS bucket and Postgres Database.
 module "cluster" {
@@ -102,11 +109,12 @@ module "cluster" {
     primary_cloudinit   = module.cluster-config.primary_cloudinit
     secondary_cloudinit = module.cluster-config.secondary_cloudinit
   }
-  install_id                    = local.install_id
-  license_file                  = var.license_file
-  primary_service_account_email = module.service_accounts.primary.email
-  project                       = var.project
-  subnet                        = module.vpc.subnet
+  install_id                      = local.install_id
+  license_file                    = var.license_file
+  primary_service_account_email   = module.service_accounts.primary.email
+  project                         = var.project
+  secondary_service_account_email = module.service_accounts.secondary.email
+  subnet                          = module.vpc.subnet
 
   autoscaler_cpu_threshold = var.autoscaler_cpu_threshold
   gcs_bucket               = module.gcs.bucket_name
@@ -120,16 +128,17 @@ module "cluster" {
   postgresql_user          = module.postgres.user
   prefix                   = var.prefix
   region                   = var.region
+  zone                     = data.google_compute_zones.available.names[0]
 }
 
 module "proxy" {
   source = "./modules/proxy"
 
-  install_id               = local.install_id
-  primaries_instance_group = module.cluster.primaries.self_link
-  project                  = var.project
-  region                   = var.region
-  subnet                   = module.vpc.subnet
+  install_id             = local.install_id
+  primary_instance_group = module.cluster.primary_instance_group.self_link
+  project                = var.project
+  region                 = var.region
+  subnet                 = module.vpc.subnet
 
   prefix = var.prefix
 }
@@ -157,12 +166,15 @@ module "cert" {
 # Configures a Load Balancer that directs traffic at the cluster's
 # instance group
 module "loadbalancer" {
-  source     = "./modules/lb"
-  install_id = local.install_id
-  prefix     = var.prefix
+  source = "./modules/lb"
 
-  cert           = module.cert.certificate
-  instance_group = module.cluster.application_endpoints
+  cert            = module.cert.certificate
+  install_id      = local.install_id
+  primary_group   = module.cluster.primary_instance_group.self_link
+  project         = var.project
+  secondary_group = module.cluster.secondary_region_instance_group_manager.instance_group
+
+  prefix = var.prefix
 }
 
 # Configures DNS entries for the load balancer for cluster access

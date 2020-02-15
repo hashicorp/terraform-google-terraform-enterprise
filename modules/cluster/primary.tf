@@ -1,10 +1,5 @@
-data "google_compute_zones" "available" {
-  region = var.region
-}
-
 locals {
   primary_count = 3
-  zone          = data.google_compute_zones.available.names[0]
 }
 
 resource "google_compute_instance" "primary" {
@@ -14,7 +9,7 @@ resource "google_compute_instance" "primary" {
 
   name         = "${var.prefix}primary-${count.index}-${var.install_id}"
   machine_type = var.primary_machine_type
-  zone         = local.zone
+  zone         = var.zone
 
   boot_disk {
     initialize_params {
@@ -47,45 +42,30 @@ resource "google_compute_instance" "primary" {
   }
 }
 
-resource "google_compute_instance_group" "primaries" {
-  name        = "${var.prefix}primary-group-${var.install_id}"
-  description = "primary-servers"
+resource "google_compute_instance_group" "primary" {
+  name = "${var.prefix}primary-${var.install_id}"
+  zone = var.zone
 
-  zone      = local.zone
-  instances = google_compute_instance.primary.*.self_link
+  project = var.project
 
+  description = "The group of TFE primary compute instances."
+  instances   = google_compute_instance.primary.*.self_link
   named_port {
-    name = "https"
+    name = "application"
     port = 443
   }
-
   named_port {
     name = "cluster"
     port = 6443
   }
-
+  named_port {
+    name = "replicated"
+    port = 8800
+  }
   named_port {
     name = "assist"
     port = 23010
   }
 
   depends_on = [google_compute_instance.primary]
-}
-
-resource "google_compute_network_endpoint_group" "https" {
-  name         = "${var.prefix}primary-cluster-${var.install_id}"
-  subnetwork   = var.subnet.self_link
-  network      = var.subnet.network
-  default_port = "443"
-  zone         = local.zone
-}
-
-resource "google_compute_network_endpoint" "https" {
-  count                  = local.primary_count
-  network_endpoint_group = google_compute_network_endpoint_group.https.name
-
-  instance   = google_compute_instance.primary[count.index].name
-  port       = 443
-  ip_address = google_compute_instance.primary[count.index].network_interface[0].network_ip
-  zone       = local.zone
 }
