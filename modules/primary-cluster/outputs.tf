@@ -9,12 +9,6 @@ output "console_url" {
   description = "The URL of the management console."
 }
 
-output "endpoint_group" {
-  value = google_compute_network_endpoint_group.main
-
-  description = "The compute network endpoint group for the cluster."
-}
-
 output "instances" {
   value = google_compute_instance.main
 

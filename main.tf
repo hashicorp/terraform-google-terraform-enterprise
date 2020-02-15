@@ -27,10 +27,11 @@ module "vpc" {
 module "firewall" {
   source = "./modules/firewall"
 
-  prefix                                = var.prefix
-  service_account_primary_cluster_email = module.service_account.primary_cluster.email
-  vpc_network_self_link                 = module.vpc.network.self_link
-  vpc_subnetwork_ip_cidr_range          = module.vpc.subnetwork.ip_cidr_range
+  prefix                                  = var.prefix
+  service_account_primary_cluster_email   = module.service_account.primary_cluster.email
+  service_account_secondary_cluster_email = module.service_account.secondary_cluster.email
+  vpc_network_self_link                   = module.vpc.network.self_link
+  vpc_subnetwork_ip_cidr_range            = module.vpc.subnetwork.ip_cidr_range
 }
 
 # Create a PostgreSQL database in which application data will be stored.
@@ -112,10 +113,11 @@ module "secondary_cluster" {
 module "external_load_balancer" {
   source = "./modules/external-load-balancer"
 
-  prefix                                   = var.prefix
-  primary_cluster_endpoint_group_self_link = module.primary_cluster.endpoint_group.self_link
-  ssl_certificate_self_link                = module.ssl.certificate.self_link
-  ssl_policy_self_link                     = module.ssl.policy.self_link
+  prefix                                                  = var.prefix
+  primary_cluster_instance_group_self_link                = module.primary_cluster.instance_group.self_link
+  secondary_cluster_instance_group_manager_instance_group = module.secondary_cluster.instance_group_manager.instance_group
+  ssl_certificate_self_link                               = module.ssl.certificate.self_link
+  ssl_policy_self_link                                    = module.ssl.policy.self_link
 }
 
 # Configures DNS entries for the load balancer.

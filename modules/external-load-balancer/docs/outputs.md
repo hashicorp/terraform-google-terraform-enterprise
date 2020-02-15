@@ -5,5 +5,6 @@
 | Name | Description |
 |------|-------------|
 | address | n/a |
-| cluster\_endpoint | n/a |
+| application\_forwarding\_rule | The global forwarding rule for application traffic. |
+| replicated\_forwarding\_rule | The global forwarding rule for Replicated traffic. |
 

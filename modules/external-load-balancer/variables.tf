@@ -3,8 +3,13 @@ variable "prefix" {
   type        = string
 }
 
-variable "primary_cluster_endpoint_group_self_link" {
-  description = "The self link of the compute network endpoint group for the primary cluster."
+variable "primary_cluster_instance_group_self_link" {
+  description = "The self link of the compute instance group for the primary cluster."
+  type        = string
+}
+
+variable "secondary_cluster_instance_group_manager_instance_group" {
+  description = "The compute instance group of the secondary cluster."
   type        = string
 }
 

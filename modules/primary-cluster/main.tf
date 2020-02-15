@@ -44,7 +44,7 @@ resource "google_compute_instance_group" "main" {
   instances = google_compute_instance.main.*.self_link
 
   named_port {
-    name = "https"
+    name = "application"
     port = 443
   }
 
@@ -54,27 +54,14 @@ resource "google_compute_instance_group" "main" {
   }
 
   named_port {
+    name = "replicated"
+    port = 8800
+  }
+
+  named_port {
     name = "assist"
     port = 23010
   }
 
   depends_on = [google_compute_instance.main]
-}
-
-resource "google_compute_network_endpoint_group" "main" {
-  name    = "${var.prefix}primary"
-  network = var.vpc_network_self_link
-
-  default_port = "443"
-  description  = "The endpoint group for the TFE primary cluster."
-  subnetwork   = var.vpc_subnetwork_self_link
-}
-
-resource "google_compute_network_endpoint" "main" {
-  count = local.instance_count
-
-  instance               = google_compute_instance.main[count.index].name
-  ip_address             = google_compute_instance.main[count.index].network_interface[0].network_ip
-  network_endpoint_group = google_compute_network_endpoint_group.main.name
-  port                   = 443
 }

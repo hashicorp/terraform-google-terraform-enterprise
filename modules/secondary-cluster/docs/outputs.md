@@ -2,5 +2,7 @@
 
 ## Outputs
 
-No output.
+| Name | Description |
+|------|-------------|
+| instance\_group\_manager | The regional instance group manager. |
 

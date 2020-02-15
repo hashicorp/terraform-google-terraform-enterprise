@@ -40,7 +40,7 @@ resource "google_compute_region_instance_group_manager" "main" {
     instance_template = google_compute_instance_template.main.self_link
   }
 
-  description = "The manager for the compute instance group of the TFE secondary."
+  description = "The manager for the compute instance group of the TFE secondary cluster."
   named_port {
     name = "https"
     port = 443

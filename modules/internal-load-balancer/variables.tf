@@ -27,11 +27,6 @@ variable "ports" {
   default     = [80, 443, 23010]
 }
 
-variable "vpc_network_self_link" {
-  description = "The self link of the network to which resources will be attached."
-  type        = string
-}
-
 variable "primary_cluster_instance_group_self_link" {
   type        = string
   description = "GCP Instance Group for the primaries"
@@ -41,6 +36,11 @@ variable "prefix" {
   type        = string
   description = "Prefix for resources"
   default     = "tfe-"
+}
+
+variable "vpc_network_self_link" {
+  description = "The self link of the network to which resources will be attached."
+  type        = string
 }
 
 variable "vpc_subnetwork_self_link" {
