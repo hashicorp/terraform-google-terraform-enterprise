@@ -68,14 +68,6 @@ resource "google_compute_target_https_proxy" "application" {
   ssl_policy  = var.ssl_policy != "" ? var.ssl_policy : google_compute_ssl_policy.main[0].self_link
 }
 
-resource "google_compute_global_address" "main" {
-  name = "${var.prefix}application-${var.install_id}"
-
-  project = var.project
-
-  description = "The global address of the TFE application."
-}
-
 resource "google_compute_global_forwarding_rule" "application" {
   name   = "${var.prefix}application-${var.install_id}"
   target = google_compute_target_https_proxy.application.self_link
@@ -83,7 +75,7 @@ resource "google_compute_global_forwarding_rule" "application" {
   project = var.project
 
   description           = "The global forwarding rule for TFE application traffic."
-  ip_address            = google_compute_global_address.main.address
+  ip_address            = var.global_address
   ip_protocol           = "TCP"
   load_balancing_scheme = "EXTERNAL"
   port_range            = 443

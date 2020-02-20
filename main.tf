@@ -163,12 +163,22 @@ module "cert" {
   domain_name = module.dns.fqdn
 }
 
+module "global_address" {
+  source = "./modules/global-address"
+
+  install_id = local.install_id
+  project    = var.project
+
+  prefix = var.prefix
+}
+
 # Configures a Load Balancer that directs traffic at the cluster's
 # instance group
 module "loadbalancer" {
   source = "./modules/lb"
 
   cert            = module.cert.certificate
+  global_address  = module.global_address.main.address
   install_id      = local.install_id
   primary_group   = module.cluster.primary_instance_group.self_link
   project         = var.project
@@ -179,12 +189,13 @@ module "loadbalancer" {
 
 # Configures DNS entries for the load balancer for cluster access
 module "dns" {
-  source     = "./modules/dns"
-  install_id = local.install_id
-  prefix     = var.prefix
+  source = "./modules/dns"
 
-  address  = module.loadbalancer.address
-  project  = local.rendered_dns_project
-  dnszone  = var.dnszone
-  hostname = var.hostname
+  address    = module.global_address.main.address
+  dnszone    = var.dnszone
+  hostname   = var.hostname
+  install_id = local.install_id
+  project    = local.rendered_dns_project
+
+  prefix = var.prefix
 }

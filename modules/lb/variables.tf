@@ -1,3 +1,8 @@
+variable "global_address" {
+  type = string
+  description = "The global IP address which will be assigned to the load balancer."
+}
+
 variable "install_id" {
   type        = string
   description = "Identifier for install to apply to resources"
