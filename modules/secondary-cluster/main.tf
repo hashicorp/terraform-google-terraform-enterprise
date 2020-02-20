@@ -42,8 +42,20 @@ resource "google_compute_region_instance_group_manager" "main" {
 
   description = "The manager for the compute instance group of the TFE secondary cluster."
   named_port {
-    name = "https"
+    name = "application"
     port = 443
+  }
+  named_port {
+    name = "kubernetes"
+    port = 6443
+  }
+  named_port {
+    name = "replicated"
+    port = 8800
+  }
+  named_port {
+    name = "assist"
+    port = 23010
   }
 }
 

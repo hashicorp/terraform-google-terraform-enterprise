@@ -103,7 +103,7 @@ resource "google_compute_region_instance_group_manager" "node" {
 
   description = "Manages the node compute instances of the internal load balancer."
   named_port {
-    name = "https"
+    name = "kubernetes"
     port = var.k8s_api_port
   }
   target_size = 2
