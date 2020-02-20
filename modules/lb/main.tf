@@ -1,4 +1,17 @@
-resource "google_compute_backend_service" "main" {
+resource "google_compute_health_check" "application" {
+  name = "${var.prefix}application-${var.install_id}"
+
+  project = var.project
+
+  check_interval_sec = 5
+  description        = "The TFE application health check."
+  https_health_check {
+    port_name = "application"
+  }
+  timeout_sec = 4
+}
+
+resource "google_compute_backend_service" "application" {
   health_checks = [google_compute_health_check.application.self_link]
   name          = "${var.prefix}application-${var.install_id}"
 
@@ -7,8 +20,8 @@ resource "google_compute_backend_service" "main" {
   backend {
     group = var.primary_group
 
-    description           = "The TFE primary group."
     balancing_mode        = "RATE"
+    description           = "The TFE primary group."
     max_rate_per_instance = 333
   }
   backend {
@@ -18,22 +31,9 @@ resource "google_compute_backend_service" "main" {
     description           = "The TFE secondary group."
     max_rate_per_instance = 333
   }
-  port_name   = "https"
+  port_name   = "application"
   protocol    = "HTTPS"
   timeout_sec = 10
-}
-
-resource "google_compute_health_check" "application" {
-  name = "${var.prefix}application-${var.install_id}"
-
-  project = var.project
-
-  check_interval_sec = 5
-  description        = "The TFE application health check."
-  tcp_health_check {
-    port = 443
-  }
-  timeout_sec = 4
 }
 
 resource "google_compute_url_map" "application" {
@@ -41,11 +41,11 @@ resource "google_compute_url_map" "application" {
 
   project = var.project
 
-  default_service = google_compute_backend_service.main.self_link
+  default_service = google_compute_backend_service.application.self_link
   description     = "The TFE application URL map."
 }
 
-resource "google_compute_ssl_policy" "application" {
+resource "google_compute_ssl_policy" "main" {
   count = var.ssl_policy == "" ? 1 : 0
 
   name = "${var.prefix}application-${var.install_id}"
@@ -65,7 +65,7 @@ resource "google_compute_target_https_proxy" "application" {
   project = var.project
 
   description = "The target HTTPS proxy for TFE application traffic."
-  ssl_policy  = var.ssl_policy != "" ? var.ssl_policy : google_compute_ssl_policy.application[0].self_link
+  ssl_policy  = var.ssl_policy != "" ? var.ssl_policy : google_compute_ssl_policy.main[0].self_link
 }
 
 resource "google_compute_global_address" "main" {
@@ -84,6 +84,7 @@ resource "google_compute_global_forwarding_rule" "application" {
 
   description           = "The global forwarding rule for TFE application traffic."
   ip_address            = google_compute_global_address.main.address
+  ip_protocol           = "TCP"
   load_balancing_scheme = "EXTERNAL"
   port_range            = 443
 }

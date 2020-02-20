@@ -111,7 +111,7 @@ resource "google_compute_region_instance_group_manager" "node" {
 
   description = "Manages the node compute instances of the proxy."
   named_port {
-    name = "https"
+    name = "kubernetes"
     port = var.k8s_api_port
   }
   project     = var.project

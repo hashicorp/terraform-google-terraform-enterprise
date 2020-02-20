@@ -55,7 +55,7 @@ resource "google_compute_instance_group" "primary" {
     port = 443
   }
   named_port {
-    name = "cluster"
+    name = "kubernetes"
     port = 6443
   }
   named_port {
