@@ -6,7 +6,7 @@ locals {
 resource "google_dns_record_set" "main" {
   managed_zone = var.managed_zone
   name         = local.record_set_name
-  rrdatas      = [var.external_load_balancer_address]
+  rrdatas      = [var.global_address]
   ttl          = 300
   type         = "A"
 }

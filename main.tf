@@ -113,6 +113,7 @@ module "secondary_cluster" {
 module "external_load_balancer" {
   source = "./modules/external-load-balancer"
 
+  global_address                                          = module.global.address.address
   prefix                                                  = var.prefix
   primary_cluster_instance_group_self_link                = module.primary_cluster.instance_group.self_link
   secondary_cluster_instance_group_manager_instance_group = module.secondary_cluster.instance_group_manager.instance_group
@@ -124,9 +125,16 @@ module "external_load_balancer" {
 module "dns" {
   source = "./modules/dns"
 
-  external_load_balancer_address = module.external_load_balancer.address
-  managed_zone                   = var.dns_managed_zone
-  managed_zone_dns_name          = var.dns_managed_zone_dns_name
+  global_address        = module.global.address.address
+  managed_zone          = var.dns_managed_zone
+  managed_zone_dns_name = var.dns_managed_zone_dns_name
+}
+
+# Create a global address to be attached to the external load balancer.
+module "global" {
+  source = "./modules/global"
+
+  prefix = var.prefix
 }
 
 # Create an SSL certificate to be attached to the external load balancer.

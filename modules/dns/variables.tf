@@ -1,5 +1,5 @@
-variable "external_load_balancer_address" {
-  description = "The public IP address of the external load balancer."
+variable "global_address" {
+  description = "The global IP address of the TFE cluster."
   type        = string
 }
 

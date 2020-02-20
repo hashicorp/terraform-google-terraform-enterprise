@@ -4,6 +4,7 @@
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:-----:|
+| global\_address | The global IP address which will be assigned to the load balancer. | `string` | n/a | yes |
 | prefix | The prefix which will be prepended to the names of resources. | `string` | n/a | yes |
 | primary\_cluster\_instance\_group\_self\_link | The self link of the compute instance group for the primary cluster. | `string` | n/a | yes |
 | secondary\_cluster\_instance\_group\_manager\_instance\_group | The compute instance group of the secondary cluster. | `string` | n/a | yes |

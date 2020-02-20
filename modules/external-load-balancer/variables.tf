@@ -1,3 +1,8 @@
+variable "global_address" {
+  description = "The global IP address which will be assigned to the load balancer."
+  type        = string
+}
+
 variable "prefix" {
   description = "The prefix which will be prepended to the names of resources."
   type        = string
