@@ -3,5 +3,5 @@ output "firewall_name" {
 }
 
 output "healthcheck_firewall_name" {
-  value = google_compute_firewall.lb-healthchecks.name
+  value = google_compute_firewall.lb_healthchecks.name
 }

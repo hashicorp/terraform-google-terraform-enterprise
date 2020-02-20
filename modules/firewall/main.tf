@@ -62,12 +62,14 @@ resource "google_compute_firewall" "weave_fast_datapath" {
   source_ranges = [var.subnet_ip_range]
 }
 
-resource "google_compute_firewall" "lb-healthchecks" {
-  name          = "${var.prefix}lb-healthcheck-firewall-${var.install_id}"
-  network       = var.vpc_name
-  source_ranges = concat([var.subnet_ip_range], var.healthcheck_ips)
+resource "google_compute_firewall" "lb_healthchecks" {
+  name    = "${var.prefix}lb-healthcheck-firewall-${var.install_id}"
+  network = var.vpc_name
+
+  project = var.project
 
   allow {
     protocol = "tcp"
   }
+  source_ranges = concat([var.subnet_ip_range], var.healthcheck_ips)
 }
