@@ -58,20 +58,3 @@ resource "google_compute_global_forwarding_rule" "application" {
   load_balancing_scheme = "EXTERNAL"
   port_range            = 443
 }
-
-resource "google_compute_target_tcp_proxy" "replicated" {
-  name            = "${var.prefix}replicated"
-  backend_service = google_compute_backend_service.application.self_link
-
-  description = "The target TCP proxy for TFE Replicated traffic."
-}
-
-resource "google_compute_global_forwarding_rule" "replicated" {
-  name   = "${var.prefix}replicated"
-  target = google_compute_target_tcp_proxy.replicated.self_link
-
-  description           = "The global forwarding rule for TFE Replicated traffic."
-  ip_address            = var.global_address
-  load_balancing_scheme = "EXTERNAL"
-  port_range            = 8800
-}
