@@ -38,6 +38,8 @@ resource "google_compute_firewall" "application" {
   name    = "${var.prefix}application"
   network = var.vpc_network_self_link
 
+  project = var.project
+
   allow {
     protocol = "icmp"
   }
@@ -51,6 +53,8 @@ resource "google_compute_firewall" "application" {
 resource "google_compute_firewall" "weave_fast_datapath" {
   name    = "${var.prefix}weave-fast-datapath"
   network = var.vpc_network_self_link
+
+  project = var.project
 
   allow {
     protocol = "esp"
