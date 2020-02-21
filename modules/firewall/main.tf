@@ -40,6 +40,8 @@ resource "google_compute_firewall" "tfe" {
   name    = "${var.prefix}firewall-${var.install_id}"
   network = var.vpc_name
 
+  project = var.project
+
   allow {
     protocol = "icmp"
   }
@@ -53,6 +55,8 @@ resource "google_compute_firewall" "tfe" {
 resource "google_compute_firewall" "weave_fast_datapath" {
   name    = "${var.prefix}weave-fast-datapath-firewall-${var.install_id}"
   network = var.vpc_name
+
+  project = var.project
 
   allow {
     protocol = "esp"
