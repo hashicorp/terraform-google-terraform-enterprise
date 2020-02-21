@@ -4,6 +4,7 @@ resource "google_compute_firewall" "external_to_primaries" {
 
   allow {
     protocol = "tcp"
+
     ports = [
       22,
       443,
@@ -22,6 +23,7 @@ resource "google_compute_firewall" "external_to_secondaries" {
 
   allow {
     protocol = "tcp"
+
     ports = [
       22,
       443,
