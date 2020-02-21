@@ -1,10 +1,12 @@
 resource "google_compute_firewall" "external_to_primaries" {
-  name    = "${var.prefix}-external-to-primaries-${var.install_id}"
+  name    = "${var.prefix}external-to-primaries-${var.install_id}"
   network = var.vpc_name
+
   project = var.project
 
   allow {
     protocol = "tcp"
+
     ports = [
       22,
       443,
@@ -18,12 +20,14 @@ resource "google_compute_firewall" "external_to_primaries" {
 }
 
 resource "google_compute_firewall" "external_to_secondaries" {
-  name    = "${var.prefix}-external-to-secondaries-${var.install_id}"
+  name    = "${var.prefix}external-to-secondaries-${var.install_id}"
   network = var.vpc_name
+
   project = var.project
 
   allow {
     protocol = "tcp"
+
     ports = [
       22,
       443,
@@ -48,7 +52,8 @@ resource "google_compute_firewall" "tfe" {
 
   allow {
     protocol = "tcp"
-    ports    = concat(["6443", "23010"], var.firewall_ports)
+
+    ports = concat(["6443", "23010"], var.firewall_ports)
   }
 }
 
