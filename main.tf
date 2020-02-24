@@ -137,7 +137,7 @@ module "dns-primaries" {
   install_id = local.install_id
   prefix     = var.prefix
 
-  project   = local.dns_project
+  project   = local.rendered_dns_project
   dnszone   = var.dnszone
   primaries = module.cluster.primary_external_addresses
 }
@@ -169,7 +169,7 @@ module "dns" {
   prefix     = var.prefix
 
   address  = module.loadbalancer.address
-  project  = local.dns_project
+  project  = local.rendered_dns_project
   dnszone  = var.dnszone
   hostname = var.hostname
 }
