@@ -1,46 +1,36 @@
-resource "google_compute_firewall" "external_to_primaries" {
-  name    = "${var.prefix}external-to-primaries"
+resource "google_compute_firewall" "external_ssh_ui" {
+  name    = "${var.prefix}external-ssh-ui"
   network = var.vpc_network_self_link
 
   allow {
     protocol = "tcp"
 
-    ports = [
-      22,
-      443,
-      8800,
-    ]
+    ports = [22, 443, 8800]
   }
-  description             = "Allow ingress of traffic from the external network to the primary compute instances."
+  description             = "Allow ingress of SSH and UI traffic from the external network to the primary and secondary compute instances."
   direction               = "INGRESS"
   enable_logging          = true
-  target_service_accounts = [var.service_account_primary_cluster_email]
+  target_service_accounts = [var.service_account_primary_cluster_email, var.service_account_secondary_cluster_email]
 }
 
-resource "google_compute_firewall" "external_to_secondaries" {
-  name    = "${var.prefix}-external-to-secondaries"
+resource "google_compute_firewall" "internal_ssh_ui" {
+  name    = "${var.prefix}internal-ssh-ui"
   network = var.vpc_network_self_link
 
-  allow {
+  deny {
     protocol = "tcp"
 
-    ports = [
-      22,
-      443,
-      8800,
-    ]
+    ports = [22, 443, 8800]
   }
-  description             = "Allow ingress of traffic from the external network to the secondary compute instances."
-  direction               = "INGRESS"
+  description             = "Deny egress of SSH and UI traffic from the internal network."
+  direction               = "EGRESS"
   enable_logging          = true
-  target_service_accounts = [var.service_account_secondary_cluster_email]
+  source_service_accounts = [var.service_account_primary_cluster_email, var.service_account_secondary_cluster_email]
 }
 
 resource "google_compute_firewall" "application" {
   name    = "${var.prefix}application"
   network = var.vpc_network_self_link
-
-  project = var.project
 
   allow {
     protocol = "icmp"
@@ -55,8 +45,6 @@ resource "google_compute_firewall" "application" {
 resource "google_compute_firewall" "weave_fast_datapath" {
   name    = "${var.prefix}weave-fast-datapath"
   network = var.vpc_network_self_link
-
-  project = var.project
 
   allow {
     protocol = "esp"
