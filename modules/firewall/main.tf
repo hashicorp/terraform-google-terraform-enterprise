@@ -40,8 +40,8 @@ resource "google_compute_firewall" "replicated" {
   description             = "Allow ingress of Replicated traffic between the primary and secondary compute instances."
   direction               = "INGRESS"
   enable_logging          = true
-  source_service_accounts = [var.primary_service_account_email, var.secondary_service_account_email]
-  target_service_accounts = [var.primary_service_account_email, var.secondary_service_account_email]
+  source_service_accounts = [var.service_account_primary_cluster_email, var.service_account_secondary_cluster_email]
+  target_service_accounts = [var.service_account_primary_cluster_email, var.service_account_secondary_cluster_email]
 }
 
 resource "google_compute_firewall" "weave" {
@@ -63,17 +63,21 @@ resource "google_compute_firewall" "weave" {
   }
   description             = "Allow ingress of Weave traffic between the primary and secondary compute instances."
   direction               = "INGRESS"
-  source_service_accounts = [var.primary_service_account_email, var.secondary_service_account_email]
-  target_service_accounts = [var.primary_service_account_email, var.secondary_service_account_email]
+  source_service_accounts = [var.service_account_primary_cluster_email, var.service_account_secondary_cluster_email]
+  target_service_accounts = [var.service_account_primary_cluster_email, var.service_account_secondary_cluster_email]
 }
 
-resource "google_compute_firewall" "health_checks" {
-  name    = "${var.prefix}health-checks"
+resource "google_compute_firewall" "cluster_assistant" {
+  name    = "${var.prefix}cluster-assistant"
   network = var.vpc_network_self_link
 
   allow {
     protocol = "tcp"
+
+    ports = [23010]
   }
-  description   = "Allow the ingress of traffic from health check address ranges."
-  source_ranges = concat([var.vpc_subnetwork_ip_cidr_range], var.health_check_ip_cidr_ranges)
+  description             = "Allow ingress of Cluster Assistant traffic between the primary and secondary compute instances."
+  direction               = "INGRESS"
+  source_service_accounts = [var.service_account_primary_cluster_email, var.service_account_secondary_cluster_email]
+  target_service_accounts = [var.service_account_primary_cluster_email, var.service_account_secondary_cluster_email]
 }
