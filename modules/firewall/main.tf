@@ -1,3 +1,7 @@
+locals {
+  primary_and_secondary_service_accounts = [var.primary_service_account_email, var.secondary_service_account_email]
+}
+
 resource "google_compute_firewall" "external_ssh_ui" {
   name    = "${var.prefix}external-ssh-ui-${var.install_id}"
   network = var.vpc_name
@@ -12,7 +16,7 @@ resource "google_compute_firewall" "external_ssh_ui" {
   description             = "Allow ingress of SSH and UI traffic from the external network to the primary and secondary compute instances."
   direction               = "INGRESS"
   enable_logging          = true
-  target_service_accounts = [var.primary_service_account_email, var.secondary_service_account_email]
+  target_service_accounts = local.primary_and_secondary_service_accounts
 }
 
 resource "google_compute_firewall" "internal_ssh_ui" {
@@ -29,7 +33,7 @@ resource "google_compute_firewall" "internal_ssh_ui" {
   description             = "Deny egress of SSH and UI traffic from the internal network."
   direction               = "EGRESS"
   enable_logging          = true
-  source_service_accounts = [var.primary_service_account_email, var.secondary_service_account_email]
+  source_service_accounts = local.primary_and_secondary_service_accounts
 }
 
 resource "google_compute_firewall" "replicated" {
@@ -46,8 +50,25 @@ resource "google_compute_firewall" "replicated" {
   description             = "Allow ingress of Replicated traffic between the primary and secondary compute instances."
   direction               = "INGRESS"
   enable_logging          = true
-  source_service_accounts = [var.primary_service_account_email, var.secondary_service_account_email]
-  target_service_accounts = [var.primary_service_account_email, var.secondary_service_account_email]
+  source_service_accounts = local.primary_and_secondary_service_accounts
+  target_service_accounts = local.primary_and_secondary_service_accounts
+}
+
+resource "google_compute_firewall" "etcd" {
+  name    = "${var.prefix}replicated-${var.install_id}"
+  network = var.vpc_name
+
+  project = var.project
+
+  allow {
+    protocol = "tcp"
+
+    ports = [2739, 2380, 4001, 7001]
+  }
+  description             = "Allow ingress of etcd traffic between the primary and secondary compute instances."
+  enable_logging          = true
+  source_service_accounts = local.primary_and_secondary_service_accounts
+  target_service_accounts = local.primary_and_secondary_service_accounts
 }
 
 resource "google_compute_firewall" "weave" {
@@ -71,8 +92,8 @@ resource "google_compute_firewall" "weave" {
   }
   description             = "Allow ingress of Weave traffic between the primary and secondary compute instances."
   direction               = "INGRESS"
-  source_service_accounts = [var.primary_service_account_email, var.secondary_service_account_email]
-  target_service_accounts = [var.primary_service_account_email, var.secondary_service_account_email]
+  source_service_accounts = local.primary_and_secondary_service_accounts
+  target_service_accounts = local.primary_and_secondary_service_accounts
 }
 
 resource "google_compute_firewall" "cluster_assistant" {
@@ -88,6 +109,6 @@ resource "google_compute_firewall" "cluster_assistant" {
   }
   description             = "Allow ingress of Cluster Assistant traffic between the primary and secondary compute instances."
   direction               = "INGRESS"
-  source_service_accounts = [var.primary_service_account_email, var.secondary_service_account_email]
-  target_service_accounts = [var.primary_service_account_email, var.secondary_service_account_email]
+  source_service_accounts = local.primary_and_secondary_service_accounts
+  target_service_accounts = local.primary_and_secondary_service_accounts
 }
