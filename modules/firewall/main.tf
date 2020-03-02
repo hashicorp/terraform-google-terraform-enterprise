@@ -75,14 +75,19 @@ resource "google_compute_firewall" "weave" {
   target_service_accounts = [var.primary_service_account_email, var.secondary_service_account_email]
 }
 
-resource "google_compute_firewall" "lb_healthchecks" {
-  name    = "${var.prefix}lb-healthcheck-firewall-${var.install_id}"
+resource "google_compute_firewall" "cluster_assistant" {
+  name    = "${var.prefix}cluster-assistant-${var.install_id}"
   network = var.vpc_name
 
   project = var.project
 
   allow {
     protocol = "tcp"
+
+    ports = [23010]
   }
-  source_ranges = concat([var.subnet_ip_range], var.healthcheck_ips)
+  description             = "Allow ingress of Cluster Assistant traffic between the primary and secondary compute instances."
+  direction               = "INGRESS"
+  source_service_accounts = [var.primary_service_account_email, var.secondary_service_account_email]
+  target_service_accounts = [var.primary_service_account_email, var.secondary_service_account_email]
 }
