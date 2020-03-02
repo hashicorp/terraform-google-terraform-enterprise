@@ -44,16 +44,27 @@ resource "google_compute_firewall" "replicated" {
   target_service_accounts = [var.primary_service_account_email, var.secondary_service_account_email]
 }
 
-resource "google_compute_firewall" "weave_fast_datapath" {
-  name    = "${var.prefix}weave-fast-datapath"
+resource "google_compute_firewall" "weave" {
+  name    = "${var.prefix}weave"
   network = var.vpc_network_self_link
 
   allow {
+    protocol = "tcp"
+
+    ports = [6783]
+  }
+  allow {
+    protocol = "udp"
+
+    ports = [6783, 6784]
+  }
+  allow {
     protocol = "esp"
   }
-  description   = "Weave fast datapath traffic."
-  direction     = "INGRESS"
-  source_ranges = [var.vpc_subnetwork_ip_cidr_range]
+  description             = "Allow ingress of Weave traffic between the primary and secondary compute instances."
+  direction               = "INGRESS"
+  source_service_accounts = [var.primary_service_account_email, var.secondary_service_account_email]
+  target_service_accounts = [var.primary_service_account_email, var.secondary_service_account_email]
 }
 
 resource "google_compute_firewall" "health_checks" {
