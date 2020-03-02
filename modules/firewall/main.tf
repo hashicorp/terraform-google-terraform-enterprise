@@ -120,3 +120,37 @@ resource "google_compute_firewall" "cluster_assistant_primaries" {
   source_service_accounts = local.proxy_service_accounts
   target_service_accounts = local.primary_service_accounts
 }
+
+resource "google_compute_firewall" "k8s_proxy" {
+  name    = "${var.prefix}k8s-proxy-${var.install_id}"
+  network = var.vpc_name
+
+  project = var.project
+
+  allow {
+    protocol = "tcp"
+
+    ports = ["6443", "10250-10252"]
+  }
+  description             = "Allow ingress of Kubernetes traffic from the primary and secondary compute instances to the proxy compute instances."
+  direction               = "INGRESS"
+  source_service_accounts = local.primary_and_secondary_service_accounts
+  target_service_accounts = local.proxy_service_accounts
+}
+
+resource "google_compute_firewall" "k8s_primaries" {
+  name    = "${var.prefix}k8s-primaries-${var.install_id}"
+  network = var.vpc_name
+
+  project = var.project
+
+  allow {
+    protocol = "tcp"
+
+    ports = ["6443", "10250-10252"]
+  }
+  description             = "Allow ingress of Kubernetes traffic from the proxy compute instances to the primary compute instances."
+  direction               = "INGRESS"
+  source_service_accounts = local.proxy_service_accounts
+  target_service_accounts = local.primary_service_accounts
+}
