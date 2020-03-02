@@ -28,18 +28,20 @@ resource "google_compute_firewall" "internal_ssh_ui" {
   source_service_accounts = [var.service_account_primary_cluster_email, var.service_account_secondary_cluster_email]
 }
 
-resource "google_compute_firewall" "application" {
-  name    = "${var.prefix}application"
+resource "google_compute_firewall" "replicated" {
+  name    = "${var.prefix}replicated"
   network = var.vpc_network_self_link
 
   allow {
-    protocol = "icmp"
-  }
-  allow {
     protocol = "tcp"
-    ports    = concat(["6443", "23010"], var.ports)
+
+    ports = ["9870-9881"]
   }
-  description = "Allow the ingress of traffic within the network."
+  description             = "Allow ingress of Replicated traffic between the primary and secondary compute instances."
+  direction               = "INGRESS"
+  enable_logging          = true
+  source_service_accounts = [var.primary_service_account_email, var.secondary_service_account_email]
+  target_service_accounts = [var.primary_service_account_email, var.secondary_service_account_email]
 }
 
 resource "google_compute_firewall" "weave_fast_datapath" {
