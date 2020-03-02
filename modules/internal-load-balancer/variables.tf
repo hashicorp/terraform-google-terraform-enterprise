@@ -16,6 +16,11 @@ variable "k8s_api_port" {
   default     = 6443
 }
 
+variable "prefix" {
+  description = "The prefix which will be prepended to the names of resources."
+  type        = string
+}
+
 variable "vpc_subnetwork_ip_cidr_range" {
   description = "The range from which IP addresses will be assigned to resources, expressed in CIDR notation. The range must be part of var.vpc_subnetwork_self_link."
   type        = string
@@ -32,10 +37,9 @@ variable "primary_cluster_instance_group_self_link" {
   description = "GCP Instance Group for the primaries"
 }
 
-variable "prefix" {
+variable "service_account_email" {
   type        = string
-  description = "Prefix for resources"
-  default     = "tfe-"
+  description = "The email address of the service account which will be associated with the proxy compute instances."
 }
 
 variable "vpc_network_self_link" {

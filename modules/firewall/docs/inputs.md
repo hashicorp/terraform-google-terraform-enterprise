@@ -6,6 +6,7 @@
 |------|-------------|------|---------|:-----:|
 | prefix | The prefix which will be prepended to the names of resources. | `string` | n/a | yes |
 | service\_account\_primary\_cluster\_email | The email address of the service account associated with the primary cluster. | `string` | n/a | yes |
+| service\_account\_proxy\_email | The email address of the service account associated with the proxy. | `string` | n/a | yes |
 | service\_account\_secondary\_cluster\_email | The email address of the service account associated with the secondary cluster. | `string` | n/a | yes |
 | vpc\_network\_self\_link | The self link of the network to which resources will be attached. | `string` | n/a | yes |
 | vpc\_subnetwork\_ip\_cidr\_range | The range of IP addresses in the subnetwork from which traffic will be authorized to flow, expressed in CIDR notation. | `string` | n/a | yes |

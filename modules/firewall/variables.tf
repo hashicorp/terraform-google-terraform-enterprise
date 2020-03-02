@@ -25,6 +25,11 @@ variable "service_account_primary_cluster_email" {
   description = "The email address of the service account associated with the primary cluster."
 }
 
+variable "service_account_proxy_email" {
+  type        = string
+  description = "The email address of the service account associated with the proxy."
+}
+
 variable "service_account_secondary_cluster_email" {
   type        = string
   description = "The email address of the service account associated with the secondary cluster."

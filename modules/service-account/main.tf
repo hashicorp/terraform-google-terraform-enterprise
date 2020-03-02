@@ -22,3 +22,10 @@ resource "google_service_account" "secondary_cluster" {
   display_name = "TFE Secondary Cluster"
   description  = "The identity to be associated with the TFE secondary compute instances."
 }
+
+resource "google_service_account" "proxy" {
+  account_id = "${var.prefix}proxy"
+
+  description  = "The identity to be associated with the TFE proxy compute instances."
+  display_name = "TFE Proxy"
+}

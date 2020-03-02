@@ -86,6 +86,11 @@ resource "google_compute_instance_template" "node" {
     subnetwork         = var.vpc_subnetwork_self_link
     subnetwork_project = var.vpc_subnetwork_project
   }
+  service_account {
+    scopes = ["cloud-platform"]
+
+    email = var.service_account_email
+  }
 
   lifecycle {
     create_before_destroy = true

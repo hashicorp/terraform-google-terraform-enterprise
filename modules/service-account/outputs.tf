@@ -4,6 +4,12 @@ output "primary_cluster" {
   description = "The service account to be associated with the primary cluster."
 }
 
+output "proxy" {
+  value = google_service_account.proxy
+
+  description = "The service account to be associated with the proxy."
+}
+
 output "secondary_cluster" {
   value = google_service_account.secondary_cluster
 

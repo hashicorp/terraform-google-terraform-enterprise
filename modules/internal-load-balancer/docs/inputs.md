@@ -4,7 +4,9 @@
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:-----:|
+| prefix | The prefix which will be prepended to the names of resources. | `string` | n/a | yes |
 | primary\_cluster\_instance\_group\_self\_link | GCP Instance Group for the primaries | `string` | n/a | yes |
+| service\_account\_email | The email address of the service account which will be associated with the proxy compute instances. | `string` | n/a | yes |
 | vpc\_network\_self\_link | The self link of the network to which resources will be attached. | `string` | n/a | yes |
 | vpc\_subnetwork\_ip\_cidr\_range | The range from which IP addresses will be assigned to resources, expressed in CIDR notation. The range must be part of var.vpc\_subnetwork\_self\_link. | `string` | n/a | yes |
 | vpc\_subnetwork\_project | The ID of the project in which var.vpc\_subnetwork\_self\_link exists. | `string` | n/a | yes |
@@ -13,5 +15,4 @@
 | k8s\_api\_port | The port of the Kubernetes API. | `number` | `6443` | no |
 | labels | A collection of labels which will be applied to the compute instances. | `map(string)` | `{}` | no |
 | ports | Only packets addressed to these ports will be forwarded through the internal load balancer. var.k8s\_api\_port will be added to this list. | `list(number)` | <pre>[<br>  80,<br>  443,<br>  23010<br>]</pre> | no |
-| prefix | Prefix for resources | `string` | `"tfe-"` | no |
 
