@@ -1,5 +1,7 @@
 locals {
+  primary_service_accounts               = [var.primary_service_account_email]
   primary_and_secondary_service_accounts = [var.primary_service_account_email, var.secondary_service_account_email]
+  proxy_service_accounts                 = [var.proxy_service_account_email]
 }
 
 resource "google_compute_firewall" "external_ssh_ui" {
@@ -96,8 +98,8 @@ resource "google_compute_firewall" "weave" {
   target_service_accounts = local.primary_and_secondary_service_accounts
 }
 
-resource "google_compute_firewall" "cluster_assistant" {
-  name    = "${var.prefix}cluster-assistant-${var.install_id}"
+resource "google_compute_firewall" "cluster_assistant_proxy" {
+  name    = "${var.prefix}cluster-assistant-proxy-${var.install_id}"
   network = var.vpc_name
 
   project = var.project
@@ -107,8 +109,25 @@ resource "google_compute_firewall" "cluster_assistant" {
 
     ports = [23010]
   }
-  description             = "Allow ingress of Cluster Assistant traffic between the primary and secondary compute instances."
+  description             = "Allow ingress of Cluster Assistant traffic from the primary and secondary compute instances to the proxy compute instances."
   direction               = "INGRESS"
   source_service_accounts = local.primary_and_secondary_service_accounts
-  target_service_accounts = local.primary_and_secondary_service_accounts
+  target_service_accounts = local.proxy_service_accounts
+}
+
+resource "google_compute_firewall" "cluster_assistant_primaries" {
+  name    = "${var.prefix}cluster-assistant-primaries-${var.install_id}"
+  network = var.vpc_name
+
+  project = var.project
+
+  allow {
+    protocol = "tcp"
+
+    ports = [23010]
+  }
+  description             = "Allow ingress of Cluster Assistant traffic from the proxy compute instances to the primary compute instances."
+  direction               = "INGRESS"
+  source_service_accounts = local.proxy_service_accounts
+  target_service_accounts = local.primary_service_accounts
 }

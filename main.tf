@@ -29,6 +29,7 @@ module "firewall" {
   install_id                      = local.install_id
   primary_service_account_email   = module.service_accounts.primary.email
   project                         = var.project
+  proxy_service_account_email     = module.service_accounts.proxy.email
   secondary_service_account_email = module.service_accounts.secondary.email
   subnet_ip_range                 = module.vpc.subnet_ip_range
   vpc_name                        = module.vpc.vpc_name
@@ -138,6 +139,7 @@ module "proxy" {
   primary_instance_group = module.cluster.primary_instance_group.self_link
   project                = var.project
   region                 = var.region
+  service_account_email  = module.service_accounts.proxy.email
   subnet                 = module.vpc.subnet
 
   prefix = var.prefix

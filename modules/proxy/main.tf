@@ -75,6 +75,9 @@ resource "google_compute_instance_template" "node" {
   }
   machine_type = "n1-standard-1"
 
+  project = var.project
+  region  = var.region
+
   can_ip_forward       = true
   description          = "The template for the node compute instances of the proxy."
   instance_description = "A node compute instance of the proxy."
@@ -92,8 +95,11 @@ resource "google_compute_instance_template" "node" {
 
     subnetwork_project = var.project
   }
-  project = var.project
-  region  = var.region
+  service_account {
+    scopes = ["cloud-platform"]
+
+    email = var.service_account_email
+  }
 
   lifecycle {
     create_before_destroy = true

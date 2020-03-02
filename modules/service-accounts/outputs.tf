@@ -16,6 +16,12 @@ output "primary" {
   description = "The service account to be attached to the primary VM instance template."
 }
 
+output "proxy" {
+  value = google_service_account.proxy
+
+  description = "The service account to be attached to the proxy VM instance template."
+}
+
 output "secondary" {
   value = google_service_account.secondary
 

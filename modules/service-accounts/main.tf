@@ -28,3 +28,12 @@ resource "google_service_account" "secondary" {
   display_name = "TFE Secondary"
   description  = "The identity of the TFE secondary compute instances."
 }
+
+resource "google_service_account" "proxy" {
+  account_id = "${var.prefix}proxy-${var.install_id}"
+
+  project = var.project
+
+  display_name = "TFE Proxy"
+  description  = "The identity of the TFE proxy compute instances."
+}

@@ -41,6 +41,11 @@ variable "project" {
   description = "The ID of the project in which the resources will be created."
 }
 
+variable "proxy_service_account_email" {
+  type        = string
+  description = "The email address of the proxy service account."
+}
+
 variable "secondary_service_account_email" {
   type        = string
   description = "The email address of the secondary service account."
