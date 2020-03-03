@@ -13,6 +13,12 @@ variable "dnszone" {
   description = "Name of the managed dns zone to create records into"
 }
 
+variable "dns_project" {
+  type        = string
+  description = "GCP Project to find the DNS Zone, defaults to var.project"
+  default     = ""
+}
+
 variable "license_file" {
   type        = string
   description = "Replicated license file"
