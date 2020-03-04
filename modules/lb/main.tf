@@ -7,6 +7,7 @@ resource "google_compute_health_check" "application" {
   description        = "The TFE application health check."
   https_health_check {
     port         = var.ports.application.tcp[0]
+    request_path = "/session"
   }
   timeout_sec = 4
 }
