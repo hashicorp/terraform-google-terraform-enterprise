@@ -50,3 +50,20 @@ variable "secondary_service_account_email" {
   type        = string
   description = "The email address of the secondary service account."
 }
+
+variable "ports" {
+  type = object(
+    {
+      application       = object({ tcp = list(string) })
+      cluster_assistant = object({ tcp = list(string) })
+      etcd              = object({ tcp = list(string) })
+      kubelet           = object({ tcp = list(string) })
+      kubernetes        = object({ tcp = list(string) })
+      replicated        = object({ tcp = list(string) })
+      replicated_ui     = object({ tcp = list(string) })
+      ssh               = object({ tcp = list(string) })
+      weave             = object({ tcp = list(string), udp = list(string) })
+    }
+  )
+  description = "The ports over which network traffic will travel, organized by services and protocols."
+}

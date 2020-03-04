@@ -1,5 +1,5 @@
 locals {
-  ports  = concat(var.ports, [var.k8s_api_port])
+  ports  = concat(var.ports.cluster_assistant.tcp, var.ports.kubernetes.tcp)
   prefix = "${var.prefix}proxy"
 }
 
@@ -9,7 +9,7 @@ resource "google_compute_health_check" "load_balancer_out" {
   description = "Check the health of the Kubernetes API."
   project     = var.project
   tcp_health_check {
-    port = var.k8s_api_port
+    port = var.ports.kubernetes.tcp[0]
   }
 }
 
@@ -60,7 +60,7 @@ resource "google_compute_health_check" "load_balancer_in" {
   description = "Check the health of the Kubernetes API."
   project     = var.project
   tcp_health_check {
-    port = var.k8s_api_port
+    port = var.ports.kubernetes.tcp[0]
   }
 }
 
@@ -84,9 +84,9 @@ resource "google_compute_instance_template" "node" {
   metadata_startup_script = templatefile(
     "${path.module}/templates/setup-proxy.tmpl",
     {
-      cluster_assistant_port = var.cluster_assistant_port,
+      cluster_assistant_port = var.ports.cluster_assistant.tcp[0],
       host                   = google_compute_address.load_balancer_out.address,
-      k8s_api_port           = var.k8s_api_port,
+      kubernetes_port        = var.ports.kubernetes.tcp[0]
     }
   )
   name_prefix = "${local.prefix}-node-${var.install_id}-"
@@ -118,7 +118,11 @@ resource "google_compute_region_instance_group_manager" "node" {
   description = "Manages the node compute instances of the proxy."
   named_port {
     name = "kubernetes"
-    port = var.k8s_api_port
+    port = var.ports.kubernetes.tcp[0]
+  }
+  named_port {
+    name = "cluster-assistant"
+    port = var.ports.cluster_assistant.tcp[0]
   }
   project     = var.project
   target_size = 2

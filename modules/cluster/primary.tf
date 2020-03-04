@@ -52,19 +52,15 @@ resource "google_compute_instance_group" "primary" {
   instances   = google_compute_instance.primary.*.self_link
   named_port {
     name = "application"
-    port = 443
+    port = var.ports.application.tcp[0]
   }
   named_port {
     name = "kubernetes"
-    port = 6443
+    port = var.ports.kubernetes.tcp[0]
   }
   named_port {
-    name = "replicated"
-    port = 8800
-  }
-  named_port {
-    name = "assist"
-    port = 23010
+    name = "replicated-ui"
+    port = var.ports.replicated_ui.tcp[0]
   }
 
   depends_on = [google_compute_instance.primary]

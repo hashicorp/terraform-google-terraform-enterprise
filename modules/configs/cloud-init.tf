@@ -1,5 +1,6 @@
 locals {
-  assistant_port = 23010
+  assistant_host       = "http://${var.cluster_api_endpoint}:${var.ports.cluster_assistant.tcp[0]}"
+  cluster_api_endpoint = "${var.cluster_api_endpoint}:${var.ports.kubernetes.tcp[0]}"
 }
 
 data "template_file" "proxy_sh" {
@@ -39,8 +40,8 @@ data "template_file" "cloud_config" {
     replconf             = base64encode(data.template_file.replicated_config.rendered)
     install_ptfe_sh      = base64encode(file("${path.module}/files/install-ptfe.sh"))
     role                 = count.index == 0 ? "main" : "primary"
-    cluster_api_endpoint = "${var.cluster_api_endpoint}:6443"
-    assistant_host       = "http://${var.cluster_api_endpoint}:${local.assistant_port}"
+    cluster_api_endpoint = local.cluster_api_endpoint
+    assistant_host       = local.assistant_host
     ca_bundle_url        = var.common-config.ca_certs
     weave_cidr           = var.weave_cidr
     repl_cidr            = var.repl_cidr
@@ -66,8 +67,8 @@ data "template_file" "cloud_config_secondary" {
     ptfe_url             = var.installer_url
     import_key           = var.import_key
     bootstrap_token      = "${random_string.bootstrap_token_id.result}.${random_string.bootstrap_token_suffix.result}"
-    cluster_api_endpoint = "${var.cluster_api_endpoint}:6443"
-    assistant_host       = "http://${var.cluster_api_endpoint}:${local.assistant_port}"
+    cluster_api_endpoint = local.cluster_api_endpoint
+    assistant_host       = local.assistant_host
     setup_token          = random_string.setup_token.result
     install_ptfe_sh      = base64encode(file("${path.module}/files/install-ptfe.sh"))
     role                 = "secondary"
@@ -87,4 +88,3 @@ data "template_cloudinit_config" "config_secondary" {
     content      = data.template_file.cloud_config_secondary.rendered
   }
 }
-

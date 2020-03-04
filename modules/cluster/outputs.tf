@@ -4,12 +4,12 @@ output "installer_dashboard_url" {
   # google_compute_instance.primary is destroyed. An example of this scenario is when a destroy process is resumed
   # after recovering from an error.
   value = length(google_compute_instance.primary) > 0 ? (
-    "https://${google_compute_instance.primary[0].network_interface[0].access_config[0].nat_ip}:8800"
+    "https://${google_compute_instance.primary[0].network_interface[0].access_config[0].nat_ip}:${var.ports.replicated_ui.tcp[0]}"
   ) : ""
 }
 
 output "application_addresses" {
-  description = "IP addresses of primaries that are running the application on port 443"
+  description = "IP addresses of primaries that are running the application"
   value       = [for primary in google_compute_instance.primary.* : primary.network_interface.0.network_ip]
 }
 output "primary_external_addresses" {

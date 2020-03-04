@@ -6,8 +6,8 @@ apt-get update
 
 apt-get install -y iptables-persistent netfilter-persistent
 
-iptables -t nat -A PREROUTING -p tcp --dport ${k8s_api_port} -j DNAT --to-destination "${host}"
-iptables -t nat -A POSTROUTING -p tcp --dport ${k8s_api_port} -j MASQUERADE
+iptables -t nat -A PREROUTING -p tcp --dport ${kubernetes_port} -j DNAT --to-destination "${host}"
+iptables -t nat -A POSTROUTING -p tcp --dport ${kubernetes_port} -j MASQUERADE
 
 iptables -t nat -A PREROUTING -p tcp --dport ${cluster_assistant_port} -j DNAT --to-destination "${host}"
 iptables -t nat -A POSTROUTING -p tcp --dport ${cluster_assistant_port} -j MASQUERADE

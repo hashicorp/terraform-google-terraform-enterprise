@@ -1,24 +1,16 @@
-variable "cluster_assistant_port" {
-  type        = number
-  description = "The port of the Cluster Assistant."
-  default     = 23010
-}
-
-variable "k8s_api_port" {
-  type        = number
-  description = "The port of the Kubernetes API."
-  default     = 6443
-}
-
 variable "install_id" {
   type        = string
   description = "Identifier for install to apply to resources"
 }
 
 variable "ports" {
-  type        = list(number)
-  description = "Only packets addressed to these ports will be forwarded through the proxy. var.k8s_api_port will be added to this list."
-  default     = [80, 443, 23010]
+  type = object(
+    {
+      cluster_assistant = object({ tcp = list(string) }),
+      kubernetes        = object({ tcp = list(string) })
+    }
+  )
+  description = "The ports over which network traffic will travel, organized by services and protocols."
 }
 
 variable "project" {

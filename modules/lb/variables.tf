@@ -1,11 +1,20 @@
 variable "global_address" {
-  type = string
+  type        = string
   description = "The global IP address which will be assigned to the load balancer."
 }
 
 variable "install_id" {
   type        = string
   description = "Identifier for install to apply to resources"
+}
+
+variable "ports" {
+  type = object(
+    {
+      application = object({ tcp = list(string) })
+    }
+  )
+  description = "The ports over which network traffic will travel, organized by services and protocols."
 }
 
 variable "prefix" {
@@ -15,7 +24,7 @@ variable "prefix" {
 }
 
 variable "project" {
-  type = string
+  type        = string
   description = "The project in which resources will be created."
 }
 

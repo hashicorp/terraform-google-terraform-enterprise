@@ -22,11 +22,16 @@ module "vpc" {
   region = var.region
 }
 
+module "ports" {
+  source = "./modules/ports"
+}
+
 # Configure a firewall the network to allow access to cluster's ports.
 module "firewall" {
   source = "./modules/firewall"
 
   install_id                      = local.install_id
+  ports                           = module.ports
   primary_service_account_email   = module.service_accounts.primary.email
   project                         = var.project
   proxy_service_account_email     = module.service_accounts.proxy.email
@@ -90,6 +95,7 @@ module "cluster-config" {
     application_config = module.common-config.application_config,
     ca_certs           = module.common-config.ca_certs,
   }
+  ports = module.ports
 }
 
 data "google_compute_zones" "available" {
@@ -112,6 +118,7 @@ module "cluster" {
   }
   install_id                      = local.install_id
   license_file                    = var.license_file
+  ports                           = module.ports
   primary_service_account_email   = module.service_accounts.primary.email
   project                         = var.project
   secondary_service_account_email = module.service_accounts.secondary.email
@@ -136,6 +143,7 @@ module "proxy" {
   source = "./modules/proxy"
 
   install_id             = local.install_id
+  ports                  = module.ports
   primary_instance_group = module.cluster.primary_instance_group.self_link
   project                = var.project
   region                 = var.region
@@ -182,6 +190,7 @@ module "loadbalancer" {
   cert            = module.cert.certificate
   global_address  = module.global_address.main.address
   install_id      = local.install_id
+  ports           = module.ports
   primary_group   = module.cluster.primary_instance_group.self_link
   project         = var.project
   secondary_group = module.cluster.secondary_region_instance_group_manager.instance_group

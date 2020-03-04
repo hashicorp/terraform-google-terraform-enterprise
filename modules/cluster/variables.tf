@@ -1,5 +1,4 @@
 locals {
-  assistant_port                  = 23010
   rendered_secondary_machine_type = var.secondary_machine_type != "" ? var.secondary_machine_type : var.primary_machine_type
 }
 
@@ -8,6 +7,17 @@ locals {
 variable "install_id" {
   type        = string
   description = "Identifier for install to apply to resources"
+}
+
+variable "ports" {
+  type = object(
+    {
+      application   = object({ tcp = list(string) })
+      kubernetes    = object({ tcp = list(string) })
+      replicated_ui = object({ tcp = list(string) })
+    }
+  )
+  description = "The ports over which network traffic will travel, organized by services and protocols."
 }
 
 variable "subnet" {

@@ -1,5 +1,15 @@
 # === Required
 
+variable "ports" {
+  type = object(
+    {
+      cluster_assistant = object({ tcp = list(string) })
+      kubernetes        = object({ tcp = list(string) })
+    }
+  )
+  description = "The ports over which network traffic will travel, organized by services and protocols."
+}
+
 variable "license_file" {
   type        = string
   description = "Path to license file for the application"
@@ -101,4 +111,3 @@ resource "random_string" "bootstrap_token_suffix" {
   upper   = false
   special = false
 }
-
