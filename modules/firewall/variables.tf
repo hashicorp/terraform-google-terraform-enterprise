@@ -1,5 +1,5 @@
 variable "health_check_ip_cidr_ranges" {
-  default     = ["35.191.0.0/16", "209.85.152.0/22", "209.85.204.0/22", "130.211.0.0/22"]
+  default     = ["35.191.0.0/16", "130.211.0.0/22"]
   description = "The list of GCP health check IP address ranges from which health check traffic will be authorized to flow, expressed in CIDR notation. The default ranges were obtained from the GCP Health Checks Overview: https://cloud.google.com/load-balancing/docs/health-check-concepts#ip-ranges."
   type        = list(string)
 }

@@ -1,5 +1,4 @@
 locals {
-  health_check_ranges      = ["35.191.0.0/16", "130.211.0.0/22"]
   primary_service_accounts = [var.service_account_primary_cluster_email]
   primary_and_secondary_service_accounts = [
     var.service_account_primary_cluster_email,
@@ -25,7 +24,7 @@ resource "google_compute_firewall" "health_checks_application" {
   description             = "Allow ingress of application traffic from the Google health check IP address ranges to the primary and secondary compute instances."
   direction               = "INGRESS"
   enable_logging          = true
-  source_ranges           = local.health_check_ranges
+  source_ranges           = var.health_check_ip_cidr_ranges
   target_service_accounts = local.primary_and_secondary_service_accounts
 }
 
@@ -41,7 +40,7 @@ resource "google_compute_firewall" "health_checks_kubernetes" {
   description             = "Allow ingress of Kubernetes traffic from the Google health check IP address ranges to the primary and proxy compute instances."
   direction               = "INGRESS"
   enable_logging          = true
-  source_ranges           = local.health_check_ranges
+  source_ranges           = var.health_check_ip_cidr_ranges
   target_service_accounts = [var.service_account_primary_cluster_email, var.service_account_proxy_email]
 }
 
@@ -69,10 +68,10 @@ resource "google_compute_firewall" "internal_ssh_ui" {
 
     ports = local.ssh_ui_ports
   }
-  description             = "Deny egress of SSH and UI traffic from the internal network."
-  direction               = "EGRESS"
-  enable_logging          = true
-  source_service_accounts = local.primary_and_secondary_service_accounts
+  description    = "Deny ingress of SSH and UI traffic from the internal network."
+  direction      = "INGRESS"
+  enable_logging = true
+  source_ranges  = [var.vpc_subnetwork_ip_cidr_range]
 }
 
 resource "google_compute_firewall" "replicated" {
