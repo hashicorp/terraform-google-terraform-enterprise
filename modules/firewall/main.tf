@@ -186,9 +186,23 @@ resource "google_compute_firewall" "etcd" {
   source_service_accounts = local.primary_service_accounts
   target_service_accounts = local.primary_service_accounts
 }
+
+resource "google_compute_firewall" "kubelet" {
+  name    = "${var.prefix}kubelet-${var.install_id}"
+  network = var.vpc_name
+
+  project = var.project
+
+  allow {
+    protocol = "tcp"
+
+    ports = var.ports.kubelet.tcp
+  }
+  description             = "Allow ingress of Kubelet traffic between the primary and secondary compute instances."
   direction               = "INGRESS"
+  enable_logging          = true
   source_service_accounts = local.primary_and_secondary_service_accounts
-  target_service_accounts = local.proxy_service_accounts
+  target_service_accounts = local.primary_and_secondary_service_accounts
 }
 
 resource "google_compute_firewall" "weave" {
