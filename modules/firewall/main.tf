@@ -133,6 +133,7 @@ resource "google_compute_firewall" "cluster_assistant_proxy" {
   }
   description             = "Allow ingress of Cluster Assistant traffic from the primary and secondary compute instances to the proxy compute instances."
   direction               = "INGRESS"
+  enable_logging          = true
   source_service_accounts = local.primary_and_secondary_service_accounts
   target_service_accounts = local.proxy_service_accounts
 }
@@ -148,6 +149,7 @@ resource "google_compute_firewall" "cluster_assistant_primaries" {
   }
   description             = "Allow ingress of Cluster Assistant traffic from the proxy compute instances to the primary compute instances."
   direction               = "INGRESS"
+  enable_logging          = true
   source_service_accounts = local.proxy_service_accounts
   target_service_accounts = local.primary_service_accounts
 }
