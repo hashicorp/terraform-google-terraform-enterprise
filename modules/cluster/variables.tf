@@ -60,13 +60,13 @@ variable "labels" {
 variable "primary_machine_type" {
   type        = string
   description = "Type of machine to use"
-  default     = "n1-standard-4"
+  default     = "n1-standard-8"
 }
 
 variable "secondary_machine_type" {
   type        = string
   description = "Type of machine to use for secondary nodes, if unset, will default to primary_machine_type"
-  default     = "n1-standard-4"
+  default     = "n1-standard-8"
 }
 
 variable "image_family" {
