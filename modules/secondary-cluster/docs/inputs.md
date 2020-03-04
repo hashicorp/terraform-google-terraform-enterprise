@@ -17,7 +17,7 @@
 | disk\_image | The image from which to initialize the compute instance disks. The supported images are: ubuntu-1604-lts; ubuntu-1804-lts; rhel-7. | `string` | `"ubuntu-1804-lts"` | no |
 | disk\_size | The size of var.disk\_image, expressed in units of gigabytes. | `number` | `40` | no |
 | labels | The labels which will be applied to the compute instances. | `map(string)` | `{}` | no |
-| machine\_type | The identifier of the set of virtualized hardware resources which will be available to the compute instances. | `string` | `"n1-standard-4"` | no |
+| machine\_type | The identifier of the set of virtualized hardware resources which will be available to the compute instances. | `string` | `"n1-standard-8"` | no |
 | max\_instances | The maximum count of compute instances to scale to based on var.cpu\_utilization\_target. | `number` | `5` | no |
 | min\_instances | The minimum count of compute instances to scale to based on var.cpu\_utilization\_target. | `number` | `1` | no |
 
