@@ -4,7 +4,7 @@ resource "google_compute_health_check" "application" {
   check_interval_sec = 5
   description        = "The TFE application health check."
   https_health_check {
-    port         = var.port_application_tcp
+    port = var.port_application_tcp
   }
   timeout_sec = 4
 }
