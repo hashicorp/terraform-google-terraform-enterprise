@@ -44,8 +44,8 @@ resource "google_compute_firewall" "health_checks_kubernetes" {
   target_service_accounts = [var.service_account_primary_cluster_email, var.service_account_proxy_email]
 }
 
-resource "google_compute_firewall" "external_ssh_ui" {
-  name    = "${var.prefix}external-ssh-ui"
+resource "google_compute_firewall" "allow_all_ssh_ui" {
+  name    = "${var.prefix}allow-all-ssh-ui"
   network = var.vpc_network_self_link
 
   allow {
@@ -53,14 +53,14 @@ resource "google_compute_firewall" "external_ssh_ui" {
 
     ports = local.ssh_ui_ports
   }
-  description             = "Allow ingress of SSH and UI traffic from the external network to the primary and secondary compute instances."
+  description             = "Allow ingress of SSH and UI traffic from any source to the primary and secondary compute instances."
   direction               = "INGRESS"
   enable_logging          = true
   target_service_accounts = local.primary_and_secondary_service_accounts
 }
 
-resource "google_compute_firewall" "internal_ssh_ui" {
-  name    = "${var.prefix}internal-ssh-ui"
+resource "google_compute_firewall" "deny_internal_ssh_ui" {
+  name    = "${var.prefix}deny-internal-ssh-ui"
   network = var.vpc_network_self_link
 
   deny {
@@ -68,7 +68,7 @@ resource "google_compute_firewall" "internal_ssh_ui" {
 
     ports = local.ssh_ui_ports
   }
-  description    = "Deny ingress of SSH and UI traffic from the internal network."
+  description    = "Deny ingress of SSH and UI traffic between addresses in the internal network."
   direction      = "INGRESS"
   enable_logging = true
   source_ranges  = [var.vpc_subnetwork_ip_cidr_range]
