@@ -9,9 +9,9 @@ variable "region" {
   default     = "us-central1-a"
 }
 
-variable "subnet_range" {
+variable "subnetwork_ip_cidr_range" {
   type        = string
-  description = "CIDR range for subnet"
+  description = "CIDR range for subnetwork"
   default     = "10.1.0.0/16"
 }
 

@@ -43,7 +43,7 @@ variable "custom_image" {
 }
 
 variable "iact_subnet_list" {
-  description = "The subnets to allow to use the Initial Admin Creation Token API"
+  description = "The subnetworks to allow to use the Initial Admin Creation Token API"
   default     = ""
 }
 

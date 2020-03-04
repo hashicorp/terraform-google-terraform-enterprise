@@ -20,7 +20,7 @@ variable "ports" {
   description = "The ports over which network traffic will travel, organized by services and protocols."
 }
 
-variable "subnet" {
+variable "subnetwork" {
   type        = object({ ip_cidr_range = string, network = string, self_link = string })
   description = "GCP Subnetwork to attach resources to"
 }

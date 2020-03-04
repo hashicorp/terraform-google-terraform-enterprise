@@ -23,7 +23,7 @@ variable "service_account_email" {
   description = "The email address of the service account which will be attached to the proxy compute instances."
 }
 
-variable "subnet" {
+variable "subnetwork" {
   type        = object({ ip_cidr_range = string, network = string, self_link = string })
   description = "GCP Subnetwork for Load Balancer"
 }

@@ -122,7 +122,7 @@ module "cluster" {
   primary_service_account_email   = module.service_accounts.primary.email
   project                         = var.project
   secondary_service_account_email = module.service_accounts.secondary.email
-  subnet                          = module.vpc.subnet
+  subnetwork                      = module.vpc.subnetwork
 
   autoscaler_cpu_threshold = var.autoscaler_cpu_threshold
   gcs_bucket               = module.gcs.bucket_name
@@ -148,7 +148,7 @@ module "proxy" {
   project                = var.project
   region                 = var.region
   service_account_email  = module.service_accounts.proxy.email
-  subnet                 = module.vpc.subnet
+  subnetwork             = module.vpc.subnetwork
 
   prefix = var.prefix
 }

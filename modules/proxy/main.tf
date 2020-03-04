@@ -36,7 +36,7 @@ resource "google_compute_address" "load_balancer_out" {
   description  = "The IP address of the load balancer for the traffic outgoing from the proxy."
   project      = var.project
   region       = var.region
-  subnetwork   = var.subnet.self_link
+  subnetwork   = var.subnetwork.self_link
 }
 
 resource "google_compute_forwarding_rule" "load_balancer_out" {
@@ -47,11 +47,11 @@ resource "google_compute_forwarding_rule" "load_balancer_out" {
   ip_address            = google_compute_address.load_balancer_out.address
   ip_protocol           = "TCP"
   load_balancing_scheme = "INTERNAL"
-  network               = var.subnet.network
+  network               = var.subnetwork.network
   ports                 = local.ports
   project               = var.project
   region                = var.region
-  subnetwork            = var.subnet.self_link
+  subnetwork            = var.subnetwork.self_link
 }
 
 resource "google_compute_health_check" "load_balancer_in" {
@@ -91,7 +91,7 @@ resource "google_compute_instance_template" "node" {
   )
   name_prefix = "${local.prefix}-node-${var.install_id}-"
   network_interface {
-    subnetwork = var.subnet.self_link
+    subnetwork = var.subnetwork.self_link
 
     subnetwork_project = var.project
   }
@@ -151,7 +151,7 @@ resource "google_compute_address" "load_balancer_in" {
   description  = "The IP address of the load balancer for the traffic incoming to the proxy."
   project      = var.project
   region       = var.region
-  subnetwork   = var.subnet.self_link
+  subnetwork   = var.subnetwork.self_link
 }
 
 resource "google_compute_forwarding_rule" "load_balancer_in" {
@@ -162,9 +162,9 @@ resource "google_compute_forwarding_rule" "load_balancer_in" {
   ip_address            = google_compute_address.load_balancer_in.address
   ip_protocol           = "TCP"
   load_balancing_scheme = "INTERNAL"
-  network               = var.subnet.network
+  network               = var.subnetwork.network
   ports                 = local.ports
   project               = var.project
   region                = var.region
-  subnetwork            = var.subnet.self_link
+  subnetwork            = var.subnetwork.self_link
 }

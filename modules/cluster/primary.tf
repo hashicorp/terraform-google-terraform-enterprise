@@ -20,7 +20,7 @@ resource "google_compute_instance" "primary" {
   }
 
   network_interface {
-    subnetwork = var.subnet.self_link
+    subnetwork = var.subnetwork.self_link
 
     access_config {
       // public IP

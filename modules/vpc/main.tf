@@ -4,9 +4,9 @@ resource "google_compute_network" "tfe_vpc" {
   auto_create_subnetworks = false
 }
 
-resource "google_compute_subnetwork" "tfe_subnet" {
+resource "google_compute_subnetwork" "main" {
   name          = "${var.prefix}subnet-${var.install_id}"
-  ip_cidr_range = var.subnet_range
+  ip_cidr_range = var.subnetwork_ip_cidr_range
   region        = var.region
   network       = google_compute_network.tfe_vpc.self_link
 }
@@ -29,4 +29,3 @@ resource "google_compute_router_nat" "nat" {
     filter = "ERRORS_ONLY"
   }
 }
-
