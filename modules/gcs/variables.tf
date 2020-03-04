@@ -22,6 +22,6 @@ variable "labels" {
 }
 
 variable "service_account_email" {
-  type = string
+  type        = string
   description = "The email address of the service account which will be used to access the storage bucket."
 }
