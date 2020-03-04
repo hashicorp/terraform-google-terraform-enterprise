@@ -1,4 +1,5 @@
 locals {
+  health_check_ranges                    = ["35.191.0.0/16", "130.211.0.0/22"]
   primary_service_accounts               = [var.primary_service_account_email]
   primary_and_secondary_service_accounts = [var.primary_service_account_email, var.secondary_service_account_email]
   proxy_service_accounts                 = [var.proxy_service_account_email]
@@ -7,6 +8,42 @@ locals {
     var.ports.ssh.tcp,
     var.ports.replicated_ui.tcp
   )
+}
+
+resource "google_compute_firewall" "health_checks_application" {
+  name    = "${var.prefix}health-checks-application-${var.install_id}"
+  network = var.vpc_name
+
+  project = var.project
+
+  allow {
+    protocol = "tcp"
+
+    ports = var.ports.application.tcp
+  }
+  description             = "Allow ingress of application traffic from the Google health check IP address ranges to the primary and secondary compute instances."
+  direction               = "INGRESS"
+  enable_logging          = true
+  source_ranges           = local.health_check_ranges
+  target_service_accounts = local.primary_and_secondary_service_accounts
+}
+
+resource "google_compute_firewall" "health_checks_kubernetes" {
+  name    = "${var.prefix}health-checks-kubernetes-${var.install_id}"
+  network = var.vpc_name
+
+  project = var.project
+
+  allow {
+    protocol = "tcp"
+
+    ports = var.ports.kubernetes.tcp
+  }
+  description             = "Allow ingress of Kubernetes traffic from the Google health check IP address ranges to the primary and proxy compute instances."
+  direction               = "INGRESS"
+  enable_logging          = true
+  source_ranges           = local.health_check_ranges
+  target_service_accounts = [var.primary_service_account_email, var.proxy_service_account_email]
 }
 
 resource "google_compute_firewall" "external_ssh_ui" {
