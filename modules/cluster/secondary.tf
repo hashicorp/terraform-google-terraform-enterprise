@@ -1,6 +1,6 @@
 resource "google_compute_instance_template" "secondary" {
   name_prefix    = "${var.prefix}secondary-template-"
-  machine_type   = var.secondary_machine_type
+  machine_type   = local.rendered_secondary_machine_type
   region         = var.region
   can_ip_forward = true
 
