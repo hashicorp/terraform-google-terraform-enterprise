@@ -36,7 +36,7 @@ module "firewall" {
   project                         = var.project
   proxy_service_account_email     = module.service_accounts.proxy.email
   secondary_service_account_email = module.service_accounts.secondary.email
-  subnet_ip_range                 = module.vpc.subnet_ip_range
+  subnetwork_ip_cidr_range        = module.vpc.subnetwork.ip_cidr_range
   vpc_name                        = module.vpc.vpc_name
 
   prefix = var.prefix

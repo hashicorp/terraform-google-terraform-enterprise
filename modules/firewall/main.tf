@@ -74,10 +74,10 @@ resource "google_compute_firewall" "internal_ssh_ui" {
 
     ports = local.ssh_ui_ports
   }
-  description             = "Deny egress of SSH and UI traffic from the internal network."
-  direction               = "EGRESS"
-  enable_logging          = true
-  source_service_accounts = local.primary_and_secondary_service_accounts
+  description    = "Deny ingress of SSH and UI traffic from the internal network."
+  direction      = "INGRESS"
+  enable_logging = true
+  source_ranges  = [var.subnetwork_ip_cidr_range]
 }
 
 resource "google_compute_firewall" "replicated" {
