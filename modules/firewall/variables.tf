@@ -9,15 +9,59 @@ variable "vpc_network_self_link" {
   type        = string
 }
 
-variable "prefix" {
-  description = "The prefix which will be prepended to the names of resources."
+variable "port_application_tcp" {
+  description = "The port over which application TCP traffic will travel."
   type        = string
 }
 
-variable "ports" {
-  default     = []
-  description = "A list of additional ports over which traffic will be authorized to flow."
+variable "port_cluster_assistant_tcp" {
+  description = "The port over which Cluster Assistant TCP traffic will travel."
+  type        = string
+}
+
+variable "port_etcd_tcp_ranges" {
+  description = "The port ranges over which etcd TCP traffic will travel."
   type        = list(string)
+}
+
+variable "port_kubelet_tcp" {
+  description = "The port over which Kubelet TCP traffic will travel."
+  type        = string
+}
+
+variable "port_kubernetes_tcp" {
+  description = "The port over which Kubernetes TCP traffic will travel."
+  type        = string
+}
+
+variable "port_replicated_tcp_ranges" {
+  description = "The port ranges over which Replicated TCP traffic will travel."
+  type        = list(string)
+}
+
+variable "port_replicated_ui_tcp" {
+  description = "The port over which Replicated UI TCP traffic will travel."
+  type        = string
+}
+
+variable "port_weave_tcp" {
+  description = "The port over which Weave TCP traffic will travel."
+  type        = string
+}
+
+variable "port_weave_udp_ranges" {
+  description = "The port ranges over which Weave UDP traffic will travel."
+  type        = list(string)
+}
+
+variable "port_ssh_tcp" {
+  description = "The port over which SSH TCP traffic will travel."
+  type        = string
+}
+
+variable "prefix" {
+  description = "The prefix which will be prepended to the names of resources."
+  type        = string
 }
 
 variable "service_account_primary_cluster_email" {

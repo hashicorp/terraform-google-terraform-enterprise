@@ -1,7 +1,7 @@
 locals {
   name_in  = "${local.prefix}in"
   name_out = "${local.prefix}out"
-  ports    = concat(var.ports, [var.k8s_api_port])
+  ports    = [var.port_cluster_assistant_tcp, var.port_kubernetes_tcp]
   prefix   = "${var.prefix}ilb-"
 }
 
@@ -10,7 +10,7 @@ resource "google_compute_health_check" "internal_load_balancer_out" {
 
   description = "Check the health of the Kubernetes API."
   tcp_health_check {
-    port = var.k8s_api_port
+    port = var.port_kubernetes_tcp
   }
 }
 
@@ -54,7 +54,7 @@ resource "google_compute_health_check" "internal_load_balancer_in" {
 
   description = "Check the health of the Kubernetes API."
   tcp_health_check {
-    port = var.k8s_api_port
+    port = var.port_kubernetes_tcp
   }
 }
 
@@ -76,9 +76,9 @@ resource "google_compute_instance_template" "node" {
   metadata_startup_script = templatefile(
     "${path.module}/templates/setup-proxy.tmpl",
     {
-      cluster_assistant_port = var.cluster_assistant_port,
-      host                   = google_compute_address.internal_load_balancer_out.address,
-      k8s_api_port           = var.k8s_api_port,
+      port_cluster_assistant_tcp = var.port_cluster_assistant_tcp,
+      host                       = google_compute_address.internal_load_balancer_out.address,
+      port_kubernetes_tcp        = var.port_kubernetes_tcp
     }
   )
   name_prefix = "${local.prefix}node-"
@@ -109,7 +109,11 @@ resource "google_compute_region_instance_group_manager" "node" {
   description = "Manages the node compute instances of the internal load balancer."
   named_port {
     name = "kubernetes"
-    port = var.k8s_api_port
+    port = var.port_kubernetes_tcp
+  }
+  named_port {
+    name = "cluster-assistant"
+    port = var.port_cluster_assistant_tcp
   }
   target_size = 2
 }

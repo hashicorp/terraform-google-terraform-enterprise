@@ -3,6 +3,11 @@ variable "global_address" {
   type        = string
 }
 
+variable "port_application_tcp" {
+  description = "The port over which application TCP traffic will travel."
+  type        = string
+}
+
 variable "prefix" {
   description = "The prefix which will be prepended to the names of resources."
   type        = string

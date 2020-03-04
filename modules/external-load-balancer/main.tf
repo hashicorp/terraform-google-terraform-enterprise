@@ -4,7 +4,7 @@ resource "google_compute_health_check" "application" {
   check_interval_sec = 5
   description        = "The TFE application health check."
   https_health_check {
-    port_name = "application"
+    port         = var.port_application_tcp
   }
   timeout_sec = 4
 }
@@ -56,5 +56,5 @@ resource "google_compute_global_forwarding_rule" "application" {
   ip_address            = var.global_address
   ip_protocol           = "TCP"
   load_balancing_scheme = "EXTERNAL"
-  port_range            = 443
+  port_range            = var.port_application_tcp
 }

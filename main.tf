@@ -23,10 +23,25 @@ module "vpc" {
   prefix = var.prefix
 }
 
+# Define ports for the various endpoints of the application.
+module "port" {
+  source = "./modules/port"
+}
+
 # Create firewalls to control network traffic.
 module "firewall" {
   source = "./modules/firewall"
 
+  port_application_tcp                    = module.port.application_tcp
+  port_cluster_assistant_tcp              = module.port.cluster_assistant_tcp
+  port_etcd_tcp_ranges                    = module.port.etcd_tcp_ranges
+  port_kubelet_tcp                        = module.port.kubelet_tcp
+  port_kubernetes_tcp                     = module.port.kubernetes_tcp
+  port_replicated_tcp_ranges              = module.port.replicated_tcp_ranges
+  port_replicated_ui_tcp                  = module.port.replicated_ui_tcp
+  port_ssh_tcp                            = module.port.ssh_tcp
+  port_weave_tcp                          = module.port.weave_tcp
+  port_weave_udp_ranges                   = module.port.weave_udp_ranges
   prefix                                  = var.prefix
   service_account_primary_cluster_email   = module.service_account.primary_cluster.email
   service_account_proxy_email             = module.service_account.proxy.email
@@ -64,8 +79,10 @@ module "cloud_init" {
   source = "./modules/cloud-init"
 
   application_config             = module.application.config
-  license_file                   = var.cloud_init_license_file
   internal_load_balancer_address = module.internal_load_balancer.address.address
+  license_file                   = var.cloud_init_license_file
+  port_cluster_assistant_tcp     = module.port.cluster_assistant_tcp
+  port_kubernetes_tcp            = module.port.kubernetes_tcp
 }
 
 # Create the primary cluster.
@@ -73,6 +90,9 @@ module "primary_cluster" {
   source = "./modules/primary-cluster"
 
   cloud_init_configs       = module.cloud_init.primary_configs
+  port_application_tcp     = module.port.application_tcp
+  port_kubernetes_tcp      = module.port.kubernetes_tcp
+  port_replicated_ui_tcp   = module.port.replicated_ui_tcp
   prefix                   = var.prefix
   service_account_email    = module.service_account.primary_cluster.email
   vpc_network_self_link    = module.vpc.network.self_link
@@ -86,6 +106,8 @@ module "primary_cluster" {
 module "internal_load_balancer" {
   source = "./modules/internal-load-balancer"
 
+  port_kubernetes_tcp                      = module.port.kubernetes_tcp
+  port_cluster_assistant_tcp               = module.port.cluster_assistant_tcp
   prefix                                   = var.prefix
   primary_cluster_instance_group_self_link = module.primary_cluster.instance_group.self_link
   service_account_email                    = module.service_account.proxy.email
@@ -102,8 +124,11 @@ module "secondary_cluster" {
   source = "./modules/secondary-cluster"
 
   cloud_init_config        = module.cloud_init.secondary_config
-  service_account_email    = module.service_account.secondary_cluster.email
+  port_application_tcp     = module.port.application_tcp
+  port_kubernetes_tcp      = module.port.kubernetes_tcp
+  port_replicated_ui_tcp   = module.port.replicated_ui_tcp
   prefix                   = var.prefix
+  service_account_email    = module.service_account.secondary_cluster.email
   vpc_network_self_link    = module.vpc.network.self_link
   vpc_subnetwork_project   = module.vpc.subnetwork.project
   vpc_subnetwork_self_link = module.vpc.subnetwork.self_link
@@ -116,6 +141,7 @@ module "external_load_balancer" {
   source = "./modules/external-load-balancer"
 
   global_address                                          = module.global.address.address
+  port_application_tcp                                    = module.port.application_tcp
   prefix                                                  = var.prefix
   primary_cluster_instance_group_self_link                = module.primary_cluster.instance_group.self_link
   secondary_cluster_instance_group_manager_instance_group = module.secondary_cluster.instance_group_manager.instance_group

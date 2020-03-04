@@ -5,6 +5,11 @@ locals {
     var.service_account_secondary_cluster_email
   ]
   proxy_service_accounts = [var.service_account_proxy_email]
+  ssh_ui_ports = [
+    var.port_application_tcp,
+    var.port_ssh_tcp,
+    var.port_replicated_ui_tcp
+  ]
 }
 
 resource "google_compute_firewall" "external_ssh_ui" {
@@ -14,7 +19,7 @@ resource "google_compute_firewall" "external_ssh_ui" {
   allow {
     protocol = "tcp"
 
-    ports = [22, 443, 8800]
+    ports = local.ssh_ui_ports
   }
   description             = "Allow ingress of SSH and UI traffic from the external network to the primary and secondary compute instances."
   direction               = "INGRESS"
@@ -29,7 +34,7 @@ resource "google_compute_firewall" "internal_ssh_ui" {
   deny {
     protocol = "tcp"
 
-    ports = [22, 443, 8800]
+    ports = local.ssh_ui_ports
   }
   description             = "Deny egress of SSH and UI traffic from the internal network."
   direction               = "EGRESS"
@@ -44,7 +49,7 @@ resource "google_compute_firewall" "replicated" {
   allow {
     protocol = "tcp"
 
-    ports = ["9870-9881"]
+    ports = var.port_replicated_tcp_ranges
   }
   description             = "Allow ingress of Replicated traffic between the primary and secondary compute instances."
   direction               = "INGRESS"
@@ -53,42 +58,36 @@ resource "google_compute_firewall" "replicated" {
   target_service_accounts = local.primary_and_secondary_service_accounts
 }
 
-resource "google_compute_firewall" "etcd" {
-  name    = "${var.prefix}etcd"
+resource "google_compute_firewall" "kubernetes_proxy" {
+  name    = "${var.prefix}kubernetes-proxy"
   network = var.vpc_network_self_link
 
   allow {
     protocol = "tcp"
 
-    ports = [2739, 2380, 4001, 7001]
+    ports = [var.port_kubernetes_tcp]
   }
-  description             = "Allow ingress of etcd traffic between the primary and secondary compute instances."
+  description             = "Allow ingress of Kubernetes traffic from the primary and secondary compute instances to the proxy compute instances."
+  direction               = "INGRESS"
   enable_logging          = true
   source_service_accounts = local.primary_and_secondary_service_accounts
-  target_service_accounts = local.primary_and_secondary_service_accounts
+  target_service_accounts = local.proxy_service_accounts
 }
 
-resource "google_compute_firewall" "weave" {
-  name    = "${var.prefix}weave"
+resource "google_compute_firewall" "kubernetes_primaries" {
+  name    = "${var.prefix}kubernetes-primaries"
   network = var.vpc_network_self_link
 
   allow {
     protocol = "tcp"
 
-    ports = [6783]
+    ports = [var.port_kubernetes_tcp]
   }
-  allow {
-    protocol = "udp"
-
-    ports = [6783, 6784]
-  }
-  allow {
-    protocol = "esp"
-  }
-  description             = "Allow ingress of Weave traffic between the primary and secondary compute instances."
+  description             = "Allow ingress of Kubernetes traffic from the proxy compute instances to the primary compute instances."
   direction               = "INGRESS"
-  source_service_accounts = local.primary_and_secondary_service_accounts
-  target_service_accounts = local.primary_and_secondary_service_accounts
+  enable_logging          = true
+  source_service_accounts = local.proxy_service_accounts
+  target_service_accounts = local.primary_service_accounts
 }
 
 resource "google_compute_firewall" "cluster_assistant_proxy" {
@@ -98,7 +97,7 @@ resource "google_compute_firewall" "cluster_assistant_proxy" {
   allow {
     protocol = "tcp"
 
-    ports = [23010]
+    ports = [var.port_cluster_assistant_tcp]
   }
   description             = "Allow ingress of Cluster Assistant traffic from the primary and secondary compute instances to the proxy compute instances."
   direction               = "INGRESS"
@@ -113,7 +112,7 @@ resource "google_compute_firewall" "cluster_assistant_primaries" {
   allow {
     protocol = "tcp"
 
-    ports = [23010]
+    ports = [var.port_cluster_assistant_tcp]
   }
   description             = "Allow ingress of Cluster Assistant traffic from the proxy compute instances to the primary compute instances."
   direction               = "INGRESS"
@@ -121,36 +120,41 @@ resource "google_compute_firewall" "cluster_assistant_primaries" {
   target_service_accounts = local.primary_service_accounts
 }
 
-resource "google_compute_firewall" "k8s_proxy" {
-  name    = "${var.prefix}k8s-proxy-${var.install_id}"
-  network = var.vpc_name
-
-  project = var.project
+resource "google_compute_firewall" "etcd" {
+  name    = "${var.prefix}etcd"
+  network = var.vpc_network_self_link
 
   allow {
     protocol = "tcp"
 
-    ports = ["6443", "10250-10252"]
+    ports = var.port_etcd_tcp_ranges
   }
-  description             = "Allow ingress of Kubernetes traffic from the primary and secondary compute instances to the proxy compute instances."
-  direction               = "INGRESS"
-  source_service_accounts = local.primary_and_secondary_service_accounts
-  target_service_accounts = local.proxy_service_accounts
+  description             = "Allow ingress of etcd traffic between the primary compute instances."
+  enable_logging          = true
+  source_service_accounts = local.primary_service_accounts
+  target_service_accounts = local.primary_service_accounts
 }
 
-resource "google_compute_firewall" "k8s_primaries" {
-  name    = "${var.prefix}k8s-primaries-${var.install_id}"
-  network = var.vpc_name
-
-  project = var.project
+resource "google_compute_firewall" "weave" {
+  name    = "${var.prefix}weave"
+  network = var.vpc_network_self_link
 
   allow {
     protocol = "tcp"
 
-    ports = ["6443", "10250-10252"]
+    ports = [var.port_weave_tcp]
   }
-  description             = "Allow ingress of Kubernetes traffic from the proxy compute instances to the primary compute instances."
+  allow {
+    protocol = "udp"
+
+    ports = var.port_weave_udp_ranges
+  }
+  allow {
+    protocol = "esp"
+  }
+  description             = "Allow ingress of Weave traffic between the primary and secondary compute instances."
   direction               = "INGRESS"
-  source_service_accounts = local.proxy_service_accounts
-  target_service_accounts = local.primary_service_accounts
+  enable_logging          = true
+  source_service_accounts = local.primary_and_secondary_service_accounts
+  target_service_accounts = local.primary_and_secondary_service_accounts
 }

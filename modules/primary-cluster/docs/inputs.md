@@ -5,6 +5,9 @@
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:-----:|
 | cloud\_init\_configs | The cloud-init configurations for the compute instances. | `list(string)` | n/a | yes |
+| port\_application\_tcp | The port over which application TCP traffic will travel. | `string` | n/a | yes |
+| port\_kubernetes\_tcp | The port over which Kubernetes TCP traffic will travel. | `string` | n/a | yes |
+| port\_replicated\_ui\_tcp | The port over which Replicated UI TCP traffic will travel. | `string` | n/a | yes |
 | prefix | The prefix which will be prepended to the names of resources. | `string` | n/a | yes |
 | service\_account\_email | The email address of the service account to be associated with the compute instances. | `string` | n/a | yes |
 | vpc\_network\_self\_link | The self link of the network to which resources will be attached. | `string` | n/a | yes |

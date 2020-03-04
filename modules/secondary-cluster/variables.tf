@@ -44,6 +44,21 @@ variable "min_instances" {
   type        = number
 }
 
+variable "port_application_tcp" {
+  description = "The port over which application TCP traffic will travel."
+  type        = string
+}
+
+variable "port_kubernetes_tcp" {
+  description = "The port over which Kubernetes TCP traffic will travel."
+  type        = string
+}
+
+variable "port_replicated_ui_tcp" {
+  description = "The port over which Replicated UI TCP traffic will travel."
+  type        = string
+}
+
 variable "prefix" {
   description = "The prefix which will be prepended to the names of resources."
   type        = string

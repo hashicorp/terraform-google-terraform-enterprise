@@ -1,19 +1,17 @@
-variable "cluster_assistant_port" {
-  type        = number
-  description = "The port of the Cluster Assistant."
-  default     = 23010
-}
-
 variable "labels" {
   default     = {}
   description = "A collection of labels which will be applied to the compute instances."
   type        = map(string)
 }
 
-variable "k8s_api_port" {
-  type        = number
-  description = "The port of the Kubernetes API."
-  default     = 6443
+variable "port_cluster_assistant_tcp" {
+  description = "The port over which Cluster Assistant TCP traffic will travel."
+  type        = string
+}
+
+variable "port_kubernetes_tcp" {
+  description = "The port over which Kubernetes TCP traffic will travel."
+  type        = string
 }
 
 variable "prefix" {
@@ -24,12 +22,6 @@ variable "prefix" {
 variable "vpc_subnetwork_ip_cidr_range" {
   description = "The range from which IP addresses will be assigned to resources, expressed in CIDR notation. The range must be part of var.vpc_subnetwork_self_link."
   type        = string
-}
-
-variable "ports" {
-  type        = list(number)
-  description = "Only packets addressed to these ports will be forwarded through the internal load balancer. var.k8s_api_port will be added to this list."
-  default     = [80, 443, 23010]
 }
 
 variable "primary_cluster_instance_group_self_link" {

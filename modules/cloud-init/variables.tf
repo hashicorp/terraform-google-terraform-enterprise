@@ -37,6 +37,16 @@ variable "license_file" {
   type        = string
 }
 
+variable "port_cluster_assistant_tcp" {
+  description = "The port over which Cluster Assistant TCP traffic will travel."
+  type        = string
+}
+
+variable "port_kubernetes_tcp" {
+  description = "The port over which Kubernetes TCP traffic will travel."
+  type        = string
+}
+
 variable "proxy_url" {
   default     = ""
   description = "The URL of a proxy through which application traffic will be routed."
