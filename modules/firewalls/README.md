@@ -1,6 +1,6 @@
-# Terraform Enterprise on GCP: Firewall
+# Terraform Enterprise on GCP: Firewalls
 
-This submodule provisions the firewall of the Terraform
+This submodule provisions the firewalls of the Terraform
 Enterprise cluster.
 
 ## Prerequisites

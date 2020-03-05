@@ -26,9 +26,9 @@ module "ports" {
   source = "./modules/ports"
 }
 
-# Configure a firewall the network to allow access to cluster's ports.
-module "firewall" {
-  source = "./modules/firewall"
+# Configure firewalls for the network to allow access to cluster's ports.
+module "firewalls" {
+  source = "./modules/firewalls"
 
   install_id                      = local.install_id
   ports                           = module.ports
