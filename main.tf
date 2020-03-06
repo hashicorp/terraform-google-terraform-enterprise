@@ -40,6 +40,7 @@ module "postgres" {
 
   postgresql_availability_type = var.postgresql_availability_type
   postgresql_backup_start_time = var.postgresql_backup_start_time
+  postgresql_machine_type      = var.postgresql_machine_type
 }
 
 # Create a GCP service account to access our GCS bucket
@@ -113,6 +114,11 @@ module "cluster" {
   postgresql_database = module.postgres.database_name
   postgresql_user     = module.postgres.user
   postgresql_password = module.postgres.password
+
+  primary_machine_type     = var.primary_machine_type
+  secondary_machine_type   = var.rendered_secondary_machine_type
+  primary_boot_disk_size   = var.primary_boot_disk_size
+  secondary_boot_disk_size = var.rendered_secondary_boot_disk_size
 
   max_secondaries          = var.max_secondaries
   min_secondaries          = var.min_secondaries

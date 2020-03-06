@@ -19,7 +19,7 @@ resource "google_compute_instance" "primary" {
   boot_disk {
     initialize_params {
       image = var.image_family
-      size  = var.boot_disk_size
+      size  = var.primary_boot_disk_size
       type  = "pd-ssd"
     }
   }

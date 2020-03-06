@@ -1,6 +1,7 @@
 locals {
-  assistant_port                  = 23010
-  rendered_secondary_machine_type = var.secondary_machine_type != "" ? var.secondary_machine_type : var.primary_machine_type
+  assistant_port                    = 23010
+  rendered_secondary_machine_type   = var.secondary_machine_type != "" ? var.secondary_machine_type : var.primary_machine_type
+  rendered_secondary_boot_disk_size = var.secondary_boot_disk_size != "" ? var.secondary_boot_disk_size : var.primary_boot_disk_size
 }
 
 ###
@@ -43,14 +44,14 @@ variable "labels" {
 
 variable "primary_machine_type" {
   type        = string
-  description = "Type of machine to use"
+  description = "Type of machine to use for primary instances"
   default     = "n1-standard-4"
 }
 
 variable "secondary_machine_type" {
   type        = string
-  description = "Type of machine to use for secondary nodes, if unset, will default to primary_machine_type"
-  default     = "n1-standard-4"
+  description = "Type of machine to use for secondary instances"
+  default     = ""
 }
 
 variable "image_family" {
@@ -59,10 +60,16 @@ variable "image_family" {
   default     = "ubuntu-1804-lts"
 }
 
-variable "boot_disk_size" {
+variable "primary_boot_disk_size" {
   type        = string
-  description = "The size of the boot disk to use for the instances"
-  default     = 40
+  description = "The size of the boot disk to use for primary instances"
+  default     = "40"
+}
+
+variable "secondary_boot_disk_size" {
+  type        = string
+  description = "The size of the boot disk to use for secondary instances"
+  default     = ""
 }
 
 variable "ca_bundle_url" {

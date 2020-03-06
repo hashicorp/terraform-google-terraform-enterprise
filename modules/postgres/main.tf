@@ -27,8 +27,9 @@ resource "google_sql_database_instance" "tfe" {
 
   settings {
     # Second-generation instance tiers are based on the machine
-    # type. See argument reference below.
-    tier              = var.postgresql_machinetype
+    # type. Postgres supports only shared-core machine types and
+    # custom machine types.
+    tier              = var.postgresql_machine_type
     availability_type = var.postgresql_availability_type
 
     ip_configuration {

@@ -20,9 +20,9 @@ variable "labels" {
   default     = {}
 }
 
-variable "postgresql_machinetype" {
+variable "postgresql_machine_type" {
   type        = string
-  description = "Machine type to use for Postgres Database"
+  description = "Type of machine to use for Postgres Database instance"
   default     = "db-custom-2-13312"
 }
 

@@ -52,6 +52,12 @@ variable "prefix" {
 # Postgresql options
 ###################################################
 
+variable "postgresql_machine_type" {
+  type        = string
+  description = "Type of machine to use for Postgres Database instance"
+  default     = "db-custom-2-13312"
+}
+
 variable "postgresql_availability_type" {
   type        = string
   description = "This specifies whether a PostgreSQL instance should be set up for high availability (REGIONAL) or single zone (ZONAL)"
@@ -61,6 +67,34 @@ variable "postgresql_availability_type" {
 variable "postgresql_backup_start_time" {
   type        = string
   description = "HH:MM format time indicating when backup configuration starts."
+  default     = ""
+}
+
+###################################################
+# Instance sizing
+###################################################
+
+variable "primary_machine_type" {
+  type        = string
+  description = "Type of machine to use for primary instances"
+  default     = "n1-standard-4"
+}
+
+variable "secondary_machine_type" {
+  type        = string
+  description = "Type of machine to use for secondary instances, if unset, will default to primary_machine_type"
+  default     = ""
+}
+
+variable "primary_boot_disk_size" {
+  type        = string
+  description = "The size of the boot disk to use for the primary instances"
+  default     = "40"
+}
+
+variable "secondary_boot_disk_size" {
+  type        = string
+  description = "The size of the boot disk to use for the secondary instances, if unset, will default to primary_boot_disk_size"
   default     = ""
 }
 

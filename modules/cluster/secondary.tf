@@ -8,7 +8,7 @@ resource "google_compute_instance_template" "secondary" {
     source_image = var.image_family
     auto_delete  = true
     boot         = true
-    disk_size_gb = var.boot_disk_size
+    disk_size_gb = var.secondary_boot_disk_size
     disk_type    = "pd-ssd"
   }
 
