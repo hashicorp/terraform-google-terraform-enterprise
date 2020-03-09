@@ -1,6 +1,7 @@
 locals {
   health_check_ranges                    = ["35.191.0.0/16", "130.211.0.0/22"]
   primary_service_accounts               = [var.primary_service_account_email]
+  primary_and_proxy_service_accounts     = [var.primary_service_account_email, var.proxy_service_account_email]
   primary_and_secondary_service_accounts = [var.primary_service_account_email, var.secondary_service_account_email]
   proxy_service_accounts                 = [var.proxy_service_account_email]
   ssh_ui_ports = concat(
@@ -127,10 +128,10 @@ resource "google_compute_firewall" "kubernetes_primaries" {
 
     ports = var.ports.kubernetes.tcp
   }
-  description             = "Allow ingress of Kubernetes traffic from the proxy compute instances to the primary compute instances."
+  description             = "Allow ingress of Kubernetes traffic from the proxy compute instances and the primary compute instances to the primary compute instances."
   direction               = "INGRESS"
   enable_logging          = true
-  source_service_accounts = local.proxy_service_accounts
+  source_service_accounts = local.primary_and_proxy_service_accounts
   target_service_accounts = local.primary_service_accounts
 }
 
