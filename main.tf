@@ -22,6 +22,7 @@ module "vpc" {
   region = var.region
 }
 
+# Define the ports of the various services which make up the cluster.
 module "ports" {
   source = "./modules/ports"
 }
