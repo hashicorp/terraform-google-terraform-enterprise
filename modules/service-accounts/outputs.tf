@@ -1,13 +1,13 @@
-output "bucket" {
-  value = google_service_account.bucket
+output "storage_bucket" {
+  value = google_service_account.storage_bucket
 
   description = "The service account which will be used to access the storage bucket."
 }
 
-output "bucket_credentials" {
-  value = base64decode(google_service_account_key.bucket.private_key)
+output "storage_bucket_key" {
+  value = google_service_account_key.storage_bucket
 
-  description = "The private key of the storage bucket service account."
+  description = "The key of the storage bucket service account."
 }
 
 output "primary" {

@@ -1,12 +1,24 @@
-# Create a GCS bucket to store our critical application state into.
-module "gcs" {
-  source = "./modules/gcs"
+locals {
+  install_id                                 = var.install_id != "" ? var.install_id : random_string.install_id.result
+  prefix                                     = "${var.prefix}-${local.install_id}"
+  rendered_dns_project                       = var.dns_project != "" ? var.dns_project : var.project
+  storage_bucket_service_account_private_key = base64decode(module.service_accounts.storage_bucket_key.private_key)
+}
 
-  install_id            = local.install_id
-  service_account_email = module.service_accounts.bucket.email
+# Create a default installation identifier to be joined with the prefix and prepended to the names of resources.
+resource "random_string" "install_id" {
+  length  = 8
+  special = false
+  upper   = false
+}
 
-  prefix = var.prefix
-  region = var.region
+# Create a storage bucket to store our critical application state into.
+module "storage" {
+  source = "./modules/storage"
+
+  prefix                = local.prefix
+  region                = var.region
+  service_account_email = module.service_accounts.storage_bucket.email
 }
 
 # Network creation:
@@ -55,7 +67,7 @@ module "postgres" {
   postgresql_backup_start_time = var.postgresql_backup_start_time
 }
 
-# Create a GCP service account to access our GCS bucket
+# Create a GCP service account to access our storage bucket
 module "service_accounts" {
   source = "./modules/service-accounts"
 
@@ -68,14 +80,12 @@ module "service_accounts" {
 module "app-config" {
   source = "./modules/external-config"
 
-  gcs_bucket      = module.gcs.bucket_name
-  gcs_project     = var.project
-  gcs_credentials = module.service_accounts.bucket_credentials
-
-  postgresql_address  = module.postgres.address
-  postgresql_database = module.postgres.database_name
-  postgresql_user     = module.postgres.user
-  postgresql_password = module.postgres.password
+  postgresql_address                         = module.postgres.address
+  postgresql_database                        = module.postgres.database_name
+  postgresql_password                        = module.postgres.password
+  postgresql_user                            = module.postgres.user
+  storage_bucket                             = module.storage.bucket
+  storage_bucket_service_account_private_key = local.storage_bucket_service_account_private_key
 }
 
 module "common-config" {
@@ -106,7 +116,7 @@ data "google_compute_zones" "available" {
 }
 
 # Configures the TFE cluster itself. Data is stored in the configured
-# GCS bucket and Postgres Database.
+# storage bucket and Postgres Database.
 module "cluster" {
   source = "./modules/cluster"
 
@@ -126,9 +136,6 @@ module "cluster" {
   subnetwork                      = module.vpc.subnetwork
 
   autoscaler_cpu_threshold = var.autoscaler_cpu_threshold
-  gcs_bucket               = module.gcs.bucket_name
-  gcs_credentials          = module.service_accounts.bucket_credentials
-  gcs_project              = var.project
   max_secondaries          = var.max_secondaries
   min_secondaries          = var.min_secondaries
   postgresql_address       = module.postgres.address

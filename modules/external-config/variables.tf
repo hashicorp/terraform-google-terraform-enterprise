@@ -19,14 +19,12 @@ variable "postgresql_extra_params" {
   default     = ""
 }
 
-variable "gcs_credentials" {
-  description = "The credentials JSON object to authenticate to GCS with"
+variable "storage_bucket" {
+  description = "The storage bucket in which application data will be stored."
+  type        = object({ name = string, project = string })
 }
 
-variable "gcs_project" {
-  description = "The Google Cloud project to access the GCS bucket within"
-}
-
-variable "gcs_bucket" {
-  description = "The Google Cloud Storage bucket to store data in"
+variable "storage_bucket_service_account_private_key" {
+  description = "The private key of the service account which is authorized to manage the storage bucket."
+  type = string
 }

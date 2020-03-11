@@ -173,24 +173,6 @@ variable "autoscaler_cpu_threshold" {
 # Optional External Services Variables
 ###################################################
 
-variable "gcs_bucket" {
-  type        = string
-  description = "Name of the gcp storage bucket"
-  default     = ""
-}
-
-variable "gcs_credentials" {
-  type        = string
-  description = "Base64 encoded credentials json to access your gcp storage bucket. Run base64 -i <creds.json> -o <credsb64.json> and then copy the contents of the file into the variable"
-  default     = ""
-}
-
-variable "gcs_project" {
-  type        = string
-  description = "Project name where the bucket resides, if left blank will use project provided above"
-  default     = ""
-}
-
 variable "postgresql_address" {
   type        = string
   description = "Database connection url"

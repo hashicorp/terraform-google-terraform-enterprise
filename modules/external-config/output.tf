@@ -38,15 +38,15 @@ output "services_config" {
         # This is required because when we use the value later, it needs to be one line otherwise
         # the templating breaks inside kubernetes. That should be addressed as well, but until then
         # we do it here.
-        value = replace(var.gcs_credentials, "\n", "")
+        value = replace(var.storage_bucket_service_account_private_key, "\n", "")
       }
 
       gcs_project = {
-        value = var.gcs_project
+        value = var.storage_bucket.project
       }
 
       gcs_bucket = {
-        value = var.gcs_bucket
+        value = var.storage_bucket.name
       }
     }
   }

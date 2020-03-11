@@ -3,7 +3,7 @@ locals {
 }
 
 resource "google_storage_bucket" "main" {
-  name     = "${var.prefix}storage-${var.install_id}"
+  name     = "${var.prefix}-storage"
   location = "us"
   labels   = var.labels
 }
