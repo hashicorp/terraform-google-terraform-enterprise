@@ -1,7 +1,6 @@
 resource "google_compute_instance_template" "secondary" {
   name_prefix    = "${var.prefix}secondary-template-"
   machine_type   = local.rendered_secondary_machine_type
-  region         = var.region
   can_ip_forward = true
 
   disk {
@@ -43,12 +42,10 @@ resource "google_compute_instance_template" "secondary" {
 resource "google_compute_region_instance_group_manager" "secondary" {
   base_instance_name = "${var.prefix}secondary-${var.install_id}"
   name               = "${var.prefix}secondary-${var.install_id}"
-  region             = var.region
+  region             = google_compute_instance_template.secondary.region
   version {
     instance_template = google_compute_instance_template.secondary.self_link
   }
-
-  project = var.project
 
   description = "The group of TFE secondary compute instances."
 

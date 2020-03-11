@@ -7,7 +7,6 @@ resource "google_compute_health_check" "load_balancer_out" {
   name = "${local.prefix}-lb-out-${var.install_id}"
 
   description = "Check the health of the Kubernetes API."
-  project     = var.project
   tcp_health_check {
     port = var.ports.kubernetes.tcp[0]
   }
@@ -23,9 +22,7 @@ resource "google_compute_region_backend_service" "load_balancer_out" {
     description = "Target the primary compute instance group."
   }
   description = "Serve traffic outgoing from the proxy."
-  project     = var.project
   protocol    = "TCP"
-  region      = var.region
   timeout_sec = 10
 }
 
@@ -34,8 +31,6 @@ resource "google_compute_address" "load_balancer_out" {
 
   address_type = "INTERNAL"
   description  = "The IP address of the load balancer for the traffic outgoing from the proxy."
-  project      = var.project
-  region       = var.region
   subnetwork   = var.subnetwork.self_link
 }
 
@@ -49,8 +44,6 @@ resource "google_compute_forwarding_rule" "load_balancer_out" {
   load_balancing_scheme = "INTERNAL"
   network               = var.subnetwork.network
   ports                 = local.ports
-  project               = var.project
-  region                = var.region
   subnetwork            = var.subnetwork.self_link
 }
 
@@ -58,7 +51,6 @@ resource "google_compute_health_check" "load_balancer_in" {
   name = "${local.prefix}-lb-in-${var.install_id}"
 
   description = "Check the health of the Kubernetes API."
-  project     = var.project
   tcp_health_check {
     port = var.ports.kubernetes.tcp[0]
   }
@@ -75,9 +67,6 @@ resource "google_compute_instance_template" "node" {
   }
   machine_type = "n1-standard-1"
 
-  project = var.project
-  region  = var.region
-
   can_ip_forward       = true
   description          = "The template for the node compute instances of the proxy."
   instance_description = "A node compute instance of the proxy."
@@ -92,8 +81,6 @@ resource "google_compute_instance_template" "node" {
   name_prefix = "${local.prefix}-node-${var.install_id}-"
   network_interface {
     subnetwork = var.subnetwork.self_link
-
-    subnetwork_project = var.project
   }
   service_account {
     scopes = ["cloud-platform"]
@@ -109,7 +96,7 @@ resource "google_compute_instance_template" "node" {
 resource "google_compute_region_instance_group_manager" "node" {
   base_instance_name = "${local.prefix}-node-${var.install_id}"
   name               = "${local.prefix}-node-${var.install_id}"
-  region             = var.region
+  region             = google_compute_instance_template.node.region
   version {
     name              = "${local.prefix}-node-version-${var.install_id}"
     instance_template = google_compute_instance_template.node.self_link
@@ -124,7 +111,6 @@ resource "google_compute_region_instance_group_manager" "node" {
     name = "cluster-assistant"
     port = var.ports.cluster_assistant.tcp[0]
   }
-  project     = var.project
   target_size = 2
 }
 
@@ -138,9 +124,7 @@ resource "google_compute_region_backend_service" "load_balancer_in" {
     description = "Target the node compute instance group."
   }
   description = "Serve traffic incoming to the proxy."
-  project     = var.project
   protocol    = "TCP"
-  region      = var.region
   timeout_sec = 10
 }
 
@@ -149,8 +133,6 @@ resource "google_compute_address" "load_balancer_in" {
 
   address_type = "INTERNAL"
   description  = "The IP address of the load balancer for the traffic incoming to the proxy."
-  project      = var.project
-  region       = var.region
   subnetwork   = var.subnetwork.self_link
 }
 
@@ -164,7 +146,5 @@ resource "google_compute_forwarding_rule" "load_balancer_in" {
   load_balancing_scheme = "INTERNAL"
   network               = var.subnetwork.network
   ports                 = local.ports
-  project               = var.project
-  region                = var.region
   subnetwork            = var.subnetwork.self_link
 }

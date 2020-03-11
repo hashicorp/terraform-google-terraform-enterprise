@@ -9,11 +9,6 @@ variable "prefix" {
   type        = string
 }
 
-variable "region" {
-  description = "The region in which resources will be created."
-  type        = string
-}
-
 variable "service_account_email" {
   description = "The email address of the service account which will be used to access the storage bucket."
   type        = string

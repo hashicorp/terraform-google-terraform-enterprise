@@ -9,7 +9,6 @@ resource "google_compute_instance" "primary" {
 
   name         = "${var.prefix}primary-${count.index}-${var.install_id}"
   machine_type = var.primary_machine_type
-  zone         = var.zone
 
   boot_disk {
     initialize_params {
@@ -44,9 +43,6 @@ resource "google_compute_instance" "primary" {
 
 resource "google_compute_instance_group" "primary" {
   name = "${var.prefix}primary-${var.install_id}"
-  zone = var.zone
-
-  project = var.project
 
   description = "The group of TFE primary compute instances."
   instances   = google_compute_instance.primary.*.self_link

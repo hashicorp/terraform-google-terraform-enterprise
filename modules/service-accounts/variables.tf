@@ -8,8 +8,3 @@ variable "prefix" {
   description = "Prefix for resources"
   default     = "tfe-"
 }
-
-variable "project" {
-  type        = string
-  description = "The ID of the project in which the resources will be created."
-}

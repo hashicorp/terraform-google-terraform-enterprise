@@ -19,8 +19,6 @@ resource "google_compute_firewall" "health_checks_application" {
   name    = "${var.prefix}-health-checks-application"
   network = var.network_name
 
-  project = var.project_id
-
   allow {
     protocol = "tcp"
 
@@ -36,8 +34,6 @@ resource "google_compute_firewall" "health_checks_application" {
 resource "google_compute_firewall" "health_checks_kubernetes" {
   name    = "${var.prefix}-health-checks-kubernetes"
   network = var.network_name
-
-  project = var.project_id
 
   allow {
     protocol = "tcp"
@@ -55,8 +51,6 @@ resource "google_compute_firewall" "allow_all_ssh_ui" {
   name    = "${var.prefix}-allow-all-ssh-ui"
   network = var.network_name
 
-  project = var.project_id
-
   allow {
     protocol = "tcp"
 
@@ -72,8 +66,6 @@ resource "google_compute_firewall" "deny_internal_ssh_ui" {
   name    = "${var.prefix}-deny-internal-ssh-ui"
   network = var.network_name
 
-  project = var.project_id
-
   deny {
     protocol = "tcp"
 
@@ -88,8 +80,6 @@ resource "google_compute_firewall" "deny_internal_ssh_ui" {
 resource "google_compute_firewall" "replicated" {
   name    = "${var.prefix}-replicated"
   network = var.network_name
-
-  project = var.project_id
 
   allow {
     protocol = "tcp"
@@ -107,8 +97,6 @@ resource "google_compute_firewall" "kubernetes_proxy" {
   name    = "${var.prefix}-kubernetes-proxy"
   network = var.network_name
 
-  project = var.project_id
-
   allow {
     protocol = "tcp"
 
@@ -124,8 +112,6 @@ resource "google_compute_firewall" "kubernetes_proxy" {
 resource "google_compute_firewall" "kubernetes_primaries" {
   name    = "${var.prefix}-kubernetes-primaries"
   network = var.network_name
-
-  project = var.project_id
 
   allow {
     protocol = "tcp"
@@ -143,8 +129,6 @@ resource "google_compute_firewall" "cluster_assistant_proxy" {
   name    = "${var.prefix}-cluster-assistant-proxy"
   network = var.network_name
 
-  project = var.project_id
-
   allow {
     protocol = "tcp"
 
@@ -160,8 +144,6 @@ resource "google_compute_firewall" "cluster_assistant_proxy" {
 resource "google_compute_firewall" "cluster_assistant_primaries" {
   name    = "${var.prefix}-cluster-assistant-primaries"
   network = var.network_name
-
-  project = var.project_id
 
   allow {
     protocol = "tcp"
@@ -179,8 +161,6 @@ resource "google_compute_firewall" "etcd" {
   name    = "${var.prefix}-etcd"
   network = var.network_name
 
-  project = var.project_id
-
   allow {
     protocol = "tcp"
 
@@ -195,8 +175,6 @@ resource "google_compute_firewall" "etcd" {
 resource "google_compute_firewall" "kubelet" {
   name    = "${var.prefix}-kubelet"
   network = var.network_name
-
-  project = var.project_id
 
   allow {
     protocol = "tcp"
@@ -213,8 +191,6 @@ resource "google_compute_firewall" "kubelet" {
 resource "google_compute_firewall" "weave" {
   name    = "${var.prefix}-weave"
   network = var.network_name
-
-  project = var.project_id
 
   allow {
     protocol = "tcp"

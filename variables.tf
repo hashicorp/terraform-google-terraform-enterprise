@@ -1,17 +1,6 @@
-variable "project_id" {
-  description = "The identifier of the project in which resources will be created."
-  type        = string
-}
-
 variable "dnszone" {
   type        = string
   description = "Name of the managed dns zone to create records into"
-}
-
-variable "dns_project" {
-  type        = string
-  description = "GCP Project to find the DNS Zone, defaults to var.project_id"
-  default     = ""
 }
 
 variable "license_file" {
@@ -23,12 +12,6 @@ variable "hostname" {
   type        = string
   description = "DNS hostname for load balancer, appended with the zone's domain"
   default     = "tfe"
-}
-
-variable "region" {
-  type        = string
-  description = "The region to install into."
-  default     = "us-central1"
 }
 
 variable "install_id" {

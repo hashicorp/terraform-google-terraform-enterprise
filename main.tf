@@ -1,7 +1,6 @@
 locals {
   install_id                                 = var.install_id != "" ? var.install_id : random_string.install_id.result
   prefix                                     = "${var.prefix}-${local.install_id}"
-  rendered_dns_project                       = var.dns_project != "" ? var.dns_project : var.project_id
   storage_bucket_service_account_private_key = base64decode(module.service_accounts.storage_bucket_key.private_key)
 }
 
@@ -17,7 +16,6 @@ module "storage" {
   source = "./modules/storage"
 
   prefix                = local.prefix
-  region                = var.region
   service_account_email = module.service_accounts.storage_bucket.email
 }
 
@@ -30,7 +28,6 @@ module "vpc" {
   source = "./modules/vpc"
 
   prefix = local.prefix
-  region = var.region
 }
 
 # Define the ports of the various services which make up the cluster.
@@ -46,7 +43,6 @@ module "firewalls" {
   ports                           = module.ports
   prefix                          = local.prefix
   primary_service_account_email   = module.service_accounts.primary.email
-  project_id                      = var.project_id
   proxy_service_account_email     = module.service_accounts.proxy.email
   secondary_service_account_email = module.service_accounts.secondary.email
   subnetwork_ip_cidr_range        = module.vpc.subnetwork.ip_cidr_range
@@ -65,7 +61,6 @@ module "service_accounts" {
   source = "./modules/service-accounts"
 
   install_id = local.install_id
-  project    = var.project_id
 
   prefix = var.prefix
 }
@@ -102,12 +97,6 @@ module "cluster-config" {
   ports = module.ports
 }
 
-data "google_compute_zones" "available" {
-  region = var.region
-
-  status = "UP"
-}
-
 # Configures the TFE cluster itself. Data is stored in the configured
 # storage bucket and Postgres Database.
 module "cluster" {
@@ -124,7 +113,6 @@ module "cluster" {
   license_file                    = var.license_file
   ports                           = module.ports
   primary_service_account_email   = module.service_accounts.primary.email
-  project                         = var.project_id
   secondary_service_account_email = module.service_accounts.secondary.email
   subnetwork                      = module.vpc.subnetwork
 
@@ -136,8 +124,6 @@ module "cluster" {
   postgresql_password      = module.postgres.user.password
   postgresql_user          = module.postgres.user.name
   prefix                   = var.prefix
-  region                   = var.region
-  zone                     = data.google_compute_zones.available.names[0]
 }
 
 module "proxy" {
@@ -146,8 +132,6 @@ module "proxy" {
   install_id             = local.install_id
   ports                  = module.ports
   primary_instance_group = module.cluster.primary_instance_group.self_link
-  project                = var.project_id
-  region                 = var.region
   service_account_email  = module.service_accounts.proxy.email
   subnetwork             = module.vpc.subnetwork
 
@@ -160,7 +144,6 @@ module "dns-primaries" {
   install_id = local.install_id
   prefix     = var.prefix
 
-  project   = local.rendered_dns_project
   dnszone   = var.dnszone
   primaries = module.cluster.primary_external_addresses
 }
@@ -178,7 +161,6 @@ module "global_address" {
   source = "./modules/global-address"
 
   install_id = local.install_id
-  project    = var.project_id
 
   prefix = var.prefix
 }
@@ -193,7 +175,6 @@ module "loadbalancer" {
   install_id      = local.install_id
   ports           = module.ports
   primary_group   = module.cluster.primary_instance_group.self_link
-  project         = var.project_id
   secondary_group = module.cluster.secondary_region_instance_group_manager.instance_group
 
   prefix = var.prefix
@@ -207,7 +188,6 @@ module "dns" {
   dnszone    = var.dnszone
   hostname   = var.hostname
   install_id = local.install_id
-  project    = local.rendered_dns_project
 
   prefix = var.prefix
 }

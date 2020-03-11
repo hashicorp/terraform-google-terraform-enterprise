@@ -13,11 +13,6 @@ variable "ports" {
   description = "The ports over which network traffic will travel, organized by services and protocols."
 }
 
-variable "project" {
-  type        = string
-  description = "Name of the project to deploy into"
-}
-
 variable "service_account_email" {
   type        = string
   description = "The email address of the service account which will be attached to the proxy compute instances."
@@ -26,11 +21,6 @@ variable "service_account_email" {
 variable "subnetwork" {
   type        = object({ ip_cidr_range = string, network = string, self_link = string })
   description = "GCP Subnetwork for Load Balancer"
-}
-
-variable "region" {
-  type        = string
-  description = "GCP Region"
 }
 
 variable "primary_instance_group" {

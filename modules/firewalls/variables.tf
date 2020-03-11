@@ -30,11 +30,6 @@ variable "primary_service_account_email" {
   type        = string
 }
 
-variable "project_id" {
-  description = "The identifier of the project in which resources will be created."
-  type        = string
-}
-
 variable "proxy_service_account_email" {
   description = "The email address of the proxy service account."
   type        = string

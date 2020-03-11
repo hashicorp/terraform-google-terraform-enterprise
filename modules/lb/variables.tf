@@ -23,11 +23,6 @@ variable "prefix" {
   default     = "tfe-"
 }
 
-variable "project" {
-  type        = string
-  description = "The project in which resources will be created."
-}
-
 variable "cert" {
   type        = string
   description = "certificate for the load balancer"
