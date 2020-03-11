@@ -221,5 +221,5 @@ if test -e "$airgap_installer_url_path"; then
     )
 fi
 
-echo "Running 'ptfe install $verb"  "${ptfe_install_args[@]}" "''"
+echo "Running 'ptfe install $verb"  "${ptfe_install_args[@]}" "'"
 ptfe install $verb "${ptfe_install_args[@]}"
