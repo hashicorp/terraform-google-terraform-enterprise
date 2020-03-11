@@ -1,23 +1,17 @@
 provider "google" {
-  version = "~> 3.0"
-
-  region  = var.region
-  project = var.project
+  version = "3.1.0"
 }
 
 provider "google-beta" {
-  version = "~> 3.0"
-
-  region  = var.region
-  project = var.project
+  version = "3.0.0"
 }
 
 provider "random" {
-  version = "~> 2.2"
+  version = "2.1.0"
 }
 
 provider "template" {
-  version = "~> 2.1"
+  version = "2.1.0"
 }
 
 module "tfe-cluster" {
