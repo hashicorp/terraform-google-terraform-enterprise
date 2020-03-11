@@ -6,13 +6,13 @@ resource "google_compute_global_address" "private_ip_address" {
   address       = "10.200.1.0"
   address_type  = "INTERNAL"
   prefix_length = 24
-  network       = var.network_url
+  network       = var.network_self_link
 }
 
 resource "google_service_networking_connection" "private_vpc_connection" {
   provider = google-beta
 
-  network = var.network_url
+  network = var.network_self_link
   service = "servicenetworking.googleapis.com"
 
   reserved_peering_ranges = [google_compute_global_address.private_ip_address.name]
@@ -33,7 +33,7 @@ resource "google_sql_database_instance" "tfe" {
 
     ip_configuration {
       ipv4_enabled    = false
-      private_network = var.network_url
+      private_network = var.network_self_link
     }
 
     backup_configuration {

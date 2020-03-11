@@ -25,12 +25,11 @@ module "storage" {
 # This section creates the various aspects of the networking required
 # to run the cluster.
 
-# Configure a Compute Network and Subnetwork to deploy resources into.
+# Configure a compute network and subnetwork to which resources will be attached.
 module "vpc" {
-  source     = "./modules/vpc"
-  install_id = local.install_id
-  prefix     = var.prefix
+  source = "./modules/vpc"
 
+  prefix = local.prefix
   region = var.region
 }
 
@@ -50,7 +49,7 @@ module "firewalls" {
   proxy_service_account_email     = module.service_accounts.proxy.email
   secondary_service_account_email = module.service_accounts.secondary.email
   subnetwork_ip_cidr_range        = module.vpc.subnetwork.ip_cidr_range
-  vpc_name                        = module.vpc.vpc_name
+  network_name                    = module.vpc.network.name
 
   prefix = var.prefix
 }
@@ -61,7 +60,7 @@ module "postgres" {
   install_id = local.install_id
   prefix     = var.prefix
 
-  network_url = module.vpc.network_url
+  network_self_link = module.vpc.network.self_link
 
   postgresql_availability_type = var.postgresql_availability_type
   postgresql_backup_start_time = var.postgresql_backup_start_time

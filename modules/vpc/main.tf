@@ -1,24 +1,24 @@
-resource "google_compute_network" "tfe_vpc" {
-  name                    = "${var.prefix}vpc-${var.install_id}"
+resource "google_compute_network" "main" {
+  name                    = "${var.prefix}-vpc"
   description             = "Terraform Enterprise VPC Network"
   auto_create_subnetworks = false
 }
 
 resource "google_compute_subnetwork" "main" {
-  name          = "${var.prefix}subnet-${var.install_id}"
+  name          = "${var.prefix}-subnetwork"
   ip_cidr_range = var.subnetwork_ip_cidr_range
   region        = var.region
-  network       = google_compute_network.tfe_vpc.self_link
+  network       = google_compute_network.main.self_link
 }
 
 resource "google_compute_router" "router" {
-  name    = "${var.prefix}router-${var.install_id}"
+  name    = "${var.prefix}-router"
   region  = var.region
-  network = google_compute_network.tfe_vpc.self_link
+  network = google_compute_network.main.self_link
 }
 
 resource "google_compute_router_nat" "nat" {
-  name                               = "${var.prefix}router-nat-${var.install_id}"
+  name                               = "${var.prefix}-router-nat"
   router                             = google_compute_router.router.name
   region                             = google_compute_router.router.region
   nat_ip_allocate_option             = "AUTO_ONLY"

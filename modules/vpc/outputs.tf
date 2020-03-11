@@ -1,11 +1,11 @@
-output "vpc_name" {
-  value = google_compute_network.tfe_vpc.name
-}
+output "network" {
+  value = google_compute_network.main
 
-output "network_url" {
-  value = google_compute_network.tfe_vpc.self_link
+  description = "The network to which resources will be attached."
 }
 
 output "subnetwork" {
   value = google_compute_subnetwork.main
+
+  description = "The subnetwork to which resources will be attached."
 }

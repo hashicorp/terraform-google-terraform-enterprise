@@ -3,9 +3,9 @@ variable "install_id" {
   description = "Identifier for install to apply to resources"
 }
 
-variable "network_url" {
+variable "network_self_link" {
+  description = "The URL of the network to which resources will be attached."
   type        = string
-  description = "Google Compute Network url to connect with"
 }
 
 variable "prefix" {

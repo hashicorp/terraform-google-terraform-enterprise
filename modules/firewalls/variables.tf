@@ -3,9 +3,9 @@ variable "install_id" {
   description = "Identifier for install to apply to resources"
 }
 
-variable "vpc_name" {
+variable "network_name" {
+  description = "The name of the network to which resources will be attached."
   type        = string
-  description = "Name of Google Compute Network to install firewall to"
 }
 
 variable "prefix" {
