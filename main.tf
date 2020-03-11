@@ -23,7 +23,7 @@ module "vpc" {
   prefix = var.prefix
 }
 
-# Define ports for the various endpoints of the application.
+# Define the ports of the various services which make up the cluster.
 module "port" {
   source = "./modules/port"
 }
