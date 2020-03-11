@@ -54,14 +54,10 @@ module "firewalls" {
 
 # Create a CloudSQL Postgres database to use
 module "postgres" {
-  source     = "./modules/postgres"
-  install_id = local.install_id
-  prefix     = var.prefix
+  source = "./modules/postgres"
 
-  network_self_link = module.vpc.network.self_link
-
-  postgresql_availability_type = var.postgresql_availability_type
-  postgresql_backup_start_time = var.postgresql_backup_start_time
+  prefix       = local.prefix
+  network_name = module.vpc.network.name
 }
 
 # Create a GCP service account to access our storage bucket
@@ -77,10 +73,10 @@ module "service_accounts" {
 module "app-config" {
   source = "./modules/external-config"
 
-  postgresql_address                         = module.postgres.address
-  postgresql_database                        = module.postgres.database_name
-  postgresql_password                        = module.postgres.password
-  postgresql_user                            = module.postgres.user
+  postgresql_address                         = module.postgres.instance.first_ip_address
+  postgresql_database                        = module.postgres.database.name
+  postgresql_password                        = module.postgres.user.password
+  postgresql_user                            = module.postgres.user.name
   storage_bucket                             = module.storage.bucket
   storage_bucket_service_account_private_key = local.storage_bucket_service_account_private_key
 }
@@ -135,10 +131,10 @@ module "cluster" {
   autoscaler_cpu_threshold = var.autoscaler_cpu_threshold
   max_secondaries          = var.max_secondaries
   min_secondaries          = var.min_secondaries
-  postgresql_address       = module.postgres.address
-  postgresql_database      = module.postgres.database_name
-  postgresql_password      = module.postgres.password
-  postgresql_user          = module.postgres.user
+  postgresql_address       = module.postgres.instance.first_ip_address
+  postgresql_database      = module.postgres.database.name
+  postgresql_password      = module.postgres.user.password
+  postgresql_user          = module.postgres.user.name
   prefix                   = var.prefix
   region                   = var.region
   zone                     = data.google_compute_zones.available.names[0]

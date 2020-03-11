@@ -1,15 +1,17 @@
-output "database_name" {
-  value = google_sql_database.tfe.name
+output "database" {
+  value = google_sql_database.tfe
+
+  description = "The database in which application data will be stored."
 }
 
-output "address" {
-  value = google_sql_database_instance.tfe.first_ip_address
+output "instance" {
+  value = google_sql_database_instance.tfe
+
+  description = "The database compute instance which hosts the database."
 }
 
 output "user" {
-  value = var.postgresql_user
-}
+  value = google_sql_user.tfe
 
-output "password" {
-  value = local.password
+  description = "The database user."
 }

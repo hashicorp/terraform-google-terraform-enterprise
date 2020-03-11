@@ -1,57 +1,21 @@
-variable "install_id" {
-  type        = string
-  description = "Identifier for install to apply to resources"
+variable "database" {
+  default     = { name = "tfe", user_name = "tfe", user_password = "" }
+  description = "Attributes for the database: name is the name of the database; user_name is the name of the database user; user_password is the password of the database user."
+  type        = object({ name = string, user_name = string, user_password = string })
 }
 
-variable "network_self_link" {
-  description = "The URL of the network to which resources will be attached."
+variable "instance" {
+  default     = { availability_type = "ZONAL", backup_start_time = "", labels = {}, tier = "db-custom-2-13312" }
+  description = "Attributes for the database compute instance: availability_zone is specifier which determines if the instance will be set up for high availability (REGIONAL) or single zone (ZONAL); instance_backup_start_time is the time at which to start instance backups, expressed in HH:MM notation; labels are the labels which will be applied to the instance; tier is the identifier of the machine type of the instance."
+  type        = object({ availability_type = string, backup_start_time = string, labels = map(string), tier = string })
+}
+
+variable "network_name" {
+  description = "The name of the network to which resources will be attached."
   type        = string
 }
 
 variable "prefix" {
+  description = "The prefix which will be prepended to the names of resources."
   type        = string
-  description = "Prefix for resources"
-  default     = "tfe-"
-}
-
-variable "labels" {
-  type        = map(string)
-  description = "Labels to apply to the storage bucket"
-  default     = {}
-}
-
-variable "postgresql_machinetype" {
-  type        = string
-  description = "Machine type to use for Postgres Database"
-  default     = "db-custom-2-13312"
-}
-
-variable "postgresql_dbname" {
-  type        = string
-  description = "Name of Postgres Database"
-  default     = "tfe"
-}
-
-variable "postgresql_user" {
-  type        = string
-  description = "Username for Postgres Database"
-  default     = "tfe"
-}
-
-variable "postgresql_password" {
-  type        = string
-  description = "Password for Postgres Database"
-  default     = ""
-}
-
-variable "postgresql_availability_type" {
-  type        = string
-  description = "This specifies whether a PostgreSQL instance should be set up for high availability (REGIONAL) or single zone (ZONAL)"
-  default     = "ZONAL"
-}
-
-variable "postgresql_backup_start_time" {
-  type        = string
-  description = "HH:MM format time indicating when backup configuration starts."
-  default     = ""
 }
