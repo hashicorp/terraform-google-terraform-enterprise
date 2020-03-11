@@ -1,11 +1,6 @@
-variable "project" {
+variable "project_id" {
+  description = "The identifier of the project in which resources will be created."
   type        = string
-  description = "Name of the project to deploy into"
-}
-
-variable "credentials" {
-  type        = string
-  description = "Path to GCP credentials .json file"
 }
 
 variable "dnszone" {
@@ -15,7 +10,7 @@ variable "dnszone" {
 
 variable "dns_project" {
   type        = string
-  description = "GCP Project to find the DNS Zone, defaults to var.project"
+  description = "GCP Project to find the DNS Zone, defaults to var.project_id"
   default     = ""
 }
 

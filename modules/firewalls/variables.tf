@@ -1,42 +1,6 @@
-variable "install_id" {
-  type        = string
-  description = "Identifier for install to apply to resources"
-}
-
 variable "network_name" {
   description = "The name of the network to which resources will be attached."
   type        = string
-}
-
-variable "prefix" {
-  type        = string
-  description = "Name to attach to your VPC"
-  default     = "tfe-"
-}
-
-variable "primary_service_account_email" {
-  type        = string
-  description = "The email address of the primary service account."
-}
-
-variable "project" {
-  type        = string
-  description = "The ID of the project in which the resources will be created."
-}
-
-variable "proxy_service_account_email" {
-  type        = string
-  description = "The email address of the proxy service account."
-}
-
-variable "secondary_service_account_email" {
-  type        = string
-  description = "The email address of the secondary service account."
-}
-
-variable "subnetwork_ip_cidr_range" {
-  type        = string
-  description = "The IP address range of the TFE subnetwork expressed in CIDR format."
 }
 
 variable "ports" {
@@ -54,4 +18,34 @@ variable "ports" {
     }
   )
   description = "The ports over which network traffic will travel, organized by services and protocols."
+}
+
+variable "prefix" {
+  description = "The prefix which will be prepended to the names of resources."
+  type        = string
+}
+
+variable "primary_service_account_email" {
+  description = "The email address of the primary service account."
+  type        = string
+}
+
+variable "project_id" {
+  description = "The identifier of the project in which resources will be created."
+  type        = string
+}
+
+variable "proxy_service_account_email" {
+  description = "The email address of the proxy service account."
+  type        = string
+}
+
+variable "secondary_service_account_email" {
+  description = "The email address of the secondary service account."
+  type        = string
+}
+
+variable "subnetwork_ip_cidr_range" {
+  description = "The IP address range of the TFE subnetwork expressed in CIDR format."
+  type        = string
 }

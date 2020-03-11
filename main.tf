@@ -1,7 +1,7 @@
 locals {
   install_id                                 = var.install_id != "" ? var.install_id : random_string.install_id.result
   prefix                                     = "${var.prefix}-${local.install_id}"
-  rendered_dns_project                       = var.dns_project != "" ? var.dns_project : var.project
+  rendered_dns_project                       = var.dns_project != "" ? var.dns_project : var.project_id
   storage_bucket_service_account_private_key = base64decode(module.service_accounts.storage_bucket_key.private_key)
 }
 
@@ -42,16 +42,14 @@ module "ports" {
 module "firewalls" {
   source = "./modules/firewalls"
 
-  install_id                      = local.install_id
+  network_name                    = module.vpc.network.name
   ports                           = module.ports
+  prefix                          = local.prefix
   primary_service_account_email   = module.service_accounts.primary.email
-  project                         = var.project
+  project_id                      = var.project_id
   proxy_service_account_email     = module.service_accounts.proxy.email
   secondary_service_account_email = module.service_accounts.secondary.email
   subnetwork_ip_cidr_range        = module.vpc.subnetwork.ip_cidr_range
-  network_name                    = module.vpc.network.name
-
-  prefix = var.prefix
 }
 
 # Create a CloudSQL Postgres database to use
@@ -71,7 +69,7 @@ module "service_accounts" {
   source = "./modules/service-accounts"
 
   install_id = local.install_id
-  project    = var.project
+  project    = var.project_id
 
   prefix = var.prefix
 }
@@ -130,7 +128,7 @@ module "cluster" {
   license_file                    = var.license_file
   ports                           = module.ports
   primary_service_account_email   = module.service_accounts.primary.email
-  project                         = var.project
+  project                         = var.project_id
   secondary_service_account_email = module.service_accounts.secondary.email
   subnetwork                      = module.vpc.subnetwork
 
@@ -152,7 +150,7 @@ module "proxy" {
   install_id             = local.install_id
   ports                  = module.ports
   primary_instance_group = module.cluster.primary_instance_group.self_link
-  project                = var.project
+  project                = var.project_id
   region                 = var.region
   service_account_email  = module.service_accounts.proxy.email
   subnetwork             = module.vpc.subnetwork
@@ -184,7 +182,7 @@ module "global_address" {
   source = "./modules/global-address"
 
   install_id = local.install_id
-  project    = var.project
+  project    = var.project_id
 
   prefix = var.prefix
 }
@@ -199,7 +197,7 @@ module "loadbalancer" {
   install_id      = local.install_id
   ports           = module.ports
   primary_group   = module.cluster.primary_instance_group.self_link
-  project         = var.project
+  project         = var.project_id
   secondary_group = module.cluster.secondary_region_instance_group_manager.instance_group
 
   prefix = var.prefix
