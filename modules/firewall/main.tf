@@ -1,4 +1,9 @@
 locals {
+  all_service_accounts = [
+    var.service_account_primary_cluster_email,
+    var.service_account_secondary_cluster_email,
+    var.service_account_proxy_email
+  ]
   primary_service_accounts           = [var.service_account_primary_cluster_email]
   primary_and_proxy_service_accounts = [var.service_account_primary_cluster_email, var.service_account_proxy_email]
   primary_and_secondary_service_accounts = [
@@ -116,10 +121,10 @@ resource "google_compute_firewall" "kubernetes_primaries" {
 
     ports = [var.port_kubernetes_tcp]
   }
-  description             = "Allow ingress of Kubernetes traffic from the proxy compute instances and the primary compute instances to the primary compute instances."
+  description             = "Allow ingress of Kubernetes traffic from all compute instances to the primary compute instances."
   direction               = "INGRESS"
   enable_logging          = true
-  source_service_accounts = local.primary_and_proxy_service_accounts
+  source_service_accounts = local.all_service_accounts
   target_service_accounts = local.primary_service_accounts
 }
 
