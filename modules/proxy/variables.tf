@@ -16,7 +16,7 @@ variable "install_id" {
 }
 
 variable "ip_cidr_range" {
-  description = "The range from which IP addresses will be assigned to resources. The range must be expressed in CIDR notation."
+  description = "The range from which IP addresses will be assigned to resources, expressed in CIDR notation. The range must be part of var.subnetwork."
   type        = string
 }
 
@@ -28,6 +28,7 @@ variable "ports" {
 
 variable "network" {
   description = "The name or the self link of the network to which resources will be attached."
+  type        = string
 }
 
 variable "primaries_instance_group" {
