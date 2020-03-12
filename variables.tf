@@ -21,9 +21,9 @@ variable "install_id" {
 }
 
 variable "prefix" {
-  type        = string
-  description = "Prefix to apply to all resources names"
   default     = "tfe-"
+  description = "The prefix which will be prepended to the names of resources."
+  type        = string
 }
 
 ###################################################
@@ -40,26 +40,4 @@ variable "postgresql_backup_start_time" {
   type        = string
   description = "HH:MM format time indicating when backup configuration starts."
   default     = ""
-}
-
-###################################################
-# Cluster secondary scaling
-###################################################
-
-variable "max_secondaries" {
-  type        = string
-  description = "The maximum number of secondaries in the autoscaling group"
-  default     = "3"
-}
-
-variable "min_secondaries" {
-  type        = string
-  description = "The minimum number of secondaries in the autoscaling group"
-  default     = "0"
-}
-
-variable "autoscaler_cpu_threshold" {
-  type        = string
-  description = "The cpu threshold at which the autoscaling group to build another instance"
-  default     = "0.7"
 }
