@@ -7,7 +7,6 @@ resource "google_compute_health_check" "load_balancer_out" {
   name = "${local.prefix}-lb-out-${var.install_id}"
 
   description = "Check the health of the Kubernetes API."
-  project     = var.project
   tcp_health_check {
     port = var.k8s_api_port
   }
@@ -23,9 +22,7 @@ resource "google_compute_region_backend_service" "load_balancer_out" {
     description = "Target the primary compute instance group."
   }
   description = "Serve traffic outgoing from the proxy."
-  project     = var.project
   protocol    = "TCP"
-  region      = var.region
   timeout_sec = 10
 }
 
@@ -34,9 +31,7 @@ resource "google_compute_address" "load_balancer_out" {
 
   address_type = "INTERNAL"
   description  = "The IP address of the load balancer for the traffic outgoing from the proxy."
-  project      = var.project
-  region       = var.region
-  subnetwork   = var.subnet.self_link
+  subnetwork   = var.subnetwork
 }
 
 resource "google_compute_forwarding_rule" "load_balancer_out" {
@@ -47,18 +42,15 @@ resource "google_compute_forwarding_rule" "load_balancer_out" {
   ip_address            = google_compute_address.load_balancer_out.address
   ip_protocol           = "TCP"
   load_balancing_scheme = "INTERNAL"
-  network               = var.subnet.network
+  network               = var.network
   ports                 = local.ports
-  project               = var.project
-  region                = var.region
-  subnetwork            = var.subnet.self_link
+  subnetwork            = var.subnetwork
 }
 
 resource "google_compute_health_check" "load_balancer_in" {
   name = "${local.prefix}-lb-in-${var.install_id}"
 
   description = "Check the health of the Kubernetes API."
-  project     = var.project
   tcp_health_check {
     port = var.k8s_api_port
   }
@@ -88,12 +80,9 @@ resource "google_compute_instance_template" "node" {
   )
   name_prefix = "${local.prefix}-node-${var.install_id}-"
   network_interface {
-    subnetwork = var.subnet.self_link
-
-    subnetwork_project = var.project
+    subnetwork         = var.subnetwork
+    subnetwork_project = var.subnetwork_project
   }
-  project = var.project
-  region  = var.region
 
   lifecycle {
     create_before_destroy = true
@@ -103,7 +92,7 @@ resource "google_compute_instance_template" "node" {
 resource "google_compute_region_instance_group_manager" "node" {
   base_instance_name = "${local.prefix}-node-${var.install_id}"
   name               = "${local.prefix}-node-${var.install_id}"
-  region             = var.region
+  region             = google_compute_instance_template.node.region
   version {
     name              = "${local.prefix}-node-version-${var.install_id}"
     instance_template = google_compute_instance_template.node.self_link
@@ -114,7 +103,6 @@ resource "google_compute_region_instance_group_manager" "node" {
     name = "https"
     port = var.k8s_api_port
   }
-  project     = var.project
   target_size = 2
 }
 
@@ -128,9 +116,7 @@ resource "google_compute_region_backend_service" "load_balancer_in" {
     description = "Target the node compute instance group."
   }
   description = "Serve traffic incoming to the proxy."
-  project     = var.project
   protocol    = "TCP"
-  region      = var.region
   timeout_sec = 10
 }
 
@@ -139,9 +125,7 @@ resource "google_compute_address" "load_balancer_in" {
 
   address_type = "INTERNAL"
   description  = "The IP address of the load balancer for the traffic incoming to the proxy."
-  project      = var.project
-  region       = var.region
-  subnetwork   = var.subnet.self_link
+  subnetwork   = var.subnetwork
 }
 
 resource "google_compute_forwarding_rule" "load_balancer_in" {
@@ -152,9 +136,7 @@ resource "google_compute_forwarding_rule" "load_balancer_in" {
   ip_address            = google_compute_address.load_balancer_in.address
   ip_protocol           = "TCP"
   load_balancing_scheme = "INTERNAL"
-  network               = var.subnet.network
+  network               = var.network
   ports                 = local.ports
-  project               = var.project
-  region                = var.region
-  subnetwork            = var.subnet.self_link
+  subnetwork            = var.subnetwork
 }

@@ -18,10 +18,6 @@ module "tfe-cluster" {
   source  = "hashicorp/terraform-enterprise/google"
   version = "0.1.0"
 
-  credentials  = var.credentials
-  dnszone      = var.dnszone
-  license_file = var.license_file
-  project      = var.project
-
-  region = var.region
+  dnszone         = var.dnszone
+  license_file    = var.license_file
 }

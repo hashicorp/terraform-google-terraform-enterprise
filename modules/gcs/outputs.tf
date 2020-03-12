@@ -1,3 +1,5 @@
-output "bucket_name" {
-  value = google_storage_bucket.tfe-bucket.name
+output "bucket" {
+  value = google_storage_bucket.tfe-bucket
+
+  description = "The storage bucket in which critical application state will be stored."
 }

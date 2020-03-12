@@ -1,22 +1,6 @@
-variable "project" {
-  type        = string
-  description = "Name of the project to deploy into"
-}
-
-variable "credentials" {
-  type        = string
-  description = "Path to GCP credentials .json file"
-}
-
 variable "dnszone" {
   type        = string
   description = "Name of the managed dns zone to create records into"
-}
-
-variable "dns_project" {
-  type        = string
-  description = "GCP Project to find the DNS Zone, defaults to var.project"
-  default     = ""
 }
 
 variable "license_file" {
@@ -28,12 +12,6 @@ variable "hostname" {
   type        = string
   description = "DNS hostname for load balancer, appended with the zone's domain"
   default     = "tfe"
-}
-
-variable "region" {
-  type        = string
-  description = "The region to install into."
-  default     = "us-central1"
 }
 
 variable "install_id" {

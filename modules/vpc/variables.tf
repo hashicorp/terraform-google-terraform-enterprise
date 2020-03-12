@@ -3,12 +3,6 @@ variable "install_id" {
   description = "Identifier for install to apply to resources"
 }
 
-variable "region" {
-  type        = string
-  description = "The region to install into."
-  default     = "us-central1-a"
-}
-
 variable "healthchk_ips" {
   type        = list(string)
   description = "List of gcp health check ips to allow through the firewall"

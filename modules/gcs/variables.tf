@@ -9,12 +9,6 @@ variable "prefix" {
   default     = "tfe-"
 }
 
-variable "region" {
-  type        = string
-  description = "The region to install into."
-  default     = "us-central1"
-}
-
 variable "labels" {
   type        = map(string)
   description = "Labels to apply to the storage bucket"
