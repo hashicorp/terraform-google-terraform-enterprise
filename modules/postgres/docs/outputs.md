@@ -4,7 +4,8 @@
 
 | Name | Description |
 |------|-------------|
-| application\_url | n/a |
-| dashboard\_password | n/a |
-| dashboard\_url | n/a |
+| address | n/a |
+| database\_name | n/a |
+| password | n/a |
+| user | n/a |
 

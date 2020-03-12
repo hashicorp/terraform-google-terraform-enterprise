@@ -4,5 +4,6 @@
 
 | Name | Description |
 |------|-------------|
-| cluster\_endpoint |  |
+| address | n/a |
+| cluster\_endpoint | n/a |
 

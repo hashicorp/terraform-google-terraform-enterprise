@@ -4,7 +4,6 @@
 
 | Name | Description |
 |------|-------------|
-| application\_url | n/a |
-| dashboard\_password | n/a |
-| dashboard\_url | n/a |
+| firewall\_name | n/a |
+| healthcheck\_firewall\_name | n/a |
 

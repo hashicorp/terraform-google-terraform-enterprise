@@ -4,7 +4,6 @@
 
 | Name | Description |
 |------|-------------|
-| application\_url | n/a |
-| dashboard\_password | n/a |
-| dashboard\_url | n/a |
+| application\_config | n/a |
+| ca\_certs | n/a |
 
