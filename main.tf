@@ -88,35 +88,25 @@ module "configs" {
   license_file = var.license_file
 }
 
-# Configures the TFE cluster itself. Data is stored in the configured
-# GCS bucket and Postgres Database.
-module "cluster" {
-  source     = "./modules/cluster"
-  install_id = local.install_id
-  prefix     = var.prefix
+# Configure the TFE primary cluster.
+module "primary_cluster" {
+  source = "./modules/primary-cluster"
 
-  subnet = module.vpc.subnet
+  cloud_init_configs       = module.configs.primary_cloudinit
+  prefix                   = local.prefix
+  vpc_network_self_link    = module.vpc.network_url
+  vpc_subnetwork_project   = module.vpc.subnet.project
+  vpc_subnetwork_self_link = module.vpc.subnet.self_link
+}
 
-  cluster-config = {
-    primary_cloudinit   = module.configs.primary_cloudinit
-    secondary_cloudinit = module.configs.secondary_cloudinit
-  }
+module "secondary_cluster" {
+  source = "./modules/secondary-cluster"
 
-  license_file = var.license_file
-
-  access_fqdn = module.dns.fqdn
-
-  gcs_bucket      = module.gcs.bucket.name
-  gcs_credentials = module.service-account.credentials
-
-  postgresql_address  = module.postgres.address
-  postgresql_database = module.postgres.database_name
-  postgresql_user     = module.postgres.user
-  postgresql_password = module.postgres.password
-
-  max_secondaries          = var.max_secondaries
-  min_secondaries          = var.min_secondaries
-  autoscaler_cpu_threshold = var.autoscaler_cpu_threshold
+  cloud_init_config        = module.configs.primary_cloudinit
+  prefix                   = local.prefix
+  vpc_network_self_link    = module.vpc.network_url
+  vpc_subnetwork_project   = module.vpc.subnet.project
+  vpc_subnetwork_self_link = module.vpc.subnet.self_link
 }
 
 module "proxy" {
@@ -125,7 +115,7 @@ module "proxy" {
   install_id               = local.install_id
   ip_cidr_range            = module.vpc.subnet.ip_cidr_range
   network                  = module.vpc.vpc_name
-  primaries_instance_group = module.cluster.primaries.self_link
+  primaries_instance_group = module.primary_cluster.instance_group.self_link
   subnetwork               = module.vpc.subnet.name
   subnetwork_project       = module.vpc.subnet.project
 
@@ -138,8 +128,11 @@ module "dns-primaries" {
   install_id = local.install_id
   prefix     = var.prefix
 
-  dnszone   = var.dnszone
-  primaries = module.cluster.primary_external_addresses
+  dnszone = var.dnszone
+  primaries = [for primary in module.primary_cluster.instances : {
+    hostname = primary.name,
+    address  = primary.network_interface.0.access_config.0.nat_ip,
+  }]
 }
 
 # Create an SSL certificate to be attached to the external load balancer.
@@ -157,8 +150,8 @@ module "loadbalancer" {
   install_id = local.install_id
   prefix     = var.prefix
 
-  cert           = module.ssl_certificate.certificate.self_link
-  instance_group = module.cluster.application_endpoints
+  cert           = module.ssl.certificate.self_link
+  instance_group = module.primary_cluster.endpoint_group.self_link
 }
 
 # Configures DNS entries for the load balancer for cluster access

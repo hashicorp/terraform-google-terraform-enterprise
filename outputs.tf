@@ -2,8 +2,10 @@ output "application_url" {
   value = "https://${module.dns.fqdn}"
 }
 
-output "dashboard_url" {
-  value = module.cluster.installer_dashboard_url
+output "console_url" {
+  value = module.primary_cluster.console_url
+
+  description = "The URL of the management console."
 }
 
 output "dashboard_pasword" {
