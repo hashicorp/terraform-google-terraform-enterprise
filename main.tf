@@ -1,3 +1,8 @@
+locals {
+  install_id = var.install_id != "" ? var.install_id : random_string.install_id.result
+  prefix     = "${var.prefix}${local.install_id}-"
+}
+
 # Create a GCS bucket to store our critical application state into.
 module "gcs" {
   source = "./modules/gcs"
@@ -137,13 +142,12 @@ module "dns-primaries" {
   primaries = module.cluster.primary_external_addresses
 }
 
-# Create a certificate to attach to the Load Balancer using the GCP Managed Certificate service
-module "cert" {
-  source     = "./modules/cert"
-  install_id = local.install_id
-  prefix     = var.prefix
+# Create an SSL certificate to be attached to the external load balancer.
+module "ssl" {
+  source = "./modules/ssl"
 
-  domain_name = module.dns.fqdn
+  dns_fqdn = module.dns.fqdn
+  prefix   = local.prefix
 }
 
 # Configures a Load Balancer that directs traffic at the cluster's
@@ -153,7 +157,7 @@ module "loadbalancer" {
   install_id = local.install_id
   prefix     = var.prefix
 
-  cert           = module.cert.certificate
+  cert           = module.ssl_certificate.certificate.self_link
   instance_group = module.cluster.application_endpoints
 }
 
