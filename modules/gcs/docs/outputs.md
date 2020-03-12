@@ -4,5 +4,5 @@
 
 | Name | Description |
 |------|-------------|
-| bucket\_name | n/a |
+| bucket | The storage bucket in which critical application state will be stored. |
 

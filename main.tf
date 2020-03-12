@@ -1,10 +1,10 @@
 # Create a GCS bucket to store our critical application state into.
 module "gcs" {
-  source     = "./modules/gcs"
-  install_id = local.install_id
-  prefix     = var.prefix
+  source = "./modules/gcs"
 
-  region = var.region
+  install_id = local.install_id
+
+  prefix = var.prefix
 }
 
 # Network creation:
@@ -13,11 +13,11 @@ module "gcs" {
 
 # Configure a Compute Network and Subnetwork to deploy resources into.
 module "vpc" {
-  source     = "./modules/vpc"
-  install_id = local.install_id
-  prefix     = var.prefix
+  source = "./modules/vpc"
 
-  region = var.region
+  install_id = local.install_id
+
+  prefix = var.prefix
 }
 
 # Configure a firewall the network to allow access to cluster's ports.
@@ -47,15 +47,15 @@ module "service-account" {
   source     = "./modules/service-account"
   install_id = local.install_id
   prefix     = var.prefix
-  bucket     = module.gcs.bucket_name
+  bucket     = module.gcs.bucket.name
 }
 
 module "external_config" {
   source = "./modules/external-config"
 
-  gcs_bucket          = module.gcs.bucket_name
+  gcs_bucket          = module.gcs.bucket.name
   gcs_credentials     = base64decode(module.service-account.credentials)
-  gcs_project         = var.project
+  gcs_project         = module.gcs.bucket.project
   postgresql_address  = module.postgres.address
   postgresql_database = module.postgres.database_name
   postgresql_password = module.postgres.password
@@ -90,9 +90,7 @@ module "cluster" {
   install_id = local.install_id
   prefix     = var.prefix
 
-  project = var.project
-  region  = var.region
-  subnet  = module.vpc.subnet
+  subnet = module.vpc.subnet
 
   cluster-config = {
     primary_cloudinit   = module.configs.primary_cloudinit
@@ -103,8 +101,7 @@ module "cluster" {
 
   access_fqdn = module.dns.fqdn
 
-  gcs_bucket      = module.gcs.bucket_name
-  gcs_project     = var.project
+  gcs_bucket      = module.gcs.bucket.name
   gcs_credentials = module.service-account.credentials
 
   postgresql_address  = module.postgres.address
@@ -121,10 +118,11 @@ module "proxy" {
   source = "./modules/proxy"
 
   install_id               = local.install_id
+  ip_cidr_range            = module.vpc.subnet.ip_cidr_range
+  network                  = module.vpc.vpc_name
   primaries_instance_group = module.cluster.primaries.self_link
-  project                  = var.project
-  region                   = var.region
-  subnet                   = module.vpc.subnet
+  subnetwork               = module.vpc.subnet.name
+  subnetwork_project       = module.vpc.subnet.project
 
   prefix = var.prefix
 }
@@ -135,7 +133,6 @@ module "dns-primaries" {
   install_id = local.install_id
   prefix     = var.prefix
 
-  project   = local.rendered_dns_project
   dnszone   = var.dnszone
   primaries = module.cluster.primary_external_addresses
 }
@@ -167,7 +164,6 @@ module "dns" {
   prefix     = var.prefix
 
   address  = module.loadbalancer.address
-  project  = local.rendered_dns_project
   dnszone  = var.dnszone
   hostname = var.hostname
 }

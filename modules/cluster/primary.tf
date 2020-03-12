@@ -1,10 +1,5 @@
-data "google_compute_zones" "available" {
-  region = var.region
-}
-
 locals {
   primary_count = 3
-  zone          = data.google_compute_zones.available.names[0]
 }
 
 resource "google_compute_instance" "primary" {
@@ -14,7 +9,6 @@ resource "google_compute_instance" "primary" {
 
   name         = "${var.prefix}primary-${count.index}-${var.install_id}"
   machine_type = var.primary_machine_type
-  zone         = local.zone
 
   boot_disk {
     initialize_params {
@@ -46,7 +40,6 @@ resource "google_compute_instance_group" "primaries" {
   name        = "${var.prefix}primary-group-${var.install_id}"
   description = "primary-servers"
 
-  zone      = local.zone
   instances = google_compute_instance.primary.*.self_link
 
   named_port {
@@ -72,7 +65,6 @@ resource "google_compute_network_endpoint_group" "https" {
   subnetwork   = var.subnet.self_link
   network      = var.subnet.network
   default_port = "443"
-  zone         = local.zone
 }
 
 resource "google_compute_network_endpoint" "https" {
@@ -82,5 +74,4 @@ resource "google_compute_network_endpoint" "https" {
   instance   = google_compute_instance.primary[count.index].name
   port       = 443
   ip_address = google_compute_instance.primary[count.index].network_interface[0].network_ip
-  zone       = local.zone
 }
