@@ -3,7 +3,7 @@ variable "dnszone" {
   description = "Name of the managed dns zone to create records into"
 }
 
-variable "license_file" {
+variable "cloud_init_license_file" {
+  description = "The pathname of a Replicated license file for the application."
   type        = string
-  description = "Replicated license file"
 }

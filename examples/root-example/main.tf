@@ -18,6 +18,6 @@ module "terraform_enterprise" {
   source  = "hashicorp/terraform-enterprise/google"
   version = "0.1.0"
 
-  dnszone         = var.dnszone
-  license_file    = var.license_file
+  cloud_init_license_file = var.cloud_init_license_file
+  dnszone                 = var.dnszone
 }
