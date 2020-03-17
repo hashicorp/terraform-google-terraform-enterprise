@@ -35,7 +35,7 @@ data "template_file" "cloud_config" {
     proxy_b64            = base64encode(data.template_file.proxy_sh.rendered)
     bootstrap_token      = "${random_string.bootstrap_token_id.result}.${random_string.bootstrap_token_suffix.result}"
     license_b64          = filebase64(var.license_file)
-    rptfeconf            = base64encode(var.common-config.application_config)
+    rptfeconf            = base64encode(jsonencode(var.common-config.application_config))
     replconf             = base64encode(data.template_file.replicated_config.rendered)
     install_ptfe_sh      = base64encode(file("${path.module}/files/install-ptfe.sh"))
     role                 = count.index == 0 ? "main" : "primary"
@@ -87,4 +87,3 @@ data "template_cloudinit_config" "config_secondary" {
     content      = data.template_file.cloud_config_secondary.rendered
   }
 }
-

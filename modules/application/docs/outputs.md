@@ -4,5 +4,5 @@
 
 | Name | Description |
 |------|-------------|
-| services\_config | n/a |
+| config | The application configuration. |
 

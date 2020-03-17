@@ -55,23 +55,17 @@ module "service-account" {
   bucket     = module.gcs.bucket.name
 }
 
-module "app-config" {
-  source = "./modules/external-config"
+module "application" {
+  source = "./modules/application"
 
-  gcs_bucket          = module.gcs.bucket.name
-  gcs_credentials     = module.service-account.credentials
-  gcs_project         = module.gcs.bucket.project
-  postgresql_address  = module.postgres.address
-  postgresql_database = module.postgres.database_name
-  postgresql_user     = module.postgres.user
-  postgresql_password = module.postgres.password
-}
-
-module "common-config" {
-  source = "./modules/common-config"
-
-  services_config = module.app-config.services_config
-  external_name   = module.dns.fqdn
+  dns_fqdn                             = module.dns.fqdn
+  postgresql_database_instance_address = module.postgres.address
+  postgresql_database_name             = module.postgres.database_name
+  postgresql_user_name                 = module.postgres.user
+  postgresql_user_password             = module.postgres.password
+  service_account_key_private_key      = module.service-account.credentials
+  storage_bucket_project               = module.gcs.bucket.project
+  storage_bucket_self_link             = module.gcs.bucket.self_link
 }
 
 module "cluster-config" {
@@ -79,11 +73,10 @@ module "cluster-config" {
 
   license_file         = var.license_file
   cluster_api_endpoint = module.proxy.address
-  # Expand module.common-config to avoid a cycle on destroy
-  # https://github.com/hashicorp/terraform/issues/21662#issuecomment-503206685
+
   common-config = {
-    application_config = module.common-config.application_config,
-    ca_certs           = module.common-config.ca_certs,
+    application_config = module.application_config.config
+    ca_certs           = ""
   }
 }
 
