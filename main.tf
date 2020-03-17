@@ -55,35 +55,27 @@ module "service-account" {
   bucket     = module.gcs.bucket.name
 }
 
-module "external_config" {
-  source = "./modules/external-config"
+module "application" {
+  source = "./modules/application"
 
-  gcs_bucket          = module.gcs.bucket.name
-  gcs_credentials     = base64decode(module.service-account.credentials)
-  gcs_project         = module.gcs.bucket.project
-  postgresql_address  = module.postgres.address
-  postgresql_database = module.postgres.database_name
-  postgresql_password = module.postgres.password
-  postgresql_user     = module.postgres.user
-}
-
-module "common_config" {
-  source = "./modules/common-config"
-
-  external_name = module.dns.fqdn
-  services_config = {
-    config       = module.external_config.services_config.config
-    service_type = module.external_config.services_config.service_type
-  }
+  dns_fqdn                             = module.dns.fqdn
+  postgresql_database_instance_address = module.postgres.address
+  postgresql_database_name             = module.postgres.database_name
+  postgresql_user_name                 = module.postgres.user
+  postgresql_user_password             = module.postgres.password
+  service_account_key_private_key      = base64decode(module.service-account.credentials)
+  storage_bucket_project               = module.gcs.bucket.project
+  storage_bucket_name                  = module.gcs.bucket.name
 }
 
 module "configs" {
   source = "./modules/configs"
 
   cluster_api_endpoint = module.proxy.address
+
   common-config = {
-    application_config = module.common_config.application_config
-    ca_certs           = module.common_config.ca_certs
+    application_config = module.application.config
+    ca_certs           = ""
   }
   license_file = var.license_file
 }
