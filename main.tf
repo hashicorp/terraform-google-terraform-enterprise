@@ -68,23 +68,19 @@ module "application" {
   storage_bucket_self_link             = module.gcs.bucket.self_link
 }
 
-module "cluster-config" {
-  source = "./modules/configs"
+module "cloud_init" {
+  source = "./modules/cloud-init"
 
-  license_file         = var.license_file
-  cluster_api_endpoint = module.proxy.address
-
-  common-config = {
-    application_config = module.application_config.config
-    ca_certs           = ""
-  }
+  application_config = module.application.config
+  license_file       = var.cloud_init_license_file
+  proxy_address      = module.proxy.address
 }
 
 # Configure the TFE primary cluster.
 module "primary_cluster" {
   source = "./modules/primary-cluster"
 
-  cloud_init_configs       = module.cloud_init.primary_configs
+  cloud_init_configs       = module.cloud_init_config.primaries
   prefix                   = local.prefix
   vpc_network_self_link    = module.vpc.network.self_link
   vpc_subnetwork_project   = module.vpc.subnetwork.project
@@ -94,7 +90,7 @@ module "primary_cluster" {
 module "secondary_cluster" {
   source = "./modules/secondary-cluster"
 
-  cloud_init_config        = module.cloud_init.secondary_config
+  cloud_init_config        = module.cloud_init_config.secondary
   prefix                   = local.prefix
   vpc_network_self_link    = module.vpc.network.self_link
   vpc_subnetwork_project   = module.vpc.subnetwork.project
