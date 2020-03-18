@@ -4,6 +4,6 @@
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:-----:|
-| bucket | GCS Bucket to give permissions on | `string` | n/a | yes |
-| prefix | Prefix for resources | `string` | `"tfe-"` | no |
+| prefix | The prefix which will be prepended to the names of resources. | `string` | n/a | yes |
+| storage\_bucket\_name | The name of the storage bucket which will be used to hold application state information. | `string` | n/a | yes |
 

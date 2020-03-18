@@ -1,10 +1,9 @@
-variable "prefix" {
+variable "storage_bucket_name" {
+  description = "The name of the storage bucket which will be used to hold application state information."
   type        = string
-  description = "Prefix for resources"
-  default     = "tfe-"
 }
 
-variable "bucket" {
+variable "prefix" {
+  description = "The prefix which will be prepended to the names of resources."
   type        = string
-  description = "GCS Bucket to give permissions on"
 }

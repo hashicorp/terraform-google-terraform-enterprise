@@ -33,25 +33,25 @@ module "postgresql" {
   vpc_network_self_link = module.vpc.network_url
 }
 
-# Create a GCP service account to access our storage bucket
-module "service-account" {
+# Create a service account which will access the storage bucket
+module "service_account" {
   source = "./modules/service-account"
 
-  prefix = var.prefix
-  bucket = module.storage.bucket.name
+  prefix              = var.prefix
+  storage_bucket_name = module.storage.bucket.name
 }
 
 module "application" {
   source = "./modules/application"
 
-  dns_fqdn                             = module.dns.fqdn
-  postgresql_database_instance_address = module.postgresql.database_instance.first_ip_address
-  postgresql_database_name             = module.postgresql.database.name
-  postgresql_user_name                 = module.postgresql.user.name
-  postgresql_user_password             = module.postgresql.user.password
-  service_account_key_private_key      = module.service-account.credentials
-  storage_bucket_project               = module.storage.bucket.project
-  storage_bucket_self_link             = module.storage.bucket.self_link
+  dns_fqdn                                = module.dns.fqdn
+  postgresql_database_instance_address    = module.postgresql.database_instance.first_ip_address
+  postgresql_database_name                = module.postgresql.database.name
+  postgresql_user_name                    = module.postgresql.user.name
+  postgresql_user_password                = module.postgresql.user.password
+  service_account_storage_key_private_key = module.service_account.storage_key.private_key
+  storage_bucket_project                  = module.storage.bucket.project
+  storage_bucket_name                     = module.storage.bucket.name
 }
 
 module "cloud_init" {
