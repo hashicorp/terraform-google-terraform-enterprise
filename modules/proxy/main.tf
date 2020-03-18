@@ -17,7 +17,7 @@ resource "google_compute_region_backend_service" "load_balancer_out" {
   name          = "${local.prefix}-lb-out"
 
   backend {
-    group = var.primaries_instance_group
+    group = var.primary_cluster_instance_group_self_link
 
     description = "Target the primary compute instance group."
   }
@@ -31,7 +31,7 @@ resource "google_compute_address" "load_balancer_out" {
 
   address_type = "INTERNAL"
   description  = "The IP address of the load balancer for the traffic outgoing from the proxy."
-  subnetwork   = var.subnetwork
+  subnetwork   = var.vpc_subnetwork_self_link
 }
 
 resource "google_compute_forwarding_rule" "load_balancer_out" {
@@ -42,9 +42,9 @@ resource "google_compute_forwarding_rule" "load_balancer_out" {
   ip_address            = google_compute_address.load_balancer_out.address
   ip_protocol           = "TCP"
   load_balancing_scheme = "INTERNAL"
-  network               = var.network
+  network               = var.vpc_network_self_link
   ports                 = local.ports
-  subnetwork            = var.subnetwork
+  subnetwork            = var.vpc_subnetwork_self_link
 }
 
 resource "google_compute_health_check" "load_balancer_in" {
@@ -80,8 +80,8 @@ resource "google_compute_instance_template" "node" {
   )
   name_prefix = "${local.prefix}-node-"
   network_interface {
-    subnetwork         = var.subnetwork
-    subnetwork_project = var.subnetwork_project
+    subnetwork         = var.vpc_subnetwork_self_link
+    subnetwork_project = var.vpc_subnetwork_project
   }
 
   lifecycle {
@@ -125,7 +125,7 @@ resource "google_compute_address" "load_balancer_in" {
 
   address_type = "INTERNAL"
   description  = "The IP address of the load balancer for the traffic incoming to the proxy."
-  subnetwork   = var.subnetwork
+  subnetwork   = var.vpc_subnetwork_self_link
 }
 
 resource "google_compute_forwarding_rule" "load_balancer_in" {
@@ -136,7 +136,7 @@ resource "google_compute_forwarding_rule" "load_balancer_in" {
   ip_address            = google_compute_address.load_balancer_in.address
   ip_protocol           = "TCP"
   load_balancing_scheme = "INTERNAL"
-  network               = var.network
+  network               = var.vpc_network_self_link
   ports                 = local.ports
-  subnetwork            = var.subnetwork
+  subnetwork            = var.vpc_subnetwork_self_link
 }

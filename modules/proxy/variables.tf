@@ -10,8 +10,8 @@ variable "k8s_api_port" {
   default     = 6443
 }
 
-variable "ip_cidr_range" {
-  description = "The range from which IP addresses will be assigned to resources, expressed in CIDR notation. The range must be part of var.subnetwork."
+variable "vpc_subnetwork_ip_cidr_range" {
+  description = "The range from which IP addresses will be assigned to resources, expressed in CIDR notation. The range must be part of var.vpc_subnetwork_self_link."
   type        = string
 }
 
@@ -21,12 +21,12 @@ variable "ports" {
   default     = [80, 443, 23010]
 }
 
-variable "network" {
-  description = "The name or the self link of the network to which resources will be attached."
+variable "vpc_network_self_link" {
+  description = "The self link of the network to which resources will be attached."
   type        = string
 }
 
-variable "primaries_instance_group" {
+variable "primary_cluster_instance_group_self_link" {
   type        = string
   description = "GCP Instance Group for the primaries"
 }
@@ -37,12 +37,12 @@ variable "prefix" {
   default     = "tfe-"
 }
 
-variable "subnetwork" {
-  description = "The name or the self link of the subnetwork to which resources will be attached. The subnetwork must be part of var.network."
+variable "vpc_subnetwork_self_link" {
+  description = "The self link of the subnetwork to which resources will be attached. The subnetwork must be part of var.vpc_network_self_link."
   type        = string
 }
 
-variable "subnetwork_project" {
-  description = "The ID of the project in which var.subnetwork exists."
+variable "vpc_subnetwork_project" {
+  description = "The ID of the project in which var.vpc_subnetwork_self_link exists."
   type        = string
 }
