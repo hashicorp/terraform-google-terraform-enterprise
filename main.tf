@@ -27,12 +27,11 @@ module "vpc" {
 
 # Configure a firewall the network to allow access to cluster's ports.
 module "firewall" {
-  source     = "./modules/firewall"
-  install_id = local.install_id
-  prefix     = var.prefix
+  source = "./modules/firewall"
 
-  vpc_name        = module.vpc.vpc_name
-  subnet_ip_range = module.vpc.subnet_ip_range
+  prefix                       = local.prefix
+  vpc_network_self_link        = module.vpc.vpc_url
+  vpc_subnetwork_ip_cidr_range = module.vpc.subnet_ip_range
 }
 
 # Create a CloudSQL Postgres database to use
