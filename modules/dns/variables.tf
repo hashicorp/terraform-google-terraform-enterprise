@@ -1,25 +1,20 @@
-variable "install_id" {
+variable "load_balancer_address" {
+  description = "The public IP address of the external load balancer."
   type        = string
-  description = "Identifier for install to apply to resources"
-}
-
-variable "prefix" {
-  type        = string
-  description = "Prefix for resources"
-  default     = "tfe-"
-}
-
-variable "dnszone" {
-  type        = string
-  description = "name of the managed dns zone"
 }
 
 variable "hostname" {
+  default     = "tfe"
+  description = "The hostname for the external load balancer."
   type        = string
-  description = "DNS hostname for load balancer, appended with the zone's domain"
 }
 
-variable "address" {
+variable "managed_zone" {
+  description = "The name of the managed DNS zone in which the application will be accessible."
   type        = string
-  description = "IP Address to associate with the hostname"
+}
+
+variable "managed_zone_dns_name" {
+  description = "The fully qualified DNS name of the managed zone set by var.managed_zone."
+  type        = string
 }

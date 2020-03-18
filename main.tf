@@ -116,7 +116,7 @@ module "dns-primaries" {
   install_id = local.install_id
   prefix     = var.prefix
 
-  dnszone = var.dnszone
+  dnszone = var.dns_managed_zone
   primaries = [for primary in module.primary_cluster.instances : {
     hostname = primary.name,
     address  = primary.network_interface.0.access_config.0.nat_ip,
@@ -144,11 +144,9 @@ module "loadbalancer" {
 
 # Configures DNS entries for the load balancer for cluster access
 module "dns" {
-  source     = "./modules/dns"
-  install_id = local.install_id
-  prefix     = var.prefix
+  source = "./modules/dns"
 
-  address  = module.loadbalancer.address
-  dnszone  = var.dnszone
-  hostname = var.hostname
+  load_balancer_address = module.loadbalancer.address
+  managed_zone          = var.dns_managed_zone
+  managed_zone_dns_name = var.dns_managed_zone_dns_name
 }

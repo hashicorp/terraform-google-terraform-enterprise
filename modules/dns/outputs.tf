@@ -1,7 +1,11 @@
-output "fqdn" {
-  value = trimsuffix("${var.hostname}.${data.google_dns_managed_zone.dnszone.dns_name}", ".")
+output "application_url" {
+  value = "https://${local.fqdn}"
+
+  description = "The URL of the application."
 }
 
-output "dns_zone" {
-  value = data.google_dns_managed_zone.dnszone.name
+output "fqdn" {
+  value = local.fqdn
+
+  description = "The fully qualified domain name of the application."
 }
