@@ -4,5 +4,5 @@
 
 | Name | Description |
 |------|-------------|
-| credentials | n/a |
+| storage\_key | The key which will be used to authenticate as the storage service account. |
 

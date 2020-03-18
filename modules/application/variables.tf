@@ -101,7 +101,7 @@ variable "postgresql_user_name" {
   type        = string
 }
 
-variable "service_account_key_private_key" {
+variable "service_account_storage_key_private_key" {
   description = "The private key of the service account which is authorized to manage the storage bucket, expressed in Base64 encoding."
   type        = string
 }
