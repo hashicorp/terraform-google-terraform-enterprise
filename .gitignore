@@ -3,5 +3,6 @@ work
 tmp/
 *.tfstate
 *.tfstate.*
-terraform.tfvars
+*.tfvars
 *.rli
+*.env
