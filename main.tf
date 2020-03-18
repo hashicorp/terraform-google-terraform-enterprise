@@ -117,20 +117,20 @@ module "ssl" {
 
 # Configures a Load Balancer that directs traffic at the cluster's
 # instance group
-module "loadbalancer" {
-  source     = "./modules/lb"
-  install_id = local.install_id
-  prefix     = var.prefix
+module "load_balancer" {
+  source = "./modules/load-balancer"
 
-  cert           = module.ssl.certificate.self_link
-  instance_group = module.primary_cluster.endpoint_group.self_link
+  prefix                                   = var.prefix
+  primary_cluster_endpoint_group_self_link = module.primary_cluster.endpoint_group.self_link
+  ssl_certificate_self_link                = module.ssl.certificate.self_link
+  ssl_policy_self_link                     = module.ssl.policy.self_link
 }
 
 # Configures DNS entries for the load balancer for cluster access
 module "dns" {
   source = "./modules/dns"
 
-  load_balancer_address = module.loadbalancer.address
+  load_balancer_address = module.load_balancer.address
   managed_zone          = var.dns_managed_zone
   managed_zone_dns_name = var.dns_managed_zone_dns_name
 }
