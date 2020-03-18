@@ -25,15 +25,12 @@ module "firewall" {
   vpc_subnetwork_ip_cidr_range = module.vpc.subnet_ip_range
 }
 
-# Create a CloudSQL Postgres database to use
-module "postgres" {
-  source = "./modules/postgres"
-  prefix = var.prefix
+# Create a PostgreSQL database in which application data will be stored.
+module "postgresql" {
+  source = "./modules/postgresql"
 
-  network_url = module.vpc.network_url
-
-  postgresql_availability_type = var.postgresql_availability_type
-  postgresql_backup_start_time = var.postgresql_backup_start_time
+  prefix                = var.prefix
+  vpc_network_self_link = module.vpc.network_url
 }
 
 # Create a GCP service account to access our storage bucket
@@ -48,10 +45,10 @@ module "application" {
   source = "./modules/application"
 
   dns_fqdn                             = module.dns.fqdn
-  postgresql_database_instance_address = module.postgres.address
-  postgresql_database_name             = module.postgres.database_name
-  postgresql_user_name                 = module.postgres.user
-  postgresql_user_password             = module.postgres.password
+  postgresql_database_instance_address = module.postgresql.database_instance.first_ip_address
+  postgresql_database_name             = module.postgresql.database.name
+  postgresql_user_name                 = module.postgresql.user.name
+  postgresql_user_password             = module.postgresql.user.password
   service_account_key_private_key      = module.service-account.credentials
   storage_bucket_project               = module.storage.bucket.project
   storage_bucket_self_link             = module.storage.bucket.self_link
