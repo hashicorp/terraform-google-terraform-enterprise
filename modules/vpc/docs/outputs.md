@@ -4,11 +4,6 @@
 
 | Name | Description |
 |------|-------------|
-| network\_url | n/a |
-| subnet | n/a |
-| subnet\_ip\_range | n/a |
-| subnet\_name | n/a |
-| subnetwork\_url | n/a |
-| tfe\_subnet | n/a |
-| vpc\_name | n/a |
+| network | The network to which resources will be attached. |
+| subnetwork | The subnetwork to which resources will be attached. |
 

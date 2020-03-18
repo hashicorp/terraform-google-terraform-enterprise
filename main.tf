@@ -21,8 +21,8 @@ module "firewall" {
   source = "./modules/firewall"
 
   prefix                       = var.prefix
-  vpc_network_self_link        = module.vpc.network_url
-  vpc_subnetwork_ip_cidr_range = module.vpc.subnet_ip_range
+  vpc_network_self_link        = module.vpc.network.self_link
+  vpc_subnetwork_ip_cidr_range = module.vpc.subnetwork.ip_cidr_range
 }
 
 # Create a PostgreSQL database in which application data will be stored.
@@ -30,7 +30,7 @@ module "postgresql" {
   source = "./modules/postgresql"
 
   prefix                = var.prefix
-  vpc_network_self_link = module.vpc.network_url
+  vpc_network_self_link = module.vpc.network.self_link
 }
 
 # Create a service account which will access the storage bucket
@@ -68,9 +68,9 @@ module "primary_cluster" {
 
   cloud_init_configs       = module.cloud_init.primary_configs
   prefix                   = var.prefix
-  vpc_network_self_link    = module.vpc.network_url
-  vpc_subnetwork_project   = module.vpc.subnet.project
-  vpc_subnetwork_self_link = module.vpc.subnet.self_link
+  vpc_network_self_link    = module.vpc.network.self_link
+  vpc_subnetwork_project   = module.vpc.subnetwork.project
+  vpc_subnetwork_self_link = module.vpc.subnetwork.self_link
 }
 
 module "secondary_cluster" {
@@ -78,9 +78,9 @@ module "secondary_cluster" {
 
   cloud_init_config        = module.cloud_init.secondary_config
   prefix                   = var.prefix
-  vpc_network_self_link    = module.vpc.network_url
-  vpc_subnetwork_project   = module.vpc.subnet.project
-  vpc_subnetwork_self_link = module.vpc.subnet.self_link
+  vpc_network_self_link    = module.vpc.network.self_link
+  vpc_subnetwork_project   = module.vpc.subnetwork.project
+  vpc_subnetwork_self_link = module.vpc.subnetwork.self_link
 }
 
 module "proxy" {
@@ -88,10 +88,10 @@ module "proxy" {
 
   prefix                                   = var.prefix
   primary_cluster_instance_group_self_link = module.primary_cluster.instance_group.self_link
-  vpc_network_self_link                    = module.vpc.network_url
-  vpc_subnetwork_ip_cidr_range             = module.vpc.subnet.ip_cidr_range
-  vpc_subnetwork_project                   = module.vpc.subnet.project
-  vpc_subnetwork_self_link                 = module.vpc.subnet.self_link
+  vpc_network_self_link                    = module.vpc.network.self_link
+  vpc_subnetwork_ip_cidr_range             = module.vpc.subnetwork.ip_cidr_range
+  vpc_subnetwork_project                   = module.vpc.subnetwork.project
+  vpc_subnetwork_self_link                 = module.vpc.subnetwork.self_link
 }
 
 # Create an SSL certificate to be attached to the external load balancer.
