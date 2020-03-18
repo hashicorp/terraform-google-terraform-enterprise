@@ -110,19 +110,6 @@ module "proxy" {
   prefix = var.prefix
 }
 
-# Configures DNS entries for the primaries as a convenience
-module "dns-primaries" {
-  source     = "./modules/dns-primaries"
-  install_id = local.install_id
-  prefix     = var.prefix
-
-  dnszone = var.dns_managed_zone
-  primaries = [for primary in module.primary_cluster.instances : {
-    hostname = primary.name,
-    address  = primary.network_interface.0.access_config.0.nat_ip,
-  }]
-}
-
 # Create an SSL certificate to be attached to the external load balancer.
 module "ssl" {
   source = "./modules/ssl"
