@@ -3,13 +3,11 @@ locals {
   prefix     = "${var.prefix}${local.install_id}-"
 }
 
-# Create a GCS bucket to store our critical application state into.
-module "gcs" {
-  source = "./modules/gcs"
+# Create a storage bucket to store our critical application state into.
+module "storage" {
+  source = "./modules/storage"
 
-  install_id = local.install_id
-
-  prefix = var.prefix
+  prefix = local.prefix
 }
 
 # Network creation:
@@ -30,7 +28,7 @@ module "firewall" {
   source = "./modules/firewall"
 
   prefix                       = local.prefix
-  vpc_network_self_link        = module.vpc.vpc_url
+  vpc_network_self_link        = module.vpc.network_url
   vpc_subnetwork_ip_cidr_range = module.vpc.subnet_ip_range
 }
 
@@ -46,12 +44,12 @@ module "postgres" {
   postgresql_backup_start_time = var.postgresql_backup_start_time
 }
 
-# Create a GCP service account to access our GCS bucket
+# Create a GCP service account to access our storage bucket
 module "service-account" {
   source     = "./modules/service-account"
   install_id = local.install_id
   prefix     = var.prefix
-  bucket     = module.gcs.bucket.name
+  bucket     = module.storage.bucket.name
 }
 
 module "application" {
@@ -63,8 +61,8 @@ module "application" {
   postgresql_user_name                 = module.postgres.user
   postgresql_user_password             = module.postgres.password
   service_account_key_private_key      = base64decode(module.service-account.credentials)
-  storage_bucket_project               = module.gcs.bucket.project
-  storage_bucket_name                  = module.gcs.bucket.name
+  storage_bucket_name                  = module.storage.bucket.name
+  storage_bucket_project               = module.storage.bucket.project
 }
 
 module "cloud_init" {
