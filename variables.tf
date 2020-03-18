@@ -1,12 +1,16 @@
-variable "dnszone" {
+variable "cloud_init_license_file" {
+  description = "The pathname of a Replicated license file for the application."
   type        = string
-  description = "Name of the managed dns zone to create records into"
 }
 
-variable "hostname" {
+variable "dns_managed_zone" {
+  description = "The name of the managed DNS zone in which the application will be accessible."
   type        = string
-  description = "DNS hostname for load balancer, appended with the zone's domain"
-  default     = "tfe"
+}
+
+variable "dns_managed_zone_dns_name" {
+  description = "The fully qualified DNS name of the managed zone set by var.dns_managed_zone."
+  type        = string
 }
 
 variable "install_id" {
@@ -18,11 +22,6 @@ variable "install_id" {
 variable "prefix" {
   default     = "tfe-"
   description = "The prefix which will be prepended to the names of resources."
-  type        = string
-}
-
-variable "cloud_init_license_file" {
-  description = "The pathname of a Replicated license file for the application."
   type        = string
 }
 

@@ -1,13 +1,12 @@
-data "google_dns_managed_zone" "dnszone" {
-  name    = var.dnszone
+locals {
+  fqdn            = trimsuffix(local.record_set_name, ".")
+  record_set_name = "${var.hostname}.${var.managed_zone_dns_name}"
 }
 
-resource "google_dns_record_set" "hostname" {
-  name = "${var.hostname}.${data.google_dns_managed_zone.dnszone.dns_name}"
-  type = "A"
-  ttl  = 300
-
-  managed_zone = data.google_dns_managed_zone.dnszone.name
-
-  rrdatas = [var.address]
+resource "google_dns_record_set" "main" {
+  managed_zone = var.managed_zone
+  name         = local.record_set_name
+  rrdatas      = [var.load_balancer_address]
+  ttl          = 300
+  type         = "A"
 }
