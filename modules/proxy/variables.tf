@@ -10,11 +10,6 @@ variable "k8s_api_port" {
   default     = 6443
 }
 
-variable "install_id" {
-  type        = string
-  description = "Identifier for install to apply to resources"
-}
-
 variable "ip_cidr_range" {
   description = "The range from which IP addresses will be assigned to resources, expressed in CIDR notation. The range must be part of var.subnetwork."
   type        = string

@@ -1,8 +1,3 @@
-variable "install_id" {
-  type        = string
-  description = "Identifier for install to apply to resources"
-}
-
 variable "network_url" {
   type        = string
   description = "Google Compute Network url to connect with"

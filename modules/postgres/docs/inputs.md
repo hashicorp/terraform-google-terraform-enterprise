@@ -4,7 +4,6 @@
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:-----:|
-| install\_id | Identifier for install to apply to resources | `string` | n/a | yes |
 | network\_url | Google Compute Network url to connect with | `string` | n/a | yes |
 | labels | Labels to apply to the storage bucket | `map(string)` | `{}` | no |
 | postgresql\_availability\_type | This specifies whether a PostgreSQL instance should be set up for high availability (REGIONAL) or single zone (ZONAL) | `string` | `"ZONAL"` | no |

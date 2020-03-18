@@ -1,5 +1,5 @@
 resource "google_service_account" "tfe" {
-  account_id   = "${var.prefix}storage-${var.install_id}"
+  account_id   = "${var.prefix}storage"
   display_name = "TFE Service Account to access GCS"
 }
 

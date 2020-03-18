@@ -13,12 +13,6 @@ variable "dns_managed_zone_dns_name" {
   type        = string
 }
 
-variable "install_id" {
-  type        = string
-  description = "Identifier to use in names to identify resources"
-  default     = ""
-}
-
 variable "prefix" {
   default     = "tfe-"
   description = "The prefix which will be prepended to the names of resources."

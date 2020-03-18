@@ -1,7 +1,7 @@
 resource "google_compute_global_address" "private_ip_address" {
   provider = google-beta
 
-  name          = "${var.prefix}private-ip-address-${var.install_id}"
+  name          = "${var.prefix}private-ip-address"
   purpose       = "VPC_PEERING"
   address       = "10.200.1.0"
   address_type  = "INTERNAL"
@@ -20,7 +20,7 @@ resource "google_service_networking_connection" "private_vpc_connection" {
 
 resource "google_sql_database_instance" "tfe" {
   provider         = google-beta
-  name             = "${var.prefix}tfe-${var.install_id}"
+  name             = "${var.prefix}tfe"
   database_version = "POSTGRES_9_6"
 
   depends_on = [google_service_networking_connection.private_vpc_connection]
