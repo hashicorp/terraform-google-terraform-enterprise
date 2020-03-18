@@ -6,7 +6,7 @@ resource "google_compute_network" "tfe_vpc" {
 
 resource "google_compute_subnetwork" "tfe_subnet" {
   name          = "${var.prefix}subnet"
-  ip_cidr_range = var.subnet_range
+  ip_cidr_range = var.subnetwork_ip_cidr_range
   network       = google_compute_network.tfe_vpc.self_link
 }
 
