@@ -1,7 +1,7 @@
 locals {
   assistant_host = "http://${var.proxy_address}:23010"
   base_cloud_config = templatefile(
-    "${path.module}/templates/base-cloud-config.yaml.tpl",
+    "${path.module}/templates/base-cloud-config.yaml.tmpl",
     {
       assistant_host  = local.assistant_host
       assistant_token = random_string.setup_token.result
@@ -13,7 +13,7 @@ locals {
       distrobution            = var.distribution
       health_url              = "${local.assistant_host}/healthz"
       install_ptfe_sh         = file("${path.module}/files/install-ptfe.sh")
-      proxy_conf              = templatefile("${path.module}/templates/proxy.conf.tpl", { proxy_url = var.proxy_url })
+      proxy_conf              = templatefile("${path.module}/templates/proxy.conf.tmpl", { proxy_url = var.proxy_url })
       proxy_url               = var.proxy_url
       ptfe_url                = var.ptfe_url
       ssh_import_id_usernames = var.ssh_import_id_usernames
@@ -21,14 +21,14 @@ locals {
   )
   main_and_primary_cloud_configs = [
     templatefile(
-      "${path.module}/templates/main-cloud-config.yaml.tpl",
+      "${path.module}/templates/main-cloud-config.yaml.tmpl",
       {
         airgap_installer_url = var.airgap_installer_url
         airgap_package_url   = var.airgap_package_url
         primary_cloud_config = local.primary_cloud_configs[0]
         repl_cidr            = var.repl_cidr
         replicated_conf = templatefile(
-          "${path.module}/templates/replicated.conf.tpl",
+          "${path.module}/templates/replicated.conf.tmpl",
           {
             airgap           = var.airgap_package_url != ""
             console_password = random_pet.console_password.id
@@ -46,12 +46,12 @@ locals {
   ]
   primary_cloud_configs = [
     for role_id in [0, 1, 2] : templatefile(
-      "${path.module}/templates/primary-cloud-config.yaml.tpl",
+      "${path.module}/templates/primary-cloud-config.yaml.tmpl",
       {
         base_cloud_config = local.base_cloud_config
         primary_pki_url   = "${local.assistant_host}/api/v1/pki-download?token=${random_string.setup_token.result}"
         proxy_sh = templatefile(
-          "${path.module}/templates/proxy.sh.tpl",
+          "${path.module}/templates/proxy.sh.tmpl",
           {
             no_proxy  = join(",", compact(["10.0.0.0/8", "127.0.0.1", "169.254.169.254", var.repl_cidr]))
             proxy_url = var.proxy_url
@@ -63,7 +63,7 @@ locals {
     )
   ]
   secondary_cloud_config = templatefile(
-    "${path.module}/templates/secondary-cloud-config.yaml.tpl",
+    "${path.module}/templates/secondary-cloud-config.yaml.tmpl",
     { base_cloud_config = local.base_cloud_config }
   )
 }
