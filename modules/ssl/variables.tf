@@ -4,6 +4,6 @@ variable "dns_fqdn" {
 }
 
 variable "prefix" {
-  description = "The prefix which will be appendend to the names of resources."
+  description = "The prefix which will be prepended to the names of resources."
   type        = string
 }

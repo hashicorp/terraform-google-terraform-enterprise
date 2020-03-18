@@ -5,7 +5,7 @@
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:-----:|
 | cloud\_init\_config | The cloud-init configuration for the compute instances. | `string` | n/a | yes |
-| prefix | The prefix which will be appendend to the names of resources. | `string` | n/a | yes |
+| prefix | The prefix which will be prepended to the names of resources. | `string` | n/a | yes |
 | vpc\_network\_self\_link | The self link of the network to which resources will be attached. | `string` | n/a | yes |
 | vpc\_subnetwork\_project | The ID of the project in which var.vpc\_subnetwork\_self\_link exists. | `string` | n/a | yes |
 | vpc\_subnetwork\_self\_link | The self link of the subnetwork to which resources will be attached. The subnetwork must be part of var.vpc\_network\_self\_link. | `string` | n/a | yes |
