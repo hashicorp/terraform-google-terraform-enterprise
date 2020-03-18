@@ -1,8 +1,3 @@
-variable "install_id" {
-  type        = string
-  description = "Identifier for install to apply to resources"
-}
-
 variable "healthchk_ips" {
   type        = list(string)
   description = "List of gcp health check ips to allow through the firewall"

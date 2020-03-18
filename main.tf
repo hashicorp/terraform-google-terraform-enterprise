@@ -1,13 +1,8 @@
-locals {
-  install_id = var.install_id != "" ? var.install_id : random_string.install_id.result
-  prefix     = "${var.prefix}${local.install_id}-"
-}
-
 # Create a storage bucket to store our critical application state into.
 module "storage" {
   source = "./modules/storage"
 
-  prefix = local.prefix
+  prefix = var.prefix
 }
 
 # Network creation:
@@ -18,8 +13,6 @@ module "storage" {
 module "vpc" {
   source = "./modules/vpc"
 
-  install_id = local.install_id
-
   prefix = var.prefix
 }
 
@@ -27,16 +20,15 @@ module "vpc" {
 module "firewall" {
   source = "./modules/firewall"
 
-  prefix                       = local.prefix
-  vpc_network_self_link        = module.vpc.vpc_url
+  prefix                       = var.prefix
+  vpc_network_self_link        = module.vpc.network_url
   vpc_subnetwork_ip_cidr_range = module.vpc.subnet_ip_range
 }
 
 # Create a CloudSQL Postgres database to use
 module "postgres" {
-  source     = "./modules/postgres"
-  install_id = local.install_id
-  prefix     = var.prefix
+  source = "./modules/postgres"
+  prefix = var.prefix
 
   network_url = module.vpc.network_url
 
@@ -46,10 +38,10 @@ module "postgres" {
 
 # Create a GCP service account to access our storage bucket
 module "service-account" {
-  source     = "./modules/service-account"
-  install_id = local.install_id
-  prefix     = var.prefix
-  bucket     = module.storage.bucket.name
+  source = "./modules/service-account"
+
+  prefix = var.prefix
+  bucket = module.storage.bucket.name
 }
 
 module "application" {
@@ -77,27 +69,26 @@ module "cloud_init" {
 module "primary_cluster" {
   source = "./modules/primary-cluster"
 
-  cloud_init_configs       = module.cloud_init_config.primaries
-  prefix                   = local.prefix
-  vpc_network_self_link    = module.vpc.network.self_link
-  vpc_subnetwork_project   = module.vpc.subnetwork.project
-  vpc_subnetwork_self_link = module.vpc.subnetwork.self_link
+  cloud_init_configs       = module.cloud_init.primary_configs
+  prefix                   = var.prefix
+  vpc_network_self_link    = module.vpc.network_url
+  vpc_subnetwork_project   = module.vpc.subnet.project
+  vpc_subnetwork_self_link = module.vpc.subnet.self_link
 }
 
 module "secondary_cluster" {
   source = "./modules/secondary-cluster"
 
-  cloud_init_config        = module.cloud_init_config.secondary
-  prefix                   = local.prefix
-  vpc_network_self_link    = module.vpc.network.self_link
-  vpc_subnetwork_project   = module.vpc.subnetwork.project
-  vpc_subnetwork_self_link = module.vpc.subnetwork.self_link
+  cloud_init_config        = module.cloud_init.secondary_config
+  prefix                   = var.prefix
+  vpc_network_self_link    = module.vpc.network_url
+  vpc_subnetwork_project   = module.vpc.subnet.project
+  vpc_subnetwork_self_link = module.vpc.subnet.self_link
 }
 
 module "proxy" {
   source = "./modules/proxy"
 
-  install_id               = local.install_id
   ip_cidr_range            = module.vpc.subnet.ip_cidr_range
   network                  = module.vpc.vpc_name
   primaries_instance_group = module.primary_cluster.instance_group.self_link
@@ -112,7 +103,7 @@ module "ssl" {
   source = "./modules/ssl"
 
   dns_fqdn = module.dns.fqdn
-  prefix   = local.prefix
+  prefix   = var.prefix
 }
 
 # Configures a Load Balancer that directs traffic at the cluster's

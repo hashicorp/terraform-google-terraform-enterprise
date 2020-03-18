@@ -4,7 +4,6 @@
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:-----:|
-| install\_id | Identifier for install to apply to resources | `string` | n/a | yes |
 | ip\_cidr\_range | The range from which IP addresses will be assigned to resources, expressed in CIDR notation. The range must be part of var.subnetwork. | `string` | n/a | yes |
 | network | The name or the self link of the network to which resources will be attached. | `string` | n/a | yes |
 | primaries\_instance\_group | GCP Instance Group for the primaries | `string` | n/a | yes |
