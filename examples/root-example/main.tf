@@ -20,9 +20,7 @@ resource "random_pet" "main" {
   separator = "-"
 }
 
-module "tfe-cluster" {
-  source  = "hashicorp/terraform-enterprise/google"
-  version = "0.1.0"
+module "terraform_enterprise" {
 
   cloud_init_license_file   = var.cloud_init_license_file
   dns_managed_zone          = var.dns_managed_zone
