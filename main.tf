@@ -1,22 +1,26 @@
-# Create a storage bucket to store our critical application state into.
+# Create a storage bucket in which application state will be stored.
 module "storage" {
   source = "./modules/storage"
 
   prefix = var.prefix
 }
 
-# Network creation:
-# This section creates the various aspects of the networking required
-# to run the cluster.
+# Create a service account which will be used to access the storage bucket.
+module "service_account" {
+  source = "./modules/service-account"
 
-# Configure a Compute Network and Subnetwork to deploy resources into.
+  prefix              = var.prefix
+  storage_bucket_name = module.storage.bucket.name
+}
+
+# Create a VPC with a network and a subnetwork to which resources will be attached.
 module "vpc" {
   source = "./modules/vpc"
 
   prefix = var.prefix
 }
 
-# Configure a firewall the network to allow access to cluster's ports.
+# Create firewalls to control network traffic.
 module "firewall" {
   source = "./modules/firewall"
 
@@ -33,14 +37,7 @@ module "postgresql" {
   vpc_network_self_link = module.vpc.network.self_link
 }
 
-# Create a service account which will access the storage bucket
-module "service_account" {
-  source = "./modules/service-account"
-
-  prefix              = var.prefix
-  storage_bucket_name = module.storage.bucket.name
-}
-
+# Generate the application configuration.
 module "application" {
   source = "./modules/application"
 
@@ -54,6 +51,7 @@ module "application" {
   storage_bucket_name                     = module.storage.bucket.name
 }
 
+# Generate the cloud-init configuration.
 module "cloud_init" {
   source = "./modules/cloud-init"
 
@@ -62,7 +60,7 @@ module "cloud_init" {
   proxy_address      = module.proxy.address.address
 }
 
-# Configure the TFE primary cluster.
+# Create the primary cluster.
 module "primary_cluster" {
   source = "./modules/primary-cluster"
 
@@ -73,16 +71,7 @@ module "primary_cluster" {
   vpc_subnetwork_self_link = module.vpc.subnetwork.self_link
 }
 
-module "secondary_cluster" {
-  source = "./modules/secondary-cluster"
-
-  cloud_init_config        = module.cloud_init.secondary_config
-  prefix                   = var.prefix
-  vpc_network_self_link    = module.vpc.network.self_link
-  vpc_subnetwork_project   = module.vpc.subnetwork.project
-  vpc_subnetwork_self_link = module.vpc.subnetwork.self_link
-}
-
+# Create the primary cluster proxy.
 module "proxy" {
   source = "./modules/proxy"
 
@@ -94,16 +83,18 @@ module "proxy" {
   vpc_subnetwork_self_link                 = module.vpc.subnetwork.self_link
 }
 
-# Create an SSL certificate to be attached to the external load balancer.
-module "ssl" {
-  source = "./modules/ssl"
+# Create the secondary cluster.
+module "secondary_cluster" {
+  source = "./modules/secondary-cluster"
 
-  dns_fqdn = module.dns.fqdn
-  prefix   = var.prefix
+  cloud_init_config        = module.cloud_init.secondary_config
+  prefix                   = var.prefix
+  vpc_network_self_link    = module.vpc.network.self_link
+  vpc_subnetwork_project   = module.vpc.subnetwork.project
+  vpc_subnetwork_self_link = module.vpc.subnetwork.self_link
 }
 
-# Configures a Load Balancer that directs traffic at the cluster's
-# instance group
+# Create an external load balancer which directs traffic to the primary cluster.
 module "load_balancer" {
   source = "./modules/load-balancer"
 
@@ -113,11 +104,19 @@ module "load_balancer" {
   ssl_policy_self_link                     = module.ssl.policy.self_link
 }
 
-# Configures DNS entries for the load balancer for cluster access
+# Configures DNS entries for the load balancer.
 module "dns" {
   source = "./modules/dns"
 
   load_balancer_address = module.load_balancer.address
   managed_zone          = var.dns_managed_zone
   managed_zone_dns_name = var.dns_managed_zone_dns_name
+}
+
+# Create an SSL certificate to be attached to the external load balancer.
+module "ssl" {
+  source = "./modules/ssl"
+
+  dns_fqdn = module.dns.fqdn
+  prefix   = var.prefix
 }
