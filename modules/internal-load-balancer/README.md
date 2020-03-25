@@ -1,9 +1,9 @@
-# Terraform Enterprise on GCP: Proxy
+# Terraform Enterprise on GCP: Internal Load Balancer
 
-This submodule provisions the proxy of the Terraform
-Enterprise cluster. The proxy is used to overcome the lack of support
-for same-host [hairpinning](https://en.wikipedia.org/wiki/Hairpinning)
-on GCP.
+This submodule provisions the internal load balancer of the Terraform
+Enterprise cluster. The internal load balancer is used to overcome the
+lack of support for same-host
+[hairpinning](https://en.wikipedia.org/wiki/Hairpinning) on GCP.
 
 ## Prerequisites
 
@@ -24,6 +24,7 @@ used to provision this submodule:
 Traffic which originates from the leader primary node may need to be
 routed back to the same node through the primary load balancer, but this
 behaviour is not supported by GCP. To work around this limiation, the
-proxy routes traffic through two load balancers with intermediate nodes
-running [iptables](https://en.wikipedia.org/wiki/Iptables). This design
-allows traffic from all nodes to be routed to the leader primary node.
+internal load balancer routes traffic through two load balancers with
+intermediate nodes running
+[iptables](https://en.wikipedia.org/wiki/Iptables). This design allows
+traffic from all nodes to be routed to the leader primary node.

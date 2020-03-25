@@ -17,7 +17,7 @@ variable "vpc_subnetwork_ip_cidr_range" {
 
 variable "ports" {
   type        = list(number)
-  description = "Only packets addressed to these ports will be forwarded through the proxy. var.k8s_api_port will be added to this list."
+  description = "Only packets addressed to these ports will be forwarded through the internal load balancer. var.k8s_api_port will be added to this list."
   default     = [80, 443, 23010]
 }
 

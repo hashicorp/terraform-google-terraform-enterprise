@@ -1,5 +1,5 @@
 locals {
-  assistant_host = "http://${var.proxy_address}:23010"
+  assistant_host = "http://${var.internal_load_balancer_address}:23010"
   base_cloud_config = templatefile(
     "${path.module}/templates/base-cloud-config.yaml.tmpl",
     {
@@ -8,7 +8,7 @@ locals {
       bootstrap_token = (
         "${random_string.bootstrap_token_id.result}.${random_string.bootstrap_token_suffix.result}"
       )
-      cluster_api_endpoint    = "${var.proxy_address}:6443"
+      cluster_api_endpoint    = "${var.internal_load_balancer_address}:6443"
       custom_ca_cert_url      = var.custom_ca_cert_url
       distrobution            = var.distribution
       health_url              = "${local.assistant_host}/healthz"

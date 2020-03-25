@@ -55,9 +55,9 @@ module "application" {
 module "cloud_init" {
   source = "./modules/cloud-init"
 
-  application_config = module.application.config
-  license_file       = var.cloud_init_license_file
-  proxy_address      = module.proxy.address.address
+  application_config             = module.application.config
+  license_file                   = var.cloud_init_license_file
+  internal_load_balancer_address = module.internal_load_balancer.address.address
 }
 
 # Create the primary cluster.
@@ -71,9 +71,9 @@ module "primary_cluster" {
   vpc_subnetwork_self_link = module.vpc.subnetwork.self_link
 }
 
-# Create the primary cluster proxy.
-module "proxy" {
-  source = "./modules/proxy"
+# Create the primary cluster internal load balancer.
+module "internal_load_balancer" {
+  source = "./modules/internal-load-balancer"
 
   prefix                                   = var.prefix
   primary_cluster_instance_group_self_link = module.primary_cluster.instance_group.self_link
