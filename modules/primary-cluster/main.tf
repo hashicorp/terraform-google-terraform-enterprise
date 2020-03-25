@@ -1,4 +1,5 @@
 locals {
+  # The instance group must be hard-coded to 3. See the Limitations section of the submodule README for more details.
   instance_count = 3
 }
 
