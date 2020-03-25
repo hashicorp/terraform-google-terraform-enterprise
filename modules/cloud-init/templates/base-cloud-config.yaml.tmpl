@@ -71,7 +71,7 @@ write_files:
   encoding: b64
   content: "${base64encode(custom_ca_cert_url)}"
 %{ endif ~}
-%{ if distrobution == "ubuntu" ~}
+%{ if distribution == "ubuntu" ~}
 
 - path: /etc/apt/apt.conf.d/00_aaa_proxy.conf
   owner: root:root
