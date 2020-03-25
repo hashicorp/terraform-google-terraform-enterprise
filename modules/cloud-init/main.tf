@@ -52,7 +52,10 @@ locals {
         primary_pki_url   = "${local.assistant_host}/api/v1/pki-download?token=${random_string.setup_token.result}"
         proxy_sh = templatefile(
           "${path.module}/templates/proxy.sh.tmpl",
-          { proxy_url = var.proxy_url, repl_cidr = var.repl_cidr }
+          {
+            no_proxy  = compact(["10.0.0.0/8", "127.0.0.1", "169.254.169.254", var.repl_cidr]),
+            proxy_url = var.proxy_url
+          }
         )
         role_id     = role_id
         setup_token = random_string.setup_token.result

@@ -1,6 +1,3 @@
 export http_proxy="${proxy_url}"
 export https_proxy="${proxy_url}"
-export no_proxy=10.0.0.0/8,127.0.0.1,169.254.169.254
-%{ if repl_cidr != "" ~}
-export no_proxy=${no_proxy},${repl_cidr}
-%{ endif ~}
+export no_proxy="${join(",", no_proxy)}"
