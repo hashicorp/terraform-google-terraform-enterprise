@@ -5,8 +5,8 @@
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:-----:|
 | application\_config | The application configuration. | `map(map(string))` | n/a | yes |
+| internal\_load\_balancer\_address | The IP address of the internal load balancer. | `string` | n/a | yes |
 | license\_file | The pathname of a Replicated license file for the application. | `string` | n/a | yes |
-| proxy\_address | The IP address of the Kubernetes API. | `string` | n/a | yes |
 | airgap\_installer\_url | The URL of an airgap package which contains the cluster installer. | `string` | `"https://install.terraform.io/installer/replicated-v5.tar.gz"` | no |
 | airgap\_package\_url | The URL of an airgap package which contains a TFE release. | `string` | `""` | no |
 | custom\_ca\_cert\_url | The URL of a certificate authority bundle which contains custom certificates to be trusted by the application. | `string` | `""` | no |

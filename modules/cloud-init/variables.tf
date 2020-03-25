@@ -27,13 +27,13 @@ variable "distribution" {
   type        = string
 }
 
-variable "license_file" {
-  description = "The pathname of a Replicated license file for the application."
+variable "internal_load_balancer_address" {
+  description = "The IP address of the internal load balancer."
   type        = string
 }
 
-variable "proxy_address" {
-  description = "The IP address of the Kubernetes API."
+variable "license_file" {
+  description = "The pathname of a Replicated license file for the application."
   type        = string
 }
 
