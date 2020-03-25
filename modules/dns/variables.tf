@@ -1,4 +1,4 @@
-variable "load_balancer_address" {
+variable "external_load_balancer_address" {
   description = "The public IP address of the external load balancer."
   type        = string
 }
