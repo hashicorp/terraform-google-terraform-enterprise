@@ -5,7 +5,7 @@ ssh_import_id:
 - "${username}"
 %{ endfor ~}
 %{ endif ~}
-%{ if distrobution == "ubuntu" ~}
+%{ if distribution == "ubuntu" ~}
 
 packages:
 - jq
