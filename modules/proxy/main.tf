@@ -1,10 +1,10 @@
 locals {
   ports  = concat(var.ports, [var.k8s_api_port])
-  prefix = "${var.prefix}proxy"
+  prefix = "${var.prefix}proxy-"
 }
 
 resource "google_compute_health_check" "load_balancer_out" {
-  name = "${local.prefix}-lb-out"
+  name = "${local.prefix}lb-out"
 
   description = "Check the health of the Kubernetes API."
   tcp_health_check {
@@ -14,7 +14,7 @@ resource "google_compute_health_check" "load_balancer_out" {
 
 resource "google_compute_region_backend_service" "load_balancer_out" {
   health_checks = [google_compute_health_check.load_balancer_out.self_link]
-  name          = "${local.prefix}-lb-out"
+  name          = "${local.prefix}lb-out"
 
   backend {
     group = var.primary_cluster_instance_group_self_link
@@ -27,7 +27,7 @@ resource "google_compute_region_backend_service" "load_balancer_out" {
 }
 
 resource "google_compute_address" "load_balancer_out" {
-  name = "${local.prefix}-lb-out"
+  name = "${local.prefix}lb-out"
 
   address_type = "INTERNAL"
   description  = "The IP address of the load balancer for the traffic outgoing from the proxy."
@@ -35,7 +35,7 @@ resource "google_compute_address" "load_balancer_out" {
 }
 
 resource "google_compute_forwarding_rule" "load_balancer_out" {
-  name = "${local.prefix}-lb-out"
+  name = "${local.prefix}lb-out"
 
   backend_service       = google_compute_region_backend_service.load_balancer_out.self_link
   description           = "Forward traffic outgoing from the proxy to the outgoing backend service."
@@ -48,7 +48,7 @@ resource "google_compute_forwarding_rule" "load_balancer_out" {
 }
 
 resource "google_compute_health_check" "load_balancer_in" {
-  name = "${local.prefix}-lb-in"
+  name = "${local.prefix}lb-in"
 
   description = "Check the health of the Kubernetes API."
   tcp_health_check {
@@ -78,7 +78,7 @@ resource "google_compute_instance_template" "node" {
       k8s_api_port           = var.k8s_api_port,
     }
   )
-  name_prefix = "${local.prefix}-node-"
+  name_prefix = "${local.prefix}node-"
   network_interface {
     subnetwork         = var.vpc_subnetwork_self_link
     subnetwork_project = var.vpc_subnetwork_project
@@ -90,11 +90,11 @@ resource "google_compute_instance_template" "node" {
 }
 
 resource "google_compute_region_instance_group_manager" "node" {
-  base_instance_name = "${local.prefix}-node"
-  name               = "${local.prefix}-node"
+  base_instance_name = "${local.prefix}node"
+  name               = "${local.prefix}node"
   region             = google_compute_instance_template.node.region
   version {
-    name              = "${local.prefix}-node-version"
+    name              = "${local.prefix}node-version"
     instance_template = google_compute_instance_template.node.self_link
   }
 
@@ -108,7 +108,7 @@ resource "google_compute_region_instance_group_manager" "node" {
 
 resource "google_compute_region_backend_service" "load_balancer_in" {
   health_checks = [google_compute_health_check.load_balancer_in.self_link]
-  name          = "${local.prefix}-lb-in"
+  name          = "${local.prefix}lb-in"
 
   backend {
     group = google_compute_region_instance_group_manager.node.instance_group
@@ -121,7 +121,7 @@ resource "google_compute_region_backend_service" "load_balancer_in" {
 }
 
 resource "google_compute_address" "load_balancer_in" {
-  name = "${local.prefix}-lb-in"
+  name = "${local.prefix}lb-in"
 
   address_type = "INTERNAL"
   description  = "The IP address of the load balancer for the traffic incoming to the proxy."
@@ -129,7 +129,7 @@ resource "google_compute_address" "load_balancer_in" {
 }
 
 resource "google_compute_forwarding_rule" "load_balancer_in" {
-  name = "${local.prefix}-lb-in"
+  name = "${local.prefix}lb-in"
 
   backend_service       = google_compute_region_backend_service.load_balancer_in.self_link
   description           = "Forward traffic incoming to the proxy to the incoming backend service."
