@@ -10,7 +10,7 @@ locals {
       )
       cluster_api_endpoint    = "${var.internal_load_balancer_address}:6443"
       custom_ca_cert_url      = var.custom_ca_cert_url
-      distrobution            = var.distribution
+      distribution            = var.distribution
       health_url              = "${local.assistant_host}/healthz"
       install_ptfe_sh         = file("${path.module}/files/install-ptfe.sh")
       proxy_conf              = templatefile("${path.module}/templates/proxy.conf.tmpl", { proxy_url = var.proxy_url })
