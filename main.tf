@@ -95,8 +95,8 @@ module "secondary_cluster" {
 }
 
 # Create an external load balancer which directs traffic to the primary cluster.
-module "load_balancer" {
-  source = "./modules/load-balancer"
+module "external_load_balancer" {
+  source = "./modules/external-load-balancer"
 
   prefix                                   = var.prefix
   primary_cluster_endpoint_group_self_link = module.primary_cluster.endpoint_group.self_link
@@ -108,9 +108,9 @@ module "load_balancer" {
 module "dns" {
   source = "./modules/dns"
 
-  load_balancer_address = module.load_balancer.address
-  managed_zone          = var.dns_managed_zone
-  managed_zone_dns_name = var.dns_managed_zone_dns_name
+  external_load_balancer_address = module.external_load_balancer.address
+  managed_zone                   = var.dns_managed_zone
+  managed_zone_dns_name          = var.dns_managed_zone_dns_name
 }
 
 # Create an SSL certificate to be attached to the external load balancer.
