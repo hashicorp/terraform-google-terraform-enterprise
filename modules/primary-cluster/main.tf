@@ -24,8 +24,9 @@ resource "google_compute_instance" "main" {
     }
   }
 
-  description = "A compute instance in the TFE primary cluster."
-  labels      = var.labels
+  allow_stopping_for_update = true
+  description               = "A compute instance in the TFE primary cluster."
+  labels                    = var.labels
   metadata = {
     user-data          = var.cloud_init_configs[count.index]
     user-data-encoding = "base64"
