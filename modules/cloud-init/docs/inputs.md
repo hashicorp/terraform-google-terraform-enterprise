@@ -15,6 +15,6 @@
 | ptfe\_url | The URL of the cluster installer tool. | `string` | `"https://install.terraform.io/installer/ptfe-0.1.zip"` | no |
 | release\_sequence | The sequence identifier of the TFE version to which the cluster will be pinned. | `string` | `"latest"` | no |
 | repl\_cidr | A custom IP address range over which Replicated will communicate, expressed in CIDR notation. | `string` | `""` | no |
-| ssh\_import\_id\_usernames | The usernames associated with SSH keys which will be imported from a keyserver to all machines. | `list(string)` | `[]` | no |
+| ssh\_import\_id\_usernames | The usernames associated with SSH keys which will be imported from a keyserver to all machines. Refer to the cloud-init documentation for more information: https://cloudinit.readthedocs.io/en/latest/topics/modules.html#ssh-import-id | `list(string)` | `[]` | no |
 | weave\_cidr | A custom IP address range over which Weave will communicate, expressed in CIDR notation. | `string` | `""` | no |
 

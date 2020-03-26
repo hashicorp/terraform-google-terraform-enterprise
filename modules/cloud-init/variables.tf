@@ -63,7 +63,7 @@ variable "repl_cidr" {
 
 variable "ssh_import_id_usernames" {
   default     = []
-  description = "The usernames associated with SSH keys which will be imported from a keyserver to all machines."
+  description = "The usernames associated with SSH keys which will be imported from a keyserver to all machines. Refer to the cloud-init documentation for more information: https://cloudinit.readthedocs.io/en/latest/topics/modules.html#ssh-import-id"
   type        = list(string)
 }
 
