@@ -1,3 +1,10 @@
+# Create service accounts which will be used to represent various components of the application.
+module "service_account" {
+  source = "./modules/service-account"
+
+  prefix = var.prefix
+}
+
 # Create a storage bucket in which application state will be stored.
 module "storage" {
   source = "./modules/storage"
@@ -6,14 +13,6 @@ module "storage" {
   service_account_email = module.service_account.storage.email
 
   labels = var.labels
-}
-
-# Create a service account which will be used to access the storage bucket.
-module "service_account" {
-  source = "./modules/service-account"
-
-  prefix              = var.prefix
-  storage_bucket_name = module.storage.bucket.name
 }
 
 # Create a VPC with a network and a subnetwork to which resources will be attached.
