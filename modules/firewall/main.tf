@@ -2,15 +2,15 @@ locals {
   all_service_accounts = [
     var.service_account_primary_cluster_email,
     var.service_account_secondary_cluster_email,
-    var.service_account_proxy_email
+    var.service_account_internal_load_balancer_email
   ]
   primary_service_accounts           = [var.service_account_primary_cluster_email]
-  primary_and_proxy_service_accounts = [var.service_account_primary_cluster_email, var.service_account_proxy_email]
+  primary_and_internal_load_balancer_service_accounts = [var.service_account_primary_cluster_email, var.service_account_internal_load_balancer_email]
   primary_and_secondary_service_accounts = [
     var.service_account_primary_cluster_email,
     var.service_account_secondary_cluster_email
   ]
-  proxy_service_accounts = [var.service_account_proxy_email]
+  internal_load_balancer_service_accounts = [var.service_account_internal_load_balancer_email]
   ssh_ui_ports = [
     var.port_application_tcp,
     var.port_ssh_tcp,
@@ -43,11 +43,11 @@ resource "google_compute_firewall" "health_checks_kubernetes" {
 
     ports = [var.port_kubernetes_tcp]
   }
-  description             = "Allow ingress of Kubernetes traffic from the Google health check IP address ranges to the primary and proxy compute instances."
+  description             = "Allow ingress of Kubernetes traffic from the Google health check IP address ranges to the primary and internal load balancer compute instances."
   direction               = "INGRESS"
   enable_logging          = true
   source_ranges           = var.health_check_ip_cidr_ranges
-  target_service_accounts = [var.service_account_primary_cluster_email, var.service_account_proxy_email]
+  target_service_accounts = [var.service_account_primary_cluster_email, var.service_account_internal_load_balancer_email]
 }
 
 resource "google_compute_firewall" "allow_all_ssh_ui" {
@@ -96,8 +96,8 @@ resource "google_compute_firewall" "replicated" {
   target_service_accounts = local.primary_and_secondary_service_accounts
 }
 
-resource "google_compute_firewall" "kubernetes_proxy" {
-  name    = "${var.prefix}kubernetes-proxy"
+resource "google_compute_firewall" "kubernetes_internal_load_balancer" {
+  name    = "${var.prefix}kubernetes-ilb"
   network = var.vpc_network_self_link
 
   allow {
@@ -105,11 +105,11 @@ resource "google_compute_firewall" "kubernetes_proxy" {
 
     ports = [var.port_kubernetes_tcp]
   }
-  description             = "Allow ingress of Kubernetes traffic from the primary and secondary compute instances to the proxy compute instances."
+  description             = "Allow ingress of Kubernetes traffic from the primary and secondary compute instances to the internal load balancer compute instances."
   direction               = "INGRESS"
   enable_logging          = true
   source_service_accounts = local.primary_and_secondary_service_accounts
-  target_service_accounts = local.proxy_service_accounts
+  target_service_accounts = local.internal_load_balancer_service_accounts
 }
 
 resource "google_compute_firewall" "kubernetes_primaries" {
@@ -128,8 +128,8 @@ resource "google_compute_firewall" "kubernetes_primaries" {
   target_service_accounts = local.primary_service_accounts
 }
 
-resource "google_compute_firewall" "cluster_assistant_proxy" {
-  name    = "${var.prefix}cluster-assistant-proxy"
+resource "google_compute_firewall" "cluster_assistant_internal_load_balancer" {
+  name    = "${var.prefix}cluster-assistant-ilb"
   network = var.vpc_network_self_link
 
   allow {
@@ -137,11 +137,11 @@ resource "google_compute_firewall" "cluster_assistant_proxy" {
 
     ports = [var.port_cluster_assistant_tcp]
   }
-  description             = "Allow ingress of Cluster Assistant traffic from the primary and secondary compute instances to the proxy compute instances."
+  description             = "Allow ingress of Cluster Assistant traffic from the primary and secondary compute instances to the internal load balancer compute instances."
   direction               = "INGRESS"
   enable_logging          = true
   source_service_accounts = local.primary_and_secondary_service_accounts
-  target_service_accounts = local.proxy_service_accounts
+  target_service_accounts = local.internal_load_balancer_service_accounts
 }
 
 resource "google_compute_firewall" "cluster_assistant_primaries" {
@@ -153,10 +153,10 @@ resource "google_compute_firewall" "cluster_assistant_primaries" {
 
     ports = [var.port_cluster_assistant_tcp]
   }
-  description             = "Allow ingress of Cluster Assistant traffic from the proxy compute instances to the primary compute instances."
+  description             = "Allow ingress of Cluster Assistant traffic from the internal load balancer compute instances to the primary compute instances."
   direction               = "INGRESS"
   enable_logging          = true
-  source_service_accounts = local.proxy_service_accounts
+  source_service_accounts = local.internal_load_balancer_service_accounts
   target_service_accounts = local.primary_service_accounts
 }
 

@@ -23,9 +23,9 @@ resource "google_service_account" "secondary_cluster" {
   description  = "The identity to be associated with the TFE secondary compute instances."
 }
 
-resource "google_service_account" "proxy" {
-  account_id = "${var.prefix}proxy"
+resource "google_service_account" "internal_load_balancer" {
+  account_id = "${var.prefix}ilb"
 
-  description  = "The identity to be associated with the TFE proxy compute instances."
-  display_name = "TFE Proxy"
+  description  = "The identity to be associated with the TFE internal load balancer compute instances."
+  display_name = "TFE Internal Load Balancer"
 }

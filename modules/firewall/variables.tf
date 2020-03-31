@@ -69,9 +69,9 @@ variable "service_account_primary_cluster_email" {
   description = "The email address of the service account associated with the primary cluster."
 }
 
-variable "service_account_proxy_email" {
+variable "service_account_internal_load_balancer_email" {
   type        = string
-  description = "The email address of the service account associated with the proxy."
+  description = "The email address of the service account associated with the internal load balancer."
 }
 
 variable "service_account_secondary_cluster_email" {

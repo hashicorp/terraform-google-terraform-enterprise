@@ -31,22 +31,22 @@ module "port" {
 module "firewall" {
   source = "./modules/firewall"
 
-  port_application_tcp                    = module.port.application_tcp
-  port_cluster_assistant_tcp              = module.port.cluster_assistant_tcp
-  port_etcd_tcp_ranges                    = module.port.etcd_tcp_ranges
-  port_kubelet_tcp                        = module.port.kubelet_tcp
-  port_kubernetes_tcp                     = module.port.kubernetes_tcp
-  port_replicated_tcp_ranges              = module.port.replicated_tcp_ranges
-  port_replicated_ui_tcp                  = module.port.replicated_ui_tcp
-  port_ssh_tcp                            = module.port.ssh_tcp
-  port_weave_tcp                          = module.port.weave_tcp
-  port_weave_udp_ranges                   = module.port.weave_udp_ranges
-  prefix                                  = var.prefix
-  service_account_primary_cluster_email   = module.service_account.primary_cluster.email
-  service_account_proxy_email             = module.service_account.proxy.email
-  service_account_secondary_cluster_email = module.service_account.secondary_cluster.email
-  vpc_network_self_link                   = module.vpc.network.self_link
-  vpc_subnetwork_ip_cidr_range            = module.vpc.subnetwork.ip_cidr_range
+  port_application_tcp                         = module.port.application_tcp
+  port_cluster_assistant_tcp                   = module.port.cluster_assistant_tcp
+  port_etcd_tcp_ranges                         = module.port.etcd_tcp_ranges
+  port_kubelet_tcp                             = module.port.kubelet_tcp
+  port_kubernetes_tcp                          = module.port.kubernetes_tcp
+  port_replicated_tcp_ranges                   = module.port.replicated_tcp_ranges
+  port_replicated_ui_tcp                       = module.port.replicated_ui_tcp
+  port_ssh_tcp                                 = module.port.ssh_tcp
+  port_weave_tcp                               = module.port.weave_tcp
+  port_weave_udp_ranges                        = module.port.weave_udp_ranges
+  prefix                                       = var.prefix
+  service_account_primary_cluster_email        = module.service_account.primary_cluster.email
+  service_account_internal_load_balancer_email = module.service_account.internal_load_balancer.email
+  service_account_secondary_cluster_email      = module.service_account.secondary_cluster.email
+  vpc_network_self_link                        = module.vpc.network.self_link
+  vpc_subnetwork_ip_cidr_range                 = module.vpc.subnetwork.ip_cidr_range
 }
 
 # Create a PostgreSQL database in which application data will be stored.
@@ -109,7 +109,7 @@ module "internal_load_balancer" {
   port_cluster_assistant_tcp               = module.port.cluster_assistant_tcp
   prefix                                   = var.prefix
   primary_cluster_instance_group_self_link = module.primary_cluster.instance_group.self_link
-  service_account_email                    = module.service_account.proxy.email
+  service_account_email                    = module.service_account.internal_load_balancer.email
   vpc_network_self_link                    = module.vpc.network.self_link
   vpc_subnetwork_ip_cidr_range             = module.vpc.subnetwork.ip_cidr_range
   vpc_subnetwork_project                   = module.vpc.subnetwork.project
