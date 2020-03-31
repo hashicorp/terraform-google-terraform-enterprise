@@ -72,6 +72,7 @@ resource "google_compute_instance_template" "node" {
   can_ip_forward       = true
   description          = "The template for the node compute instances of the internal load balancer."
   instance_description = "A node compute instance of the internal load balancer."
+  labels               = var.labels
   metadata_startup_script = templatefile(
     "${path.module}/templates/setup-proxy.tmpl",
     {

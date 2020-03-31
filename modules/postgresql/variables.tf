@@ -12,7 +12,7 @@ variable "backup_start_time" {
 
 variable "labels" {
   default     = {}
-  description = "A collection of labels which will be applied to resources."
+  description = "A collection of labels which will be applied to the database compute instance."
   type        = map(string)
 }
 

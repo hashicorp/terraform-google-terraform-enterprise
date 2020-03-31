@@ -1,6 +1,6 @@
 variable "labels" {
   default     = {}
-  description = "A collection of labels which will be applied to resources."
+  description = "A collection of labels which will be applied to the storage bucket."
   type        = map(string)
 }
 

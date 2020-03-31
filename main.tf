@@ -3,6 +3,8 @@ module "storage" {
   source = "./modules/storage"
 
   prefix = var.prefix
+
+  labels = var.labels
 }
 
 # Create a service account which will be used to access the storage bucket.
@@ -35,6 +37,8 @@ module "postgresql" {
 
   prefix                = var.prefix
   vpc_network_self_link = module.vpc.network.self_link
+
+  labels = var.labels
 }
 
 # Generate the application configuration.
@@ -69,6 +73,8 @@ module "primary_cluster" {
   vpc_network_self_link    = module.vpc.network.self_link
   vpc_subnetwork_project   = module.vpc.subnetwork.project
   vpc_subnetwork_self_link = module.vpc.subnetwork.self_link
+
+  labels = var.labels
 }
 
 # Create the primary cluster internal load balancer.
@@ -81,6 +87,8 @@ module "internal_load_balancer" {
   vpc_subnetwork_ip_cidr_range             = module.vpc.subnetwork.ip_cidr_range
   vpc_subnetwork_project                   = module.vpc.subnetwork.project
   vpc_subnetwork_self_link                 = module.vpc.subnetwork.self_link
+
+  labels = var.labels
 }
 
 # Create the secondary cluster.
@@ -92,6 +100,8 @@ module "secondary_cluster" {
   vpc_network_self_link    = module.vpc.network.self_link
   vpc_subnetwork_project   = module.vpc.subnetwork.project
   vpc_subnetwork_self_link = module.vpc.subnetwork.self_link
+
+  labels = var.labels
 }
 
 # Create an external load balancer which directs traffic to the primary cluster.

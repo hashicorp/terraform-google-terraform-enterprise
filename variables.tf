@@ -13,6 +13,12 @@ variable "dns_managed_zone_dns_name" {
   type        = string
 }
 
+variable "labels" {
+  default     = {}
+  description = "A collection of labels which will be applied to resources."
+  type        = map(string)
+}
+
 variable "prefix" {
   default     = "tfe-"
   description = "The prefix which will be prepended to the names of resources."

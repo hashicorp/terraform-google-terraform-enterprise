@@ -4,6 +4,12 @@ variable "cluster_assistant_port" {
   default     = 23010
 }
 
+variable "labels" {
+  default     = {}
+  description = "A collection of labels which will be applied to the compute instances."
+  type        = map(string)
+}
+
 variable "k8s_api_port" {
   type        = number
   description = "The port of the Kubernetes API."
