@@ -68,21 +68,6 @@ resource "google_compute_firewall" "allow_all_ssh_ui" {
   target_service_accounts = local.primaries_and_secondaries_service_accounts
 }
 
-resource "google_compute_firewall" "deny_internal_ssh_ui" {
-  name    = "${var.prefix}deny-internal-ssh-ui"
-  network = var.vpc_network_self_link
-
-  deny {
-    protocol = "tcp"
-
-    ports = local.ssh_ui_ports
-  }
-  description    = "Deny ingress of SSH and UI traffic between addresses in the internal network."
-  direction      = "INGRESS"
-  enable_logging = true
-  source_ranges  = [var.vpc_subnetwork_ip_cidr_range]
-}
-
 resource "google_compute_firewall" "replicated" {
   name    = "${var.prefix}replicated"
   network = var.vpc_network_self_link
