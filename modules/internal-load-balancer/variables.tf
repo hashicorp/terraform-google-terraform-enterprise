@@ -24,9 +24,9 @@ variable "vpc_subnetwork_ip_cidr_range" {
   type        = string
 }
 
-variable "primary_cluster_instance_group_self_link" {
+variable "primaries_instance_group_self_link" {
   type        = string
-  description = "GCP Instance Group for the primaries"
+  description = "The self link of the instance group for the primaries."
 }
 
 variable "service_account_email" {

@@ -9,7 +9,7 @@
 | port\_kubernetes\_tcp | The port over which Kubernetes TCP traffic will travel. | `string` | n/a | yes |
 | port\_replicated\_ui\_tcp | The port over which Replicated UI TCP traffic will travel. | `string` | n/a | yes |
 | prefix | The prefix which will be prepended to the names of resources. | `string` | n/a | yes |
-| service\_account\_email | The email address of the service account which will be associated with the secondary compute instances. | `string` | n/a | yes |
+| service\_account\_email | The email address of the service account which will be associated with the secondaries. | `string` | n/a | yes |
 | vpc\_network\_self\_link | The self link of the network to which resources will be attached. | `string` | n/a | yes |
 | vpc\_subnetwork\_project | The ID of the project in which var.vpc\_subnetwork\_self\_link exists. | `string` | n/a | yes |
 | vpc\_subnetwork\_self\_link | The self link of the subnetwork to which resources will be attached. The subnetwork must be part of var.vpc\_network\_self\_link. | `string` | n/a | yes |

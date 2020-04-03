@@ -19,11 +19,11 @@ resource "google_compute_region_backend_service" "internal_load_balancer_out" {
   name          = local.name_out
 
   backend {
-    group = var.primary_cluster_instance_group_self_link
+    group = var.primaries_instance_group_self_link
 
-    description = "Target the primary cluster instance group."
+    description = "Target the TFE primaries."
   }
-  description = "Serve to the primary cluster traffic outgoing from the internal load balancer."
+  description = "Serve to the TFE primaries egress traffic from the internal load balancer."
   protocol    = "TCP"
   timeout_sec = 10
 }
@@ -40,7 +40,7 @@ resource "google_compute_forwarding_rule" "internal_load_balancer_out" {
   name = local.name_out
 
   backend_service       = google_compute_region_backend_service.internal_load_balancer_out.self_link
-  description           = "Forward to primary cluster traffic outgoing from the internal load balancer."
+  description           = "Forward to the TFE primaries egress traffic from the internal load balancer."
   ip_address            = google_compute_address.internal_load_balancer_out.address
   ip_protocol           = "TCP"
   load_balancing_scheme = "INTERNAL"

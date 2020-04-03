@@ -1,7 +1,7 @@
-output "primary_cluster" {
-  value = google_service_account.primary_cluster
+output "primaries" {
+  value = google_service_account.primaries
 
-  description = "The service account to be associated with the primary cluster."
+  description = "The service account to be associated with the primaries."
 }
 
 output "internal_load_balancer" {
@@ -10,10 +10,10 @@ output "internal_load_balancer" {
   description = "The service account to be associated with the internal load balancer."
 }
 
-output "secondary_cluster" {
-  value = google_service_account.secondary_cluster
+output "secondaries" {
+  value = google_service_account.secondaries
 
-  description = "The service account to be associated with the secondary cluster."
+  description = "The service account to be associated with the secondaries."
 }
 
 output "storage" {

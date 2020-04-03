@@ -1,7 +1,7 @@
-## Terraform Enterprise Clustering: Secondary Cluster Module
+## Terraform Enterprise Clustering: Secondaries Module
 
 This module is responsible for creating all the resources required by
-the secondary cluster to function.
+the secondaries to function.
 
 ### Components
 

@@ -2,7 +2,7 @@
 
 This submodule provisions the global address of the Terraform
 Enterprise cluster. The global address is assigned to the load balancer
-which acts as a frontend to the primary and secondary compute instances.
+which acts as a frontend to the primaries and secondaries.
 
 ## Prerequisites
 

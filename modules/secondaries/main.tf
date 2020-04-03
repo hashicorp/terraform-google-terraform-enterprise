@@ -18,7 +18,7 @@ resource "google_compute_instance_template" "main" {
   }
 
   can_ip_forward = true
-  description    = "The template for compute instances in the TFE secondary cluster."
+  description    = "The template for compute instances in the TFE secondaries."
   name_prefix    = "${var.prefix}secondary-"
   labels         = var.labels
   metadata = {
@@ -38,13 +38,13 @@ resource "google_compute_instance_template" "main" {
 
 resource "google_compute_region_instance_group_manager" "main" {
   base_instance_name = "${var.prefix}secondary"
-  name               = "${var.prefix}secondary"
+  name               = "${var.prefix}secondaries"
   region             = google_compute_instance_template.main.region
   version {
     instance_template = google_compute_instance_template.main.self_link
   }
 
-  description = "The manager for the compute instance group of the TFE secondary cluster."
+  description = "The manager for the compute instance group of the TFE secondaries."
   named_port {
     name = "application"
     port = var.port_application_tcp
@@ -69,6 +69,6 @@ resource "google_compute_region_autoscaler" "main" {
       target = var.cpu_utilization_target
     }
   }
-  name   = "${var.prefix}secondary"
+  name   = "${var.prefix}secondaries"
   target = google_compute_region_instance_group_manager.main.self_link
 }

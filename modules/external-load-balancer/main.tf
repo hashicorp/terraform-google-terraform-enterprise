@@ -15,17 +15,17 @@ resource "google_compute_backend_service" "application" {
   name          = "${var.prefix}application"
 
   backend {
-    group = var.primary_cluster_instance_group_self_link
+    group = var.primaries_instance_group_self_link
 
     balancing_mode        = "RATE"
-    description           = "The TFE primary cluster group."
+    description           = "The TFE primaries."
     max_rate_per_instance = 333
   }
   backend {
-    group = var.secondary_cluster_instance_group_manager_instance_group
+    group = var.secondaries_instance_group_manager_instance_group
 
     balancing_mode        = "RATE"
-    description           = "The TFE secondary cluster group."
+    description           = "The TFE secondaries."
     max_rate_per_instance = 333
   }
   port_name   = "application"

@@ -11,7 +11,7 @@ output "console_password" {
 }
 
 output "console_url" {
-  value = module.primary_cluster.console_url
+  value = module.primaries.console_url
 
   description = "The URL of the management console."
 }

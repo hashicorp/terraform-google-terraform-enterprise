@@ -25,7 +25,7 @@ resource "google_compute_instance" "main" {
   }
 
   allow_stopping_for_update = true
-  description               = "A compute instance in the TFE primary cluster."
+  description               = "A compute instance in the TFE primaries."
   labels                    = var.labels
   metadata = {
     user-data          = var.cloud_init_configs[count.index]
@@ -39,8 +39,8 @@ resource "google_compute_instance" "main" {
 }
 
 resource "google_compute_instance_group" "main" {
-  name        = "${var.prefix}primary"
-  description = "primary-servers"
+  name        = "${var.prefix}primaries"
+  description = "primaries-servers"
 
   instances = google_compute_instance.main.*.self_link
   named_port {

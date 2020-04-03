@@ -19,13 +19,13 @@ locals {
       ssh_import_id_usernames = var.ssh_import_id_usernames
     }
   )
-  main_and_primary_cloud_configs = [
+  main_and_primaries_cloud_configs = [
     templatefile(
       "${path.module}/templates/main-cloud-config.yaml.tmpl",
       {
         airgap_installer_url = var.airgap_installer_url
         airgap_package_url   = var.airgap_package_url
-        primary_cloud_config = local.primary_cloud_configs[0]
+        primary_cloud_config = local.primaries_cloud_configs[0]
         repl_cidr            = var.repl_cidr
         replicated_conf = templatefile(
           "${path.module}/templates/replicated.conf.tmpl",
@@ -41,10 +41,10 @@ locals {
         weave_cidr           = var.weave_cidr
       }
     ),
-    local.primary_cloud_configs[1],
-    local.primary_cloud_configs[2]
+    local.primaries_cloud_configs[1],
+    local.primaries_cloud_configs[2]
   ]
-  primary_cloud_configs = [
+  primaries_cloud_configs = [
     for role_id in [0, 1, 2] : templatefile(
       "${path.module}/templates/primary-cloud-config.yaml.tmpl",
       {
@@ -62,7 +62,7 @@ locals {
       }
     )
   ]
-  secondary_cloud_config = templatefile(
+  secondaries_cloud_config = templatefile(
     "${path.module}/templates/secondary-cloud-config.yaml.tmpl",
     { base_cloud_config = local.base_cloud_config }
   )
@@ -94,7 +94,7 @@ data "template_cloudinit_config" "primaries" {
   count = 3
 
   part {
-    content = local.main_and_primary_cloud_configs[count.index]
+    content = local.main_and_primaries_cloud_configs[count.index]
 
     content_type = "text/cloud-config"
   }
@@ -103,9 +103,9 @@ data "template_cloudinit_config" "primaries" {
   gzip          = true
 }
 
-data "template_cloudinit_config" "secondary" {
+data "template_cloudinit_config" "secondaries" {
   part {
-    content = local.secondary_cloud_config
+    content = local.secondaries_cloud_config
 
     content_type = "text/cloud-config"
   }
