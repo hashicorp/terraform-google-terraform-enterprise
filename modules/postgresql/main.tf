@@ -1,20 +1,8 @@
-resource "google_compute_global_address" "main" {
-  provider = google-beta
-
-  name = "${var.prefix}database"
-
-  address       = "10.200.1.0"
-  address_type  = "INTERNAL"
-  network       = var.vpc_network_self_link
-  prefix_length = 24
-  purpose       = "VPC_PEERING"
-}
-
 resource "google_service_networking_connection" "main" {
   provider = google-beta
 
   network                 = var.vpc_network_self_link
-  reserved_peering_ranges = [google_compute_global_address.main.name]
+  reserved_peering_ranges = [var.vpc_address_name]
   service                 = "servicenetworking.googleapis.com"
 }
 

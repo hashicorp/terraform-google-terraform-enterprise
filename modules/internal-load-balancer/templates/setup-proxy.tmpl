@@ -6,11 +6,11 @@ apt-get update
 
 apt-get install -y iptables-persistent netfilter-persistent
 
-iptables -t nat -A PREROUTING -p tcp --dport ${port_kubernetes_tcp} -j DNAT --to-destination "${host}"
-iptables -t nat -A POSTROUTING -p tcp --dport ${port_kubernetes_tcp} -j MASQUERADE
+iptables -t nat -A PREROUTING -p tcp --dport ${vpc_kubernetes_tcp_port} -j DNAT --to-destination "${host}"
+iptables -t nat -A POSTROUTING -p tcp --dport ${vpc_kubernetes_tcp_port} -j MASQUERADE
 
-iptables -t nat -A PREROUTING -p tcp --dport ${port_cluster_assistant_tcp} -j DNAT --to-destination "${host}"
-iptables -t nat -A POSTROUTING -p tcp --dport ${port_cluster_assistant_tcp} -j MASQUERADE
+iptables -t nat -A PREROUTING -p tcp --dport ${vpc_cluster_assistant_tcp_port} -j DNAT --to-destination "${host}"
+iptables -t nat -A POSTROUTING -p tcp --dport ${vpc_cluster_assistant_tcp_port} -j MASQUERADE
 
 netfilter-persistent save
 

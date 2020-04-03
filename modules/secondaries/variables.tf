@@ -44,17 +44,17 @@ variable "min_instances" {
   type        = number
 }
 
-variable "port_application_tcp" {
+variable "vpc_application_tcp_port" {
   description = "The port over which application TCP traffic will travel."
   type        = string
 }
 
-variable "port_kubernetes_tcp" {
+variable "vpc_kubernetes_tcp_port" {
   description = "The port over which Kubernetes TCP traffic will travel."
   type        = string
 }
 
-variable "port_replicated_ui_tcp" {
+variable "vpc_replicated_ui_tcp_port" {
   description = "The port over which Replicated UI TCP traffic will travel."
   type        = string
 }

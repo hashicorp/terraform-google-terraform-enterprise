@@ -1,17 +1,19 @@
 locals {
   name_in  = "${local.prefix}in"
   name_out = "${local.prefix}out"
-  ports    = [var.port_cluster_assistant_tcp, var.port_kubernetes_tcp]
+  ports    = [var.vpc_cluster_assistant_tcp_port, var.vpc_kubernetes_tcp_port]
   prefix   = "${var.prefix}ilb-"
 }
 
 resource "google_compute_health_check" "internal_load_balancer_out" {
   name = local.name_out
 
-  description = "Check the health of the Kubernetes API."
+  check_interval_sec = 10
+  description        = "Check the health of the Kubernetes API."
   tcp_health_check {
-    port = var.port_kubernetes_tcp
+    port = var.vpc_kubernetes_tcp_port
   }
+  unhealthy_threshold = 3
 }
 
 resource "google_compute_region_backend_service" "internal_load_balancer_out" {
@@ -52,10 +54,12 @@ resource "google_compute_forwarding_rule" "internal_load_balancer_out" {
 resource "google_compute_health_check" "internal_load_balancer_in" {
   name = local.name_in
 
-  description = "Check the health of the Kubernetes API."
+  check_interval_sec = 10
+  description        = "Check the health of the Kubernetes API."
   tcp_health_check {
-    port = var.port_kubernetes_tcp
+    port = var.vpc_kubernetes_tcp_port
   }
+  unhealthy_threshold = 3
 }
 
 resource "google_compute_instance_template" "node" {
@@ -76,9 +80,9 @@ resource "google_compute_instance_template" "node" {
   metadata_startup_script = templatefile(
     "${path.module}/templates/setup-proxy.tmpl",
     {
-      port_cluster_assistant_tcp = var.port_cluster_assistant_tcp,
-      host                       = google_compute_address.internal_load_balancer_out.address,
-      port_kubernetes_tcp        = var.port_kubernetes_tcp
+      vpc_cluster_assistant_tcp_port = var.vpc_cluster_assistant_tcp_port,
+      host                           = google_compute_address.internal_load_balancer_out.address,
+      vpc_kubernetes_tcp_port        = var.vpc_kubernetes_tcp_port
     }
   )
   name_prefix = "${local.prefix}node-"
@@ -109,13 +113,17 @@ resource "google_compute_region_instance_group_manager" "node" {
   description = "Manages the node compute instances of the internal load balancer."
   named_port {
     name = "kubernetes"
-    port = var.port_kubernetes_tcp
+    port = var.vpc_kubernetes_tcp_port
   }
   named_port {
     name = "cluster-assistant"
-    port = var.port_cluster_assistant_tcp
+    port = var.vpc_cluster_assistant_tcp_port
   }
   target_size = 2
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 resource "google_compute_region_backend_service" "internal_load_balancer_in" {

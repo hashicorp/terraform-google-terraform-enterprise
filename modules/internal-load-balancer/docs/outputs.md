@@ -4,5 +4,5 @@
 
 | Name | Description |
 |------|-------------|
-| address | The IP address of the load balancer for inbound traffic. |
+| in\_address | The IP address of the load balancer for inbound traffic. |
 

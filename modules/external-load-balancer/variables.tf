@@ -1,13 +1,3 @@
-variable "global_address" {
-  description = "The global IP address which will be assigned to the load balancer."
-  type        = string
-}
-
-variable "port_application_tcp" {
-  description = "The port over which application TCP traffic will travel."
-  type        = string
-}
-
 variable "prefix" {
   description = "The prefix which will be prepended to the names of resources."
   type        = string
@@ -30,5 +20,15 @@ variable "ssl_certificate_self_link" {
 
 variable "ssl_policy_self_link" {
   description = "The self link of a compute SSL policy for the SSL certificate."
+  type        = string
+}
+
+variable "vpc_address" {
+  description = "The address which will be assigned to the load balancer."
+  type        = string
+}
+
+variable "vpc_application_tcp_port" {
+  description = "The port over which application TCP traffic will travel."
   type        = string
 }

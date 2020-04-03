@@ -47,15 +47,19 @@ resource "google_compute_region_instance_group_manager" "main" {
   description = "The manager for the compute instance group of the TFE secondaries."
   named_port {
     name = "application"
-    port = var.port_application_tcp
+    port = var.vpc_application_tcp_port
   }
   named_port {
     name = "kubernetes"
-    port = var.port_kubernetes_tcp
+    port = var.vpc_kubernetes_tcp_port
   }
   named_port {
     name = "replicated-ui"
-    port = var.port_replicated_ui_tcp
+    port = var.vpc_replicated_ui_tcp_port
+  }
+
+  lifecycle {
+    create_before_destroy = true
   }
 }
 
