@@ -1,7 +1,7 @@
 locals {
   name_in  = "${local.prefix}in"
   name_out = "${local.prefix}out"
-  ports    = concat(var.ports, [var.k8s_api_port])
+  ports    = [var.port_cluster_assistant_tcp, var.port_kubernetes_tcp]
   prefix   = "${var.prefix}ilb-"
 }
 
@@ -10,7 +10,7 @@ resource "google_compute_health_check" "internal_load_balancer_out" {
 
   description = "Check the health of the Kubernetes API."
   tcp_health_check {
-    port = var.k8s_api_port
+    port = var.port_kubernetes_tcp
   }
 }
 
@@ -19,11 +19,11 @@ resource "google_compute_region_backend_service" "internal_load_balancer_out" {
   name          = local.name_out
 
   backend {
-    group = var.primary_cluster_instance_group_self_link
+    group = var.primaries_instance_group_self_link
 
-    description = "Target the primary cluster instance group."
+    description = "Target the TFE primaries."
   }
-  description = "Serve to the primary cluster traffic outgoing from the internal load balancer."
+  description = "Serve to the TFE primaries egress traffic from the internal load balancer."
   protocol    = "TCP"
   timeout_sec = 10
 }
@@ -40,7 +40,7 @@ resource "google_compute_forwarding_rule" "internal_load_balancer_out" {
   name = local.name_out
 
   backend_service       = google_compute_region_backend_service.internal_load_balancer_out.self_link
-  description           = "Forward to primary cluster traffic outgoing from the internal load balancer."
+  description           = "Forward to the TFE primaries egress traffic from the internal load balancer."
   ip_address            = google_compute_address.internal_load_balancer_out.address
   ip_protocol           = "TCP"
   load_balancing_scheme = "INTERNAL"
@@ -54,7 +54,7 @@ resource "google_compute_health_check" "internal_load_balancer_in" {
 
   description = "Check the health of the Kubernetes API."
   tcp_health_check {
-    port = var.k8s_api_port
+    port = var.port_kubernetes_tcp
   }
 }
 
@@ -76,15 +76,20 @@ resource "google_compute_instance_template" "node" {
   metadata_startup_script = templatefile(
     "${path.module}/templates/setup-proxy.tmpl",
     {
-      cluster_assistant_port = var.cluster_assistant_port,
-      host                   = google_compute_address.internal_load_balancer_out.address,
-      k8s_api_port           = var.k8s_api_port,
+      port_cluster_assistant_tcp = var.port_cluster_assistant_tcp,
+      host                       = google_compute_address.internal_load_balancer_out.address,
+      port_kubernetes_tcp        = var.port_kubernetes_tcp
     }
   )
   name_prefix = "${local.prefix}node-"
   network_interface {
     subnetwork         = var.vpc_subnetwork_self_link
     subnetwork_project = var.vpc_subnetwork_project
+  }
+  service_account {
+    scopes = ["cloud-platform"]
+
+    email = var.service_account_email
   }
 
   lifecycle {
@@ -103,8 +108,12 @@ resource "google_compute_region_instance_group_manager" "node" {
 
   description = "Manages the node compute instances of the internal load balancer."
   named_port {
-    name = "https"
-    port = var.k8s_api_port
+    name = "kubernetes"
+    port = var.port_kubernetes_tcp
+  }
+  named_port {
+    name = "cluster-assistant"
+    port = var.port_cluster_assistant_tcp
   }
   target_size = 2
 }

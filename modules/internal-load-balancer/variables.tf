@@ -1,19 +1,22 @@
-variable "cluster_assistant_port" {
-  type        = number
-  description = "The port of the Cluster Assistant."
-  default     = 23010
-}
-
 variable "labels" {
   default     = {}
   description = "A collection of labels which will be applied to the compute instances."
   type        = map(string)
 }
 
-variable "k8s_api_port" {
-  type        = number
-  description = "The port of the Kubernetes API."
-  default     = 6443
+variable "port_cluster_assistant_tcp" {
+  description = "The port over which Cluster Assistant TCP traffic will travel."
+  type        = string
+}
+
+variable "port_kubernetes_tcp" {
+  description = "The port over which Kubernetes TCP traffic will travel."
+  type        = string
+}
+
+variable "prefix" {
+  description = "The prefix which will be prepended to the names of resources."
+  type        = string
 }
 
 variable "vpc_subnetwork_ip_cidr_range" {
@@ -21,26 +24,19 @@ variable "vpc_subnetwork_ip_cidr_range" {
   type        = string
 }
 
-variable "ports" {
-  type        = list(number)
-  description = "Only packets addressed to these ports will be forwarded through the internal load balancer. var.k8s_api_port will be added to this list."
-  default     = [80, 443, 23010]
+variable "primaries_instance_group_self_link" {
+  type        = string
+  description = "The self link of the instance group for the primaries."
+}
+
+variable "service_account_email" {
+  type        = string
+  description = "The email address of the service account which will be associated with the proxy compute instances."
 }
 
 variable "vpc_network_self_link" {
   description = "The self link of the network to which resources will be attached."
   type        = string
-}
-
-variable "primary_cluster_instance_group_self_link" {
-  type        = string
-  description = "GCP Instance Group for the primaries"
-}
-
-variable "prefix" {
-  type        = string
-  description = "Prefix for resources"
-  default     = "tfe-"
 }
 
 variable "vpc_subnetwork_self_link" {

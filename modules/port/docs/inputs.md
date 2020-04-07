@@ -1,6 +1,6 @@
 # Terraform Enterprise: Clustering
 
-## Outputs
+## Inputs
 
-No output.
+No input.
 

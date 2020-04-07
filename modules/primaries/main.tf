@@ -24,52 +24,37 @@ resource "google_compute_instance" "main" {
     }
   }
 
-  description = "A compute instance in the TFE primary cluster."
-  labels      = var.labels
+  allow_stopping_for_update = true
+  description               = "A compute instance in the TFE primaries."
+  labels                    = var.labels
   metadata = {
     user-data          = var.cloud_init_configs[count.index]
     user-data-encoding = "base64"
   }
+  service_account {
+    scopes = ["cloud-platform"]
+
+    email = var.service_account_email
+  }
 }
 
 resource "google_compute_instance_group" "main" {
-  name        = "${var.prefix}primary"
-  description = "primary-servers"
+  name        = "${var.prefix}primaries"
+  description = "primaries-servers"
 
   instances = google_compute_instance.main.*.self_link
-
   named_port {
-    name = "https"
-    port = 443
+    name = "application"
+    port = var.port_application_tcp
   }
-
   named_port {
-    name = "cluster"
-    port = 6443
+    name = "kubernetes"
+    port = var.port_kubernetes_tcp
   }
-
   named_port {
-    name = "assist"
-    port = 23010
+    name = "replicated-ui"
+    port = var.port_replicated_ui_tcp
   }
 
   depends_on = [google_compute_instance.main]
-}
-
-resource "google_compute_network_endpoint_group" "main" {
-  name    = "${var.prefix}primary"
-  network = var.vpc_network_self_link
-
-  default_port = "443"
-  description  = "The endpoint group for the TFE primary cluster."
-  subnetwork   = var.vpc_subnetwork_self_link
-}
-
-resource "google_compute_network_endpoint" "main" {
-  count = local.instance_count
-
-  instance               = google_compute_instance.main[count.index].name
-  ip_address             = google_compute_instance.main[count.index].network_interface[0].network_ip
-  network_endpoint_group = google_compute_network_endpoint_group.main.name
-  port                   = 443
 }

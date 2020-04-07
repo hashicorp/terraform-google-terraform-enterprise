@@ -27,7 +27,7 @@ variable "labels" {
 }
 
 variable "machine_type" {
-  default     = "n1-standard-4"
+  default     = "n1-standard-8"
   description = "The identifier of the set of virtualized hardware resources which will be available to the compute instances."
   type        = string
 }
@@ -44,9 +44,29 @@ variable "min_instances" {
   type        = number
 }
 
+variable "port_application_tcp" {
+  description = "The port over which application TCP traffic will travel."
+  type        = string
+}
+
+variable "port_kubernetes_tcp" {
+  description = "The port over which Kubernetes TCP traffic will travel."
+  type        = string
+}
+
+variable "port_replicated_ui_tcp" {
+  description = "The port over which Replicated UI TCP traffic will travel."
+  type        = string
+}
+
 variable "prefix" {
   description = "The prefix which will be prepended to the names of resources."
   type        = string
+}
+
+variable "service_account_email" {
+  type        = string
+  description = "The email address of the service account which will be associated with the secondaries."
 }
 
 variable "vpc_network_self_link" {

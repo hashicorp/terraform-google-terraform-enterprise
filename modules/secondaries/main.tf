@@ -18,27 +18,44 @@ resource "google_compute_instance_template" "main" {
   }
 
   can_ip_forward = true
-  description    = "The template for compute instances in the TFE secondary cluster."
+  description    = "The template for compute instances in the TFE secondaries."
   name_prefix    = "${var.prefix}secondary-"
   labels         = var.labels
   metadata = {
     user-data          = var.cloud_init_config
     user-data-encoding = "base64"
   }
+  service_account {
+    scopes = ["cloud-platform"]
+
+    email = var.service_account_email
+  }
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 resource "google_compute_region_instance_group_manager" "main" {
   base_instance_name = "${var.prefix}secondary"
-  name               = "${var.prefix}secondary"
+  name               = "${var.prefix}secondaries"
   region             = google_compute_instance_template.main.region
   version {
     instance_template = google_compute_instance_template.main.self_link
   }
 
-  description = "The manager for the compute instance group of the TFE secondary."
+  description = "The manager for the compute instance group of the TFE secondaries."
   named_port {
-    name = "https"
-    port = 443
+    name = "application"
+    port = var.port_application_tcp
+  }
+  named_port {
+    name = "kubernetes"
+    port = var.port_kubernetes_tcp
+  }
+  named_port {
+    name = "replicated-ui"
+    port = var.port_replicated_ui_tcp
   }
 }
 
@@ -52,6 +69,6 @@ resource "google_compute_region_autoscaler" "main" {
       target = var.cpu_utilization_target
     }
   }
-  name   = "${var.prefix}secondary"
+  name   = "${var.prefix}secondaries"
   target = google_compute_region_instance_group_manager.main.self_link
 }

@@ -9,14 +9,23 @@ resource "google_service_account_key" "storage" {
   service_account_id = google_service_account.storage.name
 }
 
-resource "google_storage_bucket_iam_member" "member-object" {
-  bucket = var.storage_bucket_name
-  role   = "roles/storage.objectAdmin"
-  member = "serviceAccount:${google_service_account.storage.email}"
+resource "google_service_account" "primaries" {
+  account_id = "${var.prefix}primaries"
+
+  display_name = "TFE Primaries"
+  description  = "The identity to be associated with the TFE primaries."
 }
 
-resource "google_storage_bucket_iam_member" "member-bucket" {
-  bucket = var.storage_bucket_name
-  role   = "roles/storage.legacyBucketReader"
-  member = "serviceAccount:${google_service_account.storage.email}"
+resource "google_service_account" "secondaries" {
+  account_id = "${var.prefix}secondaries"
+
+  display_name = "TFE Secondaries"
+  description  = "The identity to be associated with the TFE secondaries."
+}
+
+resource "google_service_account" "internal_load_balancer" {
+  account_id = "${var.prefix}ilb"
+
+  description  = "The identity to be associated with the TFE internal load balancer."
+  display_name = "TFE Internal Load Balancer"
 }

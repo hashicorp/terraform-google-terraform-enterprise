@@ -1,7 +1,5 @@
-output "cluster_endpoint" {
-  value = google_compute_global_forwarding_rule.https.self_link
-}
+output "application_forwarding_rule" {
+  value = google_compute_global_forwarding_rule.application
 
-output "address" {
-  value = google_compute_global_address.application.address
+  description = "The global forwarding rule for application traffic."
 }

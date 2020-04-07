@@ -1,7 +1,7 @@
-## Terraform Enterprise Clustering: Primary Cluster Module
+## Terraform Enterprise Clustering: Primaries Module
 
 This module is responsible for creating all the resources required by
-the primary cluster to function. It represent the minimum architecture
+the primaries to function. It represent the minimum architecture
 required to operate a TFE cluster.
 
 
@@ -14,6 +14,6 @@ components for membership, health, etc.
 
 ### Limitations
 
-TFE does not support scaling the primary cluster. The instance group is
+TFE does not support scaling the primaries. The instance group is
 hard-coded to a count of 3 to ensure that the control plane can achieve
 quorum and that the internal service mode has sufficient capacity.

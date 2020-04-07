@@ -1,18 +1,18 @@
+# Create service accounts which will be used to represent various components of the application.
+module "service_account" {
+  source = "./modules/service-account"
+
+  prefix = var.prefix
+}
+
 # Create a storage bucket in which application state will be stored.
 module "storage" {
   source = "./modules/storage"
 
-  prefix = var.prefix
+  prefix                = var.prefix
+  service_account_email = module.service_account.storage.email
 
   labels = var.labels
-}
-
-# Create a service account which will be used to access the storage bucket.
-module "service_account" {
-  source = "./modules/service-account"
-
-  prefix              = var.prefix
-  storage_bucket_name = module.storage.bucket.name
 }
 
 # Create a VPC with a network and a subnetwork to which resources will be attached.
@@ -22,13 +22,31 @@ module "vpc" {
   prefix = var.prefix
 }
 
+# Define the ports of the various services which make up the cluster.
+module "port" {
+  source = "./modules/port"
+}
+
 # Create firewalls to control network traffic.
 module "firewall" {
   source = "./modules/firewall"
 
-  prefix                       = var.prefix
-  vpc_network_self_link        = module.vpc.network.self_link
-  vpc_subnetwork_ip_cidr_range = module.vpc.subnetwork.ip_cidr_range
+  port_application_tcp                         = module.port.application_tcp
+  port_cluster_assistant_tcp                   = module.port.cluster_assistant_tcp
+  port_etcd_tcp_ranges                         = module.port.etcd_tcp_ranges
+  port_kubelet_tcp                             = module.port.kubelet_tcp
+  port_kubernetes_tcp                          = module.port.kubernetes_tcp
+  port_replicated_tcp_ranges                   = module.port.replicated_tcp_ranges
+  port_replicated_ui_tcp                       = module.port.replicated_ui_tcp
+  port_ssh_tcp                                 = module.port.ssh_tcp
+  port_weave_tcp                               = module.port.weave_tcp
+  port_weave_udp_ranges                        = module.port.weave_udp_ranges
+  prefix                                       = var.prefix
+  service_account_primaries_email              = module.service_account.primaries.email
+  service_account_internal_load_balancer_email = module.service_account.internal_load_balancer.email
+  service_account_secondaries_email            = module.service_account.secondaries.email
+  vpc_network_self_link                        = module.vpc.network.self_link
+  vpc_subnetwork_ip_cidr_range                 = module.vpc.subnetwork.ip_cidr_range
 }
 
 # Create a PostgreSQL database in which application data will be stored.
@@ -60,16 +78,22 @@ module "cloud_init" {
   source = "./modules/cloud-init"
 
   application_config             = module.application.config
-  license_file                   = var.cloud_init_license_file
   internal_load_balancer_address = module.internal_load_balancer.address.address
+  license_file                   = var.cloud_init_license_file
+  port_cluster_assistant_tcp     = module.port.cluster_assistant_tcp
+  port_kubernetes_tcp            = module.port.kubernetes_tcp
 }
 
-# Create the primary cluster.
-module "primary_cluster" {
-  source = "./modules/primary-cluster"
+# Create the primaries.
+module "primaries" {
+  source = "./modules/primaries"
 
-  cloud_init_configs       = module.cloud_init.primary_configs
+  cloud_init_configs       = module.cloud_init.primaries_configs
+  port_application_tcp     = module.port.application_tcp
+  port_kubernetes_tcp      = module.port.kubernetes_tcp
+  port_replicated_ui_tcp   = module.port.replicated_ui_tcp
   prefix                   = var.prefix
+  service_account_email    = module.service_account.primaries.email
   vpc_network_self_link    = module.vpc.network.self_link
   vpc_subnetwork_project   = module.vpc.subnetwork.project
   vpc_subnetwork_self_link = module.vpc.subnetwork.self_link
@@ -77,26 +101,33 @@ module "primary_cluster" {
   labels = var.labels
 }
 
-# Create the primary cluster internal load balancer.
+# Create the internal load balancer for the primaries.
 module "internal_load_balancer" {
   source = "./modules/internal-load-balancer"
 
-  prefix                                   = var.prefix
-  primary_cluster_instance_group_self_link = module.primary_cluster.instance_group.self_link
-  vpc_network_self_link                    = module.vpc.network.self_link
-  vpc_subnetwork_ip_cidr_range             = module.vpc.subnetwork.ip_cidr_range
-  vpc_subnetwork_project                   = module.vpc.subnetwork.project
-  vpc_subnetwork_self_link                 = module.vpc.subnetwork.self_link
+  port_kubernetes_tcp                = module.port.kubernetes_tcp
+  port_cluster_assistant_tcp         = module.port.cluster_assistant_tcp
+  prefix                             = var.prefix
+  primaries_instance_group_self_link = module.primaries.instance_group.self_link
+  service_account_email              = module.service_account.internal_load_balancer.email
+  vpc_network_self_link              = module.vpc.network.self_link
+  vpc_subnetwork_ip_cidr_range       = module.vpc.subnetwork.ip_cidr_range
+  vpc_subnetwork_project             = module.vpc.subnetwork.project
+  vpc_subnetwork_self_link           = module.vpc.subnetwork.self_link
 
   labels = var.labels
 }
 
-# Create the secondary cluster.
-module "secondary_cluster" {
-  source = "./modules/secondary-cluster"
+# Create the secondaries.
+module "secondaries" {
+  source = "./modules/secondaries"
 
-  cloud_init_config        = module.cloud_init.secondary_config
+  cloud_init_config        = module.cloud_init.secondaries_config
+  port_application_tcp     = module.port.application_tcp
+  port_kubernetes_tcp      = module.port.kubernetes_tcp
+  port_replicated_ui_tcp   = module.port.replicated_ui_tcp
   prefix                   = var.prefix
+  service_account_email    = module.service_account.secondaries.email
   vpc_network_self_link    = module.vpc.network.self_link
   vpc_subnetwork_project   = module.vpc.subnetwork.project
   vpc_subnetwork_self_link = module.vpc.subnetwork.self_link
@@ -104,23 +135,33 @@ module "secondary_cluster" {
   labels = var.labels
 }
 
-# Create an external load balancer which directs traffic to the primary cluster.
+# Create an external load balancer which directs traffic to the primaries.
 module "external_load_balancer" {
   source = "./modules/external-load-balancer"
 
-  prefix                                   = var.prefix
-  primary_cluster_endpoint_group_self_link = module.primary_cluster.endpoint_group.self_link
-  ssl_certificate_self_link                = module.ssl.certificate.self_link
-  ssl_policy_self_link                     = module.ssl.policy.self_link
+  global_address                                    = module.global.address.address
+  port_application_tcp                              = module.port.application_tcp
+  prefix                                            = var.prefix
+  primaries_instance_group_self_link                = module.primaries.instance_group.self_link
+  secondaries_instance_group_manager_instance_group = module.secondaries.instance_group_manager.instance_group
+  ssl_certificate_self_link                         = module.ssl.certificate.self_link
+  ssl_policy_self_link                              = module.ssl.policy.self_link
 }
 
 # Configures DNS entries for the load balancer.
 module "dns" {
   source = "./modules/dns"
 
-  external_load_balancer_address = module.external_load_balancer.address
-  managed_zone                   = var.dns_managed_zone
-  managed_zone_dns_name          = var.dns_managed_zone_dns_name
+  global_address        = module.global.address.address
+  managed_zone          = var.dns_managed_zone
+  managed_zone_dns_name = var.dns_managed_zone_dns_name
+}
+
+# Create a global address to be attached to the external load balancer.
+module "global" {
+  source = "./modules/global"
+
+  prefix = var.prefix
 }
 
 # Create an SSL certificate to be attached to the external load balancer.

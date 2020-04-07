@@ -16,6 +16,14 @@ if [ -s /etc/ptfe/proxy-url ]; then
   fi
 fi
 
+### Configure Docker to use the systemd control group driver
+mkdir -p /etc/docker
+cat > /etc/docker/daemon.json <<EOF
+{
+  "exec-opts": ["native.cgroupdriver=systemd"]
+}
+EOF
+
 ### Decide on distribution specific things
 if [ -f /etc/redhat-release ]; then
   CONF=/etc/chrony.conf
@@ -221,5 +229,5 @@ if test -e "$airgap_installer_url_path"; then
     )
 fi
 
-echo "Running 'ptfe install $verb"  "${ptfe_install_args[@]}" "''"
+echo "Running 'ptfe install $verb"  "${ptfe_install_args[@]}" "'"
 ptfe install $verb "${ptfe_install_args[@]}"

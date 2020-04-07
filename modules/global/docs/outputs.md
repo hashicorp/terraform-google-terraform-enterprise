@@ -4,5 +4,5 @@
 
 | Name | Description |
 |------|-------------|
-| application\_forwarding\_rule | The global forwarding rule for application traffic. |
+| address | The global IP address. |
 
