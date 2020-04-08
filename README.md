@@ -1,54 +1,136 @@
-# Terraform Enterprise: Clustering for Google
+# Terraform Enterprise Clustered on Google Cloud Platform
 
-![Terraform Logo](https://github.com/hashicorp/terraform-google-terraform-enterprise/blob/master/assets/TerraformLogo.png?raw=true)
+The **terraform-enterprise** Terraform module is the official way for
+HashiCorp customers to provision [Terraform Enterprise Clustered][tfe]
+on Google Cloud Platform (GCP).
 
-## Description
+![architecture diagram][architecture-diagram]
 
-This module installs Terraform Enterprise Clustering onto one or more gcp instances.
+*Terraform Enterprise Clustered architecture*
 
-An Ubuntu Bionic (18.04 LTS) image is chosen by default, but this config supports previous version of Ubuntu as well as Red Hat Enterprise Linux 7.2-7.6 (v8 are not supported.)
+More details can be found in the
+[clustered architecture overview][tfe-clustered-architecture].
 
-## Architecture
+This README is best viewed on the
+[Terraform Registry][tf-registry], where the submodules,
+examples, inputs, and outputs are browseable.
 
-![basic diagram](https://github.com/hashicorp/terraform-google-terraform-enterprise/blob/master/assets/gcp_diagram.jpg?raw=true)
-_example architecture_
+## Requirements
 
-Please contact your Technical Account Manager for more information, and support for any issues you have.
+The following requirements must be met to use the
+**terraform-enterprise** module:
+
+- the latest version of Terraform 0.12 is [installed][tf-install] on the
+  working machine
+- a Terraform Enterprise license provided by a HashiCorp
+  Account Manager is located on the working machine
+- [the Google provider and the Google Beta provider][google-provider]
+  are configured with the credentials of a GCP account
+  which has sufficient permissions to provision the infrastructure
+
+### GCP Account Permissions
+
+The following permissions are required by the GCP account which will be
+used to provision this module:
+
+- Cloud SQL Admin (roles/cloudsql.admin)
+- Compute Admin (roles/compute.admin)
+- DNS Administrator (roles/dns.admin)
+- Service Account Admin (roles/iam.serviceAccountAdmin)
+- Service Account Key Admin (roles/iam.serviceAccountKeyAdmin)
+- Service Account User (roles/iam.serviceAccountUser)
+- Service Networking Admin (roles/servicenetworking.networksAdmin)
+- Storage Admin (roles/storage.admin)
 
 ## Usage
 
-The following sections describe aspects of using this
-module.
+The **terraform-enterprise** module can be used through the quickstart
+method or by including it in a Terraform configuration.
 
-### Permissions
+### Quickstart
 
-The following roles must be assigned to the GCP identity
-used to provision this module:
+The quickstart method provides a ready-to-apply Terraform configuration
+which includes the **terraform-enterprise** module. More information is
+available in the [quickstart repository][quickstart].
 
-- Cloud SQL Admin: `roles/cloudsql.admin`
-- Compute Admin: `roles/compute.admin`
-- Service Account Admin:
-  `roles/iam.serviceAccountAdmin`
-- DNS Administrator: `roles/dns.admin`
-- Service Networking Admin:
-  `roles/servicenetworking.networksAdmin`
-- Service Account Key Admin:
-  `roles/iam.serviceAccountKeyAdmin`
-- Service Account User: `roles/iam.serviceAccountUser`
-- Storage Admin: `roles/storage.admin`
+### Terraform Configuration
 
-### Examples
+There are two ways to use the **terraform-enterprise** module in a
+Terraform configuration.
 
-Please see the [examples directory](https://github.com/hashicorp/terraform-google-terraform-enterprise/tree/master/examples/) for more extensive examples.
+The **root** module can be included to provide a minimal, opinionated
+deployment with limited inputs.
 
-### Inputs
+```hcl
+module "terraform_enterprise" {
+  source  = "hashicorp/terraform-enterprise/google"
+  version = "VERSION"
 
-Please see the [inputs documentation](https://registry.terraform.io/modules/hashicorp/terraform-enterprise/google/?tab=inputs)
+  # insert the required inputs here
+}
+```
 
-Repository versions of the inputs documentation can be found in [docs/inputs.md](docs/inputs.md)
+*~/work/main.tf*
 
-### Outputs
+If the **root** module does not satisfy a particular use case then the
+submodules can be included directly and composed together in a custom
+manner.
 
-Please see the [outputs documentation](https://registry.terraform.io/modules/hashicorp/terraform-enterprise/google/?tab=outputs)
+In both cases, the [module version][tf-module-version] should be
+constrained following Terraform best practices.
 
-Repository versions of the outputs documentation can be found in [docs/outputs.md](docs/outputs.md)
+The [Terraform Registry][tf-registry] includes the list of module
+versions, the required inputs, as well as documentation and
+examples which demonstrate how to compose the submodules.
+
+When the Terraform configuration is completed, the
+working directory must be initialized and then the configuration may be
+applied to provision the infrastructure.
+
+```sh
+~/work$ terraform init
+```
+
+*Initializing the working directory*
+
+```sh
+~/work$ terraform apply
+```
+
+*Applying the configuration*
+
+Once the infrastructure has been provisioned, the configuration of
+Terraform Enterprise must be completed through the installer dashboard
+in a web browser. The dashboard URL and password are output by the root
+module. These outputs should be forwarded when using the root module or
+reproduced when using the submodules.
+
+```sh
+~/work$ terraform output dashboard_url
+~/work$ terraform output dashboard_password
+```
+
+*Reading the outputs*
+
+## Support
+
+Any Enterprise questions should be directed to
+[HashiCorp Support][hashicorp-support] or the
+[Terraform community forum][tf-community-forum].
+
+[GitHub issue][github-issues] should be used to report bugs in the
+**terraform-enterprise** module.
+
+<!-- URLs for links -->
+
+[architecture-diagram]: https://raw.githubusercontent.com/hashicorp/terraform-google-terraform-enterprise/v0.1.2/assets/gcp_diagram.jpg?raw=true
+[github-issues]: https://github.com/hashicorp/terraform-google-terraform-enterprise/issues
+[google-provider]: https://registry.terraform.io/providers/hashicorp/google
+[hashicorp-support]: https://support.hashicorp.com/
+[quickstart]: https://github.com/hashicorp/terraform-google-terraform-enterprise-quickstart
+[tf-community-forum]: https://discuss.hashicorp.com/c/terraform-core
+[tf-install]: https://learn.hashicorp.com/terraform/getting-started/install
+[tf-module-version]: https://www.terraform.io/docs/configuration/modules.html#module-versions
+[tf-registry]: https://registry.terraform.io/modules/hashicorp/terraform-enterprise/google
+[tfe-clustered-architecture]: https://www.terraform.io/docs/enterprise/before-installing/cluster-architecture.html
+[tfe]: https://www.terraform.io/docs/enterprise/index.html
