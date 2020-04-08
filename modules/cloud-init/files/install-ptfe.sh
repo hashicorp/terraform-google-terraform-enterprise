@@ -19,6 +19,13 @@ if [ -s /etc/ptfe/proxy-url ]; then
   fi
 fi
 
+# Add additional_no_proxy items to no_proxy if set
+if [[ $(< /etc/ptfe/additional-no-proxy) != "" ]]; then
+  additional_no_proxy=$(cat /etc/ptfe/additional-no-proxy)
+  export additional_no_proxy
+  export no_proxy=$no_proxy,$additional_no_proxy
+fi
+
 ### Configure Docker to use the systemd control group driver
 mkdir -p /etc/docker
 cat > /etc/docker/daemon.json <<EOF
