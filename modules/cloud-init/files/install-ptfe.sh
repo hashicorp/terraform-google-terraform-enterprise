@@ -111,6 +111,13 @@ if test -e /etc/ptfe/role-id; then
     )
 fi
 
+if [ -s /etc/ptfe/proxy-url ]; then
+  ptfe_install_args+=(
+    "--additional-no-proxy=$no_proxy"
+    "--http-proxy=$http_proxy"
+  )
+fi
+
 if [ "x${role}x" == "xmainx" ]; then
     verb="setup"
     export verb
@@ -121,11 +128,6 @@ if [ "x${role}x" == "xmainx" ]; then
         "--auth-token=@/etc/ptfe/setup-token"
     )
 
-    if [ -s /etc/ptfe/proxy-url ]; then
-        ptfe_install_args+=(
-            "--additional-no-proxy=$no_proxy"
-        )
-    fi
     # If we are airgapping, then set the arguments needed for Replicated.
     # We also setup the replicated.conf.tmpl to include the path to the downloaded
     # airgap file.
