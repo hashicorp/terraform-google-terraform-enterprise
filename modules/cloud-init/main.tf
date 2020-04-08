@@ -54,7 +54,15 @@ locals {
         proxy_sh = templatefile(
           "${path.module}/templates/proxy.sh.tmpl",
           {
-            no_proxy  = join(",", compact(["10.0.0.0/8", "127.0.0.1", "169.254.169.254", var.repl_cidr]))
+            no_proxy = join(
+              ",",
+              compact(
+                concat(
+                  ["10.0.0.0/8", "127.0.0.1", "169.254.169.254", var.internal_load_balancer_address, var.repl_cidr],
+                  var.additional_no_proxy,
+                )
+              )
+            )
             proxy_url = var.proxy_url
           }
         )
