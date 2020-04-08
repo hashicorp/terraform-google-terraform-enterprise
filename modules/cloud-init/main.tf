@@ -3,8 +3,9 @@ locals {
   base_cloud_config = templatefile(
     "${path.module}/templates/base-cloud-config.yaml.tmpl",
     {
-      assistant_host  = local.assistant_host
-      assistant_token = random_string.setup_token.result
+      additional_no_proxy = join(",", var.additional_no_proxy)
+      assistant_host      = local.assistant_host
+      assistant_token     = random_string.setup_token.result
       bootstrap_token = (
         "${random_string.bootstrap_token_id.result}.${random_string.bootstrap_token_suffix.result}"
       )

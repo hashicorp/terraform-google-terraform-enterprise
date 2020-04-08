@@ -63,6 +63,12 @@ write_files:
   permissions: "0400"
   encoding: b64
   content: "${base64encode(proxy_url)}"
+
+- path: /etc/ptfe/additional-no-proxy
+  owner: root:root
+  permissions: "0400"
+  encoding: b64
+  content: "${base64encode(additional_no_proxy)}"
 %{ if custom_ca_cert_url != "" ~}
 
 - path: /etc/ptfe/custom-ca-cert-url
