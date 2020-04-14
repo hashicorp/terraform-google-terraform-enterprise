@@ -1,6 +1,6 @@
 # Create a storage bucket in which application state will be stored.
 module "storage" {
-  source = "../../../../modules/storage"
+  source = "hashicorp/terraform-enterprise/google//modules/storage"
 
   prefix                = var.prefix
   service_account_email = var.service_account_storage_email
@@ -10,7 +10,7 @@ module "storage" {
 
 # Create a PostgreSQL database in which application data will be stored.
 module "postgresql" {
-  source = "../../../../modules/postgresql"
+  source = "hashicorp/terraform-enterprise/google//modules/postgresql"
 
   prefix                = var.prefix
   vpc_address_name      = var.vpc_postgresql_address_name
@@ -21,7 +21,7 @@ module "postgresql" {
 
 # Generate the application configuration.
 module "application" {
-  source = "../../../../modules/application"
+  source = "hashicorp/terraform-enterprise/google//modules/application"
 
   dns_fqdn                                = module.dns.fqdn
   postgresql_database_instance_address    = module.postgresql.database_instance.private_ip_address
@@ -35,7 +35,7 @@ module "application" {
 
 # Generate the cloud-init configuration.
 module "cloud_init" {
-  source = "../../../../modules/cloud-init"
+  source = "hashicorp/terraform-enterprise/google//modules/cloud-init"
 
   application_config                = module.application.config
   internal_load_balancer_in_address = module.internal_load_balancer.in_address.address
@@ -46,7 +46,7 @@ module "cloud_init" {
 
 # Create the primaries.
 module "primaries" {
-  source = "../../../../modules/primaries"
+  source = "hashicorp/terraform-enterprise/google//modules/primaries"
 
   cloud_init_configs         = module.cloud_init.primaries_configs
   prefix                     = var.prefix
@@ -63,7 +63,7 @@ module "primaries" {
 
 # Create the internal load balancer for the primaries.
 module "internal_load_balancer" {
-  source = "../../../../modules/internal-load-balancer"
+  source = "hashicorp/terraform-enterprise/google//modules/internal-load-balancer"
 
   prefix                             = var.prefix
   primaries_instance_group_self_link = module.primaries.instance_group.self_link
@@ -80,7 +80,7 @@ module "internal_load_balancer" {
 
 # Create the secondaries.
 module "secondaries" {
-  source = "../../../../modules/secondaries"
+  source = "hashicorp/terraform-enterprise/google//modules/secondaries"
 
   cloud_init_config          = module.cloud_init.secondaries_config
   prefix                     = var.prefix
@@ -97,7 +97,7 @@ module "secondaries" {
 
 # Create an external load balancer which directs traffic to the primaries.
 module "external_load_balancer" {
-  source = "../../../../modules/external-load-balancer"
+  source = "hashicorp/terraform-enterprise/google//modules/external-load-balancer"
 
   prefix                                            = var.prefix
   primaries_instance_group_self_link                = module.primaries.instance_group.self_link
@@ -110,7 +110,7 @@ module "external_load_balancer" {
 
 # Configures DNS entries for the load balancer.
 module "dns" {
-  source = "../../../../modules/dns"
+  source = "hashicorp/terraform-enterprise/google//modules/dns"
 
   managed_zone                       = var.dns_managed_zone
   managed_zone_dns_name              = var.dns_managed_zone_dns_name
@@ -119,7 +119,7 @@ module "dns" {
 
 # Create an SSL certificate to be attached to the external load balancer.
 module "ssl" {
-  source = "../../../../modules/ssl"
+  source = "hashicorp/terraform-enterprise/google//modules/ssl"
 
   dns_fqdn = module.dns.fqdn
   prefix   = var.prefix

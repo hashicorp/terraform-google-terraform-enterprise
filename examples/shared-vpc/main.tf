@@ -1,6 +1,6 @@
 # Create service accounts which will be used to represent various components of the application.
 module "service_account" {
-  source = "../../modules/service-account"
+  source = "hashicorp/terraform-enterprise/google//modules/service-account"
 
   prefix = var.prefix
 }

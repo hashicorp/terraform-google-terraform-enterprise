@@ -1,6 +1,6 @@
 # Create a VPC with a network and a subnetwork to which resources will be attached.
 module "vpc" {
-  source = "../../../../modules/vpc"
+  source = "hashicorp/terraform-enterprise/google//modules/vpc"
 
   prefix                                       = var.prefix
   service_account_primaries_email              = var.service_account_primaries_email
