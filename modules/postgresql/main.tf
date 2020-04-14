@@ -18,10 +18,15 @@ resource "google_service_networking_connection" "main" {
   service                 = "servicenetworking.googleapis.com"
 }
 
+resource "random_pet" "suffix" {
+  length = 1
+  prefix = "-"
+}
+
 resource "google_sql_database_instance" "main" {
   provider = google-beta
 
-  name             = "${var.prefix}database"
+  name             = "${var.prefix}database${random_pet.suffix.id}"
   database_version = "POSTGRES_9_6"
   settings {
     tier = var.machine_type
