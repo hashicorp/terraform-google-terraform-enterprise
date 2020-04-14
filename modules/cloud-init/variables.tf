@@ -1,3 +1,9 @@
+variable "additional_no_proxy" {
+  default     = []
+  description = "A list of hostnames to which traffic from the application will not be proxied."
+  type        = list(string)
+}
+
 variable "airgap_package_url" {
   default     = ""
   description = "The URL of an airgap package which contains a TFE release."

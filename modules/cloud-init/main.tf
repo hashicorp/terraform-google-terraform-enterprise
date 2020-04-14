@@ -3,8 +3,9 @@ locals {
   base_cloud_config = templatefile(
     "${path.module}/templates/base-cloud-config.yaml.tmpl",
     {
-      assistant_host  = local.assistant_host
-      assistant_token = random_string.setup_token.result
+      additional_no_proxy = join(",", var.additional_no_proxy)
+      assistant_host      = local.assistant_host
+      assistant_token     = random_string.setup_token.result
       bootstrap_token = (
         "${random_string.bootstrap_token_id.result}.${random_string.bootstrap_token_suffix.result}"
       )
@@ -44,6 +45,23 @@ locals {
     local.primaries_cloud_configs[1],
     local.primaries_cloud_configs[2]
   ]
+  no_proxy = join(
+    ",",
+    concat(
+      compact(
+        [
+          "10.0.0.0/8",
+          "127.0.0.1",
+          "169.254.169.254",
+          "metadata",
+          "metadata.google.internal",
+          var.internal_load_balancer_address,
+          var.repl_cidr
+        ]
+      ),
+      var.additional_no_proxy
+    )
+  )
   primaries_cloud_configs = [
     for role_id in [0, 1, 2] : templatefile(
       "${path.module}/templates/primary-cloud-config.yaml.tmpl",
@@ -53,7 +71,7 @@ locals {
         proxy_sh = templatefile(
           "${path.module}/templates/proxy.sh.tmpl",
           {
-            no_proxy  = join(",", compact(["10.0.0.0/8", "127.0.0.1", "169.254.169.254", var.repl_cidr]))
+            no_proxy  = local.no_proxy
             proxy_url = var.proxy_url
           }
         )
