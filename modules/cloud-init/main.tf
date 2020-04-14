@@ -45,6 +45,23 @@ locals {
     local.primaries_cloud_configs[1],
     local.primaries_cloud_configs[2]
   ]
+  no_proxy = join(
+    ",",
+    concat(
+      compact(
+        [
+          "10.0.0.0/8",
+          "127.0.0.1",
+          "169.254.169.254",
+          "metadata",
+          "metadata.google.internal",
+          var.internal_load_balancer_address,
+          var.repl_cidr
+        ]
+      ),
+      var.additional_no_proxy
+    )
+  )
   primaries_cloud_configs = [
     for role_id in [0, 1, 2] : templatefile(
       "${path.module}/templates/primary-cloud-config.yaml.tmpl",
@@ -54,15 +71,7 @@ locals {
         proxy_sh = templatefile(
           "${path.module}/templates/proxy.sh.tmpl",
           {
-            no_proxy = join(
-              ",",
-              compact(
-                concat(
-                  ["10.0.0.0/8", "127.0.0.1", "169.254.169.254", var.internal_load_balancer_address, var.repl_cidr],
-                  var.additional_no_proxy,
-                )
-              )
-            )
+            no_proxy  = local.no_proxy
             proxy_url = var.proxy_url
           }
         )

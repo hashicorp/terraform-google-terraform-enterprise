@@ -9,7 +9,7 @@ if [ -s /etc/ptfe/proxy-url ]; then
   api_load_balancer_without_port=$(cat /etc/ptfe/cluster-api-endpoint | awk -F ":" '/1/ {print $1}')
   export http_proxy
   export https_proxy
-  export no_proxy=10.0.0.0/8,127.0.0.1,169.254.169.254,"$api_load_balancer_without_port"
+  export no_proxy="10.0.0.0/8,127.0.0.1,169.254.169.254,metadata,metadata.google.internal,$api_load_balancer_without_port"
 
   # Add custom CIDR range for Replicated to no_proxy if set
   if [[ $(< /etc/ptfe/repl-cidr) != "" ]]; then
