@@ -55,7 +55,7 @@ locals {
           "169.254.169.254",
           "metadata",
           "metadata.google.internal",
-          var.internal_load_balancer_address,
+          var.internal_load_balancer_in_address,
           var.repl_cidr
         ]
       ),
