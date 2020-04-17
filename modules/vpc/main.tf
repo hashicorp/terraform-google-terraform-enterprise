@@ -1,31 +1,59 @@
 resource "google_compute_network" "main" {
   name = "${var.prefix}vpc"
 
-  auto_create_subnetworks = false
-  description             = "The network for TFE."
+  auto_create_subnetworks         = false
+  delete_default_routes_on_create = true
+  description                     = "The network for TFE."
+  routing_mode                    = "GLOBAL"
 }
 
 resource "google_compute_subnetwork" "main" {
   ip_cidr_range = var.subnetwork_ip_cidr_range
-  name          = "${var.prefix}subnet"
+  name          = "${var.prefix}vpc"
   network       = google_compute_network.main.self_link
+
+  description = "The subnetwork for TFE."
+  log_config {
+    aggregation_interval = "INTERVAL_5_SEC"
+    flow_sampling        = 0.5
+    metadata             = "INCLUDE_ALL_METADATA"
+  }
+  private_ip_google_access = true
 }
 
 resource "google_compute_router" "main" {
-  name    = "${var.prefix}router"
+  name    = "${var.prefix}vpc"
   network = google_compute_network.main.self_link
+
+  bgp {
+    asn = 4207848378
+  }
+  description = "The router for TFE."
 }
 
 resource "google_compute_router_nat" "main" {
-  name                               = "${var.prefix}router-nat"
-  router                             = google_compute_router.main.name
+  name                               = "${var.prefix}vpc"
   nat_ip_allocate_option             = "AUTO_ONLY"
-  source_subnetwork_ip_ranges_to_nat = "ALL_SUBNETWORKS_ALL_IP_RANGES"
+  router                             = google_compute_router.main.name
+  source_subnetwork_ip_ranges_to_nat = "LIST_OF_SUBNETWORKS"
 
   log_config {
     enable = true
     filter = "ERRORS_ONLY"
   }
+  subnetwork {
+    name                    = google_compute_subnetwork.main.name
+    source_ip_ranges_to_nat = ["PRIMARY_IP_RANGE"]
+  }
+}
+
+resource "google_compute_route" "internet" {
+  dest_range = "0.0.0.0/0"
+  name       = "${var.prefix}vpc-internet"
+  network    = google_compute_network.main.name
+
+  description      = "The route to the Internet for TFE."
+  next_hop_gateway = "default-internet-gateway"
 }
 
 resource "google_compute_global_address" "external_load_balancer" {
