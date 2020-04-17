@@ -116,6 +116,7 @@ module "secondaries" {
 module "external_load_balancer" {
   source = "./modules/external-load-balancer"
 
+  dns_fqdn                                          = module.dns.fqdn
   prefix                                            = var.prefix
   primaries_instance_group_self_link                = module.primaries.instance_group.self_link
   secondaries_instance_group_manager_instance_group = module.secondaries.instance_group_manager.instance_group
@@ -123,6 +124,7 @@ module "external_load_balancer" {
   ssl_policy_self_link                              = module.ssl.policy.self_link
   vpc_address                                       = module.vpc.external_load_balancer_address.address
   vpc_application_tcp_port                          = module.vpc.application_tcp_port
+  vpc_replicated_ui_tcp_port                        = module.vpc.replicated_ui_tcp_port
 }
 
 # Configures DNS entries for the load balancer.

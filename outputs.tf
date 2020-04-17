@@ -4,8 +4,14 @@ output "application_url" {
   description = "The URL of the application."
 }
 
-output "console_password" {
-  value = module.cloud_init.console_password
+output "install_dashboard_password" {
+  value = module.cloud_init.install_dashboard_password
 
-  description = "The generated password for the management console."
+  description = "The generated password for the install dashboard."
+}
+
+output "install_dashboard_url" {
+  value = module.dns.install_dashboard_url
+
+  description = "The URL of the install dashboard."
 }

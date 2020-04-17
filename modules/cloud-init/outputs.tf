@@ -1,7 +1,7 @@
-output "console_password" {
-  value = random_pet.console_password.id
+output "install_dashboard_password" {
+  value = random_pet.install_dashboard_password.id
 
-  description = "The generated password for the management console."
+  description = "The generated password for the install dashboard."
 }
 
 output "primaries_configs" {

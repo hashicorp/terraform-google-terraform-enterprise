@@ -1,3 +1,8 @@
+variable "dns_fqdn" {
+  description = "The routable hostname of the application endpoint."
+  type        = string
+}
+
 variable "prefix" {
   description = "The prefix which will be prepended to the names of resources."
   type        = string
@@ -29,6 +34,11 @@ variable "vpc_address" {
 }
 
 variable "vpc_application_tcp_port" {
-  description = "The port over which application TCP traffic will travel."
+  description = "The application TCP port."
+  type        = string
+}
+
+variable "vpc_replicated_ui_tcp_port" {
+  description = "The Replicated UI TCP port."
   type        = string
 }

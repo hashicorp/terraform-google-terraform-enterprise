@@ -32,7 +32,7 @@ locals {
           "${path.module}/templates/replicated.conf.tmpl",
           {
             airgap           = var.airgap_package_url != ""
-            console_password = random_pet.console_password.id
+            password         = random_pet.install_dashboard_password.id
             proxy_url        = var.proxy_url
             release_sequence = var.release_sequence
           }
@@ -86,7 +86,7 @@ locals {
   )
 }
 
-resource "random_pet" "console_password" {
+resource "random_pet" "install_dashboard_password" {
   length = 3
 }
 

@@ -1,4 +1,5 @@
 locals {
+  application_url = "https://${local.fqdn}"
   fqdn            = trimsuffix(local.record_set_name, ".")
   record_set_name = "${var.hostname}.${var.managed_zone_dns_name}"
 }
