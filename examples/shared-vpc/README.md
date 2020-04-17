@@ -17,13 +17,18 @@ and a service project prior to executing this example.
 
 ## Features
 
-This example provisions TFE infrastructure in 3 stages in both the host
-project and the service project. For the sake of simplicity, a single
-Terraform configuration is used, but in a production setting, these
-stages should be managed with separate configurations and linked using
+This example provisions TFE infrastructure in both the host project and
+the service project in order to use Shared VPC.
+
+For the sake of simplicity, a single Terraform configuration is used to
+invoke modules which represent each stage of the deployment, but in
+a production setting, these stages should be managed with separate
+configurations and linked using
 [Terraform remote state][tf-remote-state].
 
-### Service Accounts
+The different modules invoked in this configuration are described below.
+
+### Service Account
 
 The service accounts are created in the service project because
 they must be available for assignment to compute instances in the
