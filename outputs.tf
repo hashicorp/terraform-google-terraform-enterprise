@@ -9,9 +9,3 @@ output "console_password" {
 
   description = "The generated password for the management console."
 }
-
-output "console_url" {
-  value = module.primaries.console_url
-
-  description = "The URL of the management console."
-}

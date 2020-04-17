@@ -11,10 +11,6 @@ resource "google_compute_instance_template" "main" {
   network_interface {
     subnetwork         = var.vpc_subnetwork_self_link
     subnetwork_project = var.vpc_subnetwork_project
-
-    access_config {
-      # An empty configuration implies a public IP address.
-    }
   }
 
   can_ip_forward = true

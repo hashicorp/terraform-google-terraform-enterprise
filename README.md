@@ -112,6 +112,18 @@ reproduced when using the submodules.
 
 *Reading the outputs*
 
+Because the compute instances are created without external IP
+addresses, a method alternative to a direct [SSH][ssh] connection must
+be used to establish a remote connection with any of the instances. Two
+simple alternative methods are to use
+[SSH from the browser][ssh-in-browser] or [Identity-Aware Proxy][iap].
+
+```sh
+~/work$ gcloud compute ssh <tfe-instance> --tunnel-through-iap
+```
+
+*Example of connecting to an instance through IAP*
+
 ## Support
 
 Any Enterprise questions should be directed to
@@ -127,7 +139,10 @@ Any Enterprise questions should be directed to
 [github-issues]: https://github.com/hashicorp/terraform-google-terraform-enterprise/issues
 [google-provider]: https://registry.terraform.io/providers/hashicorp/google
 [hashicorp-support]: https://support.hashicorp.com/
+[iap]: https://cloud.google.com/iap
 [quickstart]: https://github.com/hashicorp/terraform-google-terraform-enterprise-quickstart
+[ssh]: https://en.wikipedia.org/wiki/Secure_Shell
+[ssh-in-browser]: https://cloud.google.com/compute/docs/ssh-in-browser
 [tf-community-forum]: https://discuss.hashicorp.com/c/terraform-core
 [tf-install]: https://learn.hashicorp.com/terraform/getting-started/install
 [tf-module-version]: https://www.terraform.io/docs/configuration/modules.html#module-versions
