@@ -33,23 +33,13 @@ variable "distribution" {
   type        = string
 }
 
-variable "internal_load_balancer_address" {
-  description = "The IP address of the internal load balancer."
+variable "internal_load_balancer_in_address" {
+  description = "The address assigned to the internal load balancer for traffic ingress."
   type        = string
 }
 
 variable "license_file" {
   description = "The pathname of a Replicated license file for the application."
-  type        = string
-}
-
-variable "port_cluster_assistant_tcp" {
-  description = "The port over which Cluster Assistant TCP traffic will travel."
-  type        = string
-}
-
-variable "port_kubernetes_tcp" {
-  description = "The port over which Kubernetes TCP traffic will travel."
   type        = string
 }
 
@@ -81,6 +71,16 @@ variable "ssh_import_id_usernames" {
   default     = []
   description = "The usernames associated with SSH keys which will be imported from a keyserver to all machines. Refer to the cloud-init documentation for more information: https://cloudinit.readthedocs.io/en/latest/topics/modules.html#ssh-import-id"
   type        = list(string)
+}
+
+variable "vpc_cluster_assistant_tcp_port" {
+  description = "The port over which Cluster Assistant TCP traffic will travel."
+  type        = string
+}
+
+variable "vpc_kubernetes_tcp_port" {
+  description = "The port over which Kubernetes TCP traffic will travel."
+  type        = string
 }
 
 variable "weave_cidr" {

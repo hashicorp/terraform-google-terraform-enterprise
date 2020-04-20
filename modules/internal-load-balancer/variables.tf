@@ -4,12 +4,12 @@ variable "labels" {
   type        = map(string)
 }
 
-variable "port_cluster_assistant_tcp" {
+variable "vpc_cluster_assistant_tcp_port" {
   description = "The port over which Cluster Assistant TCP traffic will travel."
   type        = string
 }
 
-variable "port_kubernetes_tcp" {
+variable "vpc_kubernetes_tcp_port" {
   description = "The port over which Kubernetes TCP traffic will travel."
   type        = string
 }

@@ -4,5 +4,6 @@
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:-----:|
-| prefix | The prefix which will be prepended to the names of resources. | `string` | n/a | yes |
+| project | n/a | `any` | n/a | yes |
+| region | n/a | `string` | `"us-central1"` | no |
 

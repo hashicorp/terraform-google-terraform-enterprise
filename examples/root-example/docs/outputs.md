@@ -4,5 +4,5 @@
 
 | Name | Description |
 |------|-------------|
-| address | The global IP address. |
+| terraform\_enterprise | Cluster information. |
 

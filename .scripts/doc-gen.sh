@@ -62,11 +62,23 @@ function module_docs {
     fi
 }
 
+function example_docs {
+    if test -d ./examples; then
+        for dir in ./examples/*; do
+            mkdir -p "${dir}/${DOCS_DIR}"
+
+            echo -e "# Terraform Enterprise: Clustering\n" | tee "${dir}/${DOCS_DIR}/${INS_MD}" "${dir}/${DOCS_DIR}/${OUTS_MD}" &> /dev/null
+
+            eval "${BINARY_FILE} ${DOCS_CMDS} --no-outputs --no-providers ${dir}"  >> "${dir}/${DOCS_DIR}/${INS_MD}"
+            eval "${BINARY_FILE} ${DOCS_CMDS} --no-inputs --no-providers ${dir}" >> "${dir}/${DOCS_DIR}/${OUTS_MD}"
+        done
+    else
+        echo "No examples directory, skipping."
+    fi
+}
+
 
 setup
 main_docs
 module_docs
-
-
-
-
+example_docs

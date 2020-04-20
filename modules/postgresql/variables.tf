@@ -44,6 +44,10 @@ variable "prefix" {
   type        = string
 }
 
+variable "vpc_address_name" {
+  type = string
+}
+
 variable "username" {
   default     = "tfe"
   description = "The username which will be used for authentication with the database."

@@ -4,5 +4,5 @@
 
 | Name | Description |
 |------|-------------|
-| in\_address | The IP address of the load balancer for inbound traffic. |
+| tfe-cluster | n/a |
 
