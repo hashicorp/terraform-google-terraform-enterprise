@@ -67,6 +67,11 @@ variable "vpc_external_load_balancer_address" {
   type = string
 }
 
+variable "vpc_install_dashboard_tcp_port" {
+  description = "The install dashboard TCP port."
+  type        = string
+}
+
 variable "vpc_kubernetes_tcp_port" {
   description = "The Kubernetes TCP port."
   type        = string
@@ -89,11 +94,6 @@ variable "vpc_postgresql_address_name" {
 variable "vpc_replicated_tcp_port_ranges" {
   description = "The Replicated TCP port ranges."
   type        = list(string)
-}
-
-variable "vpc_replicated_ui_tcp_port" {
-  description = "The Replicated UI TCP port."
-  type        = string
 }
 
 variable "vpc_ssh_tcp_port" {

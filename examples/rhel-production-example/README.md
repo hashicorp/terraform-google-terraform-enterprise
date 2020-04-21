@@ -46,14 +46,14 @@ You'll need to update the following settings to your set up:
 * license_file: your TFE license
 * encryption_password: In order to re-use external services, you need to set/pass and encryption password
 * image_family: the name of the RHEL image to use - 7.6 is the latest currently supported
-* gcs_bucket: name of the bucket to use. This example assume the bucket resides in the same project. 
+* gcs_bucket: name of the bucket to use. This example assume the bucket resides in the same project.
 * postgresql_address: Connection address for the postgresql server
 * postgresql_database: Name of the database to use
 * postgresql_user: Username to connect with
 * postgresql_password: base64 encrypted password.
 
 
- This example is set to spin up a five node instance of 3 primaries and 2 secondaries, but the `primary_count` and `secondary_count` can be updated to build a larger or smaller cluster. The number of primaries should not go below 3, however.  
+ This example is set to spin up a five node instance of 3 primaries and 2 secondaries, but the `primary_count` and `secondary_count` can be updated to build a larger or smaller cluster. The number of primaries should not go below 3, however.
 
 ## Run Terraform
 
@@ -64,7 +64,7 @@ terraform apply
 
 ## Wait for the application to load
 
-The replicated console url will output along with the password.
+The install dashboard URL will output along with the password.
 
 ![output](https://github.com/hashicorp/terraform-google-terraform-enterprise/blob/master/examples/root-example/output_example.png?raw=true)
 

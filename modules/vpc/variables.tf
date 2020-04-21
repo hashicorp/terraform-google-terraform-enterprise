@@ -21,6 +21,12 @@ variable "health_check_ip_cidr_ranges" {
   type        = list(string)
 }
 
+variable "install_dashboard_tcp_port" {
+  default     = "8800"
+  description = "The install dashboard TCP port."
+  type        = string
+}
+
 variable "kubernetes_tcp_port" {
   default     = "6443"
   description = "The Kubernetes TCP port."
@@ -42,12 +48,6 @@ variable "replicated_tcp_port_ranges" {
   default     = ["9870-9881"]
   description = "The Replicated TCP port ranges."
   type        = list(string)
-}
-
-variable "replicated_ui_tcp_port" {
-  default     = "8800"
-  description = "The Replicated UI TCP port."
-  type        = string
 }
 
 variable "ssh_tcp_port" {

@@ -1,7 +1,7 @@
 output "application_tcp_port" {
   value = var.application_tcp_port
 
-  description = "The Application TCP port."
+  description = "The application TCP port."
 }
 
 output "cluster_assistant_tcp_port" {
@@ -18,6 +18,12 @@ output "etcd_tcp_port_ranges" {
 
 output "external_load_balancer_address" {
   value = google_compute_global_address.external_load_balancer
+}
+
+output "install_dashboard_tcp_port" {
+  value = var.install_dashboard_tcp_port
+
+  description = "The install dashboard TCP port."
 }
 
 output "kubernetes_tcp_port" {
@@ -46,12 +52,6 @@ output "replicated_tcp_port_ranges" {
   value = var.replicated_tcp_port_ranges
 
   description = "The Replicated TCP port ranges."
-}
-
-output "replicated_ui_tcp_port" {
-  value = var.replicated_ui_tcp_port
-
-  description = "The Replicated UI TCP port."
 }
 
 output "ssh_tcp_port" {

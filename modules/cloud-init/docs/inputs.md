@@ -7,8 +7,8 @@
 | application\_config | The application configuration. | `map(map(string))` | n/a | yes |
 | internal\_load\_balancer\_in\_address | The address assigned to the internal load balancer for traffic ingress. | `string` | n/a | yes |
 | license\_file | The pathname of a Replicated license file for the application. | `string` | n/a | yes |
-| vpc\_cluster\_assistant\_tcp\_port | The port over which Cluster Assistant TCP traffic will travel. | `string` | n/a | yes |
-| vpc\_kubernetes\_tcp\_port | The port over which Kubernetes TCP traffic will travel. | `string` | n/a | yes |
+| vpc\_cluster\_assistant\_tcp\_port | The Cluster Assistant TCP port. | `string` | n/a | yes |
+| vpc\_kubernetes\_tcp\_port | The Kubernetes TCP port. | `string` | n/a | yes |
 | additional\_no\_proxy | A list of hostnames to which traffic from the application will not be proxied. | `list(string)` | `[]` | no |
 | airgap\_installer\_url | The URL of an airgap package which contains the cluster installer. | `string` | `"https://install.terraform.io/installer/replicated-v5.tar.gz"` | no |
 | airgap\_package\_url | The URL of an airgap package which contains a TFE release. | `string` | `""` | no |

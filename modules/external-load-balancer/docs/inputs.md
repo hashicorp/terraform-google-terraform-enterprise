@@ -12,5 +12,5 @@
 | ssl\_policy\_self\_link | The self link of a compute SSL policy for the SSL certificate. | `string` | n/a | yes |
 | vpc\_address | The address which will be assigned to the load balancer. | `string` | n/a | yes |
 | vpc\_application\_tcp\_port | The application TCP port. | `string` | n/a | yes |
-| vpc\_replicated\_ui\_tcp\_port | The Replicated UI TCP port. | `string` | n/a | yes |
+| vpc\_install\_dashboard\_tcp\_port | The install dashboard TCP port. | `string` | n/a | yes |
 

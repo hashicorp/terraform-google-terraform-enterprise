@@ -82,11 +82,6 @@ locals {
     var.service_account_secondaries_email
   ]
   internal_load_balancer_service_account = [var.service_account_internal_load_balancer_email]
-  ssh_ui_ports = [
-    var.application_tcp_port,
-    var.ssh_tcp_port,
-    var.replicated_ui_tcp_port
-  ]
 }
 
 resource "google_compute_firewall" "health_checks_application" {
@@ -128,7 +123,11 @@ resource "google_compute_firewall" "allow_all_ssh_ui" {
   allow {
     protocol = "tcp"
 
-    ports = local.ssh_ui_ports
+    ports = [
+      var.application_tcp_port,
+      var.install_dashboard_tcp_port,
+      var.ssh_tcp_port,
+    ]
   }
   description             = "Allow ingress of SSH and UI traffic from any source to the primaries and the secondaries."
   direction               = "INGRESS"

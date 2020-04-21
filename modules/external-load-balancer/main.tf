@@ -33,20 +33,20 @@ resource "google_compute_backend_service" "application" {
   timeout_sec = 10
 }
 
-resource "google_compute_health_check" "replicated_ui" {
-  name = "${var.prefix}replicated-ui"
+resource "google_compute_health_check" "install_dashboard" {
+  name = "${var.prefix}install-dashboard"
 
   check_interval_sec = 5
-  description        = "The TFE Replicated UI health check."
+  description        = "The TFE install dashboard UI health check."
   tcp_health_check {
-    port = var.vpc_replicated_ui_tcp_port
+    port = var.vpc_install_dashboard_tcp_port
   }
   timeout_sec = 4
 }
 
-resource "google_compute_backend_service" "replicated_ui" {
-  health_checks = [google_compute_health_check.replicated_ui.self_link]
-  name          = "${var.prefix}replicated-ui"
+resource "google_compute_backend_service" "install_dashboard" {
+  health_checks = [google_compute_health_check.install_dashboard.self_link]
+  name          = "${var.prefix}install-dashboard"
 
   backend {
     group = var.primaries_instance_group_self_link
@@ -62,7 +62,7 @@ resource "google_compute_backend_service" "replicated_ui" {
     description           = "The TFE secondaries."
     max_rate_per_instance = 333
   }
-  port_name   = "replicated-ui"
+  port_name   = "install-dashboard"
   protocol    = "HTTPS"
   timeout_sec = 10
 }
@@ -113,7 +113,7 @@ resource "google_compute_url_map" "main" {
         "/support/*",
       ]
 
-      service = google_compute_backend_service.replicated_ui.self_link
+      service = google_compute_backend_service.install_dashboard.self_link
     }
     # This rule covers install dashboard asset paths under /assets. /assets is also used by application so paths must
     # be listed explicitly.
@@ -152,7 +152,7 @@ resource "google_compute_url_map" "main" {
         "/assets/support.main.23a3afa649a44fbe9fdb.js",
       ]
 
-      service = google_compute_backend_service.replicated_ui.self_link
+      service = google_compute_backend_service.install_dashboard.self_link
     }
   }
   test {
@@ -165,7 +165,7 @@ resource "google_compute_url_map" "main" {
   test {
     host    = var.dns_fqdn
     path    = "/dashboard"
-    service = google_compute_backend_service.replicated_ui.self_link
+    service = google_compute_backend_service.install_dashboard.self_link
 
     description = "Test requests for install dashboard."
   }
@@ -179,7 +179,7 @@ resource "google_compute_url_map" "main" {
   test {
     host    = var.dns_fqdn
     path    = "/assets/03f50a3a6f195be73370626cc2887118.woff"
-    service = google_compute_backend_service.replicated_ui.self_link
+    service = google_compute_backend_service.install_dashboard.self_link
 
     description = "Test requests for install dashboard assets."
   }

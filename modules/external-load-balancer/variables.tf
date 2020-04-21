@@ -38,7 +38,7 @@ variable "vpc_application_tcp_port" {
   type        = string
 }
 
-variable "vpc_replicated_ui_tcp_port" {
-  description = "The Replicated UI TCP port."
+variable "vpc_install_dashboard_tcp_port" {
+  description = "The install dashboard TCP port."
   type        = string
 }

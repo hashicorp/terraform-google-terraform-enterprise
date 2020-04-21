@@ -74,12 +74,12 @@ variable "ssh_import_id_usernames" {
 }
 
 variable "vpc_cluster_assistant_tcp_port" {
-  description = "The port over which Cluster Assistant TCP traffic will travel."
+  description = "The Cluster Assistant TCP port."
   type        = string
 }
 
 variable "vpc_kubernetes_tcp_port" {
-  description = "The port over which Kubernetes TCP traffic will travel."
+  description = "The Kubernetes TCP port."
   type        = string
 }
 
