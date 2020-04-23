@@ -58,6 +58,7 @@ module "cloud_init" {
   internal_load_balancer_in_address = module.internal_load_balancer.in_address.address
   license_file                      = var.cloud_init_license_file
   vpc_cluster_assistant_tcp_port    = module.vpc.cluster_assistant_tcp_port
+  vpc_install_dashboard_tcp_port    = module.vpc.install_dashboard_tcp_port
   vpc_kubernetes_tcp_port           = module.vpc.kubernetes_tcp_port
 }
 
@@ -116,7 +117,6 @@ module "secondaries" {
 module "external_load_balancer" {
   source = "./modules/external-load-balancer"
 
-  dns_fqdn                                          = module.dns.fqdn
   prefix                                            = var.prefix
   primaries_instance_group_self_link                = module.primaries.instance_group.self_link
   secondaries_instance_group_manager_instance_group = module.secondaries.instance_group_manager.instance_group

@@ -4,7 +4,6 @@
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:-----:|
-| dns\_fqdn | The routable hostname of the application endpoint. | `string` | n/a | yes |
 | prefix | The prefix which will be prepended to the names of resources. | `string` | n/a | yes |
 | primaries\_instance\_group\_self\_link | The self link of the compute instance group for the primaries. | `string` | n/a | yes |
 | secondaries\_instance\_group\_manager\_instance\_group | The compute instance group of the secondaries. | `string` | n/a | yes |

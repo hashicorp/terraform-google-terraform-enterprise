@@ -1,5 +1,5 @@
 output "application_url" {
-  value = module.dns.application_url
+  value = "https://${module.dns.fqdn}/"
 
   description = "The URL of the application."
 }
@@ -11,7 +11,7 @@ output "install_dashboard_password" {
 }
 
 output "install_dashboard_url" {
-  value = module.dns.install_dashboard_url
+  value = "https://${module.dns.fqdn}:${module.vpc.install_dashboard_tcp_port}/"
 
   description = "The URL of the install dashboard."
 }

@@ -152,6 +152,13 @@ if [ "x${role}x" == "xmainx" ]; then
       )
     fi
 
+    if test -e /etc/ptfe/ui-bind-port; then
+      ui_bind_port="$(cat /etc/ptfe/ui-bind-port)"
+      ptfe_install_args+=(
+        --ui-bind-port "$ui_bind_port"
+      )
+    fi
+
     # ------------------------------------------------------------------------------
     # Custom CA certificate download and configuration block
     # ------------------------------------------------------------------------------

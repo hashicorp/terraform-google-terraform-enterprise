@@ -39,6 +39,7 @@ locals {
         )
         replicated_rli       = var.license_file
         replicated_ptfe_conf = jsonencode(var.application_config)
+        ui_bind_port         = var.vpc_install_dashboard_tcp_port
         weave_cidr           = var.weave_cidr
       }
     ),

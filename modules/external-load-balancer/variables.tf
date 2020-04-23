@@ -1,8 +1,3 @@
-variable "dns_fqdn" {
-  description = "The routable hostname of the application endpoint."
-  type        = string
-}
-
 variable "prefix" {
   description = "The prefix which will be prepended to the names of resources."
   type        = string

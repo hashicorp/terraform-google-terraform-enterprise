@@ -22,7 +22,7 @@ variable "health_check_ip_cidr_ranges" {
 }
 
 variable "install_dashboard_tcp_port" {
-  default     = "8800"
+  default     = "8085"
   description = "The install dashboard TCP port."
   type        = string
 }

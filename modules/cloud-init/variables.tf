@@ -78,6 +78,11 @@ variable "vpc_cluster_assistant_tcp_port" {
   type        = string
 }
 
+variable "vpc_install_dashboard_tcp_port" {
+  description = "The install dashboard TCP port."
+  type        = string
+}
+
 variable "vpc_kubernetes_tcp_port" {
   description = "The Kubernetes TCP port."
   type        = string
