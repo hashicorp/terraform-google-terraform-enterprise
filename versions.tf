@@ -3,8 +3,8 @@ terraform {
   required_version = "~> 0.12.17"
 
   required_providers {
-    # 3.1.0 is the earliest version of google which supports google_compute_firewall enable_logging
-    google = "~> 3.1"
+    # 3.2.0 is the earliest version of google which supports google_compute_url_map path_rule
+    google = "~> 3.2"
     # 3 is the latest major release
     google-beta = "~> 3.0"
     # 2.1.0 is the earliest version of random and template which is compatible with Terraform 0.12

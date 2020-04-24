@@ -100,7 +100,7 @@ GOOGLE_PROJECT="$HOST_PROJECT" terraform apply \
 -target module.host
 
 # Create the compute resources.
-GOOGLE_PROJECT="$SERVICE_PROJeCT" terraform apply \
+GOOGLE_PROJECT="$SERVICE_PROJECT" terraform apply \
 -target module.service
 
 # Obtain the outputs necessary to access the TFE Clustered deployment.

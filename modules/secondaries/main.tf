@@ -11,10 +11,6 @@ resource "google_compute_instance_template" "main" {
   network_interface {
     subnetwork         = var.vpc_subnetwork_self_link
     subnetwork_project = var.vpc_subnetwork_project
-
-    access_config {
-      # An empty configuration implies a public IP address.
-    }
   }
 
   can_ip_forward = true
@@ -50,12 +46,12 @@ resource "google_compute_region_instance_group_manager" "main" {
     port = var.vpc_application_tcp_port
   }
   named_port {
-    name = "kubernetes"
-    port = var.vpc_kubernetes_tcp_port
+    name = "install-dashboard"
+    port = var.vpc_install_dashboard_tcp_port
   }
   named_port {
-    name = "replicated-ui"
-    port = var.vpc_replicated_ui_tcp_port
+    name = "kubernetes"
+    port = var.vpc_kubernetes_tcp_port
   }
 
   lifecycle {

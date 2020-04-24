@@ -46,6 +46,12 @@ ${primary_cloud_config}
   encoding: b64
   content: ${base64encode(repl_cidr)}
 %{ endif ~}
+
+- path: /etc/ptfe/ui-bind-port
+  owner: root:root
+  permissions: "0644"
+  encoding: b64
+  content: ${base64encode(ui_bind_port)}
 %{ if weave_cidr != "" ~}
 
 - path: /etc/ptfe/weave-cidr

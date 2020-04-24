@@ -72,6 +72,7 @@ module "cloud_init" {
   internal_load_balancer_in_address = module.internal_load_balancer.in_address.address
   license_file                      = var.cloud_init_license_file
   vpc_cluster_assistant_tcp_port    = module.vpc.cluster_assistant_tcp_port
+  vpc_install_dashboard_tcp_port    = module.vpc.install_dashboard_tcp_port
   vpc_kubernetes_tcp_port           = module.vpc.kubernetes_tcp_port
   proxy_url                         = module.proxy.url
 }
@@ -80,15 +81,15 @@ module "cloud_init" {
 module "primaries" {
   source = "hashicorp/terraform-enterprise/google//modules/primaries"
 
-  cloud_init_configs         = module.cloud_init.primaries_configs
-  prefix                     = var.prefix
-  service_account_email      = module.service_account.primaries.email
-  vpc_application_tcp_port   = module.vpc.application_tcp_port
-  vpc_kubernetes_tcp_port    = module.vpc.kubernetes_tcp_port
-  vpc_network_self_link      = module.vpc.network.self_link
-  vpc_replicated_ui_tcp_port = module.vpc.replicated_ui_tcp_port
-  vpc_subnetwork_project     = module.vpc.subnetwork.project
-  vpc_subnetwork_self_link   = module.vpc.subnetwork.self_link
+  cloud_init_configs             = module.cloud_init.primaries_configs
+  prefix                         = var.prefix
+  service_account_email          = module.service_account.primaries.email
+  vpc_application_tcp_port       = module.vpc.application_tcp_port
+  vpc_install_dashboard_tcp_port = module.vpc.install_dashboard_tcp_port
+  vpc_kubernetes_tcp_port        = module.vpc.kubernetes_tcp_port
+  vpc_network_self_link          = module.vpc.network.self_link
+  vpc_subnetwork_project         = module.vpc.subnetwork.project
+  vpc_subnetwork_self_link       = module.vpc.subnetwork.self_link
 
   labels = var.labels
 }
@@ -114,15 +115,15 @@ module "internal_load_balancer" {
 module "secondaries" {
   source = "hashicorp/terraform-enterprise/google//modules/secondaries"
 
-  cloud_init_config          = module.cloud_init.secondaries_config
-  prefix                     = var.prefix
-  service_account_email      = module.service_account.secondaries.email
-  vpc_application_tcp_port   = module.vpc.application_tcp_port
-  vpc_kubernetes_tcp_port    = module.vpc.kubernetes_tcp_port
-  vpc_network_self_link      = module.vpc.network.self_link
-  vpc_replicated_ui_tcp_port = module.vpc.replicated_ui_tcp_port
-  vpc_subnetwork_project     = module.vpc.subnetwork.project
-  vpc_subnetwork_self_link   = module.vpc.subnetwork.self_link
+  cloud_init_config              = module.cloud_init.secondaries_config
+  prefix                         = var.prefix
+  service_account_email          = module.service_account.secondaries.email
+  vpc_application_tcp_port       = module.vpc.application_tcp_port
+  vpc_install_dashboard_tcp_port = module.vpc.install_dashboard_tcp_port
+  vpc_kubernetes_tcp_port        = module.vpc.kubernetes_tcp_port
+  vpc_network_self_link          = module.vpc.network.self_link
+  vpc_subnetwork_project         = module.vpc.subnetwork.project
+  vpc_subnetwork_self_link       = module.vpc.subnetwork.self_link
 
   labels = var.labels
 }
@@ -138,6 +139,7 @@ module "external_load_balancer" {
   ssl_policy_self_link                              = module.ssl.policy.self_link
   vpc_address                                       = module.vpc.external_load_balancer_address.address
   vpc_application_tcp_port                          = module.vpc.application_tcp_port
+  vpc_install_dashboard_tcp_port                    = module.vpc.install_dashboard_tcp_port
 }
 
 # Configures DNS entries for the load balancer.

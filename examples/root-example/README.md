@@ -54,7 +54,7 @@ terraform apply
 
 ## Wait for the application to load
 
-The replicated console url will output along with the password.
+The install dashboard URL will output along with the password.
 
 ![output](https://github.com/hashicorp/terraform-google-terraform-enterprise/blob/master/examples/root-example/output_example.png?raw=true)
 

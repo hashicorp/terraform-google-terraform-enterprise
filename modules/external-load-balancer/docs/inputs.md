@@ -10,5 +10,6 @@
 | ssl\_certificate\_self\_link | The self link of the managed SSL certificate which will be applied to the load balancer. | `string` | n/a | yes |
 | ssl\_policy\_self\_link | The self link of a compute SSL policy for the SSL certificate. | `string` | n/a | yes |
 | vpc\_address | The address which will be assigned to the load balancer. | `string` | n/a | yes |
-| vpc\_application\_tcp\_port | The port over which application TCP traffic will travel. | `string` | n/a | yes |
+| vpc\_application\_tcp\_port | The application TCP port. | `string` | n/a | yes |
+| vpc\_install\_dashboard\_tcp\_port | The install dashboard TCP port. | `string` | n/a | yes |
 

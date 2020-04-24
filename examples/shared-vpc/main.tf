@@ -40,12 +40,12 @@ module "service" {
   vpc_cluster_assistant_tcp_port               = module.host.vpc.cluster_assistant_tcp_port
   vpc_etcd_tcp_port_ranges                     = module.host.vpc.etcd_tcp_port_ranges
   vpc_external_load_balancer_address           = module.host.vpc.external_load_balancer_address.address
+  vpc_install_dashboard_tcp_port               = module.host.vpc.install_dashboard_tcp_port
   vpc_kubelet_tcp_port                         = module.host.vpc.kubelet_tcp_port
   vpc_kubernetes_tcp_port                      = module.host.vpc.kubernetes_tcp_port
   vpc_network_self_link                        = module.host.vpc.network.self_link
   vpc_postgresql_address_name                  = module.host.vpc.postgresql_address.name
   vpc_replicated_tcp_port_ranges               = module.host.vpc.replicated_tcp_port_ranges
-  vpc_replicated_ui_tcp_port                   = module.host.vpc.replicated_ui_tcp_port
   vpc_ssh_tcp_port                             = module.host.vpc.ssh_tcp_port
   vpc_subnetwork_ip_cidr_range                 = module.host.vpc.subnetwork.ip_cidr_range
   vpc_subnetwork_name                          = module.host.vpc.subnetwork.name

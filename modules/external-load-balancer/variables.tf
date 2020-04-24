@@ -29,6 +29,11 @@ variable "vpc_address" {
 }
 
 variable "vpc_application_tcp_port" {
-  description = "The port over which application TCP traffic will travel."
+  description = "The application TCP port."
+  type        = string
+}
+
+variable "vpc_install_dashboard_tcp_port" {
+  description = "The install dashboard TCP port."
   type        = string
 }

@@ -44,21 +44,6 @@ variable "min_instances" {
   type        = number
 }
 
-variable "vpc_application_tcp_port" {
-  description = "The port over which application TCP traffic will travel."
-  type        = string
-}
-
-variable "vpc_kubernetes_tcp_port" {
-  description = "The port over which Kubernetes TCP traffic will travel."
-  type        = string
-}
-
-variable "vpc_replicated_ui_tcp_port" {
-  description = "The port over which Replicated UI TCP traffic will travel."
-  type        = string
-}
-
 variable "prefix" {
   description = "The prefix which will be prepended to the names of resources."
   type        = string
@@ -67,6 +52,21 @@ variable "prefix" {
 variable "service_account_email" {
   type        = string
   description = "The email address of the service account which will be associated with the secondaries."
+}
+
+variable "vpc_application_tcp_port" {
+  description = "The application TCP port."
+  type        = string
+}
+
+variable "vpc_install_dashboard_tcp_port" {
+  description = "The install dashboard TCP port."
+  type        = string
+}
+
+variable "vpc_kubernetes_tcp_port" {
+  description = "The Kubernetes TCP port."
+  type        = string
 }
 
 variable "vpc_network_self_link" {

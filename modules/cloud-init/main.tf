@@ -32,13 +32,14 @@ locals {
           "${path.module}/templates/replicated.conf.tmpl",
           {
             airgap           = var.airgap_package_url != ""
-            console_password = random_pet.console_password.id
+            password         = random_pet.install_dashboard_password.id
             proxy_url        = var.proxy_url
             release_sequence = var.release_sequence
           }
         )
         replicated_rli       = var.license_file
         replicated_ptfe_conf = jsonencode(var.application_config)
+        ui_bind_port         = var.vpc_install_dashboard_tcp_port
         weave_cidr           = var.weave_cidr
       }
     ),
@@ -86,7 +87,7 @@ locals {
   )
 }
 
-resource "random_pet" "console_password" {
+resource "random_pet" "install_dashboard_password" {
   length = 3
 }
 
