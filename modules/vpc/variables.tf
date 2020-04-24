@@ -1,6 +1,6 @@
 variable "application_tcp_port" {
   default     = "443"
-  description = "The Application TCP port."
+  description = "The Application TCP port. The value must be supported for HTTPS load balancing. More information is available at https://cloud.google.com/load-balancing/docs/https."
   type        = string
 }
 
@@ -23,7 +23,7 @@ variable "health_check_ip_cidr_ranges" {
 
 variable "install_dashboard_tcp_port" {
   default     = "8085"
-  description = "The install dashboard TCP port."
+  description = "The install dashboard TCP port. The value must be supported for TCP load balancing. More information is available at https://cloud.google.com/load-balancing/docs/tcp."
   type        = string
 }
 
