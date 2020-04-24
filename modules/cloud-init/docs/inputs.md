@@ -16,7 +16,7 @@
 | custom\_ca\_cert\_url | The URL of a certificate authority bundle which contains custom certificates to be trusted by the application. | `string` | `""` | no |
 | distribution | The type of Linux distribution which will be running on the machines. | `string` | `"ubuntu"` | no |
 | proxy\_url | The URL of a proxy through which application traffic will be routed. | `string` | `""` | no |
-| ptfe\_url | The URL of the cluster installer tool. | `string` | `"https://install.terraform.io/installer/ptfe-0.1.zip"` | no |
+| ptfe\_url | The URL of the cluster installer tool. | `string` | `"https://install.terraform.io/installer/ptfe-stable.zip"` | no |
 | release\_sequence | The sequence identifier of the TFE version to which the cluster will be pinned. | `string` | `"latest"` | no |
 | repl\_cidr | A custom IP address range over which Replicated will communicate, expressed in CIDR notation. | `string` | `""` | no |
 | ssh\_import\_id\_usernames | The usernames associated with SSH keys which will be imported from a keyserver to all machines. Refer to the cloud-init documentation for more information: https://cloudinit.readthedocs.io/en/latest/topics/modules.html#ssh-import-id | `list(string)` | `[]` | no |

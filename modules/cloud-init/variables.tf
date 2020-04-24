@@ -50,7 +50,7 @@ variable "proxy_url" {
 }
 
 variable "ptfe_url" {
-  default     = "https://install.terraform.io/installer/ptfe-0.1.zip"
+  default     = "https://install.terraform.io/installer/ptfe-stable.zip"
   description = "The URL of the cluster installer tool."
   type        = string
 }
