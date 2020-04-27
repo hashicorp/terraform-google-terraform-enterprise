@@ -64,7 +64,7 @@ resource "google_compute_backend_service" "install_dashboard" {
   }
   port_name   = "install-dashboard"
   protocol    = "TCP"
-  timeout_sec = 10
+  timeout_sec = 300
 }
 
 resource "google_compute_url_map" "main" {
