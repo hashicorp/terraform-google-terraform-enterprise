@@ -25,13 +25,14 @@ The following requirements must be met to use the
 - a Terraform Enterprise license provided by a HashiCorp
   Account Manager is located on the working machine
 - [the Google provider and the Google Beta provider][google-provider]
-  are configured with the credentials of a GCP account
-  which has sufficient permissions to provision the infrastructure
+  are configured with a project, region, zone, and
+  [credentials](#credentials)
 
-### GCP Account Permissions
+### Credentials
 
-The following permissions are required by the GCP account which will be
-used to provision this module:
+The Google provider and the Google Beta provider must be configured
+with the credentials of a GCP account which is assigned the following
+roles within the project:
 
 - Cloud SQL Admin (roles/cloudsql.admin)
 - Compute Admin (roles/compute.admin)
@@ -137,7 +138,7 @@ Any Enterprise questions should be directed to
 
 [architecture-diagram]: https://raw.githubusercontent.com/hashicorp/terraform-google-terraform-enterprise/v0.1.2/assets/gcp_diagram.jpg?raw=true
 [github-issues]: https://github.com/hashicorp/terraform-google-terraform-enterprise/issues
-[google-provider]: https://registry.terraform.io/providers/hashicorp/google
+[google-provider]: https://registry.terraform.io/providers/hashicorp/google/3.2.0/docs/guides/provider_reference#full-reference
 [hashicorp-support]: https://support.hashicorp.com/
 [iap]: https://cloud.google.com/iap
 [quickstart]: https://github.com/hashicorp/terraform-google-terraform-enterprise-quickstart
