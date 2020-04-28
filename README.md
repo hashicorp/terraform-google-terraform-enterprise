@@ -51,11 +51,11 @@ The **terraform-enterprise** module can be used through either the
 
 ### Quickstart Method
 
-This Git repository can be used directly to deploy Terraform Enterprise
-Clustered without writing any Terraform configuration. All that is
-required is to clone this repository, change the working directory to
-the repository directory, configure the providers using environment
-variables, and then proceed to
+The [GitHub repository][github-repo] of the module can be used directly
+to deploy Terraform Enterprise Clustered without writing any Terraform
+configuration. All that is required is to clone the repository, change
+the working directory to the repository directory, configure the
+providers using environment variables, and then proceed to
 [Provision the Infrastructure](#provision-the-infrastructure).
 
 The Quickstart Method is only recommended for proof-of-concept
@@ -154,6 +154,7 @@ Any Enterprise questions should be directed to
 <!-- URLs for links -->
 
 [architecture-diagram]: https://raw.githubusercontent.com/hashicorp/terraform-google-terraform-enterprise/v0.1.2/assets/gcp_diagram.jpg?raw=true
+[github-repo]: https://github.com/hashicorp/terraform-google-terraform-enterprise
 [github-issues]: https://github.com/hashicorp/terraform-google-terraform-enterprise/issues
 [google-provider]: https://registry.terraform.io/providers/hashicorp/google/3.2.0/docs/guides/provider_reference#full-reference
 [hashicorp-support]: https://support.hashicorp.com/
