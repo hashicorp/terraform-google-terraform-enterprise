@@ -25,13 +25,14 @@ The following requirements must be met to use the
 - a Terraform Enterprise license provided by a HashiCorp
   Account Manager is located on the working machine
 - [the Google provider and the Google Beta provider][google-provider]
-  are configured with the credentials of a GCP account
-  which has sufficient permissions to provision the infrastructure
+  are configured with a project, region, zone, and
+  [credentials](#credentials)
 
-### GCP Account Permissions
+### Credentials
 
-The following permissions are required by the GCP account which will be
-used to provision this module:
+The Google provider and the Google Beta provider must be configured
+with the credentials of a GCP account which is assigned the following
+roles within the project:
 
 - Cloud SQL Admin (roles/cloudsql.admin)
 - Compute Admin (roles/compute.admin)
@@ -44,22 +45,33 @@ used to provision this module:
 
 ## Usage
 
-The **terraform-enterprise** module can be used through the quickstart
-method or by including it in a Terraform configuration.
+The **terraform-enterprise** module can be used through either the
+[Quickstart Method](#quickstart-method) or the
+[Terraform Configuration Method](#terraform-configuration-method).
 
-### Quickstart
+### Quickstart Method
 
-The quickstart method provides a ready-to-apply Terraform configuration
-which includes the **terraform-enterprise** module. More information is
-available in the [quickstart repository][quickstart].
+The [GitHub repository][github-repo] of the module can be used directly
+to deploy Terraform Enterprise Clustered without writing any Terraform
+configuration. All that is required is to clone the repository, change
+the working directory to the repository directory, configure the
+providers using environment variables, and then proceed to
+[Provision the Infrastructure](#provision-the-infrastructure).
 
-### Terraform Configuration
+The Quickstart Method is only recommended for proof-of-concept
+deployments; the
+[Terraform Configuration Method](#terraform-configuration-method)
+should be used for production deployments to leverage module versioning.
+
+### Terraform Configuration Method
 
 There are two ways to use the **terraform-enterprise** module in a
 Terraform configuration.
 
 The **root** module can be included to provide a minimal, opinionated
-deployment with limited inputs.
+deployment with limited inputs. This is effectively the same behaviour
+provided by the [Quickstart Method](#quickstart-method) but with the
+benefit of using the Terraform Registry for dependency resolution.
 
 ```hcl
 module "terraform_enterprise" {
@@ -70,7 +82,7 @@ module "terraform_enterprise" {
 }
 ```
 
-*~/work/main.tf*
+*An example Terraform configuration to deploy Terraform Enterprise*
 
 If the **root** module does not satisfy a particular use case then the
 submodules can be included directly and composed together in a custom
@@ -83,31 +95,37 @@ The [Terraform Registry][tf-registry] includes the list of module
 versions, the required inputs, as well as documentation and
 examples which demonstrate how to compose the submodules.
 
-When the Terraform configuration is completed, the
-working directory must be initialized and then the configuration may be
-applied to provision the infrastructure.
+When the Terraform configuration is complete, proceed to
+[Provision the Infrastructure](#provision-the-infrastructure).
+
+### Provision the Infrastructure
+
+First, the working directory must be initialized to download all
+required Terraform providers and modules.
 
 ```sh
-~/work$ terraform init
+terraform init
 ```
 
 *Initializing the working directory*
 
+Next, the configuration may be applied to provision the infrastructure.
+
 ```sh
-~/work$ terraform apply
+terraform apply
 ```
 
 *Applying the configuration*
 
-Once the infrastructure has been provisioned, the configuration of
-Terraform Enterprise must be completed through the installer dashboard
-in a web browser. The dashboard URL and password are output by the root
-module. These outputs should be forwarded when using the root module or
-reproduced when using the submodules.
+When the infrastructure has been provisioned, the configuration of
+Terraform Enterprise must be completed through the install dashboard
+in a Web browser. The install dashboard URL and password are output by
+the root module. These outputs should be forwarded when using the root
+module or reproduced when using the submodules.
 
 ```sh
-~/work$ terraform output dashboard_url
-~/work$ terraform output dashboard_password
+terraform output install_dashboard_url
+terraform output install_dashboard_password
 ```
 
 *Reading the outputs*
@@ -119,10 +137,10 @@ simple alternative methods are to use
 [SSH from the browser][ssh-in-browser] or [Identity-Aware Proxy][iap].
 
 ```sh
-~/work$ gcloud compute ssh <tfe-instance> --tunnel-through-iap
+gcloud compute ssh <tfe-instance> --tunnel-through-iap
 ```
 
-*Example of connecting to an instance through IAP*
+*An example of connecting to an instance through IAP*
 
 ## Support
 
@@ -136,11 +154,11 @@ Any Enterprise questions should be directed to
 <!-- URLs for links -->
 
 [architecture-diagram]: https://raw.githubusercontent.com/hashicorp/terraform-google-terraform-enterprise/v0.1.2/assets/gcp_diagram.jpg?raw=true
+[github-repo]: https://github.com/hashicorp/terraform-google-terraform-enterprise
 [github-issues]: https://github.com/hashicorp/terraform-google-terraform-enterprise/issues
-[google-provider]: https://registry.terraform.io/providers/hashicorp/google
+[google-provider]: https://registry.terraform.io/providers/hashicorp/google/3.2.0/docs/guides/provider_reference#full-reference
 [hashicorp-support]: https://support.hashicorp.com/
 [iap]: https://cloud.google.com/iap
-[quickstart]: https://github.com/hashicorp/terraform-google-terraform-enterprise-quickstart
 [ssh]: https://en.wikipedia.org/wiki/Secure_Shell
 [ssh-in-browser]: https://cloud.google.com/compute/docs/ssh-in-browser
 [tf-community-forum]: https://discuss.hashicorp.com/c/terraform-core
