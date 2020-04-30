@@ -4,6 +4,21 @@ variable "labels" {
   type        = map(string)
 }
 
+variable "prefix" {
+  description = "The prefix which will be prepended to the names of resources."
+  type        = string
+}
+
+variable "primaries_instance_groups_self_links" {
+  description = "The self links of the instance groups which comprise the primaries."
+  type        = list(string)
+}
+
+variable "service_account_email" {
+  type        = string
+  description = "The email address of the service account which will be associated with the proxy compute instances."
+}
+
 variable "vpc_cluster_assistant_tcp_port" {
   description = "The port over which Cluster Assistant TCP traffic will travel."
   type        = string
@@ -14,8 +29,8 @@ variable "vpc_kubernetes_tcp_port" {
   type        = string
 }
 
-variable "prefix" {
-  description = "The prefix which will be prepended to the names of resources."
+variable "vpc_network_self_link" {
+  description = "The self link of the network to which resources will be attached."
   type        = string
 }
 
@@ -24,27 +39,12 @@ variable "vpc_subnetwork_ip_cidr_range" {
   type        = string
 }
 
-variable "primaries_instance_group_self_link" {
-  type        = string
-  description = "The self link of the instance group for the primaries."
-}
-
-variable "service_account_email" {
-  type        = string
-  description = "The email address of the service account which will be associated with the proxy compute instances."
-}
-
-variable "vpc_network_self_link" {
-  description = "The self link of the network to which resources will be attached."
+variable "vpc_subnetwork_project" {
+  description = "The ID of the project in which var.vpc_subnetwork_self_link exists."
   type        = string
 }
 
 variable "vpc_subnetwork_self_link" {
   description = "The self link of the subnetwork to which resources will be attached. The subnetwork must be part of var.vpc_network_self_link."
-  type        = string
-}
-
-variable "vpc_subnetwork_project" {
-  description = "The ID of the project in which var.vpc_subnetwork_self_link exists."
   type        = string
 }

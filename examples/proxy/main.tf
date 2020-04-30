@@ -98,15 +98,15 @@ module "primaries" {
 module "internal_load_balancer" {
   source = "hashicorp/terraform-enterprise/google//modules/internal-load-balancer"
 
-  prefix                             = var.prefix
-  primaries_instance_group_self_link = module.primaries.instance_group.self_link
-  service_account_email              = module.service_account.internal_load_balancer.email
-  vpc_cluster_assistant_tcp_port     = module.vpc.cluster_assistant_tcp_port
-  vpc_kubernetes_tcp_port            = module.vpc.kubernetes_tcp_port
-  vpc_network_self_link              = module.vpc.network.self_link
-  vpc_subnetwork_ip_cidr_range       = module.vpc.subnetwork.ip_cidr_range
-  vpc_subnetwork_project             = module.vpc.subnetwork.project
-  vpc_subnetwork_self_link           = module.vpc.subnetwork.self_link
+  prefix                               = var.prefix
+  primaries_instance_groups_self_links = module.primaries.instance_groups[*].self_link
+  service_account_email                = module.service_account.internal_load_balancer.email
+  vpc_cluster_assistant_tcp_port       = module.vpc.cluster_assistant_tcp_port
+  vpc_kubernetes_tcp_port              = module.vpc.kubernetes_tcp_port
+  vpc_network_self_link                = module.vpc.network.self_link
+  vpc_subnetwork_ip_cidr_range         = module.vpc.subnetwork.ip_cidr_range
+  vpc_subnetwork_project               = module.vpc.subnetwork.project
+  vpc_subnetwork_self_link             = module.vpc.subnetwork.self_link
 
   labels = var.labels
 }
@@ -133,7 +133,7 @@ module "external_load_balancer" {
   source = "hashicorp/terraform-enterprise/google//modules/external-load-balancer"
 
   prefix                                            = var.prefix
-  primaries_instance_group_self_link                = module.primaries.instance_group.self_link
+  primaries_instance_groups_self_links              = module.primaries.instance_groups[*].self_link
   secondaries_instance_group_manager_instance_group = module.secondaries.instance_group_manager.instance_group
   ssl_certificate_self_link                         = module.ssl.certificate.self_link
   ssl_policy_self_link                              = module.ssl.policy.self_link

@@ -14,18 +14,21 @@ resource "google_compute_backend_service" "application" {
   health_checks = [google_compute_health_check.application.self_link]
   name          = "${var.prefix}application"
 
-  backend {
-    group = var.primaries_instance_group_self_link
+  dynamic "backend" {
+    for_each = var.primaries_instance_groups_self_links
+    content {
+      group = backend.value
 
-    balancing_mode        = "RATE"
-    description           = "The TFE primaries."
-    max_rate_per_instance = 333
+      balancing_mode        = "RATE"
+      description           = "A group of compute instances which comprises some of the TFE primaries."
+      max_rate_per_instance = 333
+    }
   }
   backend {
     group = var.secondaries_instance_group_manager_instance_group
 
     balancing_mode        = "RATE"
-    description           = "The TFE secondaries."
+    description           = "A group of compute instances which comprises the TFE secondaries."
     max_rate_per_instance = 333
   }
   port_name   = "application"
@@ -48,18 +51,21 @@ resource "google_compute_backend_service" "install_dashboard" {
   health_checks = [google_compute_health_check.install_dashboard.self_link]
   name          = "${var.prefix}install-dashboard"
 
-  backend {
-    group = var.primaries_instance_group_self_link
+  dynamic "backend" {
+    for_each = var.primaries_instance_groups_self_links
+    content {
+      group = backend.value
 
-    balancing_mode               = "CONNECTION"
-    description                  = "The TFE primaries."
-    max_connections_per_instance = 10
+      balancing_mode               = "CONNECTION"
+      description                  = "A group of compute instances which comprises some of the TFE primaries."
+      max_connections_per_instance = 10
+    }
   }
   backend {
     group = var.secondaries_instance_group_manager_instance_group
 
     balancing_mode               = "CONNECTION"
-    description                  = "The TFE secondaries."
+    description                  = "A group of compute instances which comprises the TFE secondaries."
     max_connections_per_instance = 10
   }
   port_name   = "install-dashboard"

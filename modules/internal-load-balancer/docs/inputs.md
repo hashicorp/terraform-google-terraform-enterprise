@@ -5,7 +5,7 @@
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:-----:|
 | prefix | The prefix which will be prepended to the names of resources. | `string` | n/a | yes |
-| primaries\_instance\_group\_self\_link | The self link of the instance group for the primaries. | `string` | n/a | yes |
+| primaries\_instance\_groups\_self\_links | The self links of the instance groups which comprise the primaries. | `list(string)` | n/a | yes |
 | service\_account\_email | The email address of the service account which will be associated with the proxy compute instances. | `string` | n/a | yes |
 | vpc\_cluster\_assistant\_tcp\_port | The port over which Cluster Assistant TCP traffic will travel. | `string` | n/a | yes |
 | vpc\_kubernetes\_tcp\_port | The port over which Kubernetes TCP traffic will travel. | `string` | n/a | yes |

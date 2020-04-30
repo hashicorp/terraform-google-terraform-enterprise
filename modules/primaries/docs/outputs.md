@@ -4,6 +4,5 @@
 
 | Name | Description |
 |------|-------------|
-| instance\_group | The compute instance group for the cluster. |
-| instances | The compute instances which comprise the cluster. |
+| instance\_groups | The groups of compute instances which comprise the primaries. |
 

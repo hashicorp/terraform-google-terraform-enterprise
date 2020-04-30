@@ -1,11 +1,5 @@
-output "instances" {
-  value = google_compute_instance.main
-
-  description = "The compute instances which comprise the cluster."
-}
-
-output "instance_group" {
+output "instance_groups" {
   value = google_compute_instance_group.main
 
-  description = "The compute instance group for the cluster."
+  description = "The groups of compute instances which comprise the primaries."
 }
