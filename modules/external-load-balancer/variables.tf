@@ -3,9 +3,9 @@ variable "prefix" {
   type        = string
 }
 
-variable "primaries_instance_group_self_link" {
-  description = "The self link of the compute instance group for the primaries."
-  type        = string
+variable "primaries_instance_groups_self_links" {
+  description = "The self links of the compute instance groups which comprise the primaries."
+  type        = list(string)
 }
 
 variable "secondaries_instance_group_manager_instance_group" {

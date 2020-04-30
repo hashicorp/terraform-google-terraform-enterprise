@@ -3,6 +3,11 @@ locals {
   instance_count = 3
 }
 
+# All available zones are used to deploy the primaries in a regional manner.
+data "google_compute_zones" "up" {
+  status = "UP"
+}
+
 resource "google_compute_instance" "main" {
   count = local.instance_count
 
@@ -19,9 +24,10 @@ resource "google_compute_instance" "main" {
     subnetwork         = var.vpc_subnetwork_self_link
     subnetwork_project = var.vpc_subnetwork_project
   }
+  zone = element(data.google_compute_zones.up.names, count.index)
 
   allow_stopping_for_update = true
-  description               = "A compute instance in the TFE primaries."
+  description               = "The compute instance which acts as TFE Primary ${count.index}."
   labels                    = var.labels
   metadata = {
     user-data          = var.cloud_init_configs[count.index]
@@ -35,10 +41,13 @@ resource "google_compute_instance" "main" {
 }
 
 resource "google_compute_instance_group" "main" {
-  name        = "${var.prefix}primaries"
-  description = "primaries-servers"
+  count = local.instance_count
 
-  instances = google_compute_instance.main.*.self_link
+  name        = "${var.prefix}primary-${count.index}"
+  description = "The group comprising the compute instance which acts as TFE Primary ${count.index}."
+  zone        = google_compute_instance.main[count.index].zone
+
+  instances = [google_compute_instance.main[count.index].self_link]
   named_port {
     name = "application"
     port = var.vpc_application_tcp_port
@@ -51,6 +60,4 @@ resource "google_compute_instance_group" "main" {
     name = "kubernetes"
     port = var.vpc_kubernetes_tcp_port
   }
-
-  depends_on = [google_compute_instance.main]
 }

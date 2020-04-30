@@ -20,10 +20,13 @@ resource "google_compute_region_backend_service" "internal_load_balancer_out" {
   health_checks = [google_compute_health_check.internal_load_balancer_out.self_link]
   name          = local.name_out
 
-  backend {
-    group = var.primaries_instance_group_self_link
+  dynamic "backend" {
+    for_each = var.primaries_instance_groups_self_links
+    content {
+      group = backend.value
 
-    description = "Target the TFE primaries."
+      description = "A group of compute instances which comprises some of the TFE primaries."
+    }
   }
   description = "Serve to the TFE primaries egress traffic from the internal load balancer."
   protocol    = "TCP"
