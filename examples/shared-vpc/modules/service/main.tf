@@ -1,6 +1,6 @@
 # Create a storage bucket in which application state will be stored.
 module "storage" {
-  source = "hashicorp/terraform-enterprise/google//modules/storage"
+  source = "github.com/hashicorp/terraform-google-terraform-enterprise?ref=internal-preview//modules/storage"
 
   prefix                = var.prefix
   service_account_email = var.service_account_storage_email
@@ -10,7 +10,7 @@ module "storage" {
 
 # Create a PostgreSQL database in which application data will be stored.
 module "postgresql" {
-  source = "hashicorp/terraform-enterprise/google//modules/postgresql"
+  source = "github.com/hashicorp/terraform-google-terraform-enterprise?ref=internal-preview//modules/postgresql"
 
   prefix                = var.prefix
   vpc_address_name      = var.vpc_postgresql_address_name
@@ -21,7 +21,7 @@ module "postgresql" {
 
 # Generate the application configuration.
 module "application" {
-  source = "hashicorp/terraform-enterprise/google//modules/application"
+  source = "github.com/hashicorp/terraform-google-terraform-enterprise?ref=internal-preview//modules/application"
 
   dns_fqdn                                = module.dns.fqdn
   postgresql_database_instance_address    = module.postgresql.database_instance.private_ip_address
@@ -35,7 +35,7 @@ module "application" {
 
 # Generate the cloud-init configuration.
 module "cloud_init" {
-  source = "hashicorp/terraform-enterprise/google//modules/cloud-init"
+  source = "github.com/hashicorp/terraform-google-terraform-enterprise?ref=internal-preview//modules/cloud-init"
 
   application_config                = module.application.config
   internal_load_balancer_in_address = module.internal_load_balancer.in_address.address
@@ -47,7 +47,7 @@ module "cloud_init" {
 
 # Create the primaries.
 module "primaries" {
-  source = "hashicorp/terraform-enterprise/google//modules/primaries"
+  source = "github.com/hashicorp/terraform-google-terraform-enterprise?ref=internal-preview//modules/primaries"
 
   cloud_init_configs             = module.cloud_init.primaries_configs
   prefix                         = var.prefix
@@ -64,7 +64,7 @@ module "primaries" {
 
 # Create the internal load balancer for the primaries.
 module "internal_load_balancer" {
-  source = "hashicorp/terraform-enterprise/google//modules/internal-load-balancer"
+  source = "github.com/hashicorp/terraform-google-terraform-enterprise?ref=internal-preview//modules/internal-load-balancer"
 
   prefix                               = var.prefix
   primaries_instance_groups_self_links = module.primaries.instance_groups[*].self_link
@@ -81,7 +81,7 @@ module "internal_load_balancer" {
 
 # Create the secondaries.
 module "secondaries" {
-  source = "hashicorp/terraform-enterprise/google//modules/secondaries"
+  source = "github.com/hashicorp/terraform-google-terraform-enterprise?ref=internal-preview//modules/secondaries"
 
   cloud_init_config              = module.cloud_init.secondaries_config
   prefix                         = var.prefix
@@ -98,7 +98,7 @@ module "secondaries" {
 
 # Create an external load balancer which directs traffic to the primaries.
 module "external_load_balancer" {
-  source = "hashicorp/terraform-enterprise/google//modules/external-load-balancer"
+  source = "github.com/hashicorp/terraform-google-terraform-enterprise?ref=internal-preview//modules/external-load-balancer"
 
   prefix                                            = var.prefix
   primaries_instance_groups_self_links              = module.primaries.instance_groups[*].self_link
@@ -112,7 +112,7 @@ module "external_load_balancer" {
 
 # Configures DNS entries for the load balancer.
 module "dns" {
-  source = "hashicorp/terraform-enterprise/google//modules/dns"
+  source = "github.com/hashicorp/terraform-google-terraform-enterprise?ref=internal-preview//modules/dns"
 
   managed_zone                       = var.dns_managed_zone
   managed_zone_dns_name              = var.dns_managed_zone_dns_name
@@ -121,7 +121,7 @@ module "dns" {
 
 # Create an SSL certificate to be attached to the external load balancer.
 module "ssl" {
-  source = "hashicorp/terraform-enterprise/google//modules/ssl"
+  source = "github.com/hashicorp/terraform-google-terraform-enterprise?ref=internal-preview//modules/ssl"
 
   dns_fqdn = module.dns.fqdn
   prefix   = var.prefix
