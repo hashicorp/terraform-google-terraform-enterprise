@@ -75,6 +75,9 @@ pushd /tmp
   chmod a+x /usr/bin/ptfe
 popd
 
+echo "Executing the custom shell script..."
+/bin/bash /etc/ptfe/custom-shell-script.sh
+
 role="$(cat /etc/ptfe/role)"
 export role
 

@@ -14,6 +14,7 @@
 | airgap\_installer\_url | The URL of an airgap package which contains the cluster installer. | `string` | `"https://install.terraform.io/installer/replicated-v5.tar.gz"` | no |
 | airgap\_package\_url | The URL of an airgap package which contains a TFE release. | `string` | `""` | no |
 | custom\_ca\_cert\_url | The URL of a certificate authority bundle which contains custom certificates to be trusted by the application. | `string` | `""` | no |
+| custom\_shell\_script | A custom shell script which will be invoked prior to starting or joining the cluster. | `string` | `"echo 'A custom shell script was not provided.'"` | no |
 | distribution | The type of Linux distribution which will be running on the machines. | `string` | `"ubuntu"` | no |
 | proxy\_url | The URL of a proxy through which application traffic will be routed. | `string` | `""` | no |
 | ptfe\_url | The URL of the cluster installer tool. | `string` | `"https://install.terraform.io/installer/ptfe-0.1.zip"` | no |

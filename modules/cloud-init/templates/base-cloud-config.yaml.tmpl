@@ -69,6 +69,12 @@ write_files:
   permissions: "0400"
   encoding: b64
   content: "${base64encode(additional_no_proxy)}"
+
+- path: /etc/ptfe/custom-shell-script.sh
+  owner: root:root
+  permissions: "0500"
+  encoding: b64
+  content: "${base64encode(custom_shell_script)}"
 %{ if custom_ca_cert_url != "" ~}
 
 - path: /etc/ptfe/custom-ca-cert-url

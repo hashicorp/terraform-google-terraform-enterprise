@@ -27,6 +27,12 @@ variable "custom_ca_cert_url" {
   type        = string
 }
 
+variable "custom_shell_script" {
+  default     = "echo 'A custom shell script was not provided.'"
+  description = "A custom shell script which will be invoked prior to starting or joining the cluster."
+  type        = string
+}
+
 variable "distribution" {
   default     = "ubuntu"
   description = "The type of Linux distribution which will be running on the machines."
