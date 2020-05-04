@@ -1,5 +1,8 @@
 # Terraform Enterprise HA (Beta) Example - RedHat Enterprise Linux in Production Mode
 
+**Warning: this example has not yet been updated to be compatible
+with the internal preview.**
+
 This example assumes you have already set up your gcp project with the required prereqs:
 
 * VPC
