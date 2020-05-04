@@ -11,9 +11,11 @@ on Google Cloud Platform (GCP).
 More details can be found in the
 [clustered architecture overview][tfe-clustered-architecture].
 
-This README is best viewed on the
+When the new version is of the **terraform-enterprise** module
+is completed then this README will be best viewed on the
 [Terraform Registry][tf-registry], where the submodules,
-examples, inputs, and outputs are browseable.
+examples, inputs, and outputs will be browseable. The
+source code can also be viewed in the [GitHub repository][github-repo].
 
 ## Requirements
 
@@ -55,7 +57,7 @@ The [GitHub repository][github-repo] of the module can be used directly
 to deploy Terraform Enterprise Clustered without writing any Terraform
 configuration. All that is required is to clone the repository, change
 the working directory to the repository directory, configure the
-providers using environment variables, and then proceed to
+Google providers using environment variables, and then proceed to
 [Provision the Infrastructure](#provision-the-infrastructure).
 
 The Quickstart Method is only recommended for proof-of-concept
@@ -75,8 +77,7 @@ benefit of using the Terraform Registry for dependency resolution.
 
 ```hcl
 module "terraform_enterprise" {
-  source  = "hashicorp/terraform-enterprise/google"
-  version = "VERSION"
+  source  = "github.com/hashicorp/terraform-google-terraform-enterprise?ref=internal-preview"
 
   # insert the required inputs here
 }
@@ -86,10 +87,15 @@ module "terraform_enterprise" {
 
 If the **root** module does not satisfy a particular use case then the
 submodules can be included directly and composed together in a custom
-manner.
+manner; several of the examples demonstrate this approach.
 
-In both cases, the [module version][tf-module-version] should be
-constrained following Terraform best practices.
+In both cases, the [module source][tf-module-source] must be set to the
+`internal-preview` branch of the [GitHub repository][github-repo]. When
+the new version the **terraform-enterprise** module is released to the
+[Terraform Registry][tf-registry] then the module source should be
+updated to `"hashicorp/terraform-enterprise/google"` and the
+[module version][tf-module-version] should be constrained following
+Terraform best practices.
 
 The [Terraform Registry][tf-registry] includes the list of module
 versions, the required inputs, as well as documentation and
@@ -163,6 +169,7 @@ Any Enterprise questions should be directed to
 [ssh-in-browser]: https://cloud.google.com/compute/docs/ssh-in-browser
 [tf-community-forum]: https://discuss.hashicorp.com/c/terraform-core
 [tf-install]: https://learn.hashicorp.com/terraform/getting-started/install
+[tf-module-source]: https://www.terraform.io/docs/modules/sources.html
 [tf-module-version]: https://www.terraform.io/docs/configuration/modules.html#module-versions
 [tf-registry]: https://registry.terraform.io/modules/hashicorp/terraform-enterprise/google
 [tfe-clustered-architecture]: https://www.terraform.io/docs/enterprise/before-installing/cluster-architecture.html

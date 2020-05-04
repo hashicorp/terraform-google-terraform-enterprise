@@ -28,8 +28,7 @@ resource "random_pet" "prefix" {
 }
 
 module "terraform_enterprise" {
-  source  = "hashicorp/terraform-enterprise/google"
-  version = "0.1.0"
+  source = "github.com/hashicorp/terraform-google-terraform-enterprise?ref=internal-preview"
 
   cloud_init_license_file   = var.cloud_init_license_file
   dns_managed_zone          = var.dns_managed_zone

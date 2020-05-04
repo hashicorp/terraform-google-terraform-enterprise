@@ -1,7 +1,7 @@
 # Create service accounts which will be used to represent various components of the application.
 module "service_account" {
   # This module is sourced from the submodules of the root module through the Terraform Registry.
-  source = "hashicorp/terraform-enterprise/google//modules/service-account"
+  source = "github.com/hashicorp/terraform-google-terraform-enterprise?ref=internal-preview//modules/service-account"
 
   prefix = var.prefix
 }
