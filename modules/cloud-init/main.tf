@@ -11,10 +11,11 @@ locals {
       )
       cluster_api_endpoint    = "${var.internal_load_balancer_in_address}:${var.vpc_kubernetes_tcp_port}"
       custom_ca_cert_url      = var.custom_ca_cert_url
-      custom_shell_script     = var.custom_shell_script
       distribution            = var.distribution
       health_url              = "${local.assistant_host}/healthz"
       install_ptfe_sh         = file("${path.module}/files/install-ptfe.sh")
+      postinstall_script      = var.postinstall_script
+      preinstall_script       = var.preinstall_script
       proxy_conf              = templatefile("${path.module}/templates/proxy.conf.tmpl", { proxy_url = var.proxy_url })
       proxy_url               = var.proxy_url
       ptfe_url                = var.ptfe_url

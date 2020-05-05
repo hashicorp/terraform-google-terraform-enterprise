@@ -70,11 +70,17 @@ write_files:
   encoding: b64
   content: "${base64encode(additional_no_proxy)}"
 
-- path: /etc/ptfe/custom-shell-script.sh
+- path: /etc/ptfe/post-install.sh
   owner: root:root
   permissions: "0500"
   encoding: b64
-  content: "${base64encode(custom_shell_script)}"
+  content: "${base64encode(postinstall_script)}"
+
+- path: /etc/ptfe/pre-install.sh
+  owner: root:root
+  permissions: "0500"
+  encoding: b64
+  content: "${base64encode(preinstall_script)}"
 %{ if custom_ca_cert_url != "" ~}
 
 - path: /etc/ptfe/custom-ca-cert-url

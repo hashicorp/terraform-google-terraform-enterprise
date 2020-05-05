@@ -27,12 +27,6 @@ variable "custom_ca_cert_url" {
   type        = string
 }
 
-variable "custom_shell_script" {
-  default     = "echo 'A custom shell script was not provided.'"
-  description = "A custom shell script which will be invoked prior to starting or joining the cluster."
-  type        = string
-}
-
 variable "distribution" {
   default     = "ubuntu"
   description = "The type of Linux distribution which will be running on the machines."
@@ -46,6 +40,18 @@ variable "internal_load_balancer_in_address" {
 
 variable "license_file" {
   description = "The pathname of a Replicated license file for the application."
+  type        = string
+}
+
+variable "postinstall_script" {
+  default     = "echo 'A post-install script was not provided.'"
+  description = "A custom shell script which will be invoked after TFE is installed."
+  type        = string
+}
+
+variable "preinstall_script" {
+  default     = "echo 'A pre-install script was not provided.'"
+  description = "A custom shell script which will be invoked before TFE is installed."
   type        = string
 }
 

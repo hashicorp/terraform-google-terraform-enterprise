@@ -2,6 +2,9 @@
 
 set -e -u -o pipefail
 
+echo "Executing the pre-install script..."
+/bin/bash /etc/ptfe/pre-install.sh
+
 ### Set proxy variables, if needed.
 if [ -s /etc/ptfe/proxy-url ]; then
   http_proxy=$(cat /etc/ptfe/proxy-url)
@@ -74,9 +77,6 @@ pushd /tmp
   cp ptfe /usr/bin
   chmod a+x /usr/bin/ptfe
 popd
-
-echo "Executing the custom shell script..."
-/bin/bash /etc/ptfe/custom-shell-script.sh
 
 role="$(cat /etc/ptfe/role)"
 export role
@@ -253,3 +253,6 @@ fi
 
 echo "Running 'ptfe install $verb"  "${ptfe_install_args[@]}" "'"
 ptfe install $verb "${ptfe_install_args[@]}"
+
+echo "Executing the post-install script..."
+/bin/bash /etc/ptfe/post-install.sh
