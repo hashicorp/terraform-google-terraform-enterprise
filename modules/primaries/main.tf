@@ -27,7 +27,7 @@ resource "google_compute_instance" "main" {
   zone = element(data.google_compute_zones.up.names, count.index)
 
   allow_stopping_for_update = true
-  description               = "The compute instance which acts as TFE Primary ${count.index}."
+  description               = "The compute instance which acts as TFE primary ${count.index}."
   labels                    = var.labels
   metadata = {
     user-data          = var.cloud_init_configs[count.index]
@@ -44,7 +44,7 @@ resource "google_compute_instance_group" "main" {
   count = local.instance_count
 
   name        = "${var.prefix}primary-${count.index}"
-  description = "The group comprising the compute instance which acts as TFE Primary ${count.index}."
+  description = "The group comprising the compute instance which acts as TFE primary ${count.index}."
   zone        = google_compute_instance.main[count.index].zone
 
   instances = [google_compute_instance.main[count.index].self_link]
