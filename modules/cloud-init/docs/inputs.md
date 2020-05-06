@@ -15,6 +15,8 @@
 | airgap\_package\_url | The URL of an airgap package which contains a TFE release. | `string` | `""` | no |
 | custom\_ca\_cert\_url | The URL of a certificate authority bundle which contains custom certificates to be trusted by the application. | `string` | `""` | no |
 | distribution | The type of Linux distribution which will be running on the machines. | `string` | `"ubuntu"` | no |
+| postinstall\_script | A custom shell script which will be invoked after TFE is installed. | `string` | `"echo 'A post-install script was not provided.'"` | no |
+| preinstall\_script | A custom shell script which will be invoked before TFE is installed. | `string` | `"echo 'A pre-install script was not provided.'"` | no |
 | proxy\_url | The URL of a proxy through which application traffic will be routed. | `string` | `""` | no |
 | ptfe\_url | The URL of the cluster installer tool. | `string` | `"https://install.terraform.io/installer/ptfe-0.1.zip"` | no |
 | release\_sequence | The sequence identifier of the TFE version to which the cluster will be pinned. | `string` | `"latest"` | no |

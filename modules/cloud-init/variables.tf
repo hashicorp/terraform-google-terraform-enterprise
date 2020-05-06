@@ -43,6 +43,18 @@ variable "license_file" {
   type        = string
 }
 
+variable "postinstall_script" {
+  default     = "echo 'A post-install script was not provided.'"
+  description = "A custom shell script which will be invoked after TFE is installed."
+  type        = string
+}
+
+variable "preinstall_script" {
+  default     = "echo 'A pre-install script was not provided.'"
+  description = "A custom shell script which will be invoked before TFE is installed."
+  type        = string
+}
+
 variable "proxy_url" {
   default     = ""
   description = "The URL of a proxy through which application traffic will be routed."
