@@ -24,3 +24,15 @@ variable "prefix" {
   description = "The prefix which will be prepended to the names of resources."
   type        = string
 }
+
+variable "secondaries_max_instances" {
+  default     = 5
+  description = "The maximum count of compute instances to which the secondaries may scale. The default value is deferred to the secondaries submodule."
+  type        = number
+}
+
+variable "secondaries_min_instances" {
+  default     = 1
+  description = "The minimum count of compute instances to which the secondaries may scale. The default value is deferred to the secondaries submodule."
+  type        = number
+}
