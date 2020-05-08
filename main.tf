@@ -110,7 +110,7 @@ module "secondaries" {
   vpc_subnetwork_project         = module.vpc.subnetwork.project
   vpc_subnetwork_self_link       = module.vpc.subnetwork.self_link
 
-  labels = var.labels
+  labels        = var.labels
   max_instances = var.secondaries_max_instances
   min_instances = var.secondaries_min_instances
 }
