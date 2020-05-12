@@ -9,4 +9,6 @@
 | dns\_managed\_zone\_dns\_name | The fully qualified DNS name of the managed zone set by var.dns\_managed\_zone. | `string` | n/a | yes |
 | labels | A collection of labels which will be applied to resources. | `map(string)` | `{}` | no |
 | prefix | The prefix which will be prepended to the names of resources. | `string` | `"tfe-"` | no |
+| secondaries\_max\_instances | The maximum count of compute instances to which the secondaries may scale. The default value is derived from the secondaries submodule. | `number` | `5` | no |
+| secondaries\_min\_instances | The minimum count of compute instances to which the secondaries may scale. The default value is derived from the secondaries submodule. | `number` | `1` | no |
 

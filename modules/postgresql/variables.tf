@@ -1,5 +1,5 @@
 variable "availability_type" {
-  default     = "ZONAL"
+  default     = "REGIONAL"
   description = "A specifier which determines if the database compute instance will be set up for high availability (REGIONAL) or single zone (ZONAL)."
   type        = string
 }
