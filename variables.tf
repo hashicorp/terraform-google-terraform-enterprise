@@ -27,12 +27,12 @@ variable "prefix" {
 
 variable "secondaries_max_instances" {
   default     = 5
-  description = "The maximum count of compute instances to which the secondaries may scale. The default value is deferred to the secondaries submodule."
+  description = "The maximum count of compute instances to which the secondaries may scale. The default value is derived from the secondaries submodule."
   type        = number
 }
 
 variable "secondaries_min_instances" {
   default     = 1
-  description = "The minimum count of compute instances to which the secondaries may scale. The default value is deferred to the secondaries submodule."
+  description = "The minimum count of compute instances to which the secondaries may scale. The default value is derived from the secondaries submodule."
   type        = number
 }
