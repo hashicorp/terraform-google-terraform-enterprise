@@ -35,9 +35,27 @@ resource "google_compute_backend_service" "application" {
     description           = "A group of compute instances which comprises the TFE secondaries."
     max_rate_per_instance = 333
   }
-  port_name   = "application"
-  protocol    = "HTTPS"
-  timeout_sec = 10
+resource "google_compute_managed_ssl_certificate" "application" {
+  provider = google-beta
+
+  description = "TFE application."
+  managed {
+    domains = [var.dns_fqdn]
+  }
+  name = local.application_name
+  timeouts {
+    create = "30m"
+  }
+}
+
+resource "google_compute_ssl_policy" "application" {
+  name = local.application_name
+
+  description     = "TFE application."
+  min_tls_version = "TLS_1_2"
+  profile         = "RESTRICTED"
+}
+
 }
 
 resource "google_compute_health_check" "install_dashboard" {

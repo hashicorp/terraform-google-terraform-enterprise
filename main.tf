@@ -100,15 +100,14 @@ module "secondaries" {
   min_instances = var.secondaries_min_instances
 }
 
-# Create an external load balancer which directs traffic to the primaries.
+# Create an external load balancer which directs traffic to the primaries and to the secondaries.
 module "external_load_balancer" {
   source = "./modules/external-load-balancer"
 
+  dns_fqdn                                          = module.dns.fqdn
   prefix                                            = var.prefix
   primaries_instance_groups_self_links              = module.primaries.instance_groups[*].self_link
   secondaries_instance_group_manager_instance_group = module.secondaries.instance_group_manager.instance_group
-  ssl_certificate_self_link                         = module.ssl.certificate.self_link
-  ssl_policy_self_link                              = module.ssl.policy.self_link
   vpc_address                                       = module.vpc.external_load_balancer_address.address
   vpc_application_tcp_port                          = module.vpc.application_tcp_port
   vpc_install_dashboard_tcp_port                    = module.vpc.install_dashboard_tcp_port
@@ -121,12 +120,4 @@ module "dns" {
   managed_zone                       = var.dns_managed_zone
   managed_zone_dns_name              = var.dns_managed_zone_dns_name
   vpc_external_load_balancer_address = module.vpc.external_load_balancer_address.address
-}
-
-# Create an SSL certificate to be attached to the external load balancer.
-module "ssl" {
-  source = "./modules/ssl"
-
-  dns_fqdn = module.dns.fqdn
-  prefix   = var.prefix
 }
