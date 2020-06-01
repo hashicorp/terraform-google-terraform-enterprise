@@ -1,11 +1,15 @@
 resource "google_compute_health_check" "application" {
-  name = "${var.prefix}application"
+  provider = google-beta
 
   check_interval_sec = 5
   description        = "The TFE application health check."
   https_health_check {
     port         = var.vpc_application_tcp_port
     request_path = "/_health_check"
+  }
+  # Beta
+  log_config {
+    enable = true
   }
   timeout_sec = 4
 }
@@ -37,10 +41,13 @@ resource "google_compute_backend_service" "application" {
 }
 
 resource "google_compute_health_check" "install_dashboard" {
-  name = "${var.prefix}install-dashboard"
+  provider = google-beta
 
   check_interval_sec = 5
-  description        = "The TFE install dashboard UI health check."
+  # Beta
+  log_config {
+    enable = true
+  }
   tcp_health_check {
     port = var.vpc_install_dashboard_tcp_port
   }
