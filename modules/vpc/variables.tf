@@ -44,6 +44,12 @@ variable "prefix" {
   type        = string
 }
 
+variable "internal_load_balancer_subnetwork_ip_cidr_range" {
+  default     = "10.2.0.0/23"
+  description = "The range of IP addresses to provision in the internal load balancer subnetwork. The value must be expressed in CIDR notation."
+  type        = string
+}
+
 variable "replicated_tcp_port_ranges" {
   default     = ["9870-9881"]
   description = "The Replicated TCP port ranges."
@@ -58,7 +64,7 @@ variable "ssh_tcp_port" {
 
 variable "subnetwork_ip_cidr_range" {
   default     = "10.1.0.0/16"
-  description = "The range of IP addresses to provision in the subnetwork, expressed in CIDR notation."
+  description = "The range of IP addresses to provision in the subnetwork. The value must be expressed in CIDR notation."
   type        = string
 }
 

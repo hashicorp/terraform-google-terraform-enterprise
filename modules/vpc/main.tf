@@ -256,3 +256,29 @@ resource "google_compute_firewall" "weave" {
   source_service_accounts = local.primaries_and_secondaries_service_accounts
   target_service_accounts = local.primaries_and_secondaries_service_accounts
 }
+
+resource "google_compute_subnetwork" "internal_load_balancer" {
+  provider = google-beta
+
+  ip_cidr_range = var.internal_load_balancer_subnetwork_ip_cidr_range
+  name          = "${var.prefix}vpc-plb"
+  network       = google_compute_network.main.self_link
+
+  description = "TFE internal load balancer."
+  purpose     = "INTERNAL_HTTPS_LOAD_BALANCER"
+  role        = "ACTIVE"
+}
+
+resource "google_compute_firewall" "internal_load_balancer" {
+  name    = "${var.prefix}plb"
+  network = google_compute_network.main.self_link
+
+  allow {
+    protocol = "tcp"
+
+    ports = [var.application_tcp_port]
+  }
+  direction               = "INGRESS"
+  source_ranges           = [google_compute_subnetwork.internal_load_balancer.ip_cidr_range]
+  target_service_accounts = local.primaries_and_secondaries_service_accounts
+}
