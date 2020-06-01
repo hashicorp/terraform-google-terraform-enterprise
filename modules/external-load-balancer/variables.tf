@@ -1,3 +1,14 @@
+variable "dns_fqdn" {
+  description = "The fully qualified domain name for which the certificate will be issued."
+  type        = string
+}
+
+variable "labels" {
+  default     = {}
+  description = "A collection of labels which will be applied to resources."
+  type        = map(string)
+}
+
 variable "prefix" {
   description = "The prefix which will be prepended to the names of resources."
   type        = string
@@ -10,16 +21,6 @@ variable "primaries_instance_groups_self_links" {
 
 variable "secondaries_instance_group_manager_instance_group" {
   description = "The compute instance group of the secondaries."
-  type        = string
-}
-
-variable "ssl_certificate_self_link" {
-  description = "The self link of the managed SSL certificate which will be applied to the load balancer."
-  type        = string
-}
-
-variable "ssl_policy_self_link" {
-  description = "The self link of a compute SSL policy for the SSL certificate."
   type        = string
 }
 
