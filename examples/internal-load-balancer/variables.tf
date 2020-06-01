@@ -1,0 +1,38 @@
+variable "cloud_init_license_file" {
+  description = "The pathname of a Replicated license file for the application."
+  type        = string
+}
+
+variable "dns_managed_zone" {
+  description = "The name of the managed DNS zone in which the application will be accessible."
+  type        = string
+}
+
+variable "dns_managed_zone_dns_name" {
+  description = "The fully qualified DNS name of the managed zone set by var.dns_managed_zone."
+  type        = string
+}
+
+variable "labels" {
+  default     = {}
+  description = "A collection of labels which will be applied to resources."
+  type        = map(string)
+}
+
+variable "prefix" {
+  default     = "tfe-ilb-"
+  description = "The prefix which will be prepended to the names of resources."
+  type        = string
+}
+
+variable "ssl_certificate_file" {
+  default     = "./files/certificate.pem"
+  description = "The pathname of an SSL certificate to be used for application traffic authentication. The file must be in PEM format."
+  type        = string
+}
+
+variable "ssl_certificate_private_key_file" {
+  default     = "./files/certificate-private-key.pem"
+  description = "The pathname of an SSL certificate private key associated with var.ssl_certificate_file. The file must be in PEM format."
+  type        = string
+}
