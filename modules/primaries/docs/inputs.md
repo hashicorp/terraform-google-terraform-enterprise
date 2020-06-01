@@ -7,7 +7,9 @@
 | cloud\_init\_configs | The cloud-init configurations for the compute instances. | `list(string)` | n/a | yes |
 | prefix | The prefix which will be prepended to the names of resources. | `string` | n/a | yes |
 | service\_account\_email | The email address of the service account to be associated with the compute instances. | `string` | n/a | yes |
+| service\_account\_load\_balancer\_email | The email address of the service account to be associated with the load balancer compute instances. | `string` | n/a | yes |
 | vpc\_application\_tcp\_port | The application TCP port. | `string` | n/a | yes |
+| vpc\_cluster\_assistant\_tcp\_port | The Cluster Assistant TCP port. | `string` | n/a | yes |
 | vpc\_install\_dashboard\_tcp\_port | The install dashboard TCP port. | `string` | n/a | yes |
 | vpc\_kubernetes\_tcp\_port | The Kubernetes TCP port. | `string` | n/a | yes |
 | vpc\_network\_self\_link | The self link of the network to which resources will be attached. | `string` | n/a | yes |

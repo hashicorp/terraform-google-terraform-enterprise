@@ -67,9 +67,9 @@ variable "service_account_primaries_email" {
   description = "The email address of the service account associated with the primaries."
 }
 
-variable "service_account_internal_load_balancer_email" {
+variable "service_account_primaries_load_balancer_email" {
   type        = string
-  description = "The email address of the service account associated with the internal load balancer."
+  description = "The email address of the service account associated with the primaries load balancer."
 }
 
 variable "service_account_secondaries_email" {

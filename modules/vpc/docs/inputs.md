@@ -5,8 +5,8 @@
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:-----:|
 | prefix | The prefix which will be prepended to the names of resources. | `string` | n/a | yes |
-| service\_account\_internal\_load\_balancer\_email | The email address of the service account associated with the internal load balancer. | `string` | n/a | yes |
 | service\_account\_primaries\_email | The email address of the service account associated with the primaries. | `string` | n/a | yes |
+| service\_account\_primaries\_load\_balancer\_email | The email address of the service account associated with the primaries load balancer. | `string` | n/a | yes |
 | service\_account\_secondaries\_email | The email address of the service account associated with the secondaries. | `string` | n/a | yes |
 | application\_tcp\_port | The Application TCP port. The value must be supported for HTTPS load balancing. More information is available at https://cloud.google.com/load-balancing/docs/https. | `string` | `"443"` | no |
 | cluster\_assistant\_tcp\_port | The Cluster Assistant TCP port. | `string` | `"23010"` | no |

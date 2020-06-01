@@ -37,8 +37,18 @@ variable "service_account_email" {
   description = "The email address of the service account to be associated with the compute instances."
 }
 
+variable "service_account_load_balancer_email" {
+  type        = string
+  description = "The email address of the service account to be associated with the load balancer compute instances."
+}
+
 variable "vpc_application_tcp_port" {
   description = "The application TCP port."
+  type        = string
+}
+
+variable "vpc_cluster_assistant_tcp_port" {
+  description = "The Cluster Assistant TCP port."
   type        = string
 }
 
