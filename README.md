@@ -29,6 +29,7 @@ The following requirements must be met to use the
 - [the Google provider and the Google Beta provider][google-provider]
   are configured with a project, region, zone, and
   [credentials](#credentials)
+- the [Google project] has enabled the necessary [APIs](#apis)
 
 ### Credentials
 
@@ -44,6 +45,14 @@ roles within the project:
 - Service Account User (roles/iam.serviceAccountUser)
 - Service Networking Admin (roles/servicenetworking.networksAdmin)
 - Storage Admin (roles/storage.admin)
+
+### APIs
+
+The following APIs must be enabled within the project: 
+
+- Cloud DNS API (dns.googleapis.com)
+- Compute Engine API (compute.googleapis.com)
+- Service Networking API (servicenetworking.googleapis.com)
 
 ## Usage
 
