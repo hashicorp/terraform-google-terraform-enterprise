@@ -214,7 +214,7 @@ resource "google_compute_address" "load_balancer" {
   subnetwork = var.vpc_subnetwork_self_link
 }
 
-resource "google_compute_forwarding_rule" "load_balancer_in" {
+resource "google_compute_forwarding_rule" "load_balancer" {
   name = local.load_balancer_name
 
   backend_service       = google_compute_region_backend_service.load_balancer.self_link
