@@ -103,7 +103,7 @@ resource "google_compute_address" "main" {
 
   address_type = "INTERNAL"
   description  = "The private IP address for the TFE primaries."
-  subnetwork = var.vpc_subnetwork_self_link
+  subnetwork   = var.vpc_subnetwork_self_link
 }
 
 resource "google_compute_forwarding_rule" "main" {
@@ -211,7 +211,7 @@ resource "google_compute_address" "load_balancer" {
 
   address_type = "INTERNAL"
   description  = "The internal IP address of the routers of the TFE primaries load balancer."
-  subnetwork = var.vpc_subnetwork_self_link
+  subnetwork   = var.vpc_subnetwork_self_link
 }
 
 resource "google_compute_forwarding_rule" "load_balancer" {

@@ -22,12 +22,12 @@ variable "secondaries_instance_group_manager_instance_group" {
 
 variable "ssl_certificate" {
   description = "The content of a SSL/TLS certificate to be attached to the load balancer. The content must be in PEM format. The certificate chain must be no greater than 5 certs long and it must include at least one intermediate cert."
-  type = string
+  type        = string
 }
 
 variable "ssl_certificate_private_key" {
   description = "The content of the write-only private key of var.ssl_certificate. The content must be in PEM format."
-  type = string
+  type        = string
 }
 
 variable "vpc_application_tcp_port" {

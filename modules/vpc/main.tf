@@ -264,9 +264,9 @@ resource "google_compute_subnetwork" "internal_load_balancer" {
 
   description = "TFE internal load balancer."
   # Beta
-  purpose     = "INTERNAL_HTTPS_LOAD_BALANCER"
+  purpose = "INTERNAL_HTTPS_LOAD_BALANCER"
   # Beta
-  role        = "ACTIVE"
+  role = "ACTIVE"
 }
 
 resource "google_compute_firewall" "internal_load_balancer" {

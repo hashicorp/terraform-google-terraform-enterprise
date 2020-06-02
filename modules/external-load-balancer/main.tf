@@ -91,9 +91,9 @@ resource "google_compute_global_forwarding_rule" "application" {
   name   = local.application_name
   target = google_compute_target_https_proxy.application.self_link
 
-  description = "The global forwarding rule for TFE application traffic."
-  ip_address  = var.vpc_address
-  ip_protocol = "TCP"
+  description           = "The global forwarding rule for TFE application traffic."
+  ip_address            = var.vpc_address
+  ip_protocol           = "TCP"
   load_balancing_scheme = "EXTERNAL"
   port_range            = var.vpc_application_tcp_port
 }
