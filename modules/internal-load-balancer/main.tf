@@ -67,7 +67,7 @@ resource "google_compute_region_ssl_certificate" "application" {
 
 resource "google_compute_region_target_https_proxy" "application" {
   name             = local.application_name
-  ssl_certificates = google_compute_region_ssl_certificate.application.self_link
+  ssl_certificates = [google_compute_region_ssl_certificate.application.self_link]
   url_map          = google_compute_region_url_map.application.self_link
 
   description = "TFE application traffic."
