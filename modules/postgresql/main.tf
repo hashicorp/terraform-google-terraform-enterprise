@@ -1,6 +1,4 @@
 resource "google_service_networking_connection" "main" {
-  provider = google-beta
-
   network                 = var.vpc_network_self_link
   reserved_peering_ranges = [var.vpc_address_name]
   service                 = "servicenetworking.googleapis.com"
@@ -12,8 +10,6 @@ resource "random_pet" "name" {
 }
 
 resource "google_sql_database_instance" "main" {
-  provider = google-beta
-
   name             = random_pet.name.id
   database_version = "POSTGRES_9_6"
   settings {

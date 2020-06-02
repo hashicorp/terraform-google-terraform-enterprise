@@ -74,28 +74,20 @@ resource "google_compute_region_target_https_proxy" "application" {
 }
 
 resource "google_compute_address" "main" {
-  provider = google-beta
-
   name = local.application_name
 
   address_type = "INTERNAL"
   description  = "TFE."
-  # Beta
-  labels     = var.labels
   purpose    = "GCE_ENDPOINT"
   subnetwork = var.vpc_subnetwork_self_link
 }
 
 resource "google_compute_forwarding_rule" "application" {
-  provider = google-beta
-
   name = local.application_name
 
   description = "The forwarding rule for TFE application traffic."
   ip_address  = google_compute_address.main.address
   ip_protocol = "TCP"
-  # Beta
-  labels                = var.labels
   load_balancing_scheme = "INTERNAL_MANAGED"
   network               = var.vpc_network_self_link
   port_range            = var.vpc_application_tcp_port

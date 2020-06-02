@@ -56,6 +56,7 @@ resource "google_compute_url_map" "application" {
   description = "TFE application requests."
 }
 
+# Beta
 resource "google_compute_managed_ssl_certificate" "application" {
   provider = google-beta
 
@@ -87,16 +88,12 @@ resource "google_compute_target_https_proxy" "application" {
 }
 
 resource "google_compute_global_forwarding_rule" "application" {
-  provider = google-beta
-
   name   = local.application_name
   target = google_compute_target_https_proxy.application.self_link
 
   description = "The global forwarding rule for TFE application traffic."
   ip_address  = var.vpc_address
   ip_protocol = "TCP"
-  # Beta
-  labels                = var.labels
   load_balancing_scheme = "EXTERNAL"
   port_range            = var.vpc_application_tcp_port
 }

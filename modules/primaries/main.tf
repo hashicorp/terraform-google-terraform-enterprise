@@ -99,14 +99,10 @@ resource "google_compute_region_backend_service" "main" {
 }
 
 resource "google_compute_address" "main" {
-  provider = google-beta
-
   name = local.name
 
   address_type = "INTERNAL"
   description  = "The private IP address for the TFE primaries."
-  # Beta
-  labels     = var.labels
   subnetwork = var.vpc_subnetwork_self_link
 }
 
@@ -211,14 +207,10 @@ resource "google_compute_region_backend_service" "load_balancer" {
 }
 
 resource "google_compute_address" "load_balancer" {
-  provider = google-beta
-
   name = local.load_balancer_name
 
   address_type = "INTERNAL"
   description  = "The internal IP address of the routers of the TFE primaries load balancer."
-  # Beta
-  labels     = var.labels
   subnetwork = var.vpc_subnetwork_self_link
 }
 

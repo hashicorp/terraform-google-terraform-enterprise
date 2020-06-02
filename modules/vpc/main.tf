@@ -63,8 +63,6 @@ resource "google_compute_global_address" "external_load_balancer" {
 }
 
 resource "google_compute_global_address" "postgresql" {
-  provider = google-beta
-
   name = "${var.prefix}postgresql"
 
   address       = "10.200.1.0"
@@ -265,7 +263,9 @@ resource "google_compute_subnetwork" "internal_load_balancer" {
   network       = google_compute_network.main.self_link
 
   description = "TFE internal load balancer."
+  # Beta
   purpose     = "INTERNAL_HTTPS_LOAD_BALANCER"
+  # Beta
   role        = "ACTIVE"
 }
 
