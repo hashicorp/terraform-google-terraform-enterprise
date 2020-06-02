@@ -2,10 +2,10 @@
 module "vpc" {
   source = "github.com/hashicorp/terraform-google-terraform-enterprise?ref=internal-preview//modules/vpc"
 
-  prefix                                       = var.prefix
-  service_account_primaries_email              = var.service_account_primaries_email
-  service_account_secondaries_email            = var.service_account_secondaries_email
-  service_account_internal_load_balancer_email = var.service_account_internal_load_balancer_email
+  prefix                                        = var.prefix
+  service_account_primaries_email               = var.service_account_primaries_email
+  service_account_primaries_load_balancer_email = var.service_account_primaries_load_balancer_email
+  service_account_secondaries_email             = var.service_account_secondaries_email
 }
 
 data "google_project" "service" {

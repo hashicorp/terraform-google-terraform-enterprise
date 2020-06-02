@@ -9,8 +9,8 @@ variable "prefix" {
   type        = string
 }
 
-variable "service_account_internal_load_balancer_email" {
-  description = "The email address of the service account which is associated with the internal load balancer."
+variable "service_account_primaries_load_balancer_email" {
+  description = "The email address of the service account which is associated with the primaries load balancer."
   type        = string
 }
 

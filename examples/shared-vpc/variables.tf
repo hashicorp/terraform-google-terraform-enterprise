@@ -20,7 +20,7 @@ variable "labels" {
 }
 
 variable "prefix" {
-  default     = "tfevpc-"
+  default     = "tfe-vpc-"
   description = "The prefix which will be prepended to the names of resources."
   type        = string
 }
