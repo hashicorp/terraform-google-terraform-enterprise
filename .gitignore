@@ -1,8 +1,10 @@
 .terraform/
-work
-tmp/
+*.csr
+*.env
+*.pem
+*.rli
 *.tfstate
 *.tfstate.*
 *.tfvars
-*.rli
-*.env
+tmp/
+work

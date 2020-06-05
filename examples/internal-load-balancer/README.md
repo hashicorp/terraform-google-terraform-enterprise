@@ -20,9 +20,13 @@ GCP VPC, an internal load balancer must be used instead.
 ## Features
 
 This example provisions TFE Clustered infrastructure using the internal
-load balancer submodule. A self-signed, regional SSL certificate is
-created using the certificate file and private key file in `./files` by
-default, but alternative files can be specified using Terraform variables.
+load balancer submodule.
+
+The instructions include the creation of a self-signed SSL certificate
+which will be applied to the load balancer, based on the
+[GCP Using Self-Managed SSL Certificates article][gcp-self-managed-certs].
+Alternative certificate files can be specified using
+`var.ssl_certificate_file` and `var.ssl_certificate_private_key_file`.
 
 ## Requirements
 
@@ -66,6 +70,25 @@ GOOGLE_PROJECT="tfe-project"
 GOOGLE_REGION="us-west1"
 GOOGLE_ZONE="us-west1-a"
 
+# Create a certificate private key.
+openssl genrsa \
+  -out ./files/certificate-private-key.pem 2048
+
+# Create a certificate signing request.
+openssl req \
+  -new \
+  -key ./files/certificate-private-key.pem \
+  -out ./files/main.csr \
+  -config ./files/csr.conf
+
+# Create a self-signed certificate.
+openssl x509 \
+  -req \
+  -signkey ./files/certificate-private-key.pem \
+  -in ./files/main.csr \
+  -out ./files/certificate.pem \
+  -days 28
+
 # Initialize the working directory.
 terraform init
 
@@ -86,6 +109,7 @@ terraform destroy
 
 <!-- URLs for links -->
 
+[gcp-self-managed-certs]: https://cloud.google.com/load-balancing/docs/ssl-certificates/self-managed-certs
 [google-cloud-sdk]: https://cloud.google.com/sdk
 [google-provider]: https://registry.terraform.io/providers/hashicorp/google/3.2.0/docs/guides/provider_reference#full-reference
 [iap]: https://cloud.google.com/iap
