@@ -17,7 +17,7 @@ variable "etcd_tcp_port_ranges" {
 
 variable "health_check_ip_cidr_ranges" {
   default     = ["35.191.0.0/16", "130.211.0.0/22"]
-  description = "The list of GCP health check IP address ranges from which health check traffic will be authorized to flow, expressed in CIDR notation. The default ranges were obtained from the GCP Health Checks Overview: https://cloud.google.com/load-balancing/docs/health-check-concepts#ip-ranges."
+  description = "A list of GCP health check IP address ranges from which health check traffic will be authorized to flow. The values must expressed in CIDR notation. The default values were obtained from the GCP Health Checks Overview article: https://cloud.google.com/load-balancing/docs/health-check-concepts#ip-ranges."
   type        = list(string)
 }
 
@@ -46,7 +46,7 @@ variable "prefix" {
 
 variable "internal_load_balancer_subnetwork_ip_cidr_range" {
   default     = "10.2.0.0/23"
-  description = "The range of IP addresses to provision in the internal load balancer subnetwork. The value must be expressed in CIDR notation."
+  description = "The range of IP addresses to provision in the internal load balancer subnetwork. The value must be expressed in CIDR notation. The default value was obtained from the GCP Proxy Only Subnets article: https://cloud.google.com/load-balancing/docs/l7-internal/proxy-only-subnets#proxy_only_subnet_create"
   type        = string
 }
 
