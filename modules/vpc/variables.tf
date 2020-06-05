@@ -17,7 +17,7 @@ variable "etcd_tcp_port_ranges" {
 
 variable "health_check_ip_cidr_ranges" {
   default     = ["35.191.0.0/16", "130.211.0.0/22"]
-  description = "A list of GCP health check IP address ranges from which health check traffic will be authorized to flow. The values must expressed in CIDR notation. The default values were obtained from the GCP Health Checks Overview article: https://cloud.google.com/load-balancing/docs/health-check-concepts#ip-ranges."
+  description = "A list of GCP health check IP address ranges from which health check traffic will be authorized to flow. The values must be expressed in CIDR notation. The default values were obtained from the GCP Health Checks Overview article: https://cloud.google.com/load-balancing/docs/health-check-concepts#ip-ranges."
   type        = list(string)
 }
 
