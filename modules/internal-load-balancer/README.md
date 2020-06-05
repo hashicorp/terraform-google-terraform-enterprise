@@ -1,37 +1,18 @@
-# Terraform Enterprise on GCP: Internal Load Balancer
+# Terraform Enterprise Clustered: Internal Load Balancer Module
 
-This submodule provisions the internal load balancer of the Terraform
-Enterprise cluster. The internal load balancer manages traffic incoming
-to the primaries from internal sources.
+This module comprises resources which create an internal load balancer. 
+Internal load balancers are intended to balance user traffic which 
+originates from within a GCP VPC rather than the public Internet.
 
-## Prerequisites
+## Caveats
 
-- The latest version of Terraform 0.12
-  [installed](https://learn.hashicorp.com/terraform/getting-started/install)
-  on your machine
-- A GCP account with sufficient permissions to provision infrastructure
+The internal load balancer only handles traffic for the application; the 
+install dashboard must be accessed with a direct connection to a primary 
+or secondary compute instance.
 
-### Permissions
+The internal load balancer does not support Shared VPC deployments due to
+[limitations of internal HTTP(S) load balancing][load-balancing-limitations].
 
-The following permissions are required by the GCP account which will be
-used to provision this submodule:
+<!-- URLs for links -->
 
-- Compute Admin: roles/compute.admin
-
-## Function
-
-The primaries are deployed in a compute instance group which is
-configured as a backend service to an internal load balancer. A GCP
-internal load balancer will redirect requests from one of its backend
-compute instances to the
-[same requesting instance][test-from-backend-vms]. Since a new primary
-attempts to join existing primaries by connecting through their load
-balancer, the implication of this GCP behaviour is that the new primary
-will never join as its requests will be routed back to itself. To work
-around this limiation, this custom internal load balancer routes
-requests through two GCP internal load balancers with intermediate
-compute instances running [iptables]. This design allows requests from
-all primaries and secondaries to be routed to healthy primaries.
-
-[iptables]: https://en.wikipedia.org/wiki/Iptables
-[test-from-backend-vms]: https://cloud.google.com/load-balancing/docs/internal/setting-up-internal#test-from-backend-vms
+[load-balancing-limitations]: https://cloud.google.com/load-balancing/docs/l7-internal#limitations

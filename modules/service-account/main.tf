@@ -16,16 +16,16 @@ resource "google_service_account" "primaries" {
   description  = "The identity to be associated with the TFE primaries."
 }
 
+resource "google_service_account" "primaries_load_balancer" {
+  account_id = "${var.prefix}primaries-ilb"
+
+  description  = "The identity to be associated with the TFE primaries load balancer."
+  display_name = "TFE Primaries Load Balancer"
+}
+
 resource "google_service_account" "secondaries" {
   account_id = "${var.prefix}secondaries"
 
   display_name = "TFE Secondaries"
   description  = "The identity to be associated with the TFE secondaries."
-}
-
-resource "google_service_account" "internal_load_balancer" {
-  account_id = "${var.prefix}ilb"
-
-  description  = "The identity to be associated with the TFE internal load balancer."
-  display_name = "TFE Internal Load Balancer"
 }

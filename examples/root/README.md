@@ -21,8 +21,7 @@ to verify compatibility.
 
 ## Requirements
 
-The following requirements must be met to use the
-**terraform-enterprise** module:
+The following requirements must be met in order to execute this example:
 
 - the latest version of Terraform 0.12 is [installed][tf-install] on the
   working machine

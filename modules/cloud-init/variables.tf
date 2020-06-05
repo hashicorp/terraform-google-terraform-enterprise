@@ -33,13 +33,13 @@ variable "distribution" {
   type        = string
 }
 
-variable "internal_load_balancer_in_address" {
-  description = "The address assigned to the internal load balancer for traffic ingress."
+variable "license_file" {
+  description = "The pathname of a Replicated license file for the application."
   type        = string
 }
 
-variable "license_file" {
-  description = "The pathname of a Replicated license file for the application."
+variable "primaries_load_balancer_address" {
+  description = "The IP address of the primaries load balancer."
   type        = string
 }
 

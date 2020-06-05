@@ -63,8 +63,6 @@ resource "google_compute_global_address" "external_load_balancer" {
 }
 
 resource "google_compute_global_address" "postgresql" {
-  provider = google-beta
-
   name = "${var.prefix}postgresql"
 
   address       = "10.200.1.0"
@@ -76,48 +74,35 @@ resource "google_compute_global_address" "postgresql" {
 }
 
 locals {
+  all_service_accounts = [
+    var.service_account_primaries_email,
+    var.service_account_primaries_load_balancer_email,
+    var.service_account_secondaries_email,
+  ]
   primaries_service_account = [var.service_account_primaries_email]
   primaries_and_secondaries_service_accounts = [
     var.service_account_primaries_email,
     var.service_account_secondaries_email
   ]
-  internal_load_balancer_service_account = [var.service_account_internal_load_balancer_email]
+  primaries_load_balancer_service_account = [var.service_account_primaries_load_balancer_email]
 }
 
-resource "google_compute_firewall" "health_checks_application" {
-  name    = "${var.prefix}health-checks-application"
+resource "google_compute_firewall" "health_checks" {
+  name    = "${var.prefix}health-checks"
   network = google_compute_network.main.self_link
 
   allow {
     protocol = "tcp"
-
-    ports = [var.application_tcp_port]
   }
-  description             = "Allow ingress of application traffic from the Google health check IP address ranges to the primaries and the secondaries."
+  description             = "Allow ingress of health check traffic from trusted IP address ranges to all compute instances."
   direction               = "INGRESS"
   enable_logging          = true
   source_ranges           = var.health_check_ip_cidr_ranges
-  target_service_accounts = local.primaries_and_secondaries_service_accounts
+  target_service_accounts = local.all_service_accounts
 }
 
-resource "google_compute_firewall" "health_checks_kubernetes" {
-  name    = "${var.prefix}health-checks-kubernetes"
-  network = google_compute_network.main.self_link
-
-  allow {
-    protocol = "tcp"
-
-    ports = [var.kubernetes_tcp_port]
-  }
-  description             = "Allow ingress of Kubernetes traffic from the Google health check IP address ranges to the primaries and internal load balancer."
-  direction               = "INGRESS"
-  enable_logging          = true
-  source_ranges           = var.health_check_ip_cidr_ranges
-  target_service_accounts = [var.service_account_primaries_email, var.service_account_internal_load_balancer_email]
-}
-
-resource "google_compute_firewall" "allow_all_ssh_ui" {
-  name    = "${var.prefix}allow-all-ssh-ui"
+resource "google_compute_firewall" "ssh_ui" {
+  name    = "${var.prefix}ssh-ui"
   network = google_compute_network.main.self_link
 
   allow {
@@ -151,7 +136,7 @@ resource "google_compute_firewall" "replicated" {
   target_service_accounts = local.primaries_and_secondaries_service_accounts
 }
 
-resource "google_compute_firewall" "kubernetes_internal_load_balancer" {
+resource "google_compute_firewall" "kubernetes_primaries_load_balancer" {
   name    = "${var.prefix}kubernetes-ilb"
   network = google_compute_network.main.self_link
 
@@ -160,11 +145,11 @@ resource "google_compute_firewall" "kubernetes_internal_load_balancer" {
 
     ports = [var.kubernetes_tcp_port]
   }
-  description             = "Allow ingress of Kubernetes traffic from the primaries and the secondaries to the internal load balancer."
+  description             = "Allow ingress of Kubernetes traffic from the primaries and the secondaries to the load balancer."
   direction               = "INGRESS"
   enable_logging          = true
   source_service_accounts = local.primaries_and_secondaries_service_accounts
-  target_service_accounts = local.internal_load_balancer_service_account
+  target_service_accounts = local.primaries_load_balancer_service_account
 }
 
 resource "google_compute_firewall" "kubernetes_primaries" {
@@ -176,18 +161,14 @@ resource "google_compute_firewall" "kubernetes_primaries" {
 
     ports = [var.kubernetes_tcp_port]
   }
-  description    = "Allow ingress of Kubernetes traffic from all compute instances to the primaries."
-  direction      = "INGRESS"
-  enable_logging = true
-  source_service_accounts = [
-    var.service_account_primaries_email,
-    var.service_account_secondaries_email,
-    var.service_account_internal_load_balancer_email
-  ]
+  description             = "Allow ingress of Kubernetes traffic from all compute instances to the primaries."
+  direction               = "INGRESS"
+  enable_logging          = true
+  source_service_accounts = local.all_service_accounts
   target_service_accounts = local.primaries_service_account
 }
 
-resource "google_compute_firewall" "cluster_assistant_internal_load_balancer" {
+resource "google_compute_firewall" "cluster_assistant_primaries_load_balancer" {
   name    = "${var.prefix}cluster-assistant-ilb"
   network = google_compute_network.main.self_link
 
@@ -196,11 +177,11 @@ resource "google_compute_firewall" "cluster_assistant_internal_load_balancer" {
 
     ports = [var.cluster_assistant_tcp_port]
   }
-  description             = "Allow ingress of Cluster Assistant traffic from the primaries and the secondaries to the internal load balancer."
+  description             = "Allow ingress of Cluster Assistant traffic from the primaries and the secondaries to the load balancer."
   direction               = "INGRESS"
   enable_logging          = true
   source_service_accounts = local.primaries_and_secondaries_service_accounts
-  target_service_accounts = local.internal_load_balancer_service_account
+  target_service_accounts = local.primaries_load_balancer_service_account
 }
 
 resource "google_compute_firewall" "cluster_assistant_primaries" {
@@ -212,10 +193,10 @@ resource "google_compute_firewall" "cluster_assistant_primaries" {
 
     ports = [var.cluster_assistant_tcp_port]
   }
-  description             = "Allow ingress of Cluster Assistant traffic from the internal load balancer to the primaries."
+  description             = "Allow ingress of Cluster Assistant traffic from the load balancer to the primaries."
   direction               = "INGRESS"
   enable_logging          = true
-  source_service_accounts = local.internal_load_balancer_service_account
+  source_service_accounts = local.primaries_load_balancer_service_account
   target_service_accounts = local.primaries_service_account
 }
 
@@ -271,5 +252,33 @@ resource "google_compute_firewall" "weave" {
   direction               = "INGRESS"
   enable_logging          = true
   source_service_accounts = local.primaries_and_secondaries_service_accounts
+  target_service_accounts = local.primaries_and_secondaries_service_accounts
+}
+
+resource "google_compute_subnetwork" "internal_load_balancer" {
+  provider = google-beta
+
+  ip_cidr_range = var.internal_load_balancer_subnetwork_ip_cidr_range
+  name          = "${var.prefix}vpc-plb"
+  network       = google_compute_network.main.self_link
+
+  description = "TFE internal load balancer."
+  # Beta
+  purpose = "INTERNAL_HTTPS_LOAD_BALANCER"
+  # Beta
+  role = "ACTIVE"
+}
+
+resource "google_compute_firewall" "internal_load_balancer" {
+  name    = "${var.prefix}plb"
+  network = google_compute_network.main.self_link
+
+  allow {
+    protocol = "tcp"
+
+    ports = [var.application_tcp_port]
+  }
+  direction               = "INGRESS"
+  source_ranges           = [google_compute_subnetwork.internal_load_balancer.ip_cidr_range]
   target_service_accounts = local.primaries_and_secondaries_service_accounts
 }

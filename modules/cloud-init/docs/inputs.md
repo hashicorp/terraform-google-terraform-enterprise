@@ -5,8 +5,8 @@
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:-----:|
 | application\_config | The application configuration. | `map(map(string))` | n/a | yes |
-| internal\_load\_balancer\_in\_address | The address assigned to the internal load balancer for traffic ingress. | `string` | n/a | yes |
 | license\_file | The pathname of a Replicated license file for the application. | `string` | n/a | yes |
+| primaries\_load\_balancer\_address | The IP address of the primaries load balancer. | `string` | n/a | yes |
 | vpc\_cluster\_assistant\_tcp\_port | The Cluster Assistant TCP port. | `string` | n/a | yes |
 | vpc\_install\_dashboard\_tcp\_port | The install dashboard TCP port. | `string` | n/a | yes |
 | vpc\_kubernetes\_tcp\_port | The Kubernetes TCP port. | `string` | n/a | yes |

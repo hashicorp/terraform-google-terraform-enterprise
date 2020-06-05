@@ -16,8 +16,16 @@ output "etcd_tcp_port_ranges" {
   description = "The etcd TCP port ranges."
 }
 
+output "internal_load_balancer_subnetwork" {
+  value = google_compute_subnetwork.internal_load_balancer
+
+  description = "The subnetwork reserved for internal load balancing."
+}
+
 output "external_load_balancer_address" {
   value = google_compute_global_address.external_load_balancer
+
+  description = "The IP address to be attached to the external load balancer."
 }
 
 output "install_dashboard_tcp_port" {

@@ -19,10 +19,10 @@ module "storage" {
 module "vpc" {
   source = "./modules/vpc"
 
-  prefix                                       = var.prefix
-  service_account_internal_load_balancer_email = module.service_account.internal_load_balancer.email
-  service_account_primaries_email              = module.service_account.primaries.email
-  service_account_secondaries_email            = module.service_account.secondaries.email
+  prefix                                        = var.prefix
+  service_account_primaries_load_balancer_email = module.service_account.primaries_load_balancer.email
+  service_account_primaries_email               = module.service_account.primaries.email
+  service_account_secondaries_email             = module.service_account.secondaries.email
 }
 
 # Create a PostgreSQL database in which application data will be stored.
@@ -54,44 +54,29 @@ module "application" {
 module "cloud_init" {
   source = "./modules/cloud-init"
 
-  application_config                = module.application.config
-  internal_load_balancer_in_address = module.internal_load_balancer.in_address.address
-  license_file                      = var.cloud_init_license_file
-  vpc_cluster_assistant_tcp_port    = module.vpc.cluster_assistant_tcp_port
-  vpc_install_dashboard_tcp_port    = module.vpc.install_dashboard_tcp_port
-  vpc_kubernetes_tcp_port           = module.vpc.kubernetes_tcp_port
+  application_config              = module.application.config
+  primaries_load_balancer_address = module.primaries.load_balancer_address.address
+  license_file                    = var.cloud_init_license_file
+  vpc_cluster_assistant_tcp_port  = module.vpc.cluster_assistant_tcp_port
+  vpc_install_dashboard_tcp_port  = module.vpc.install_dashboard_tcp_port
+  vpc_kubernetes_tcp_port         = module.vpc.kubernetes_tcp_port
 }
 
 # Create the primaries.
 module "primaries" {
   source = "./modules/primaries"
 
-  cloud_init_configs             = module.cloud_init.primaries_configs
-  prefix                         = var.prefix
-  service_account_email          = module.service_account.primaries.email
-  vpc_application_tcp_port       = module.vpc.application_tcp_port
-  vpc_install_dashboard_tcp_port = module.vpc.install_dashboard_tcp_port
-  vpc_kubernetes_tcp_port        = module.vpc.kubernetes_tcp_port
-  vpc_network_self_link          = module.vpc.network.self_link
-  vpc_subnetwork_project         = module.vpc.subnetwork.project
-  vpc_subnetwork_self_link       = module.vpc.subnetwork.self_link
-
-  labels = var.labels
-}
-
-# Create the internal load balancer for the primaries.
-module "internal_load_balancer" {
-  source = "./modules/internal-load-balancer"
-
-  prefix                               = var.prefix
-  primaries_instance_groups_self_links = module.primaries.instance_groups[*].self_link
-  service_account_email                = module.service_account.internal_load_balancer.email
-  vpc_cluster_assistant_tcp_port       = module.vpc.cluster_assistant_tcp_port
-  vpc_kubernetes_tcp_port              = module.vpc.kubernetes_tcp_port
-  vpc_network_self_link                = module.vpc.network.self_link
-  vpc_subnetwork_ip_cidr_range         = module.vpc.subnetwork.ip_cidr_range
-  vpc_subnetwork_project               = module.vpc.subnetwork.project
-  vpc_subnetwork_self_link             = module.vpc.subnetwork.self_link
+  cloud_init_configs                  = module.cloud_init.primaries_configs
+  prefix                              = var.prefix
+  service_account_email               = module.service_account.primaries.email
+  service_account_load_balancer_email = module.service_account.primaries_load_balancer.email
+  vpc_application_tcp_port            = module.vpc.application_tcp_port
+  vpc_cluster_assistant_tcp_port      = module.vpc.cluster_assistant_tcp_port
+  vpc_install_dashboard_tcp_port      = module.vpc.install_dashboard_tcp_port
+  vpc_kubernetes_tcp_port             = module.vpc.kubernetes_tcp_port
+  vpc_network_self_link               = module.vpc.network.self_link
+  vpc_subnetwork_project              = module.vpc.subnetwork.project
+  vpc_subnetwork_self_link            = module.vpc.subnetwork.self_link
 
   labels = var.labels
 }
@@ -115,15 +100,14 @@ module "secondaries" {
   min_instances = var.secondaries_min_instances
 }
 
-# Create an external load balancer which directs traffic to the primaries.
+# Create an external load balancer which directs traffic to the primaries and to the secondaries.
 module "external_load_balancer" {
   source = "./modules/external-load-balancer"
 
+  dns_fqdn                                          = module.dns.fqdn
   prefix                                            = var.prefix
   primaries_instance_groups_self_links              = module.primaries.instance_groups[*].self_link
   secondaries_instance_group_manager_instance_group = module.secondaries.instance_group_manager.instance_group
-  ssl_certificate_self_link                         = module.ssl.certificate.self_link
-  ssl_policy_self_link                              = module.ssl.policy.self_link
   vpc_address                                       = module.vpc.external_load_balancer_address.address
   vpc_application_tcp_port                          = module.vpc.application_tcp_port
   vpc_install_dashboard_tcp_port                    = module.vpc.install_dashboard_tcp_port
@@ -136,12 +120,4 @@ module "dns" {
   managed_zone                       = var.dns_managed_zone
   managed_zone_dns_name              = var.dns_managed_zone_dns_name
   vpc_external_load_balancer_address = module.vpc.external_load_balancer_address.address
-}
-
-# Create an SSL certificate to be attached to the external load balancer.
-module "ssl" {
-  source = "./modules/ssl"
-
-  dns_fqdn = module.dns.fqdn
-  prefix   = var.prefix
 }

@@ -4,10 +4,10 @@ output "primaries" {
   description = "The service account to be associated with the primaries."
 }
 
-output "internal_load_balancer" {
-  value = google_service_account.internal_load_balancer
+output "primaries_load_balancer" {
+  value = google_service_account.primaries_load_balancer
 
-  description = "The service account to be associated with the internal load balancer."
+  description = "The service account to be associated with the primaries load balancer."
 }
 
 output "secondaries" {

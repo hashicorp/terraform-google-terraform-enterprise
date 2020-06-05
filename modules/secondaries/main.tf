@@ -49,10 +49,6 @@ resource "google_compute_region_instance_group_manager" "main" {
     name = "install-dashboard"
     port = var.vpc_install_dashboard_tcp_port
   }
-  named_port {
-    name = "kubernetes"
-    port = var.vpc_kubernetes_tcp_port
-  }
 
   lifecycle {
     create_before_destroy = true

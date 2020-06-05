@@ -1,20 +1,16 @@
 resource "google_service_networking_connection" "main" {
-  provider = google-beta
-
   network                 = var.vpc_network_self_link
   reserved_peering_ranges = [var.vpc_address_name]
   service                 = "servicenetworking.googleapis.com"
 }
 
-resource "random_pet" "suffix" {
+resource "random_pet" "name" {
   length = 1
-  prefix = "-"
+  prefix = "${var.prefix}database"
 }
 
 resource "google_sql_database_instance" "main" {
-  provider = google-beta
-
-  name             = "${var.prefix}database${random_pet.suffix.id}"
+  name             = random_pet.name.id
   database_version = "POSTGRES_9_6"
   settings {
     tier = var.machine_type

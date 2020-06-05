@@ -1,9 +1,9 @@
 provider "google" {
-  version = "3.2.0"
+  version = "3.21.0"
 }
 
 provider "google-beta" {
-  version = "3.2.0"
+  version = "3.21.0"
 }
 
 provider "random" {
@@ -14,19 +14,6 @@ provider "template" {
   version = "2.1.0"
 }
 
-locals {
-  prefix_length = 1
-}
-
-resource "random_pet" "prefix" {
-  keepers = {
-    length = local.prefix_length
-  }
-  length    = local.prefix_length
-  prefix    = "tfe"
-  separator = "-"
-}
-
 module "terraform_enterprise" {
   source = "github.com/hashicorp/terraform-google-terraform-enterprise?ref=internal-preview"
 
@@ -34,5 +21,5 @@ module "terraform_enterprise" {
   dns_managed_zone          = var.dns_managed_zone
   dns_managed_zone_dns_name = var.dns_managed_zone_dns_name
 
-  prefix = "${random_pet.prefix.id}-"
+  prefix = var.prefix
 }

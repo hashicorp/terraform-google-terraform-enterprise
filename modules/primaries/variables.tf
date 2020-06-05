@@ -5,7 +5,7 @@ variable "cloud_init_configs" {
 
 variable "disk_image" {
   default     = "ubuntu-1804-lts"
-  description = "The image from which to initialize the compute instance disks. The supported images are: ubuntu-1604-lts; ubuntu-1804-lts; rhel-7."
+  description = "The image from which the main compute instance disks will be initialized. The supported images are: ubuntu-1604-lts; ubuntu-1804-lts; rhel-7."
   type        = string
 }
 
@@ -19,6 +19,12 @@ variable "labels" {
   default     = {}
   description = "The labels which will be applied to the compute instances."
   type        = map(string)
+}
+
+variable "load_balancer_disk_image" {
+  default     = "ubuntu-1804-lts"
+  description = "The image from which the load balancer compute instance disks will be initialized. Only images which include APT are supported."
+  type        = string
 }
 
 variable "machine_type" {
@@ -37,8 +43,18 @@ variable "service_account_email" {
   description = "The email address of the service account to be associated with the compute instances."
 }
 
+variable "service_account_load_balancer_email" {
+  type        = string
+  description = "The email address of the service account to be associated with the load balancer compute instances."
+}
+
 variable "vpc_application_tcp_port" {
   description = "The application TCP port."
+  type        = string
+}
+
+variable "vpc_cluster_assistant_tcp_port" {
+  description = "The Cluster Assistant TCP port."
   type        = string
 }
 

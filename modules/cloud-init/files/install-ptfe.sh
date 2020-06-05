@@ -214,7 +214,7 @@ if [ "x${role}x" == "xmainx" ]; then
     fi
 else
     # We do this before continuing so that the airgap_installer_url can reference
-    # the internal load balancer and retrieve files from the primary
+    # the load balancer and retrieve files from the primary
     echo "Waiting for cluster to start before continuing..."
     ptfe install join --role-id "$role_id" --health-url "$health_url" --wait-for-cluster
 fi

@@ -17,7 +17,7 @@ variable "etcd_tcp_port_ranges" {
 
 variable "health_check_ip_cidr_ranges" {
   default     = ["35.191.0.0/16", "130.211.0.0/22"]
-  description = "The list of GCP health check IP address ranges from which health check traffic will be authorized to flow, expressed in CIDR notation. The default ranges were obtained from the GCP Health Checks Overview: https://cloud.google.com/load-balancing/docs/health-check-concepts#ip-ranges."
+  description = "A list of GCP health check IP address ranges from which health check traffic will be authorized to flow. The values must be expressed in CIDR notation. The default values were obtained from the GCP Health Checks Overview article: https://cloud.google.com/load-balancing/docs/health-check-concepts#ip-ranges."
   type        = list(string)
 }
 
@@ -44,6 +44,12 @@ variable "prefix" {
   type        = string
 }
 
+variable "internal_load_balancer_subnetwork_ip_cidr_range" {
+  default     = "10.2.0.0/23"
+  description = "The range of IP addresses to provision in the internal load balancer subnetwork. The value must be expressed in CIDR notation. The default value was obtained from the GCP Proxy Only Subnets article: https://cloud.google.com/load-balancing/docs/l7-internal/proxy-only-subnets#proxy_only_subnet_create"
+  type        = string
+}
+
 variable "replicated_tcp_port_ranges" {
   default     = ["9870-9881"]
   description = "The Replicated TCP port ranges."
@@ -58,7 +64,7 @@ variable "ssh_tcp_port" {
 
 variable "subnetwork_ip_cidr_range" {
   default     = "10.1.0.0/16"
-  description = "The range of IP addresses to provision in the subnetwork, expressed in CIDR notation."
+  description = "The range of IP addresses to provision in the subnetwork. The value must be expressed in CIDR notation."
   type        = string
 }
 
@@ -67,9 +73,9 @@ variable "service_account_primaries_email" {
   description = "The email address of the service account associated with the primaries."
 }
 
-variable "service_account_internal_load_balancer_email" {
+variable "service_account_primaries_load_balancer_email" {
   type        = string
-  description = "The email address of the service account associated with the internal load balancer."
+  description = "The email address of the service account associated with the primaries load balancer."
 }
 
 variable "service_account_secondaries_email" {

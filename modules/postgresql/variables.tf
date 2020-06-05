@@ -28,11 +28,6 @@ variable "name" {
   type        = string
 }
 
-variable "vpc_network_self_link" {
-  description = "The self link of the network to which resources will be attached."
-  type        = string
-}
-
 variable "password" {
   default     = null
   description = "The password which will be used for authentication with the database. If no password is set then a password will be generated randomly."
@@ -45,7 +40,13 @@ variable "prefix" {
 }
 
 variable "vpc_address_name" {
-  type = string
+  description = "The name of the IP address which will be assigned to the database compute instance."
+  type        = string
+}
+
+variable "vpc_network_self_link" {
+  description = "The self link of the network to which resources will be attached."
+  type        = string
 }
 
 variable "username" {

@@ -93,15 +93,15 @@ terraform init
 
 # Create the service accounts.
 GOOGLE_PROJECT="$SERVICE_PROJECT" terraform apply \
--target module.service_account
+  -target module.service_account
 
 # Create the VPC.
 GOOGLE_PROJECT="$HOST_PROJECT" terraform apply \
--target module.host
+  -target module.host
 
 # Create the compute resources.
 GOOGLE_PROJECT="$SERVICE_PROJECT" terraform apply \
--target module.service
+  -target module.service
 
 # Obtain the outputs necessary to access the TFE Clustered deployment.
 terraform output
@@ -110,15 +110,15 @@ terraform output
 # This step may need to be repeated if destruction of the database
 # instance times out.
 GOOGLE_PROJECT="$SERVICE_PROJECT" terraform destroy \
--target module.service
+  -target module.service
 
 # Destroy the VPC.
 GOOGLE_PROJECT="$HOST_PROJECT" terraform destroy \
--target module.host
+  -target module.host
 
 # Destroy the service accounts.
 GOOGLE_PROJECT="$SERVICE_PROJECT" terraform destroy \
--target module.service_account
+  -target module.service_account
 ```
 
 [provisioning-shared-vpc]: https://cloud.google.com/vpc/docs/provisioning-shared-vpc

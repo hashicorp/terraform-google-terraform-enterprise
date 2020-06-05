@@ -1,6 +1,7 @@
+
 variable "labels" {
   default     = {}
-  description = "A collection of labels which will be applied to the compute instances."
+  description = "A collection of labels which will be applied to resources."
   type        = map(string)
 }
 
@@ -10,37 +11,37 @@ variable "prefix" {
 }
 
 variable "primaries_instance_groups_self_links" {
-  description = "The self links of the instance groups which comprise the primaries."
+  description = "The self links of the compute instance groups which comprise the primaries."
   type        = list(string)
 }
 
-variable "service_account_email" {
-  type        = string
-  description = "The email address of the service account which will be associated with the proxy compute instances."
-}
-
-variable "vpc_cluster_assistant_tcp_port" {
-  description = "The port over which Cluster Assistant TCP traffic will travel."
+variable "secondaries_instance_group_manager_instance_group" {
+  description = "The compute instance group of the secondaries."
   type        = string
 }
 
-variable "vpc_kubernetes_tcp_port" {
-  description = "The port over which Kubernetes TCP traffic will travel."
+variable "ssl_certificate" {
+  description = "The content of a SSL/TLS certificate to be attached to the load balancer. The content must be in PEM format. The certificate chain must be no greater than 5 certs long and it must include at least one intermediate cert."
+  type        = string
+}
+
+variable "ssl_certificate_private_key" {
+  description = "The content of the write-only private key of var.ssl_certificate. The content must be in PEM format."
+  type        = string
+}
+
+variable "vpc_application_tcp_port" {
+  description = "The application TCP port."
+  type        = string
+}
+
+variable "vpc_install_dashboard_tcp_port" {
+  description = "The install dashboard TCP port."
   type        = string
 }
 
 variable "vpc_network_self_link" {
   description = "The self link of the network to which resources will be attached."
-  type        = string
-}
-
-variable "vpc_subnetwork_ip_cidr_range" {
-  description = "The range from which IP addresses will be assigned to resources, expressed in CIDR notation. The range must be part of var.vpc_subnetwork_self_link."
-  type        = string
-}
-
-variable "vpc_subnetwork_project" {
-  description = "The ID of the project in which var.vpc_subnetwork_self_link exists."
   type        = string
 }
 
