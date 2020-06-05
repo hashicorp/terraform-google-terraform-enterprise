@@ -121,7 +121,7 @@ resource "google_compute_forwarding_rule" "main" {
 
 resource "google_compute_instance_template" "load_balancer" {
   disk {
-    source_image = "ubuntu-1804-lts"
+    source_image = var.load_balancer_disk_image
 
     auto_delete  = true
     boot         = true
