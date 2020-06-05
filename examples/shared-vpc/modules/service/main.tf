@@ -81,7 +81,7 @@ module "secondaries" {
   labels = var.labels
 }
 
-# Create an external load balancer which directs traffic to the primaries and to the secondaries and secondaries.
+# Create an external load balancer which directs traffic to the primaries and secondaries.
 module "external_load_balancer" {
   source = "github.com/hashicorp/terraform-google-terraform-enterprise?ref=internal-preview//modules/external-load-balancer"
 
