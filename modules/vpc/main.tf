@@ -57,9 +57,9 @@ resource "google_compute_route" "internet" {
 }
 
 resource "google_compute_global_address" "external_load_balancer" {
-  name = "${var.prefix}elb"
+  name = "${var.prefix}external-lb"
 
-  description = "The global address of the TFE external load balancer."
+  description = "Reserved for the TFE external load balancer."
 }
 
 resource "google_compute_global_address" "postgresql" {
@@ -67,10 +67,35 @@ resource "google_compute_global_address" "postgresql" {
 
   address       = "10.200.1.0"
   address_type  = "INTERNAL"
-  description   = "The global address of the TFE PostgreSQL database."
+  description   = "Reserved for the TFE PostgreSQL database."
   network       = google_compute_network.main.self_link
   prefix_length = 24
   purpose       = "VPC_PEERING"
+}
+
+resource "google_compute_address" "primaries" {
+  name = "${var.prefix}primaries"
+
+  address_type = "INTERNAL"
+  description  = "Reserved for the TFE primaries."
+  subnetwork   = google_compute_subnetwork.main.self_link
+}
+
+resource "google_compute_address" "primaries_load_balancer" {
+  name = "${var.prefix}primaries-lb"
+
+  address_type = "INTERNAL"
+  description  = "Reserved for the routers of the TFE primaries load balancer."
+  subnetwork   = google_compute_subnetwork.main.self_link
+}
+
+resource "google_compute_address" "internal_load_balancer" {
+  name = "${var.prefix}internal-lb"
+
+  address_type = "INTERNAL"
+  description  = "Reserved for the TFE internal load balancer."
+  purpose      = "GCE_ENDPOINT"
+  subnetwork   = google_compute_subnetwork.main.self_link
 }
 
 locals {

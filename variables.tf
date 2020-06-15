@@ -1,8 +1,3 @@
-variable "cloud_init_license_file" {
-  description = "The pathname of a Replicated license file for the application."
-  type        = string
-}
-
 variable "dns_managed_zone" {
   description = "The name of the managed DNS zone in which the application will be accessible."
   type        = string
@@ -17,6 +12,11 @@ variable "labels" {
   default     = {}
   description = "A collection of labels which will be applied to resources."
   type        = map(string)
+}
+
+variable "license_url" {
+  description = "The URL of a Replicated license file for the application."
+  type        = string
 }
 
 variable "prefix" {

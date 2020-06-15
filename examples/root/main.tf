@@ -15,11 +15,11 @@ provider "template" {
 }
 
 module "terraform_enterprise" {
-  source = "github.com/hashicorp/terraform-google-terraform-enterprise?ref=internal-preview"
+  source = "../.."
 
-  cloud_init_license_file   = var.cloud_init_license_file
   dns_managed_zone          = var.dns_managed_zone
   dns_managed_zone_dns_name = var.dns_managed_zone_dns_name
+  license_url               = var.license_url
 
   prefix = var.prefix
 }

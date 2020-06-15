@@ -35,10 +35,7 @@ resource "google_compute_instance" "main" {
   allow_stopping_for_update = true
   description               = "TFE primary ${count.index}."
   labels                    = var.labels
-  metadata = {
-    user-data          = var.cloud_init_configs[count.index]
-    user-data-encoding = "base64"
-  }
+  metadata                  = var.metadata[count.index]
   service_account {
     scopes = ["cloud-platform"]
 
@@ -98,20 +95,12 @@ resource "google_compute_region_backend_service" "main" {
   timeout_sec = 10
 }
 
-resource "google_compute_address" "main" {
-  name = local.name
-
-  address_type = "INTERNAL"
-  description  = "The private IP address for the TFE primaries."
-  subnetwork   = var.vpc_subnetwork_self_link
-}
-
 resource "google_compute_forwarding_rule" "main" {
   name = local.name
 
   backend_service       = google_compute_region_backend_service.main.self_link
   description           = "Forward to the TFE primaries traffic received by the private IP address."
-  ip_address            = google_compute_address.main.address
+  ip_address            = var.vpc_address
   ip_protocol           = "TCP"
   load_balancing_scheme = "INTERNAL"
   network               = var.vpc_network_self_link
@@ -138,7 +127,7 @@ resource "google_compute_instance_template" "load_balancer" {
     "${path.module}/templates/setup-proxy.tmpl",
     {
       vpc_cluster_assistant_tcp_port = var.vpc_cluster_assistant_tcp_port,
-      host                           = google_compute_address.main.address,
+      host                           = var.vpc_address,
       vpc_kubernetes_tcp_port        = var.vpc_kubernetes_tcp_port
     }
   )
@@ -206,20 +195,12 @@ resource "google_compute_region_backend_service" "load_balancer" {
   timeout_sec = 10
 }
 
-resource "google_compute_address" "load_balancer" {
-  name = local.load_balancer_name
-
-  address_type = "INTERNAL"
-  description  = "The internal IP address of the routers of the TFE primaries load balancer."
-  subnetwork   = var.vpc_subnetwork_self_link
-}
-
 resource "google_compute_forwarding_rule" "load_balancer" {
   name = local.load_balancer_name
 
   backend_service       = google_compute_region_backend_service.load_balancer.self_link
   description           = "Forward to the routers of the TFE primaries load balancer traffic received by the private IP address."
-  ip_address            = google_compute_address.load_balancer.address
+  ip_address            = var.vpc_load_balancer_address
   ip_protocol           = "TCP"
   load_balancing_scheme = "INTERNAL"
   network               = var.vpc_network_self_link

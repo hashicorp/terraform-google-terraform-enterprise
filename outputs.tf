@@ -5,7 +5,7 @@ output "application_url" {
 }
 
 output "install_dashboard_password" {
-  value = module.cloud_init.install_dashboard_password
+  value = module.metadata.install_dashboard_password
 
   description = "The generated password for the install dashboard."
 }

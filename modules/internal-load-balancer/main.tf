@@ -73,15 +73,6 @@ resource "google_compute_region_target_https_proxy" "application" {
   description = "TFE application traffic."
 }
 
-resource "google_compute_address" "main" {
-  name = local.application_name
-
-  address_type = "INTERNAL"
-  description  = "TFE."
-  purpose      = "GCE_ENDPOINT"
-  subnetwork   = var.vpc_subnetwork_self_link
-}
-
 resource "google_compute_forwarding_rule" "application" {
   name = local.application_name
 

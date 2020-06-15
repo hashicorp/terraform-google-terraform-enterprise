@@ -1,10 +1,5 @@
-variable "cloud_init_configs" {
-  description = "The cloud-init configurations for the compute instances."
-  type        = list(string)
-}
-
 variable "disk_image" {
-  default     = "ubuntu-1804-lts"
+  default     = "tfe-ubuntu-1804-2020-06-12-19-57-01"
   description = "The image from which the main compute instance disks will be initialized. The supported images are: ubuntu-1604-lts; ubuntu-1804-lts; rhel-7."
   type        = string
 }
@@ -33,6 +28,11 @@ variable "machine_type" {
   type        = string
 }
 
+variable "metadata" {
+  description = "The metadata for each of the main compute instances."
+  type        = list(map(string))
+}
+
 variable "prefix" {
   description = "The prefix which will be prepended to the names of resources."
   type        = string
@@ -46,6 +46,10 @@ variable "service_account_email" {
 variable "service_account_load_balancer_email" {
   type        = string
   description = "The email address of the service account to be associated with the load balancer compute instances."
+}
+
+variable "vpc_address" {
+  description = "The internal IP address to be attached to the main forwarding rule."
 }
 
 variable "vpc_application_tcp_port" {
@@ -65,6 +69,11 @@ variable "vpc_install_dashboard_tcp_port" {
 
 variable "vpc_kubernetes_tcp_port" {
   description = "The Kubernetes TCP port."
+  type        = string
+}
+
+variable "vpc_load_balancer_address" {
+  description = "The internal IP address to be attached to the load balancer forwarding rule."
   type        = string
 }
 

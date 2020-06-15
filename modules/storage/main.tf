@@ -5,8 +5,9 @@ locals {
 resource "google_storage_bucket" "main" {
   name = "${var.prefix}storage"
 
-  labels   = var.labels
-  location = var.location
+  bucket_policy_only = true
+  labels             = var.labels
+  location           = var.location
 }
 
 resource "google_storage_bucket_iam_member" "object_admin" {

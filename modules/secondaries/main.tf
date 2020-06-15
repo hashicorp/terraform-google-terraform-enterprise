@@ -17,10 +17,7 @@ resource "google_compute_instance_template" "main" {
   description    = "The template for compute instances in the TFE secondaries."
   name_prefix    = "${var.prefix}secondary-"
   labels         = var.labels
-  metadata = {
-    user-data          = var.cloud_init_config
-    user-data-encoding = "base64"
-  }
+  metadata       = var.metadata
   service_account {
     scopes = ["cloud-platform"]
 
@@ -32,9 +29,21 @@ resource "google_compute_instance_template" "main" {
   }
 }
 
+# This name is used to avoid the following issues while recreating the secondaries:
+# - a new instance group manager is created before the existing one is destoryed which causes a name collision
+# - the existing autoscaler target can not be changed but it does not automatically taint
+resource "random_pet" "group_manager_name" {
+  keepers = {
+    "template" = google_compute_instance_template.main.id
+  }
+  length    = 1
+  prefix    = "${var.prefix}secondaries"
+  separator = "-"
+}
+
 resource "google_compute_region_instance_group_manager" "main" {
   base_instance_name = "${var.prefix}secondary"
-  name               = "${var.prefix}secondaries"
+  name               = random_pet.group_manager_name.id
   region             = google_compute_instance_template.main.region
   version {
     instance_template = google_compute_instance_template.main.self_link
@@ -65,6 +74,6 @@ resource "google_compute_region_autoscaler" "main" {
       target = var.cpu_utilization_target
     }
   }
-  name   = "${var.prefix}secondaries"
+  name   = random_pet.group_manager_name.id
   target = google_compute_region_instance_group_manager.main.self_link
 }

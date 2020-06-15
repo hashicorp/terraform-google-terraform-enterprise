@@ -34,6 +34,12 @@ output "install_dashboard_tcp_port" {
   description = "The install dashboard TCP port."
 }
 
+output "internal_load_balancer_address" {
+  value = google_compute_address.internal_load_balancer
+
+  description = "The IP address to be attached to the internal load balancer."
+}
+
 output "kubernetes_tcp_port" {
   value = var.kubernetes_tcp_port
 
@@ -46,14 +52,28 @@ output "kubelet_tcp_port" {
   description = "The Kubelet TCP port."
 }
 
-output "postgresql_address" {
-  value = google_compute_global_address.postgresql
-}
-
 output "network" {
   value = google_compute_network.main
 
   description = "The network to which resources will be attached."
+}
+
+output "postgresql_address" {
+  value = google_compute_global_address.postgresql
+
+  description = "The internal IP address to be attached to the PostgreSQL database compute instance."
+}
+
+output "primaries_address" {
+  value = google_compute_address.primaries
+
+  description = "The internal IP address to be attached to the primaries compute instance group."
+}
+
+output "primaries_load_balancer_address" {
+  value = google_compute_address.primaries_load_balancer
+
+  description = "The internal IP address to be attached to the primaries load balancer."
 }
 
 output "replicated_tcp_port_ranges" {

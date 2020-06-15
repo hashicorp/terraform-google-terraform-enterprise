@@ -1,15 +1,10 @@
-variable "cloud_init_config" {
-  description = "The cloud-init configuration for the compute instances."
-  type        = string
-}
-
 variable "cpu_utilization_target" {
   default     = 0.7
   description = "The CPU utilization target of the compute instance group which will trigger the creation of an additional instance."
 }
 
 variable "disk_image" {
-  default     = "ubuntu-1804-lts"
+  default     = "tfe-ubuntu-1804-2020-06-12-19-57-01"
   description = "The image from which to initialize the compute instance disks. The supported images are: ubuntu-1604-lts; ubuntu-1804-lts; rhel-7."
   type        = string
 }
@@ -36,6 +31,11 @@ variable "max_instances" {
   default     = 5
   description = "The maximum count of compute instances to scale to based on var.cpu_utilization_target."
   type        = number
+}
+
+variable "metadata" {
+  description = "The metadata for all of the compute instances."
+  type        = map(string)
 }
 
 variable "min_instances" {
