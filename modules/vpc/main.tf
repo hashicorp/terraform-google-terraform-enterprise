@@ -41,6 +41,8 @@ resource "google_compute_router_nat" "main" {
     enable = true
     filter = "ERRORS_ONLY"
   }
+  # This value is based on preliminary load testing.
+  min_ports_per_vm = 320
   subnetwork {
     name                    = google_compute_subnetwork.main.name
     source_ip_ranges_to_nat = ["PRIMARY_IP_RANGE"]
