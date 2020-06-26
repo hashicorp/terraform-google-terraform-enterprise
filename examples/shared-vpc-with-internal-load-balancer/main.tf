@@ -13,6 +13,7 @@ module "host" {
   source = "./modules/host"
 
   prefix                                        = var.prefix
+  service_account_internal_load_balancer_email  = module.service_account.internal_load_balancer.email
   service_account_primaries_load_balancer_email = module.service_account.primaries_load_balancer.email
   service_account_primaries_email               = module.service_account.primaries.email
   service_account_secondaries_email             = module.service_account.secondaries.email
@@ -31,11 +32,13 @@ module "service" {
   dns_managed_zone                              = var.dns_managed_zone
   dns_managed_zone_dns_name                     = var.dns_managed_zone_dns_name
   prefix                                        = var.prefix
+  service_account_internal_load_balancer_email  = module.service_account.internal_load_balancer.email
   service_account_primaries_load_balancer_email = module.service_account.primaries_load_balancer.email
   service_account_primaries_email               = module.service_account.primaries.email
   service_account_secondaries_email             = module.service_account.secondaries.email
   service_account_storage_email                 = module.service_account.storage.email
   service_account_storage_key_private_key       = module.service_account.storage_key.private_key
+  ssl_bundle_file                               = var.ssl_bundle_file
   vpc_application_tcp_port                      = module.host.vpc.application_tcp_port
   vpc_cluster_assistant_tcp_port                = module.host.vpc.cluster_assistant_tcp_port
   vpc_etcd_tcp_port_ranges                      = module.host.vpc.etcd_tcp_port_ranges

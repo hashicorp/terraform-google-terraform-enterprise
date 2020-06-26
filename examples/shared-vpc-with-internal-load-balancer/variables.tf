@@ -20,19 +20,18 @@ variable "labels" {
 }
 
 variable "prefix" {
-  default     = "tfe-ilb-"
+  default     = "tfe-vpc-"
   description = "The prefix which will be prepended to the names of resources."
   type        = string
 }
 
-variable "ssl_certificate_file" {
-  default     = "./files/certificate.pem"
-  description = "The pathname of an SSL certificate to be used for application traffic authentication. The file must be in PEM format."
+variable "service_project" {
+  description = "The ID of the Shared VPC service project."
   type        = string
 }
 
-variable "ssl_certificate_private_key_file" {
-  default     = "./files/certificate-private-key.pem"
-  description = "The pathname of an SSL certificate private key associated with var.ssl_certificate_file. The file must be in PEM format."
+variable "ssl_bundle_file" {
+  default     = "./files/bundle.pem"
+  description = "The pathname of an SSL certificate and private key bundle to be used for application traffic authentication. The file must be in PEM format."
   type        = string
 }

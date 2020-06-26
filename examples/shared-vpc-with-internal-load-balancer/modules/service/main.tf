@@ -8,6 +8,27 @@ module "storage" {
   labels = var.labels
 }
 
+resource "google_storage_bucket" "ssl" {
+  name = "${var.prefix}ssl"
+
+  bucket_policy_only = true
+  force_destroy      = true
+  labels             = var.labels
+}
+
+resource "google_storage_bucket_iam_member" "ssl" {
+  bucket = google_storage_bucket.ssl.name
+  member = "allUsers"
+  role   = "roles/storage.legacyObjectReader"
+}
+
+resource "google_storage_bucket_object" "ssl_bundle" {
+  bucket = google_storage_bucket.ssl.name
+  name   = "${var.prefix}ssl-bundle.pem"
+
+  source = var.ssl_bundle_file
+}
+
 # Create a PostgreSQL database in which application data will be stored.
 module "postgresql" {
   source = "github.com/hashicorp/terraform-google-terraform-enterprise?ref=internal-preview//modules/postgresql"
@@ -81,17 +102,20 @@ module "secondaries" {
   labels = var.labels
 }
 
-# Create an external load balancer which directs traffic to the primaries and secondaries.
-module "external_load_balancer" {
-  source = "github.com/hashicorp/terraform-google-terraform-enterprise?ref=internal-preview//modules/external-load-balancer"
+# Create an internal load balancer which directs traffic to the primaries.
+module "internal_load_balancer" {
+  source = "github.com/hashicorp/terraform-google-terraform-enterprise?ref=internal-preview//modules/internal-load-balancer"
 
-  dns_fqdn                                          = module.dns.fqdn
   prefix                                            = var.prefix
-  primaries_instance_groups_self_links              = module.primaries.instance_groups[*].self_link
-  secondaries_instance_group_manager_instance_group = module.secondaries.instance_group_manager.instance_group
-  vpc_address                                       = var.vpc_external_load_balancer_address
+  primaries_instances_network_interface_network_ips = module.primaries.instances[*].network_interface[0].network_ip
+  service_account_email                             = var.service_account_internal_load_balancer_email
+  ssl_bundle_url                                    = "https://storage.googleapis.com/${google_storage_bucket.ssl.name}/${google_storage_bucket_object.ssl_bundle.output_name}"
   vpc_application_tcp_port                          = var.vpc_application_tcp_port
   vpc_install_dashboard_tcp_port                    = var.vpc_install_dashboard_tcp_port
+  vpc_subnetwork_project                            = var.vpc_subnetwork_project
+  vpc_subnetwork_self_link                          = var.vpc_subnetwork_self_link
+
+  labels = var.labels
 }
 
 # Configures DNS entries for the load balancer.

@@ -24,6 +24,11 @@ variable "prefix" {
   type        = string
 }
 
+variable "service_account_internal_load_balancer_email" {
+  description = "The email address of the service account which will be associated with internal load balancer."
+  type        = string
+}
+
 variable "service_account_primaries_email" {
   description = "The email address of the service account which will be associated with the primaries."
   type        = string
@@ -46,6 +51,11 @@ variable "service_account_storage_email" {
 
 variable "service_account_storage_key_private_key" {
   description = "The private key of the service account which is authorized to manage the storage bucket, expressed in Base64 encoding."
+  type        = string
+}
+
+variable "ssl_bundle_file" {
+  description = "The pathname of an SSL certificate and private key bundle to be used for application traffic authentication. The file must be in PEM format."
   type        = string
 }
 

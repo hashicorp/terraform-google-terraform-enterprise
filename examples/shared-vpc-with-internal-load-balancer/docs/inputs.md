@@ -10,4 +10,5 @@
 | service\_project | The ID of the Shared VPC service project. | `string` | n/a | yes |
 | labels | A collection of labels which will be applied to resources. | `map(string)` | `{}` | no |
 | prefix | The prefix which will be prepended to the names of resources. | `string` | `"tfe-vpc-"` | no |
+| ssl\_bundle\_file | The pathname of an SSL certificate and private key bundle to be used for application traffic authentication. The file must be in PEM format. | `string` | `"./files/bundle.pem"` | no |
 
