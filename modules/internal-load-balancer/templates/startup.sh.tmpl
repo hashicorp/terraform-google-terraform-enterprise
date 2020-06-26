@@ -1,0 +1,84 @@
+#!/bin/bash
+
+set -e -u -o pipefail
+
+apt-get update
+apt-get --yes install haproxy
+
+# This file is referenced in the HAProxy configuration.
+# https://ssl-config.mozilla.org/#server=haproxy&version=1.8.8&config=intermediate&openssl=1.1.1&guideline=5.4
+dh_param_file="/etc/haproxy/ffdhe2048.txt"
+curl --location https://ssl-config.mozilla.org/ffdhe2048.txt > "$${dh_param_file}"
+
+ssl_bundle_file="/etc/ssl/private/tfe.pem"
+curl --location ${ssl_bundle_url} > "$${ssl_bundle_file}"
+
+tee /etc/haproxy/haproxy.cfg <<EOF
+global
+    # Default Ubuntu 18.04 configuration
+    ca-base /etc/ssl/certs
+    chroot /var/lib/haproxy
+    crt-base /etc/ssl/private
+    daemon
+    group haproxy
+    log /dev/log local0
+    log /dev/log local1 notice
+    stats socket /run/haproxy/admin.sock mode 660 level admin expose-fd listeners
+    stats timeout 30s
+    user haproxy
+
+    # Mozilla Guideline v5.4, HAProxy 1.8.8, OpenSSL 1.1.1, intermediate configuration
+    # https://ssl-config.mozilla.org/#server=haproxy&version=1.8.8&config=intermediate&openssl=1.1.1&guideline=5.4
+    ssl-default-bind-ciphers ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384
+    ssl-default-bind-options no-sslv3 no-tlsv10 no-tlsv11 no-tls-tickets
+    ssl-default-server-ciphers ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384
+    ssl-default-server-options no-sslv3 no-tlsv10 no-tlsv11 no-tls-tickets
+    ssl-dh-param-file $${dh_param_file}
+
+defaults
+    # Default Ubuntu 18.04 configuration
+    errorfile 400 /etc/haproxy/errors/400.http
+    errorfile 403 /etc/haproxy/errors/403.http
+    errorfile 408 /etc/haproxy/errors/408.http
+    errorfile 500 /etc/haproxy/errors/500.http
+    errorfile 502 /etc/haproxy/errors/502.http
+    errorfile 503 /etc/haproxy/errors/503.http
+    errorfile 504 /etc/haproxy/errors/504.http
+    
+    log global
+    mode http
+    option dontlognull
+    option httplog
+    timeout client 50000
+    timeout connect 5000
+    timeout server 50000
+
+listen application
+    bind ${address}:${vpc_application_tcp_port} ssl crt $${ssl_bundle_file} alpn h2,http/1.1
+    default-server check check-ssl port ${vpc_application_tcp_port} ssl verify none
+    http-check disable-on-404
+    http-request add-header X-Forwarded-Proto https if { ssl_fc }
+    http-request set-header X-Forwarded-Port %[dst_port]
+    http-response set-header Strict-Transport-Security max-age=6307200
+    option forwardfor
+    option httpchk GET /_health_check HTTP/1.1\r\nHost:\ tfe
+    server primary-0 ${primary_0_address}:${vpc_application_tcp_port}
+    server primary-1 ${primary_1_address}:${vpc_application_tcp_port}
+    server primary-2 ${primary_2_address}:${vpc_application_tcp_port}
+
+listen install-dashboard
+    bind ${address}:${vpc_install_dashboard_tcp_port} ssl crt $${ssl_bundle_file} alpn h2,http/1.1
+    default-server check check-ssl port ${vpc_install_dashboard_tcp_port} ssl verify none
+    http-check disable-on-404
+    http-request add-header X-Forwarded-Proto https if { ssl_fc }
+    http-request set-header X-Forwarded-Port %[dst_port]
+    http-response set-header Strict-Transport-Security max-age=6307200
+    option forwardfor
+    # The install dashboard appears not to support HTTP/1.1
+    option httpchk GET / HTTP/1.0
+    server primary-0 ${primary_0_address}:${vpc_install_dashboard_tcp_port}
+    server primary-1 ${primary_1_address}:${vpc_install_dashboard_tcp_port}
+    server primary-2 ${primary_2_address}:${vpc_install_dashboard_tcp_port}
+EOF
+
+systemctl restart haproxy

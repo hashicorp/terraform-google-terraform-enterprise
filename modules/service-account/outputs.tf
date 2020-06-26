@@ -1,3 +1,9 @@
+output "internal_load_balancer" {
+  value = google_service_account.internal_load_balancer
+
+  description = "The service account to be associated with the internal load balancer."
+}
+
 output "primaries" {
   value = google_service_account.primaries
 

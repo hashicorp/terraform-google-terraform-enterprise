@@ -1,96 +1,61 @@
 locals {
-  application_name = "${var.prefix}private-application"
-}
-
-resource "google_compute_region_health_check" "application" {
-  provider = google-beta
-
-  name = local.application_name
-
-  check_interval_sec = 5
-  description        = "TFE application."
-  https_health_check {
-    port         = var.vpc_application_tcp_port
-    request_path = "/_health_check"
-  }
-  # Beta
-  log_config {
-    enable = true
-  }
-  timeout_sec = 4
-}
-
-resource "google_compute_region_backend_service" "application" {
-  health_checks = [google_compute_region_health_check.application.self_link]
-  name          = local.application_name
-
-  dynamic "backend" {
-    for_each = var.primaries_instance_groups_self_links
-    content {
-      group = backend.value
-
-      balancing_mode        = "RATE"
-      capacity_scaler       = 1.0
-      description           = "Some of the TFE primaries."
-      max_rate_per_instance = 333
-    }
-  }
-  backend {
-    group = var.secondaries_instance_group_manager_instance_group
-
-    balancing_mode        = "RATE"
-    capacity_scaler       = 1.0
-    description           = "The TFE secondaries."
-    max_rate_per_instance = 333
-  }
-  description           = "TFE application."
-  load_balancing_scheme = "INTERNAL_MANAGED"
-  port_name             = "application"
-  protocol              = "HTTPS"
-  timeout_sec           = 10
-}
-
-resource "google_compute_region_url_map" "application" {
-  name = local.application_name
-
-  default_service = google_compute_region_backend_service.application.self_link
-  description     = "TFE application requests."
-}
-
-resource "google_compute_region_ssl_certificate" "application" {
-  certificate = var.ssl_certificate
-  private_key = var.ssl_certificate_private_key
-
-  description = "TFE application."
-  name_prefix = var.prefix
-}
-
-resource "google_compute_region_target_https_proxy" "application" {
-  name             = local.application_name
-  ssl_certificates = [google_compute_region_ssl_certificate.application.self_link]
-  url_map          = google_compute_region_url_map.application.self_link
-
-  description = "TFE application traffic."
+  name = "${var.prefix}ilb"
 }
 
 resource "google_compute_address" "main" {
-  name = local.application_name
+  name = local.name
 
   address_type = "INTERNAL"
-  description  = "TFE."
-  purpose      = "GCE_ENDPOINT"
+  description  = "The private IP address for the TFE internal load balancer."
   subnetwork   = var.vpc_subnetwork_self_link
 }
 
-resource "google_compute_forwarding_rule" "application" {
-  name = local.application_name
+resource "google_compute_instance" "main" {
+  boot_disk {
+    initialize_params {
+      image = var.disk_image
+      size  = var.disk_size
+      type  = "pd-ssd"
+    }
+  }
+  machine_type = var.machine_type
+  name         = local.name
+  network_interface {
+    subnetwork         = var.vpc_subnetwork_self_link
+    subnetwork_project = var.vpc_subnetwork_project
 
-  description           = "The forwarding rule for TFE application traffic."
-  ip_address            = google_compute_address.main.address
-  ip_protocol           = "TCP"
-  load_balancing_scheme = "INTERNAL_MANAGED"
-  network               = var.vpc_network_self_link
-  port_range            = var.vpc_application_tcp_port
-  subnetwork            = var.vpc_subnetwork_self_link
-  target                = google_compute_region_target_https_proxy.application.self_link
+    network_ip = google_compute_address.main.address
+  }
+
+  allow_stopping_for_update = true
+  description               = "TFE internal load balancer."
+  labels                    = var.labels
+  metadata_startup_script = templatefile(
+    "${path.module}/templates/startup.sh.tmpl",
+    {
+      address                        = google_compute_address.main.address
+      primary_0_address              = var.primaries_instances_network_interface_network_ips[0]
+      primary_1_address              = var.primaries_instances_network_interface_network_ips[1]
+      primary_2_address              = var.primaries_instances_network_interface_network_ips[2]
+      ssl_bundle_url                 = var.ssl_bundle_url
+      vpc_application_tcp_port       = var.vpc_application_tcp_port
+      vpc_install_dashboard_tcp_port = var.vpc_install_dashboard_tcp_port
+    }
+  )
+  service_account {
+    scopes = ["cloud-platform"]
+
+    email = var.service_account_email
+  }
+}
+
+resource "google_compute_instance_group" "main" {
+  name        = local.name
+  description = "A group of compute instances which comprises the TFE internal load balancer."
+
+  instances = [google_compute_instance.main.self_link]
+  named_port {
+    name = "application"
+    port = var.vpc_application_tcp_port
+  }
 }

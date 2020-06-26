@@ -4,5 +4,5 @@
 
 | Name | Description |
 |------|-------------|
-| address | The internal IP address of the load balancer. |
+| instance | The compute instance which acts as the load balancer. |
 

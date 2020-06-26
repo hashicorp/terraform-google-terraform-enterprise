@@ -20,6 +20,7 @@ module "vpc" {
   source = "./modules/vpc"
 
   prefix                                        = var.prefix
+  service_account_internal_load_balancer_email  = module.service_account.internal_load_balancer.email
   service_account_primaries_load_balancer_email = module.service_account.primaries_load_balancer.email
   service_account_primaries_email               = module.service_account.primaries.email
   service_account_secondaries_email             = module.service_account.secondaries.email
