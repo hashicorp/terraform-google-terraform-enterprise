@@ -18,7 +18,7 @@ variable "labels" {
 
 variable "machine_type" {
   default     = "n1-standard-8"
-  description = "The identifier of the set of virtualized hardware resources which will be available to the compute instances."
+  description = "The identifier of the set of virtualized hardware resources which will be available to the compute instances. More details on machine types can be found at https://cloud.google.com/compute/docs/machine-types"
   type        = string
 }
 
