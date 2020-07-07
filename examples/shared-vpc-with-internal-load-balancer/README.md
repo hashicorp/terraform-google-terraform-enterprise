@@ -64,7 +64,7 @@ any instances attached to the subnetwork.
 
 The compute resources which comprise the majority of the TFE Clustered
 infrastructure are created in the service project, similar to a
-single-project deployment. The notable exception in the use of the
+single-project deployment. The notable exception is in the use of the
 internal load balancer submodule rather than the external load balancer
 submodule.
 
