@@ -2,7 +2,7 @@
 
 This example deploys Terraform Enterprise Clustered using
 [Shared VPC][shared-vpc] and an internal load balancer, demonstrating
-how Terraform Enterprise be deployed with no publicly-accessible endpoints in a GCP best-practices manner.
+how Terraform Enterprise can be deployed with no publicly-accessible endpoints in a GCP best-practices manner.
 
 Because there is no public endpoint on the deployment, this example is
 limited in utility unless the user has the ability to access internal
