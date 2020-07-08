@@ -131,6 +131,7 @@ openssl x509 \
   -out ./files/certificate.pem \
   -days 28
 
+# Bundle the certificate and the private key.
 cat ./files/certificate.pem ./files/certificate-private-key.pem \
   | tee ./files/bundle.pem
 
