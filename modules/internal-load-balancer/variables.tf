@@ -27,8 +27,9 @@ variable "prefix" {
   type        = string
 }
 
-variable "primaries_instances_network_interface_network_ips" {
-  type = list(string)
+variable "primaries_addresses" {
+  description = "The IP addresses of the primaries."
+  type        = list(string)
 }
 
 variable "service_account_email" {

@@ -58,12 +58,12 @@ module "application" {
 module "cloud_init" {
   source = "github.com/hashicorp/terraform-google-terraform-enterprise?ref=internal-preview//modules/cloud-init"
 
-  application_config              = module.application.config
-  primaries_load_balancer_address = module.primaries.load_balancer_address.address
-  license_file                    = var.cloud_init_license_file
-  vpc_cluster_assistant_tcp_port  = var.vpc_cluster_assistant_tcp_port
-  vpc_install_dashboard_tcp_port  = var.vpc_install_dashboard_tcp_port
-  vpc_kubernetes_tcp_port         = var.vpc_kubernetes_tcp_port
+  application_config                             = module.application.config
+  primaries_kubernetes_api_load_balancer_address = module.primaries.kubernetes_api_load_balancer_address.address
+  license_file                                   = var.cloud_init_license_file
+  vpc_cluster_assistant_tcp_port                 = var.vpc_cluster_assistant_tcp_port
+  vpc_install_dashboard_tcp_port                 = var.vpc_install_dashboard_tcp_port
+  vpc_kubernetes_tcp_port                        = var.vpc_kubernetes_tcp_port
 }
 
 # Create the primaries.
@@ -106,14 +106,14 @@ module "secondaries" {
 module "internal_load_balancer" {
   source = "github.com/hashicorp/terraform-google-terraform-enterprise?ref=internal-preview//modules/internal-load-balancer"
 
-  prefix                                            = var.prefix
-  primaries_instances_network_interface_network_ips = module.primaries.instances[*].network_interface[0].network_ip
-  service_account_email                             = var.service_account_internal_load_balancer_email
-  ssl_bundle_url                                    = "https://storage.googleapis.com/${google_storage_bucket.ssl.name}/${google_storage_bucket_object.ssl_bundle.output_name}"
-  vpc_application_tcp_port                          = var.vpc_application_tcp_port
-  vpc_install_dashboard_tcp_port                    = var.vpc_install_dashboard_tcp_port
-  vpc_subnetwork_project                            = var.vpc_subnetwork_project
-  vpc_subnetwork_self_link                          = var.vpc_subnetwork_self_link
+  prefix                         = var.prefix
+  primaries_addresses            = module.primaries.addresses[*].address
+  service_account_email          = var.service_account_internal_load_balancer_email
+  ssl_bundle_url                 = "https://storage.googleapis.com/${google_storage_bucket.ssl.name}/${google_storage_bucket_object.ssl_bundle.output_name}"
+  vpc_application_tcp_port       = var.vpc_application_tcp_port
+  vpc_install_dashboard_tcp_port = var.vpc_install_dashboard_tcp_port
+  vpc_subnetwork_project         = var.vpc_subnetwork_project
+  vpc_subnetwork_self_link       = var.vpc_subnetwork_self_link
 
   labels = var.labels
 }

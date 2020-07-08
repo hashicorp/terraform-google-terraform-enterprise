@@ -1,5 +1,5 @@
 locals {
-  assistant_host = "http://${var.primaries_load_balancer_address}:${var.vpc_cluster_assistant_tcp_port}"
+  assistant_host = "http://${var.primaries_kubernetes_api_load_balancer_address}:${var.vpc_cluster_assistant_tcp_port}"
   base_cloud_config = templatefile(
     "${path.module}/templates/base-cloud-config.yaml.tmpl",
     {
@@ -9,7 +9,7 @@ locals {
       bootstrap_token = (
         "${random_string.bootstrap_token_id.result}.${random_string.bootstrap_token_suffix.result}"
       )
-      cluster_api_endpoint    = "${var.primaries_load_balancer_address}:${var.vpc_kubernetes_tcp_port}"
+      cluster_api_endpoint    = "${var.primaries_kubernetes_api_load_balancer_address}:${var.vpc_kubernetes_tcp_port}"
       custom_ca_cert_url      = var.custom_ca_cert_url
       distribution            = var.distribution
       health_url              = "${local.assistant_host}/healthz"
@@ -58,7 +58,7 @@ locals {
           "169.254.169.254",
           "metadata",
           "metadata.google.internal",
-          var.primaries_load_balancer_address,
+          var.primaries_kubernetes_api_load_balancer_address,
           var.repl_cidr
         ]
       ),

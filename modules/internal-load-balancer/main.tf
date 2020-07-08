@@ -6,7 +6,7 @@ resource "google_compute_address" "main" {
   name = local.name
 
   address_type = "INTERNAL"
-  description  = "The private IP address for the TFE internal load balancer."
+  description  = "The internal IP address of the TFE internal load balancer."
   subnetwork   = var.vpc_subnetwork_self_link
 }
 
@@ -34,9 +34,9 @@ resource "google_compute_instance" "main" {
     "${path.module}/templates/startup.sh.tmpl",
     {
       address                        = google_compute_address.main.address
-      primary_0_address              = var.primaries_instances_network_interface_network_ips[0]
-      primary_1_address              = var.primaries_instances_network_interface_network_ips[1]
-      primary_2_address              = var.primaries_instances_network_interface_network_ips[2]
+      primary_0_address              = var.primaries_addresses[0]
+      primary_1_address              = var.primaries_addresses[1]
+      primary_2_address              = var.primaries_addresses[2]
       ssl_bundle_url                 = var.ssl_bundle_url
       vpc_application_tcp_port       = var.vpc_application_tcp_port
       vpc_install_dashboard_tcp_port = var.vpc_install_dashboard_tcp_port

@@ -5,7 +5,7 @@
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:-----:|
 | prefix | The prefix which will be prepended to the names of resources. | `string` | n/a | yes |
-| primaries\_instances\_network\_interface\_network\_ips | n/a | `list(string)` | n/a | yes |
+| primaries\_addresses | The IP addresses of the primaries. | `list(string)` | n/a | yes |
 | service\_account\_email | The email address of the service account to be associated with the compute instances. | `string` | n/a | yes |
 | ssl\_bundle\_url | The URL of an SSL certificate and private key bundle to be used for application traffic authentication. The file located at the URL must be in PEM format. | `string` | n/a | yes |
 | vpc\_application\_tcp\_port | The application TCP port. | `string` | n/a | yes |

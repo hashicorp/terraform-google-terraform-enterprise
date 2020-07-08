@@ -68,13 +68,13 @@ module "proxy" {
 module "cloud_init" {
   source = "github.com/hashicorp/terraform-google-terraform-enterprise?ref=internal-preview//modules/cloud-init"
 
-  application_config              = module.application.config
-  license_file                    = var.cloud_init_license_file
-  primaries_load_balancer_address = module.primaries.load_balancer_address.address
-  proxy_url                       = module.proxy.url
-  vpc_cluster_assistant_tcp_port  = module.vpc.cluster_assistant_tcp_port
-  vpc_install_dashboard_tcp_port  = module.vpc.install_dashboard_tcp_port
-  vpc_kubernetes_tcp_port         = module.vpc.kubernetes_tcp_port
+  application_config                             = module.application.config
+  license_file                                   = var.cloud_init_license_file
+  primaries_kubernetes_api_load_balancer_address = module.primaries.kubernetes_api_load_balancer_address.address
+  proxy_url                                      = module.proxy.url
+  vpc_cluster_assistant_tcp_port                 = module.vpc.cluster_assistant_tcp_port
+  vpc_install_dashboard_tcp_port                 = module.vpc.install_dashboard_tcp_port
+  vpc_kubernetes_tcp_port                        = module.vpc.kubernetes_tcp_port
 }
 
 # Create the primaries.
