@@ -63,13 +63,13 @@ any instances attached to the subnetwork.
 ### Service
 
 The compute resources which comprise the majority of the TFE Clustered
-infrastructure are created in the service project, similar to a
-single-project deployment. The notable exception is in the use of the
-internal load balancer submodule rather than the external load balancer
-submodule. This difference in load balancer submodule selection causes
-the TFE Clustered deployment to have no external IP address, which
-means that only traffic originating from within the Shared VPC network
-will be able to access the user interfaces.
+infrastructure are created in the service project. Unique to this
+example is the use of the internal load balancer submodule rather than
+the external load balancer submodule which is used by the root module.
+This difference in load balancer submodule selection causes the TFE
+Clustered deployment to have no external IP address, which means that
+only traffic originating from within the Shared VPC network will be
+able to access the user interfaces.
 
 ## Requirements
 
