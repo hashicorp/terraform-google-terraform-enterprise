@@ -131,22 +131,24 @@ openssl x509 \
   -out ./files/certificate.pem \
   -days 28
 
-# Bundle the certificate and the private key.
+# Bundle the certificate and the private key. The resulting bundle file
+# corresponds to the default value of the ssl_bundle_file Terraform
+# variable.
 cat ./files/certificate.pem ./files/certificate-private-key.pem \
   | tee ./files/bundle.pem
 
 # Initialize the working directory.
 terraform init
 
-# Create the service accounts.
+# Create the service accounts in the service project.
 GOOGLE_PROJECT="$SERVICE_PROJECT" terraform apply \
   -target module.service_account
 
-# Create the VPC.
+# Create the VPC in the host project.
 GOOGLE_PROJECT="$HOST_PROJECT" terraform apply \
   -target module.host
 
-# Create the compute resources.
+# Create the compute resources in the service project.
 GOOGLE_PROJECT="$SERVICE_PROJECT" terraform apply \
   -target module.service
 
@@ -167,17 +169,17 @@ gcloud compute ssh "$(terraform output internal_load_balancer)" \
 # or install dashboard as necessary.
 curl --insecure --location https://localhost:8443/session
 
-# Destroy the compute resources.
+# Destroy the compute resources in the service project.
 # This step may need to be repeated if destruction of the database
 # instance times out.
 GOOGLE_PROJECT="$SERVICE_PROJECT" terraform destroy \
   -target module.service
 
-# Destroy the VPC.
+# Destroy the VPC in the host project.
 GOOGLE_PROJECT="$HOST_PROJECT" terraform destroy \
   -target module.host
 
-# Destroy the service accounts.
+# Destroy the service accounts in the service project.
 GOOGLE_PROJECT="$SERVICE_PROJECT" terraform destroy \
   -target module.service_account
 ```
