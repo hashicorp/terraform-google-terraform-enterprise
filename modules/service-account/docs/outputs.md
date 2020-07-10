@@ -4,6 +4,7 @@
 
 | Name | Description |
 |------|-------------|
+| internal\_load\_balancer | The service account to be associated with the internal load balancer. |
 | primaries | The service account to be associated with the primaries. |
 | primaries\_load\_balancer | The service account to be associated with the primaries load balancer. |
 | secondaries | The service account to be associated with the secondaries. |

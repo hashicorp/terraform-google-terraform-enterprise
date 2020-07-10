@@ -1,8 +1,25 @@
+variable "disk_image" {
+  default     = "ubuntu-1804-lts"
+  description = "The image from which the main compute instance disks will be initialized. The supported images are: ubuntu-1604-lts; ubuntu-1804-lts; rhel-7."
+  type        = string
+}
+
+variable "disk_size" {
+  default     = 40
+  description = "The size of var.disk_image, expressed in units of gigabytes."
+  type        = number
+}
 
 variable "labels" {
   default     = {}
-  description = "A collection of labels which will be applied to resources."
+  description = "The labels which will be applied to the compute instances."
   type        = map(string)
+}
+
+variable "machine_type" {
+  default     = "n1-standard-8"
+  description = "The identifier of the set of virtualized hardware resources which will be available to the compute instances. More details on machine types can be found at https://cloud.google.com/compute/docs/machine-types"
+  type        = string
 }
 
 variable "prefix" {
@@ -10,23 +27,18 @@ variable "prefix" {
   type        = string
 }
 
-variable "primaries_instance_groups_self_links" {
-  description = "The self links of the compute instance groups which comprise the primaries."
+variable "primaries_addresses" {
+  description = "The IP addresses of the primaries."
   type        = list(string)
 }
 
-variable "secondaries_instance_group_manager_instance_group" {
-  description = "The compute instance group of the secondaries."
+variable "service_account_email" {
   type        = string
+  description = "The email address of the service account to be associated with the compute instances."
 }
 
-variable "ssl_certificate" {
-  description = "The content of a SSL/TLS certificate to be attached to the load balancer. The content must be in PEM format. The certificate chain must be no greater than 5 certs long and it must include at least one intermediate cert."
-  type        = string
-}
-
-variable "ssl_certificate_private_key" {
-  description = "The content of the write-only private key of var.ssl_certificate. The content must be in PEM format."
+variable "ssl_bundle_url" {
+  description = "The URL of an SSL certificate and private key bundle to be used for application traffic authentication. The file located at the URL must be in PEM format."
   type        = string
 }
 
@@ -40,12 +52,12 @@ variable "vpc_install_dashboard_tcp_port" {
   type        = string
 }
 
-variable "vpc_network_self_link" {
-  description = "The self link of the network to which resources will be attached."
+variable "vpc_subnetwork_self_link" {
+  description = "The self link of the subnetwork to which resources will be attached. The subnetwork must be part of var.vpc_network_self_link."
   type        = string
 }
 
-variable "vpc_subnetwork_self_link" {
-  description = "The self link of the subnetwork to which resources will be attached. The subnetwork must be part of var.vpc_network_self_link."
+variable "vpc_subnetwork_project" {
+  description = "The ID of the project in which var.vpc_subnetwork_self_link exists."
   type        = string
 }

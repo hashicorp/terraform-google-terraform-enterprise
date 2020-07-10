@@ -1,5 +1,5 @@
-output "address" {
-  value = google_compute_address.main
+output "instance" {
+  value = google_compute_instance.main
 
-  description = "The internal IP address of the load balancer."
+  description = "The compute instance which acts as the load balancer."
 }

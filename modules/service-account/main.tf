@@ -29,3 +29,10 @@ resource "google_service_account" "secondaries" {
   display_name = "TFE Secondaries"
   description  = "The identity to be associated with the TFE secondaries."
 }
+
+resource "google_service_account" "internal_load_balancer" {
+  account_id = "${var.prefix}haproxy"
+
+  description  = "The identity to be associated with the TFE internal load balancer."
+  display_name = "TFE internal load balancer"
+}

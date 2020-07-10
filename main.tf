@@ -20,6 +20,7 @@ module "vpc" {
   source = "./modules/vpc"
 
   prefix                                        = var.prefix
+  service_account_internal_load_balancer_email  = module.service_account.internal_load_balancer.email
   service_account_primaries_load_balancer_email = module.service_account.primaries_load_balancer.email
   service_account_primaries_email               = module.service_account.primaries.email
   service_account_secondaries_email             = module.service_account.secondaries.email
@@ -54,12 +55,12 @@ module "application" {
 module "cloud_init" {
   source = "./modules/cloud-init"
 
-  application_config              = module.application.config
-  primaries_load_balancer_address = module.primaries.load_balancer_address.address
-  license_file                    = var.cloud_init_license_file
-  vpc_cluster_assistant_tcp_port  = module.vpc.cluster_assistant_tcp_port
-  vpc_install_dashboard_tcp_port  = module.vpc.install_dashboard_tcp_port
-  vpc_kubernetes_tcp_port         = module.vpc.kubernetes_tcp_port
+  application_config                             = module.application.config
+  primaries_kubernetes_api_load_balancer_address = module.primaries.kubernetes_api_load_balancer_address.address
+  license_file                                   = var.cloud_init_license_file
+  vpc_cluster_assistant_tcp_port                 = module.vpc.cluster_assistant_tcp_port
+  vpc_install_dashboard_tcp_port                 = module.vpc.install_dashboard_tcp_port
+  vpc_kubernetes_tcp_port                        = module.vpc.kubernetes_tcp_port
 }
 
 # Create the primaries.

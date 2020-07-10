@@ -38,8 +38,8 @@ variable "license_file" {
   type        = string
 }
 
-variable "primaries_load_balancer_address" {
-  description = "The IP address of the primaries load balancer."
+variable "primaries_kubernetes_api_load_balancer_address" {
+  description = "The IP address of the primaries Kubernetes API load balancer."
   type        = string
 }
 
