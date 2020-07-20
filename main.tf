@@ -61,6 +61,7 @@ module "cloud_init" {
   vpc_cluster_assistant_tcp_port                 = module.vpc.cluster_assistant_tcp_port
   vpc_install_dashboard_tcp_port                 = module.vpc.install_dashboard_tcp_port
   vpc_kubernetes_tcp_port                        = module.vpc.kubernetes_tcp_port
+  release_sequence                               = var.release_sequence
 }
 
 # Create the primaries.

@@ -36,3 +36,9 @@ variable "secondaries_min_instances" {
   description = "The minimum count of compute instances to which the secondaries may scale. The default value is derived from the secondaries submodule."
   type        = number
 }
+
+variable "release_sequence" {
+  default     = ""
+  description = "The sequence identifier of the TFE version to which the cluster will be pinned."
+  type        = string
+}
