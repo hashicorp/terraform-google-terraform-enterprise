@@ -1,6 +1,6 @@
 {
 %{ if release_sequence != "latest" ~}
-    "ReleaseSequence":                   "${release_sequence}",
+    "ReleaseSequence":                   ${release_sequence},
 %{ endif ~}
     "HttpProxy":                         "${proxy_url}",
 %{ if airgap == true ~}

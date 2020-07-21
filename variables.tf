@@ -25,6 +25,12 @@ variable "prefix" {
   type        = string
 }
 
+variable "release_sequence" {
+  default     = "latest"
+  description = "The sequence identifier of the TFE version to which the cluster will be pinned."
+  type        = string
+}
+
 variable "secondaries_max_instances" {
   default     = 5
   description = "The maximum count of compute instances to which the secondaries may scale. The default value is derived from the secondaries submodule."

@@ -1,1 +1,1 @@
-/home/aaronlane/Documents/terraform-google-terraform-enterprise/versions.tf
+../../versions.tf
