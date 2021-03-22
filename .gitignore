@@ -1,0 +1,21 @@
+#  Local .terraform directories
+**/.terraform/*
+
+# .tfstate files
+*.tfstate
+*.tfstate.*
+*.lock.hcl
+
+# .tfvars files
+*.tfvars
+
+# Examples
+examples/*/*.tfstate
+examples/*/*.tfstate.*
+examples/*/*.tfvars
+examples/**/*.pem
+
+.DS_Store
+
+# Environment files
+*.env
