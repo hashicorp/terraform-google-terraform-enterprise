@@ -1,29 +1,34 @@
-output "application_endpoint" {
-  value       = "https://${var.frontend_dns}.${substr(data.google_dns_managed_zone.dnszone.dns_name, 0, length(data.google_dns_managed_zone.dnszone.dns_name) - 1)}"
-  description = "The URI to access the Terraform Enterprise Application."
+output "replicated_console_password" {
+  value       = module.user_data.replicated_dashboard_password
+  description = "Generated password for replicated dashboard"
 }
 
-output "application_health_check" {
-  value       = "https://${var.frontend_dns}.${substr(data.google_dns_managed_zone.dnszone.dns_name, 0, length(data.google_dns_managed_zone.dnszone.dns_name) - 1)}/_health_check"
-  description = "The URI for the Terraform Enterprise Application health check."
+output "lb_address" {
+  value       = local.lb_address
+  description = "Load Balancer Address"
 }
 
-output "installer_dashboard_password" {
-  value       = "${random_pet.console_password.id}"
-  description = "The password to access the installer dashboard."
+output "login_url" {
+  value       = "https://${local.hostname}/admin/account/new?token=${module.user_data.user_token.value}"
+  description = "Login URL to setup the TFE instance once it is initialized"
 }
 
-output "installer_dashboard_url" {
-  value       = "https://${google_compute_instance.primary.0.network_interface.0.access_config.0.nat_ip}:8800"
-  description = "The URL to access the installer dashboard."
+output "network" {
+  value       = local.network
+  description = "The name of the VPC network to which TFE is attached."
 }
 
-output "primary_public_ip" {
-  value       = "${var.public_ip}"
-  description = "The Public IP for the load balancer to use."
+output "service_account_email" {
+  value       = module.service_accounts.email
+  description = "The email address of the service account associated with the TFE instance."
 }
 
-output "encryption_password" {
-  value       = "${local.encryption_password}"
-  description = "If you did not specify an encryption password, this was used."
+output "subnetwork" {
+  value       = local.subnetwork
+  description = "The name of the VPC subnetwork to which TFE is attached."
+}
+
+output "dns_configuration_notice" {
+  value       = "If you are using external DNS, please make sure to create a DNS record using the lb_address output that has been provided"
+  description = "A warning message."
 }
