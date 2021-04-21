@@ -124,8 +124,11 @@ variable "redis_use_tls" {
 variable "airgap_url" {
   default = ""
 }
+
 variable "release_sequence" {
-  default = ""
+  description = "Release sequence of Terraform Enterprise to install."
+  type        = number
+  default     = 0
 }
 
 
