@@ -124,6 +124,7 @@ module "user_data" {
   redis_pass              = module.redis.password
   redis_port              = module.redis.port
   redis_use_password_auth = var.redis_auth_enabled
+  release_sequence        = var.release_sequence
   active_active           = local.active_active
   proxy_ip                = var.proxy_ip
   proxy_cert              = local.proxy_cert

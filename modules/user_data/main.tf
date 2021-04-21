@@ -254,7 +254,7 @@ locals {
   is_airgap      = var.airgap_url != "" ? local.airgap_config : {}
   is_letsencrypt = var.letsencrypt_email != "" ? local.letsencrypt_config : {}
   is_generic_tls = var.server_cert_path != "" ? local.generic_tls_config : {}
-  is_pinned      = var.release_sequence != "" ? local.release_pin_config : {}
+  is_pinned      = var.release_sequence != 0 ? local.release_pin_config : {}
 
   repl_configs = jsonencode(merge(local.replicated_base_config, local.is_airgap, local.is_letsencrypt, local.is_generic_tls, local.is_pinned))
 }

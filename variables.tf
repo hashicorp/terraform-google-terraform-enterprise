@@ -102,6 +102,12 @@ variable "redis_memory_size" {
   default     = 6
   description = "Redis memory size in GiB"
 }
+# REPLICATED VARS
+variable "release_sequence" {
+  description = "Release sequence of Terraform Enterprise to install."
+  type        = number
+  default     = 0
+}
 # VM VARS
 variable "vm_machine_type" {
   default     = "n1-standard-4"
