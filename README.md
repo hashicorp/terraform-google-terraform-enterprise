@@ -76,9 +76,11 @@ module "tfe_node" {
   dns_zone_name        = "<Name of the DNS zone in which a record set will be created>"
 }
 ```
+
 - Run `terraform init` and `terraform apply`
 
 Notes:
+
 - The `google-beta` provider is required to create the subnetwork that is reserved for Internal HTTP(S) Load Balancing.
 - If you are managing DNS outside of Cloud DNS:
   - Module will output resulting load balancer IP address as `lb_address`
@@ -106,13 +108,13 @@ This module will create all infrastructure resources required to install Terrafo
 
 The resources created are:
 
-* VPC with public and private subnets
-* PostgreSQL instance
-* Redis cache
-* Google Storage Bucket
-* Load Balancer
-* Service Account for fetching storage objects
-* Instances and Instance group manager
+- VPC with public and private subnets
+- PostgreSQL instance
+- Redis cache
+- Google Storage Bucket
+- Load Balancer
+- Service Account for fetching storage objects
+- Instances and Instance group manager
 
 ## Examples
 
@@ -126,4 +128,5 @@ Note: If you destroy and recreate the infrastructure, you will need to update th
 
 ## License
 
-This code is released under the Mozilla Public License 2.0. Please see [LICENSE](https://github.com/hashicorp/terraform-aws-consul-oss/blob/master/LICENSE) for more details.
+This code is released under the Mozilla Public License 2.0. Please see [LICENSE](https://github.com/hashicorp/terraform-google-terraform-enterprise/blob/main/LICENSE)
+for more details.
