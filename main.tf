@@ -190,8 +190,8 @@ module "load_balancer" {
 }
 
 locals {
-  lb_address = var.load_balancer == "PUBLIC" ? module.load_balancer.0.address : (
-    var.load_balancer == "PRIVATE" ? module.private_load_balancer.0.address : module.private_tcp_load_balancer.0.address
-  )
+  lb_address = (var.load_balancer == "PUBLIC" ? module.load_balancer[0] : (
+    var.load_balancer == "PRIVATE" ? module.private_load_balancer[0] : module.private_tcp_load_balancer[0]
+  )).address
   hostname = var.dns_create_record ? var.fqdn : local.lb_address
 }
