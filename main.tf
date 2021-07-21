@@ -93,16 +93,21 @@ module "database" {
 
 module "redis" {
   source = "./modules/redis"
+  count  = local.active_active ? 1 : 0
 
   auth_enabled = var.redis_auth_enabled
   namespace    = var.namespace
   memory_size  = var.redis_memory_size
   network      = local.network
-  enabled      = local.active_active
 }
 
 locals {
   proxy_cert = length(google_storage_bucket_object.proxy_cert) > 0 ? google_storage_bucket_object.proxy_cert[0].name : ""
+  redis = length(module.redis) > 0 ? module.redis[0] : {
+    host     = ""
+    password = ""
+    port     = ""
+  }
 }
 
 module "user_data" {
@@ -120,9 +125,9 @@ module "user_data" {
   pg_user                 = module.database.user
   pg_password             = module.database.password
   pg_extra_params         = "sslmode=require"
-  redis_host              = module.redis.host
-  redis_pass              = module.redis.password
-  redis_port              = module.redis.port
+  redis_host              = local.redis.host
+  redis_pass              = local.redis.password
+  redis_port              = local.redis.port
   redis_use_password_auth = var.redis_auth_enabled
   release_sequence        = var.release_sequence
   active_active           = local.active_active
