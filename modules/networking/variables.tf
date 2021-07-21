@@ -5,7 +5,7 @@ variable "namespace" {
 
 variable "subnet_range" {
   description = <<-EOD
-  The range of IP addresses for the subnetwork to which the Terraform Enterprise deployment will be attached; this
+  The range of IP addresses for the subnetwork to which Terraform Enterprise will be attached; this
   range must be expressed in CIDR format.
   EOD
   type        = string

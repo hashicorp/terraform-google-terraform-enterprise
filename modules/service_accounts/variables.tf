@@ -1,5 +1,5 @@
 variable "bucket" {
-  description = "The self link of the storage bucket in which the Terraform Enterprise deployment stores data."
+  description = "The self link of the storage bucket in which Terraform Enterprise stores data."
   type        = string
 }
 
