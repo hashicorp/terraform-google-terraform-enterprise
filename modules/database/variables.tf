@@ -45,6 +45,6 @@ variable "labels" {
 }
 
 variable "network" {
-  description = "The self-link of the network to which resources will be attached."
+  description = "The self link of the network to which resources will be attached."
   type        = string
 }

@@ -67,12 +67,12 @@ variable "networking_ip_allow_list" {
 }
 variable "network" {
   default     = ""
-  description = "Pre-existing network self-link"
+  description = "Pre-existing network self link"
   type        = string
 }
 variable "subnetwork" {
   default     = ""
-  description = "Pre-existing subnetwork self-link"
+  description = "Pre-existing subnetwork self link"
   type        = string
 }
 variable "load_balancer" {
