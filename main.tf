@@ -114,7 +114,6 @@ module "user_data" {
   source = "./modules/user_data"
 
   fqdn                    = var.fqdn
-  install_id              = ""
   airgap_url              = ""
   gcs_bucket              = module.object_storage.bucket
   gcs_credentials         = module.service_accounts.credentials
