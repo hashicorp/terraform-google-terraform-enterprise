@@ -56,7 +56,7 @@ variable "networking_reserve_subnet_range" {
   default     = "10.1.0.0/16"
   description = <<-EOD
   The range of IP addresses to reserve for the subnetwork dedicated to internal HTTPS load balancing, expressed in CIDR
-  notation.
+  format.
   EOD
   type        = string
 }
