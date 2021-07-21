@@ -59,13 +59,13 @@ resource "google_compute_region_instance_group_manager" "main" {
   dynamic "auto_healing_policies" {
     for_each = var.auto_healing_enabled ? ["one"] : []
     content {
-      health_check      = google_compute_health_check.tfe-instance-health.self_link
+      health_check      = google_compute_health_check.tfe_instance_health.self_link
       initial_delay_sec = 600
     }
   }
 }
 
-resource "google_compute_health_check" "tfe-instance-health" {
+resource "google_compute_health_check" "tfe_instance_health" {
   name                = "${var.namespace}-tfe-health-check"
   check_interval_sec  = 60
   timeout_sec         = 10
