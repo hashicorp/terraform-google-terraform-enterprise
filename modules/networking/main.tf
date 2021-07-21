@@ -56,7 +56,7 @@ resource "google_compute_firewall" "tfe" {
   source_ranges = var.ip_allow_list
 }
 
-resource "google_compute_firewall" "lb-healthchecks" {
+resource "google_compute_firewall" "lb_healthchecks" {
   name          = "${var.namespace}-lb-healthcheck-firewall"
   network       = google_compute_network.tfe_vpc.name
   source_ranges = concat([google_compute_subnetwork.tfe_subnet.ip_cidr_range], var.healthcheck_ips)
