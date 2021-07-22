@@ -12,13 +12,13 @@ resource "google_service_account_key" "key" {
   service_account_id = google_service_account.main.name
 }
 
-resource "google_storage_bucket_iam_member" "member-object" {
+resource "google_storage_bucket_iam_member" "member_object" {
   bucket = var.bucket
   role   = "roles/storage.objectAdmin"
   member = "serviceAccount:${google_service_account.main.email}"
 }
 
-resource "google_storage_bucket_iam_member" "member-bucket" {
+resource "google_storage_bucket_iam_member" "member_bucket" {
   bucket = var.bucket
   role   = "roles/storage.legacyBucketReader"
   member = "serviceAccount:${google_service_account.main.email}"

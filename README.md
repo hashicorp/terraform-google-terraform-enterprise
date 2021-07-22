@@ -55,16 +55,6 @@ If you are using a service account to authenticate calls to Google Cloud APIs, t
   of the required variables:
 
 ```hcl
-provider "google" {
-  project = "<your GCP project>"
-  region  = "<your GCP region>"
-}
-
-provider "google-beta" {
-  project = "<your GCP project>"
-  region  = "<your GCP region>"
-}
-
 module "tfe_node" {
   source               = "git@github.com:hashicorp/espd-tfe-gcp.git"
   namespace            = "<Namespace to uniquely identify resources>"

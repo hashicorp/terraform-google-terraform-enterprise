@@ -98,7 +98,7 @@ locals {
     }
 
     install_id = {
-      value = random_id.install_id.hex # var.install_id
+      value = random_id.install_id.hex
     }
 
     installation_type = {

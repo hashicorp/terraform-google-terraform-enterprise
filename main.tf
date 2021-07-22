@@ -93,23 +93,27 @@ module "database" {
 
 module "redis" {
   source = "./modules/redis"
+  count  = local.active_active ? 1 : 0
 
   auth_enabled = var.redis_auth_enabled
   namespace    = var.namespace
   memory_size  = var.redis_memory_size
   network      = local.network
-  enabled      = local.active_active
 }
 
 locals {
   proxy_cert = length(google_storage_bucket_object.proxy_cert) > 0 ? google_storage_bucket_object.proxy_cert[0].name : ""
+  redis = length(module.redis) > 0 ? module.redis[0] : {
+    host     = ""
+    password = ""
+    port     = ""
+  }
 }
 
 module "user_data" {
   source = "./modules/user_data"
 
   fqdn                    = var.fqdn
-  install_id              = ""
   airgap_url              = ""
   gcs_bucket              = module.object_storage.bucket
   gcs_credentials         = module.service_accounts.credentials
@@ -120,9 +124,9 @@ module "user_data" {
   pg_user                 = module.database.user
   pg_password             = module.database.password
   pg_extra_params         = "sslmode=require"
-  redis_host              = module.redis.host
-  redis_pass              = module.redis.password
-  redis_port              = module.redis.port
+  redis_host              = local.redis.host
+  redis_pass              = local.redis.password
+  redis_port              = local.redis.port
   redis_use_password_auth = var.redis_auth_enabled
   release_sequence        = var.release_sequence
   active_active           = local.active_active
@@ -147,7 +151,7 @@ module "vm" {
   service_account         = module.service_accounts.email
   node_count              = var.node_count
 
-  // This is to prevent deleting the database user before the vm is completely destroyed
+  # This is to prevent deleting the database user before the vm is completely destroyed
   depends_on = [
     module.database
   ]
@@ -185,13 +189,12 @@ module "load_balancer" {
   instance_group       = module.vm.instance_group
   ssl_certificate_name = var.ssl_certificate_name
   dns_zone_name        = var.dns_zone_name
-  subnet               = local.subnetwork
   dns_create_record    = var.dns_create_record
 }
 
 locals {
-  lb_address = var.load_balancer == "PUBLIC" ? module.load_balancer.0.address : (
-    var.load_balancer == "PRIVATE" ? module.private_load_balancer.0.address : module.private_tcp_load_balancer.0.address
-  )
+  lb_address = (var.load_balancer == "PUBLIC" ? module.load_balancer[0] : (
+    var.load_balancer == "PRIVATE" ? module.private_load_balancer[0] : module.private_tcp_load_balancer[0]
+  )).address
   hostname = var.dns_create_record ? var.fqdn : local.lb_address
 }

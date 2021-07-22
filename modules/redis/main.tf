@@ -3,7 +3,6 @@ resource "random_pet" "redis" {
 }
 
 resource "google_redis_instance" "redis" {
-  count          = var.enabled ? 1 : 0
   name           = "${var.namespace}-tfe-${random_pet.redis.id}"
   tier           = "STANDARD_HA"
   memory_size_gb = var.memory_size

@@ -1,15 +1,3 @@
-provider "google" {
-  credentials = file(var.credentials_file)
-  project     = var.project
-  region      = var.region
-}
-
-provider "google-beta" {
-  credentials = file(var.credentials_file)
-  project     = var.project
-  region      = var.region
-}
-
 resource "tls_locally_signed_cert" "main" {
   cert_request_pem      = tls_cert_request.main.cert_request_pem
   ca_key_algorithm      = tls_private_key.ca.algorithm
