@@ -174,10 +174,10 @@ variable "ssl_certificate_name" {
 }
 
 variable "iact_subnet_list" {
-  default = []
+  default     = []
   description = <<-EOD
   A list of IP address ranges which will be authorized to access the IACT. The ranges must be expressed
-  in CIDR format.
+  in CIDR notation.
   EOD
   type        = list(string)
 }

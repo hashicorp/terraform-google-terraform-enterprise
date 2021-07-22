@@ -11,7 +11,7 @@ variable "fqdn" {
 variable "iact_subnet_list" {
   description = <<-EOD
   A list of IP address ranges which will be authorized to access the IACT. The ranges must be expressed
-  in CIDR format.
+  in CIDR notation.
   EOD
   type        = list(string)
 }
