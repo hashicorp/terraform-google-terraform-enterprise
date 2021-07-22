@@ -128,12 +128,13 @@ data "google_compute_image" "rhel" {
 module "tfe" {
   source = "../.."
 
-  dns_zone_name    = var.dns_zone_name
-  fqdn             = var.fqdn
-  namespace        = var.namespace
-  node_count       = 2
-  tfe_license_name = "bank.rli"
-  tfe_license_path = var.tfe_license_path
+  dns_zone_name        = var.dns_zone_name
+  fqdn                 = var.fqdn
+  namespace            = var.namespace
+  node_count           = 2
+  ssl_certificate_name = var.ssl_certificate_name
+  tfe_license_name     = "bank.rli"
+  tfe_license_path     = var.tfe_license_path
 
   load_balancer           = "PRIVATE_TCP"
   networking_subnet_range = local.subnet_range
