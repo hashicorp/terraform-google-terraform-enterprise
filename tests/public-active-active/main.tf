@@ -3,6 +3,11 @@ resource "random_pet" "main" {
   prefix    = "paa"
   separator = "-"
 }
+
+data "google_dns_managed_zone" "main" {
+  name = var.dns_zone_name
+}
+
 data "google_compute_image" "ubuntu" {
   name = "ubuntu-2004-focal-v20210211"
 
@@ -13,6 +18,7 @@ module "tfe" {
   source = "../.."
 
   dns_zone_name        = var.dns_zone_name
+  fqdn                 = "${random_pet.main.id}.${trimsuffix(data.google_dns_managed_zone.main.dns_name, ".")}"
   namespace            = random_pet.main.id
   node_count           = 2
   tfe_license_name     = "startup.rli"

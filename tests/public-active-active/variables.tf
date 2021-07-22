@@ -3,11 +3,6 @@ variable "dns_zone_name" {
   type        = string
 }
 
-variable "fqdn" {
-  description = "The fully qualified domain name which will be assigned to the DNS record."
-  type        = string
-}
-
 variable "iact_subnet_list" {
   description = <<-EOD
   A list of IP address ranges which will be authorized to access the IACT. The ranges must be expressed
