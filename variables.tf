@@ -172,3 +172,12 @@ variable "ssl_certificate_name" {
   description = "Name of the created managed SSL certificate. Required when load_balancer == \"PUBLIC\" or load_balancer == \"PRIVATE\"."
   type        = string
 }
+
+variable "iact_subnet_list" {
+  default = []
+  description = <<-EOD
+  A list of IP address ranges which will be authorized to access the IACT. The ranges must be expressed
+  in CIDR format.
+  EOD
+  type        = list(string)
+}

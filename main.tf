@@ -134,6 +134,7 @@ module "user_data" {
   proxy_cert              = local.proxy_cert
   namespace               = var.namespace
   no_proxy                = [var.fqdn, var.networking_subnet_range]
+  iact_subnet_list        = var.iact_subnet_list
 }
 
 module "vm" {
