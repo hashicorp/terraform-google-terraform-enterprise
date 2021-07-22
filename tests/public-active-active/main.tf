@@ -1,3 +1,8 @@
+resource "random_pet" "main" {
+  length    = 2
+  prefix    = "paa"
+  separator = "-"
+}
 data "google_compute_image" "ubuntu" {
   name = "ubuntu-2004-focal-v20210211"
 
@@ -8,8 +13,7 @@ module "tfe" {
   source = "../.."
 
   dns_zone_name        = var.dns_zone_name
-  fqdn                 = var.fqdn
-  namespace            = var.namespace
+  namespace            = random_pet.main.id
   node_count           = 2
   tfe_license_name     = "startup.rli"
   tfe_license_path     = var.tfe_license_path

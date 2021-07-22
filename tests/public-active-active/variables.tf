@@ -16,11 +16,6 @@ variable "iact_subnet_list" {
   type        = list(string)
 }
 
-variable "namespace" {
-  description = "A prefix which will be applied to all resource names."
-  type        = string
-}
-
 variable "ssl_certificate_name" {
   description = <<-EOD
   The name of an existing SSL certificate which will be used to authenticate connections to the load balancer.
