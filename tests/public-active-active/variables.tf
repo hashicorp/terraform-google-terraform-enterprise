@@ -8,6 +8,14 @@ variable "fqdn" {
   type        = string
 }
 
+variable "iact_subnet_list" {
+  description = <<-EOD
+  A list of IP address ranges which will be authorized to access the IACT. The ranges must be expressed
+  in CIDR format.
+  EOD
+  type        = list(string)
+}
+
 variable "namespace" {
   description = "A prefix which will be applied to all resource names."
   type        = string

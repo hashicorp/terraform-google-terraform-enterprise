@@ -15,6 +15,7 @@ module "tfe" {
   tfe_license_path     = var.tfe_license_path
   ssl_certificate_name = var.ssl_certificate_name
 
+  iact_subnet_list     = var.iact_subnet_list
   load_balancer        = "PUBLIC"
   redis_auth_enabled   = false
   vm_disk_source_image = data.google_compute_image.ubuntu.self_link
