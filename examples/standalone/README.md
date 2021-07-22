@@ -4,7 +4,6 @@
 
 This example provisions a [Standalone](https://www.terraform.io/docs/enterprise/before-installing/reference-architecture/gcp.html#implementation-modes) TFE instance with minimal required inputs. This is the standard implementation for Terraform Enterprise and will create the base architecture with a single application node.
 
-
 ## How to Use This Module
 
 Set the `node_count` input value to 1 to implement Standalone mode.
@@ -12,16 +11,6 @@ Set the `node_count` input value to 1 to implement Standalone mode.
 Create a Terraform configuration that pulls in this module and specifies values of the required variables:
 
 ```hcl
-provider "google" {
-  project = "<your GCP project>"
-  region  = "<your GCP region>"
-}
-
-provider "google-beta" {
-  project = "<your GCP project>"
-  region  = "<your GCP region>"
-}
-
 module "tfe_node" {
   source               = "git@github.com:hashicorp/espd-tfe-gcp.git"
   namespace            = "<Namespace to uniquely identify resources>"

@@ -14,16 +14,6 @@ To define addresses that can be reached without the proxy, configure the `no_pro
 - Create a Terraform configuration that pulls in this module and specifies values of the required variables:
 
 ```hcl
-provider "google" {
-  project = "<your GCP project>"
-  region  = "<your GCP region>"
-}
-
-provider "google-beta" {
-  project = "<your GCP project>"
-  region  = "<your GCP region>"
-}
-
 module "tfe_node" {
   source               = "git@github.com:hashicorp/espd-tfe-gcp.git"
   namespace            = "<Namespace to uniquely identify resources>"

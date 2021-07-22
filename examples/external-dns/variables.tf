@@ -1,20 +1,3 @@
-variable "project" {
-  description = "The GCP project in which resources will be created."
-  type        = string
-}
-
-variable "region" {
-  description = "The GCP region in which resources will be created."
-  type        = string
-}
-
-variable "credentials_file" {
-  description = <<-EOD
-  The pathname of the service account key file that will be used to authenticate the google provider against GCP.
-  EOD
-  type        = string
-}
-
 variable "namespace" {
   description = "A prefix which will be applied to all resource names."
   type        = string
