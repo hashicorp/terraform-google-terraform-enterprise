@@ -103,12 +103,11 @@ variable "hairpin_addressing" {
 }
 
 variable "iact_subnet_list" {
-  default     = ""
   description = <<-EOD
   A list of IP address ranges which will be authorized to access the IACT. The ranges must be expressed
-  in CIDR format and the list must be a comma-separated string, like "10.0.1.0/24,172.16.4.0/24".
+  in CIDR format.
   EOD
-  type        = string
+  type        = list(string)
 }
 variable "iact_subnet_time_limit" {
   default     = ""

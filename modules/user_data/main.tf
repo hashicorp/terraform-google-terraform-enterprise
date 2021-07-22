@@ -90,7 +90,7 @@ locals {
     }
 
     iact_subnet_list = {
-      value = var.iact_subnet_list
+      value = join(",", var.iact_subnet_list)
     }
 
     iact_subnet_time_limit = {
