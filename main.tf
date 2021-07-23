@@ -197,4 +197,5 @@ locals {
     var.load_balancer == "PRIVATE" ? module.private_load_balancer[0] : module.private_tcp_load_balancer[0]
   )).address
   hostname = var.dns_create_record ? var.fqdn : local.lb_address
+  base_url = "https://${local.hostname}/"
 }
