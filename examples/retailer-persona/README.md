@@ -7,19 +7,19 @@ of the Retailer persona.
 
 Traits of the Retailer persona include:
 
-* Active/Active mode
+- Active/Active mode
 
-* a medium VM machine type (n1-standard-16)
+- a medium VM machine type (n1-standard-16)
 
-* Red Hat 7.8 as the VM image
+- Red Hat 7.8 as the VM image
 
-* a privately accessible HTTP load balancer with TLS termination
+- a privately accessible HTTP load balancer with TLS termination
 
-* a proxy server with TLS pass-through
+- a proxy server with TLS pass-through
 
-* Redis authentication
+- Redis authentication
 
-* no Redis encryption in transit
+- no Redis encryption in transit
 
 ## How to Use This Module
 
@@ -36,8 +36,7 @@ module "tfe" {
   fqdn                 = "<Fully qualified domain name>"
   namespace            = "<Namespace to uniquely identify resources>"
   node_count           = 2
-  tfe_license_name     = "<Name of the license>"
-  tfe_license_path     = "<Local path to the TFE license>"
+  license_secret       = "<Secret Manager secret comprising license>
   ssl_certificate_name = "<Name of the SSL certificate provisioned in GCP>"
 
   load_balancer        = "PRIVATE"
@@ -93,7 +92,7 @@ the browser or operating system in use, but in Firefox, this can be
 configured in:
 
 > Preferences > Network Settings > Manual proxy configuration >
-SOCKS: Host; Port
+> SOCKS: Host; Port
 
 Fourth, the URL from the login_url Terraform output can be accessed
 through the browser to start using the deployment. It is expected that
@@ -104,7 +103,9 @@ attaches a self-signed certificate to the internal load balancer.
 
 `namespace` - Namespace to uniquely identify resources. Used in name prefixes
 
-`tfe_license_path` - Local path to the TFE license
+`license_secret` - The Secret Manager secret which comprises the
+Base64 encoded Replicated license file. The Terraform provider calls
+this value the secret_id and the GCP UI calls it the name.
 
 `dns_zone_name` - Name of the DNS zone in which a record set will be
 created

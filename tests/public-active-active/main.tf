@@ -21,8 +21,7 @@ module "tfe" {
   fqdn                 = "${random_pet.main.id}.${trimsuffix(data.google_dns_managed_zone.main.dns_name, ".")}"
   namespace            = random_pet.main.id
   node_count           = 2
-  tfe_license_name     = "startup.rli"
-  tfe_license_path     = var.tfe_license_path
+  license_secret       = var.license_secret
   ssl_certificate_name = var.ssl_certificate_name
 
   iact_subnet_list     = var.iact_subnet_list

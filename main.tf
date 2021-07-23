@@ -35,10 +35,8 @@ locals {
 module "object_storage" {
   source = "./modules/object_storage"
 
-  namespace    = var.namespace
-  labels       = local.labels
-  license_name = var.tfe_license_name
-  license_path = var.tfe_license_path
+  namespace = var.namespace
+  labels    = local.labels
 }
 
 resource "google_storage_bucket_object" "proxy_cert" {
@@ -118,7 +116,7 @@ module "user_data" {
   gcs_bucket              = module.object_storage.bucket
   gcs_credentials         = module.service_accounts.credentials
   gcs_project             = module.object_storage.project
-  tfe_license             = var.tfe_license_name
+  license_secret          = var.license_secret
   pg_netloc               = module.database.netloc
   pg_dbname               = module.database.dbname
   pg_user                 = module.database.user

@@ -70,7 +70,8 @@ cp ./ptfe-settings.json.updated /etc/ptfe-settings.json
 %{ endif ~}
 
 # Retrieve license
-http_proxy="" https_proxy="" gsutil cp "gs://${bucket_name}/${tfe_license}" /etc/ptfe-license.rli
+http_proxy="" https_proxy="" gcloud secrets versions access latest --secret="${license_secret}" | \
+  base64 --decode --ignore-garbage > ${license_file_location}
 
 %{ if airgap_url != "" ~}
 # Retrieve airgap config

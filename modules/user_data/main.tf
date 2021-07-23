@@ -208,15 +208,14 @@ locals {
       value = "placement_gcs"
     }
   }
-}
 
-locals {
+  license_file_location = "/etc/ptfe-license.rli"
   replicated_base_config = {
     BypassPreflightChecks        = true
     DaemonAuthenticationPassword = random_string.password.result
     DaemonAuthenticationType     = "password"
     ImportSettingsFrom           = "/etc/ptfe-settings.json"
-    LicenseFileLocation          = "/etc/ptfe-license.rli"
+    LicenseFileLocation          = local.license_file_location
     TlsBootstrapType             = "self-signed"
     TlsBootstrapHostname         = var.fqdn
   }
@@ -240,40 +239,35 @@ locals {
   release_pin_config = {
     ReleaseSequence = var.release_sequence
   }
-}
 
-## Build tfe config json
-locals {
+  # Build tfe config json
   # take all the partials and merge them into the base configs, if false, merging empty map is noop
   is_redis_configs = var.active_active ? local.redis_configs : {}
   tfe_configs      = jsonencode(merge(local.base_configs, local.base_external_configs, local.external_google_configs, local.is_redis_configs))
-}
 
-## build replicated config json
-locals {
+  # build replicated config json
   is_airgap      = var.airgap_url != "" ? local.airgap_config : {}
   is_letsencrypt = var.letsencrypt_email != "" ? local.letsencrypt_config : {}
   is_generic_tls = var.server_cert_path != "" ? local.generic_tls_config : {}
   is_pinned      = var.release_sequence != 0 ? local.release_pin_config : {}
 
   repl_configs = jsonencode(merge(local.replicated_base_config, local.is_airgap, local.is_letsencrypt, local.is_generic_tls, local.is_pinned))
-}
 
-locals {
   user_data = templatefile(
     "${path.module}/templates/tfe_vm.sh.tpl",
     {
-      airgap_url         = var.airgap_url
-      docker_config      = filebase64("${path.module}/files/daemon.json")
-      bucket_name        = var.gcs_bucket
-      tfe_license        = var.tfe_license
-      monitoring_enabled = var.monitoring_enabled
-      replicated         = base64encode(local.repl_configs)
-      settings           = base64encode(local.tfe_configs)
-      active_active      = var.active_active
-      namespace          = var.namespace
-      proxy_ip           = var.proxy_ip
-      proxy_cert         = var.proxy_cert
+      airgap_url            = var.airgap_url
+      docker_config         = filebase64("${path.module}/files/daemon.json")
+      bucket_name           = var.gcs_bucket
+      license_file_location = local.license_file_location
+      license_secret        = var.license_secret
+      monitoring_enabled    = var.monitoring_enabled
+      replicated            = base64encode(local.repl_configs)
+      settings              = base64encode(local.tfe_configs)
+      active_active         = var.active_active
+      namespace             = var.namespace
+      proxy_ip              = var.proxy_ip
+      proxy_cert            = var.proxy_cert
       no_proxy = join(
         ",",
         concat(

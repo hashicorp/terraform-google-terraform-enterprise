@@ -133,8 +133,7 @@ module "tfe" {
   namespace            = var.namespace
   node_count           = 2
   ssl_certificate_name = var.ssl_certificate_name
-  tfe_license_name     = "bank.rli"
-  tfe_license_path     = var.tfe_license_path
+  license_secret       = var.license_secret
 
   load_balancer           = "PRIVATE_TCP"
   networking_subnet_range = local.subnet_range

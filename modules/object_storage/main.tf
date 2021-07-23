@@ -8,9 +8,3 @@ resource "google_storage_bucket" "tfe" {
 
   labels = var.labels
 }
-
-resource "google_storage_bucket_object" "license" {
-  name   = var.license_name
-  source = var.license_path
-  bucket = google_storage_bucket.tfe.name
-}

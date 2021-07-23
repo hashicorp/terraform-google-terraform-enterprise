@@ -3,15 +3,11 @@ variable "namespace" {
   type        = string
 }
 
-variable "tfe_license_name" {
+
+variable "license_secret" {
   description = <<-EOD
-  The name that will be assigned to the Replicated license file when it is uploaded to the storage bucket.
-  EOD
-  type        = string
-}
-variable "tfe_license_path" {
-  description = <<-EOD
-  The pathname of the Replicated license file that will be used to authorize the Terraform Enterprise installation.
+  The Secret Manager secret which comprises the Base64 encoded Replicated license file. The Terraform provider calls
+  this value the secret_id and the GCP UI calls it the name.
   EOD
   type        = string
 }
