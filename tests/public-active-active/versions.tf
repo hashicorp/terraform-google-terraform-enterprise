@@ -12,4 +12,12 @@ terraform {
       version = "~> 3.0"
     }
   }
+
+  backend "remote" {
+    organization = "terraform-enterprise-modules-test"
+
+    workspaces {
+      name = "google-public-active-active"
+    }
+  }
 }
