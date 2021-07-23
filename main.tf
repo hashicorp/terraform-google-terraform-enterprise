@@ -49,8 +49,9 @@ resource "google_storage_bucket_object" "proxy_cert" {
 module "service_accounts" {
   source = "./modules/service_accounts"
 
-  bucket    = module.object_storage.bucket
-  namespace = var.namespace
+  bucket         = module.object_storage.bucket
+  license_secret = var.license_secret
+  namespace      = var.namespace
 }
 
 locals {
