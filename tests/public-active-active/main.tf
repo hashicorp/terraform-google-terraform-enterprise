@@ -1,5 +1,5 @@
 resource "random_pet" "main" {
-  length    = 2
+  length    = 1
   prefix    = "paa"
   separator = "-"
 }
