@@ -18,7 +18,7 @@ module "tfe" {
   source = "../.."
 
   dns_zone_name        = var.dns_zone_name
-  fqdn                 = "${random_pet.main.id}.${trimsuffix(data.google_dns_managed_zone.main.dns_name, ".")}"
+  fqdn                 = "public-active-active.${trimsuffix(data.google_dns_managed_zone.main.dns_name, ".")}"
   namespace            = random_pet.main.id
   node_count           = 2
   license_secret       = var.license_secret
