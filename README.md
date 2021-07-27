@@ -46,6 +46,7 @@ If you are using a service account to authenticate calls to Google Cloud APIs, t
 - [Basic Editor role](https://cloud.google.com/iam/docs/understanding-roles#basic-definitions)
 - [Service Networking Admin](https://cloud.google.com/iam/docs/understanding-roles#service-networking-roles)
 - [Project IAM Admin](https://cloud.google.com/iam/docs/understanding-roles#resource-manager-roles)
+- [Secret Manager Admin](https://cloud.google.com/iam/docs/understanding-roles#secret-manager-roles)
 
 ## How to Use This Module
 
