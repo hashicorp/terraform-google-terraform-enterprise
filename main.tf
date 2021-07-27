@@ -63,6 +63,7 @@ module "networking" {
 
   count = local.network_module_enabled
 
+  active_active        = local.active_active
   namespace            = var.namespace
   subnet_range         = var.networking_subnet_range
   reserve_subnet_range = var.networking_reserve_subnet_range
@@ -139,6 +140,7 @@ module "user_data" {
 module "vm" {
   source = "./modules/vm"
 
+  active_active           = local.active_active
   namespace               = var.namespace
   machine_type            = var.vm_machine_type
   disk_size               = var.vm_disk_size

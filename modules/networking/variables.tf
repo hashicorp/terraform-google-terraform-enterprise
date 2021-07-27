@@ -1,3 +1,8 @@
+variable "active_active" {
+  description = "A toggle which controls support for deploying Terraform Enterprise in Active/Active mode."
+  type        = bool
+}
+
 variable "namespace" {
   description = "A prefix will be applied to all resource names."
   type        = string

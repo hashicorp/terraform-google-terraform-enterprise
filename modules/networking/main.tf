@@ -37,6 +37,11 @@ resource "google_compute_router_nat" "nat" {
   }
 }
 
+locals {
+  standalone_ports    = ["80", "443", "8800"]
+  active_active_ports = ["80", "443"]
+  ports               = var.active_active ? local.active_active_ports : local.standalone_ports
+}
 
 resource "google_compute_firewall" "tfe" {
   name    = "${var.namespace}-firewall"
@@ -50,7 +55,7 @@ resource "google_compute_firewall" "tfe" {
 
   allow {
     protocol = "tcp"
-    ports    = concat(["80", "443", "6443", "8800", "23010"], var.firewall_ports)
+    ports    = concat(local.ports, var.firewall_ports)
   }
 
   source_ranges = var.ip_allow_list
