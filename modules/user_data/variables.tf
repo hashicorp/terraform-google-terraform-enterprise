@@ -114,12 +114,12 @@ variable "iact_subnet_list" {
   EOD
   type        = list(string)
 }
+
 variable "iact_subnet_time_limit" {
-  default     = ""
   description = <<-EOD
   The time limit for IP addresses from iact_subnet_list to access the IACT. The value must be expressed in minutes.
   EOD
-  type        = string
+  type        = number
 }
 
 variable "tbw_image" {

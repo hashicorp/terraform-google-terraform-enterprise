@@ -94,7 +94,7 @@ locals {
     }
 
     iact_subnet_time_limit = {
-      value = var.iact_subnet_time_limit
+      value = var.iact_subnet_time_limit != null ? tostring(var.iact_subnet_time_limit) : ""
     }
 
     install_id = {
