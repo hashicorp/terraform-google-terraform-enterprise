@@ -42,7 +42,4 @@ resource "google_sql_user" "tfe" {
 
   deletion_policy = "ABANDON"
   password        = random_string.postgres_password.result
-
-  # Needs to be deleted before the instance gets deleted
-  depends_on = [google_sql_database_instance.tfe]
 }
