@@ -24,7 +24,7 @@ module "tfe" {
   license_secret       = var.license_secret
   ssl_certificate_name = var.ssl_certificate_name
 
-  iact_subnet_list       = concat(var.iact_subnet_list, ["172.19.0.0/16"])
+  iact_subnet_list       = var.iact_subnet_list
   iact_subnet_time_limit = 1440
   load_balancer          = "PUBLIC"
   redis_auth_enabled     = false
