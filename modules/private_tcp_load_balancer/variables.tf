@@ -13,6 +13,11 @@ variable "instance_group" {
   type        = string
 }
 
+variable "ip_address" {
+  description = "The IP address which will be assigned to the load balancer."
+  type        = string
+}
+
 variable "dns_zone_name" {
   description = "The name of the DNS zone in which a record will be created."
   type        = string

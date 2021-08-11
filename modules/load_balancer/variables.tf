@@ -13,6 +13,11 @@ variable "instance_group" {
   type        = string
 }
 
+variable "ip_address" {
+  description = "The IP address which will be assigned to the load balancer."
+  type        = string
+}
+
 variable "ssl_certificate_name" {
   description = <<-EOD
   The name of an existing SSL certificate which will be used to authenticate connections to the load balancer.

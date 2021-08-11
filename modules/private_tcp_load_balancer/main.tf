@@ -1,17 +1,10 @@
-resource "google_compute_address" "internal" {
-  name         = "${var.namespace}-tfe-internal-tcp-lb"
-  subnetwork   = var.subnet
-  address_type = "INTERNAL"
-  purpose      = "GCE_ENDPOINT"
-}
-
 resource "google_dns_record_set" "main" {
   count = var.dns_create_record ? 1 : 0
 
   managed_zone = var.dns_zone_name
   # The name must end with a ".".
   name    = "${var.fqdn}."
-  rrdatas = [google_compute_address.internal.address]
+  rrdatas = [var.ip_address]
   ttl     = 300
   type    = "A"
 }
@@ -51,7 +44,7 @@ resource "google_compute_forwarding_rule" "lb" {
   name = "${var.namespace}-tfe-internal-tcp-lb"
 
   backend_service       = google_compute_region_backend_service.lb.self_link
-  ip_address            = google_compute_address.internal.address
+  ip_address            = var.ip_address
   ip_protocol           = "TCP"
   load_balancing_scheme = "INTERNAL"
   # network               = google_compute_region_backend_service.lb.network

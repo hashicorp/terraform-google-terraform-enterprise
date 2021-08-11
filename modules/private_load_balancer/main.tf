@@ -1,16 +1,9 @@
-resource "google_compute_address" "internal" {
-  name         = "${var.namespace}-tfe-internal-lb"
-  subnetwork   = var.subnet
-  address_type = "INTERNAL"
-  purpose      = "GCE_ENDPOINT"
-}
-
 resource "google_dns_record_set" "main" {
   count        = var.dns_create_record ? 1 : 0
   managed_zone = var.dns_zone_name
   # The name must end with a ".".
   name    = "${var.fqdn}."
-  rrdatas = [google_compute_address.internal.address]
+  rrdatas = [var.ip_address]
   ttl     = 300
   type    = "A"
 }
@@ -65,7 +58,7 @@ resource "google_compute_region_target_https_proxy" "lb" {
 
 resource "google_compute_forwarding_rule" "lb" {
   name                  = "${var.namespace}-tfe-internal-lb"
-  ip_address            = google_compute_address.internal.address
+  ip_address            = var.ip_address
   ip_protocol           = "TCP"
   load_balancing_scheme = "INTERNAL_MANAGED"
   port_range            = 443

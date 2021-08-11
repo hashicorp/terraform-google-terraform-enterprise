@@ -153,12 +153,21 @@ module "vm" {
   auto_healing_enabled    = var.vm_auto_healing_enabled
   service_account         = module.service_accounts.email
   node_count              = var.node_count
+}
 
+resource "google_compute_address" "private" {
+  count = var.load_balancer != "PUBLIC" ? 1 : 0
+
+  name         = "${var.namespace}-tfe-private-lb"
+  subnetwork   = local.subnetwork
+  address_type = "INTERNAL"
+  purpose      = "GCE_ENDPOINT"
 }
 
 module "private_load_balancer" {
-  count                = var.load_balancer == "PRIVATE" ? 1 : 0
-  source               = "./modules/private_load_balancer"
+  count  = var.load_balancer == "PRIVATE" ? 1 : 0
+  source = "./modules/private_load_balancer"
+
   namespace            = var.namespace
   fqdn                 = var.fqdn
   instance_group       = module.vm.instance_group
@@ -166,6 +175,7 @@ module "private_load_balancer" {
   dns_zone_name        = var.dns_zone_name
   subnet               = local.subnetwork
   dns_create_record    = var.dns_create_record
+  ip_address           = google_compute_address.private[0].address
 }
 
 module "private_tcp_load_balancer" {
@@ -178,23 +188,35 @@ module "private_tcp_load_balancer" {
   dns_zone_name     = var.dns_zone_name
   subnet            = local.subnetwork
   dns_create_record = var.dns_create_record
+  ip_address        = google_compute_address.private[0].address
+}
+
+
+resource "google_compute_global_address" "public" {
+  count = var.load_balancer == "PUBLIC" ? 1 : 0
+
+  name = "${var.namespace}-tfe-public-lb"
+
+  description = "The global address of the public load balancer for TFE."
 }
 
 module "load_balancer" {
-  count                = var.load_balancer == "PUBLIC" ? 1 : 0
-  source               = "./modules/load_balancer"
+  count  = var.load_balancer == "PUBLIC" ? 1 : 0
+  source = "./modules/load_balancer"
+
   namespace            = var.namespace
   fqdn                 = var.fqdn
   instance_group       = module.vm.instance_group
   ssl_certificate_name = var.ssl_certificate_name
   dns_zone_name        = var.dns_zone_name
   dns_create_record    = var.dns_create_record
+  ip_address           = google_compute_global_address.public[0].address
 }
 
 locals {
-  lb_address = (var.load_balancer == "PUBLIC" ? module.load_balancer[0] : (
-    var.load_balancer == "PRIVATE" ? module.private_load_balancer[0] : module.private_tcp_load_balancer[0]
-  )).address
+  lb_address = (
+    length(google_compute_address.private) > 0 ? google_compute_address.private : google_compute_global_address.public
+  )[0].address
   hostname = var.dns_create_record ? var.fqdn : local.lb_address
   base_url = "https://${local.hostname}/"
 }
