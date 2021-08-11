@@ -187,3 +187,12 @@ variable "iact_subnet_time_limit" {
   EOD
   type        = number
 }
+
+variable "trusted_proxies" {
+  default     = []
+  description = <<-EOD
+  A list of IP address ranges which will be considered safe to ignore when evaluating the IP addresses of requests like
+  those made to the IACT endpoint.
+  EOD
+  type        = list(string)
+}

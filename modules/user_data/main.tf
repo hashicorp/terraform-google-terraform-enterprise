@@ -134,6 +134,10 @@ locals {
       value = var.tls_vers
     }
 
+    trusted_proxies = {
+      value = join(",", var.trusted_proxies)
+    }
+
     user_token = {
       value = random_id.user_token.hex
     }

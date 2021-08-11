@@ -148,6 +148,13 @@ variable "tls_vers" {
   }
 }
 
+variable "trusted_proxies" {
+  description = <<-EOD
+  A list of IP address ranges which will be considered safe to ignore when evaluating the IP addresses of requests like
+  those made to the IACT endpoint.
+  EOD
+  type        = list(string)
+}
 
 ## Base External Configs
 
