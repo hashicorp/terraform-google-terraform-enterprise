@@ -154,10 +154,6 @@ module "vm" {
   service_account         = module.service_accounts.email
   node_count              = var.node_count
 
-  # This is to prevent deleting the database user before the vm is completely destroyed
-  depends_on = [
-    module.database
-  ]
 }
 
 module "private_load_balancer" {
