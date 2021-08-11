@@ -136,6 +136,11 @@ module "user_data" {
   no_proxy                = [var.fqdn, var.networking_subnet_range]
   iact_subnet_list        = var.iact_subnet_list
   iact_subnet_time_limit  = var.iact_subnet_time_limit
+  trusted_proxies = concat(
+    var.trusted_proxies,
+    # Include IP address ranges of the load balancer and the Google Front End service
+    ["${local.lb_address}/32", "130.211.0.0/22", "35.191.0.0/16"]
+  )
 }
 
 module "vm" {
