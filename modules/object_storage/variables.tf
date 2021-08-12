@@ -8,6 +8,12 @@ variable "labels" {
   type        = map(string)
 }
 
+variable "location" {
+  description = "Location of the GCS bucket"
+  type        = string
+  default     = "us"
+}
+
 variable "license_name" {
   description = <<-EOD
   The name that will be assigned to the Replicated license file when it is uploaded to the storage bucket.
