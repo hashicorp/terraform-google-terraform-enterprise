@@ -6,5 +6,6 @@ resource "google_storage_bucket" "tfe" {
   name     = "${var.namespace}-storage-${random_pet.gcs.id}"
   location = "us"
 
-  labels = var.labels
+  force_destroy = true
+  labels        = var.labels
 }
