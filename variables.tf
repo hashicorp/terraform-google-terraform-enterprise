@@ -17,7 +17,7 @@ variable "node_count" {
   description = "Number of TFE nodes. Between 1 and 5"
   type        = number
   validation {
-    condition     = var.node_count <= 5
+    condition     = var.node_count <= 2
     error_message = "The node_count value must be less than or equal to 5."
   }
 }

@@ -25,7 +25,7 @@ This module is intended to run in a GCP project with minimal preparation, howeve
 
 The SSL certificate for the TFE load balancer is a pre-requisite for this module.
 
-The certificate can be provisioned in [GCP here](https://console.cloud.google.com/net-services/loadbalancing/advanced/sslCertificates/list) either by creating a managed GCP certificate or by uploading an existing certificate.
+The certificate can be provisioned in [GCP here](https://console.cloud.google.com/net-services/loadbalancing/advanced/sslCertificates/list) either by creating a managed GCP certificate or by uploading an existing certificate. To upload your own certificate, you need to use the advanced menu to manage the load balancer resources.
 
 For more information on provisioning certificates in GCP, read the [documentation here](https://cloud.google.com/load-balancing/docs/ssl-certificates/google-managed-certs).
 
