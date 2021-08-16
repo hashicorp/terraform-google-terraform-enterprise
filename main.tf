@@ -180,7 +180,7 @@ module "private_load_balancer" {
   instance_group       = module.vm.instance_group
   ssl_certificate_name = var.ssl_certificate_name
   dns_zone_name        = var.dns_zone_name
-  subnet               = local.subnetwork_self_link
+  subnetwork           = local.subnetwork_self_link
   dns_create_record    = var.dns_create_record
   ip_address           = google_compute_address.private[0].address
 }
@@ -193,7 +193,7 @@ module "private_tcp_load_balancer" {
   fqdn              = var.fqdn
   instance_group    = module.vm.instance_group
   dns_zone_name     = var.dns_zone_name
-  subnet            = local.subnetwork_self_link
+  subnetwork        = local.subnetwork_self_link
   dns_create_record = var.dns_create_record
   ip_address        = google_compute_address.private[0].address
 }
