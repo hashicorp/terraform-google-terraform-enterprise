@@ -3,10 +3,15 @@ variable "fqdn" {
   description = "The fully qualified domain name of the load balancer."
   type        = string
 }
-variable "tfe_license" {
-  description = "The name of the storage bucket object which comprises the Replicated license file."
+
+variable "license_secret" {
+  description = <<-EOD
+  The Secret Manager secret which comprises the Base64 encoded Replicated license file. The Terraform provider calls
+  this value the secret_id and the GCP UI calls it the name.
+  EOD
   type        = string
 }
+
 variable "active_active" {
   default     = false
   description = "A toggle which controls support for deploying Terraform Enterprise in Active/Active mode."
@@ -103,19 +108,18 @@ variable "hairpin_addressing" {
 }
 
 variable "iact_subnet_list" {
-  default     = ""
   description = <<-EOD
   A list of IP address ranges which will be authorized to access the IACT. The ranges must be expressed
-  in CIDR format and the list must be a comma-separated string, like "10.0.1.0/24,172.16.4.0/24".
+  in CIDR notation.
   EOD
-  type        = string
+  type        = list(string)
 }
+
 variable "iact_subnet_time_limit" {
-  default     = ""
   description = <<-EOD
   The time limit for IP addresses from iact_subnet_list to access the IACT. The value must be expressed in minutes.
   EOD
-  type        = string
+  type        = number
 }
 
 variable "tbw_image" {
@@ -144,6 +148,13 @@ variable "tls_vers" {
   }
 }
 
+variable "trusted_proxies" {
+  description = <<-EOD
+  A list of IP address ranges which will be considered safe to ignore when evaluating the IP addresses of requests like
+  those made to the IACT endpoint.
+  EOD
+  type        = list(string)
+}
 
 ## Base External Configs
 

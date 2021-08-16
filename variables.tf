@@ -155,13 +155,11 @@ variable "vm_auto_healing_enabled" {
   type        = bool
 }
 # TFE VARS
-variable "tfe_license_name" {
-  default     = "license.rli"
-  description = "Name of the stored TFE license"
-  type        = string
-}
-variable "tfe_license_path" {
-  description = "Local path to the TFE license file"
+variable "license_secret" {
+  description = <<-EOD
+  The Secret Manager secret which comprises the Base64 encoded Replicated license file. The Terraform provider calls
+  this value the secret_id and the GCP UI calls it the name.
+  EOD
   type        = string
 }
 variable "fqdn" {
@@ -171,4 +169,30 @@ variable "fqdn" {
 variable "ssl_certificate_name" {
   description = "Name of the created managed SSL certificate. Required when load_balancer == \"PUBLIC\" or load_balancer == \"PRIVATE\"."
   type        = string
+}
+
+variable "iact_subnet_list" {
+  default     = []
+  description = <<-EOD
+  A list of IP address ranges which will be authorized to access the IACT. The ranges must be expressed
+  in CIDR notation.
+  EOD
+  type        = list(string)
+}
+
+variable "iact_subnet_time_limit" {
+  default     = 60
+  description = <<-EOD
+  The time limit for IP addresses from iact_subnet_list to access the IACT. The value must be expressed in minutes.
+  EOD
+  type        = number
+}
+
+variable "trusted_proxies" {
+  default     = []
+  description = <<-EOD
+  A list of IP address ranges which will be considered safe to ignore when evaluating the IP addresses of requests like
+  those made to the IACT endpoint.
+  EOD
+  type        = list(string)
 }

@@ -1,15 +1,9 @@
-resource "google_compute_global_address" "external" {
-  name = "${var.namespace}-tfe-external-lb"
-
-  description = "The global address of the public load balancer for TFE."
-}
-
 resource "google_dns_record_set" "main" {
   count        = var.dns_create_record ? 1 : 0
   managed_zone = var.dns_zone_name
   # The name must end with a ".".
   name    = "${var.fqdn}."
-  rrdatas = [google_compute_global_address.external.address]
+  rrdatas = [var.ip_address]
   ttl     = 300
   type    = "A"
 }
@@ -80,7 +74,7 @@ resource "google_compute_global_forwarding_rule" "lb" {
   target = google_compute_target_https_proxy.lb.self_link
 
   description           = "The global forwarding rule of the public load balancer for TFE."
-  ip_address            = google_compute_global_address.external.address
+  ip_address            = var.ip_address
   ip_protocol           = "TCP"
   load_balancing_scheme = "EXTERNAL"
   port_range            = 443

@@ -68,8 +68,7 @@ module "tfe" {
 
   namespace            = var.namespace
   node_count           = var.node_count
-  tfe_license_path     = var.tfe_license_path
-  tfe_license_name     = var.tfe_license_name
+  license_secret       = var.license_secret
   fqdn                 = var.fqdn
   ssl_certificate_name = google_compute_region_ssl_certificate.main.name
   dns_zone_name        = var.dns_zone_name

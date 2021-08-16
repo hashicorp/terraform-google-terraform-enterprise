@@ -159,8 +159,7 @@ module "tfe" {
   fqdn                 = var.fqdn
   namespace            = var.namespace
   node_count           = 2
-  tfe_license_name     = "retailer.rli"
-  tfe_license_path     = var.tfe_license_path
+  license_secret       = var.license_secret
   ssl_certificate_name = google_compute_region_ssl_certificate.main.name
 
   load_balancer           = "PRIVATE"

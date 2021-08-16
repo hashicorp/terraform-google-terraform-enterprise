@@ -46,6 +46,7 @@ If you are using a service account to authenticate calls to Google Cloud APIs, t
 - [Basic Editor role](https://cloud.google.com/iam/docs/understanding-roles#basic-definitions)
 - [Service Networking Admin](https://cloud.google.com/iam/docs/understanding-roles#service-networking-roles)
 - [Project IAM Admin](https://cloud.google.com/iam/docs/understanding-roles#resource-manager-roles)
+- [Secret Manager Admin](https://cloud.google.com/iam/docs/understanding-roles#secret-manager-roles)
 
 ## How to Use This Module
 
@@ -59,8 +60,7 @@ module "tfe_node" {
   source               = "git@github.com:hashicorp/espd-tfe-gcp.git"
   namespace            = "<Namespace to uniquely identify resources>"
   node_count           = "<Number of TFE nodes to provision>"
-  tfe_license_path     = "<Local path to the TFE license>"
-  tfe_license_name     = "<Name of the license>"
+  license_secret       = "<Secret Manager secret comprising license>
   fqdn                 = "<Fully qualified domain name>"
   ssl_certificate_name = "<Name of the SSL certificate provisioned in GCP>"
   dns_zone_name        = "<Name of the DNS zone in which a record set will be created>"
@@ -80,9 +80,9 @@ Notes:
 
 `namespace` - Namespace to uniquely identify resources. Used in name prefixes
 
-`tfe_license_path` - Local path to the TFE license
-
-`tfe_license_name` - Name of the license
+`license_secret` - The Secret Manager secret which comprises the
+Base64 encoded Replicated license file. The Terraform provider calls
+this value the secret_id and the GCP UI calls it the name.
 
 `dns_zone_name` - Name of the DNS zone in which a record set will be created
 

@@ -8,9 +8,28 @@ output "lb_address" {
   description = "Load Balancer Address"
 }
 
-output "login_url" {
-  value       = "https://${local.hostname}/admin/account/new?token=${module.user_data.user_token.value}"
-  description = "Login URL to setup the TFE instance once it is initialized"
+output "health_check_url" {
+  value = "${local.base_url}_health_check"
+
+  description = "The URL of the Terraform Enterprise health check endpoint."
+}
+
+output "iact_url" {
+  value = "${local.base_url}admin/retrieve-iact"
+
+  description = "The URL of the Terraform Enterprise initial admin creation token."
+}
+
+output "initial_admin_user_url" {
+  value = "${local.base_url}admin/initial-admin-user"
+
+  description = "The URL of the Terraform Enterprise initial admin user."
+}
+
+output "url" {
+  value = local.base_url
+
+  description = "The URL of Terraform Enterprise."
 }
 
 output "network" {

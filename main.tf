@@ -35,10 +35,8 @@ locals {
 module "object_storage" {
   source = "./modules/object_storage"
 
-  namespace    = var.namespace
-  labels       = local.labels
-  license_name = var.tfe_license_name
-  license_path = var.tfe_license_path
+  namespace = var.namespace
+  labels    = local.labels
 }
 
 resource "google_storage_bucket_object" "proxy_cert" {
@@ -51,8 +49,9 @@ resource "google_storage_bucket_object" "proxy_cert" {
 module "service_accounts" {
   source = "./modules/service_accounts"
 
-  bucket    = module.object_storage.bucket
-  namespace = var.namespace
+  bucket         = module.object_storage.bucket
+  license_secret = var.license_secret
+  namespace      = var.namespace
 }
 
 locals {
@@ -64,6 +63,7 @@ module "networking" {
 
   count = local.network_module_enabled
 
+  active_active        = local.active_active
   namespace            = var.namespace
   subnet_range         = var.networking_subnet_range
   reserve_subnet_range = var.networking_reserve_subnet_range
@@ -118,7 +118,7 @@ module "user_data" {
   gcs_bucket              = module.object_storage.bucket
   gcs_credentials         = module.service_accounts.credentials
   gcs_project             = module.object_storage.project
-  tfe_license             = var.tfe_license_name
+  license_secret          = var.license_secret
   pg_netloc               = module.database.netloc
   pg_dbname               = module.database.dbname
   pg_user                 = module.database.user
@@ -134,11 +134,19 @@ module "user_data" {
   proxy_cert              = local.proxy_cert
   namespace               = var.namespace
   no_proxy                = [var.fqdn, var.networking_subnet_range]
+  iact_subnet_list        = var.iact_subnet_list
+  iact_subnet_time_limit  = var.iact_subnet_time_limit
+  trusted_proxies = concat(
+    var.trusted_proxies,
+    # Include IP address ranges of the load balancer and the Google Front End service
+    ["${local.lb_address}/32", "130.211.0.0/22", "35.191.0.0/16"]
+  )
 }
 
 module "vm" {
   source = "./modules/vm"
 
+  active_active           = local.active_active
   namespace               = var.namespace
   machine_type            = var.vm_machine_type
   disk_size               = var.vm_disk_size
@@ -150,16 +158,21 @@ module "vm" {
   auto_healing_enabled    = var.vm_auto_healing_enabled
   service_account         = module.service_accounts.email
   node_count              = var.node_count
+}
 
-  # This is to prevent deleting the database user before the vm is completely destroyed
-  depends_on = [
-    module.database
-  ]
+resource "google_compute_address" "private" {
+  count = var.load_balancer != "PUBLIC" ? 1 : 0
+
+  name         = "${var.namespace}-tfe-private-lb"
+  subnetwork   = local.subnetwork
+  address_type = "INTERNAL"
+  purpose      = "GCE_ENDPOINT"
 }
 
 module "private_load_balancer" {
-  count                = var.load_balancer == "PRIVATE" ? 1 : 0
-  source               = "./modules/private_load_balancer"
+  count  = var.load_balancer == "PRIVATE" ? 1 : 0
+  source = "./modules/private_load_balancer"
+
   namespace            = var.namespace
   fqdn                 = var.fqdn
   instance_group       = module.vm.instance_group
@@ -167,6 +180,7 @@ module "private_load_balancer" {
   dns_zone_name        = var.dns_zone_name
   subnet               = local.subnetwork
   dns_create_record    = var.dns_create_record
+  ip_address           = google_compute_address.private[0].address
 }
 
 module "private_tcp_load_balancer" {
@@ -179,22 +193,35 @@ module "private_tcp_load_balancer" {
   dns_zone_name     = var.dns_zone_name
   subnet            = local.subnetwork
   dns_create_record = var.dns_create_record
+  ip_address        = google_compute_address.private[0].address
+}
+
+
+resource "google_compute_global_address" "public" {
+  count = var.load_balancer == "PUBLIC" ? 1 : 0
+
+  name = "${var.namespace}-tfe-public-lb"
+
+  description = "The global address of the public load balancer for TFE."
 }
 
 module "load_balancer" {
-  count                = var.load_balancer == "PUBLIC" ? 1 : 0
-  source               = "./modules/load_balancer"
+  count  = var.load_balancer == "PUBLIC" ? 1 : 0
+  source = "./modules/load_balancer"
+
   namespace            = var.namespace
   fqdn                 = var.fqdn
   instance_group       = module.vm.instance_group
   ssl_certificate_name = var.ssl_certificate_name
   dns_zone_name        = var.dns_zone_name
   dns_create_record    = var.dns_create_record
+  ip_address           = google_compute_global_address.public[0].address
 }
 
 locals {
-  lb_address = (var.load_balancer == "PUBLIC" ? module.load_balancer[0] : (
-    var.load_balancer == "PRIVATE" ? module.private_load_balancer[0] : module.private_tcp_load_balancer[0]
-  )).address
+  lb_address = (
+    length(google_compute_address.private) > 0 ? google_compute_address.private : google_compute_global_address.public
+  )[0].address
   hostname = var.dns_create_record ? var.fqdn : local.lb_address
+  base_url = "https://${local.hostname}/"
 }

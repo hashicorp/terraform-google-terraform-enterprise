@@ -31,12 +31,19 @@ resource "google_compute_router_nat" "nat" {
   nat_ip_allocate_option             = "AUTO_ONLY"
   source_subnetwork_ip_ranges_to_nat = "ALL_SUBNETWORKS_ALL_IP_RANGES"
 
+  min_ports_per_vm = 4096
+
   log_config {
     enable = true
     filter = "ERRORS_ONLY"
   }
 }
 
+locals {
+  standalone_ports    = ["80", "443", "8800"]
+  active_active_ports = ["80", "443"]
+  ports               = var.active_active ? local.active_active_ports : local.standalone_ports
+}
 
 resource "google_compute_firewall" "tfe" {
   name    = "${var.namespace}-firewall"
@@ -50,7 +57,7 @@ resource "google_compute_firewall" "tfe" {
 
   allow {
     protocol = "tcp"
-    ports    = concat(["80", "443", "6443", "8800", "23010"], var.firewall_ports)
+    ports    = concat(local.ports, var.firewall_ports)
   }
 
   source_ranges = var.ip_allow_list

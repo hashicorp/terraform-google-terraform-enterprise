@@ -1,3 +1,7 @@
+variable "active_active" {
+  description = "A toggle which controls support for deploying Terraform Enterprise in Active/Active mode."
+  type        = bool
+}
 variable "disk_source_image" {
   description = "The self link of the source image which will be used to provision the disks of the compute instances."
   type        = string

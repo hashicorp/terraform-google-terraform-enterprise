@@ -19,3 +19,6 @@ examples/**/*.pem
 
 # Environment files
 *.env
+
+# Visual Studio Code
+.vscode

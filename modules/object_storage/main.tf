@@ -6,11 +6,6 @@ resource "google_storage_bucket" "tfe" {
   name     = "${var.namespace}-storage-${random_pet.gcs.id}"
   location = "us"
 
-  labels = var.labels
-}
-
-resource "google_storage_bucket_object" "license" {
-  name   = var.license_name
-  source = var.license_path
-  bucket = google_storage_bucket.tfe.name
+  force_destroy = true
+  labels        = var.labels
 }
