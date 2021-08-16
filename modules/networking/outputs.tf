@@ -1,10 +1,11 @@
 output "subnetwork" {
-  value = google_compute_subnetwork.tfe_subnet.self_link
+  value = google_compute_subnetwork.tfe_subnet
 
-  description = "The self link of the subnetwork."
+  description = "The subnetwork."
 }
-output "network" {
-  value = google_service_networking_connection.private_vpc_connection.network
 
-  description = "The self link of the network."
+output "network" {
+  value = google_compute_network.tfe_vpc
+
+  description = "The network."
 }

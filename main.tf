@@ -55,13 +55,13 @@ module "service_accounts" {
 }
 
 locals {
-  network_module_enabled = var.network != "" ? 0 : 1
+  network_module_enabled = var.network != ""
 }
 
 module "networking" {
   source = "./modules/networking"
 
-  count = local.network_module_enabled
+  count = local.network_module_enabled ? 1 : 0
 
   active_active        = local.active_active
   namespace            = var.namespace
@@ -74,8 +74,10 @@ module "networking" {
 }
 
 locals {
-  network    = local.network_module_enabled == 1 ? module.networking[0].network : var.network
-  subnetwork = local.network_module_enabled == 1 ? module.networking[0].subnetwork : var.subnetwork
+  network              = local.network_module_enabled ? module.networking[0].network : null
+  network_self_link    = local.network_module_enabled ? module.networking[0].network.self_link : var.network
+  subnetwork           = local.network_module_enabled ? module.networking[0].subnetwork : null
+  subnetwork_self_link = local.network_module_enabled ? module.networking[0].subnetwork.self_link : var.subnetwork
 }
 
 module "database" {
@@ -88,7 +90,7 @@ module "database" {
   namespace         = var.namespace
   backup_start_time = var.database_backup_start_time
   labels            = local.labels
-  network           = local.network
+  network           = local.network_self_link
 }
 
 module "redis" {
@@ -98,7 +100,7 @@ module "redis" {
   auth_enabled = var.redis_auth_enabled
   namespace    = var.namespace
   memory_size  = var.redis_memory_size
-  network      = local.network
+  network      = local.network_self_link
 }
 
 locals {
@@ -152,7 +154,7 @@ module "vm" {
   disk_size               = var.vm_disk_size
   disk_source_image       = var.vm_disk_source_image
   disk_type               = var.vm_disk_type
-  subnetwork              = local.subnetwork
+  subnetwork              = local.subnetwork_self_link
   metadata_startup_script = module.user_data.script
   labels                  = local.labels
   auto_healing_enabled    = var.vm_auto_healing_enabled
@@ -164,7 +166,7 @@ resource "google_compute_address" "private" {
   count = var.load_balancer != "PUBLIC" ? 1 : 0
 
   name         = "${var.namespace}-tfe-private-lb"
-  subnetwork   = local.subnetwork
+  subnetwork   = local.subnetwork_self_link
   address_type = "INTERNAL"
   purpose      = "GCE_ENDPOINT"
 }
@@ -178,7 +180,7 @@ module "private_load_balancer" {
   instance_group       = module.vm.instance_group
   ssl_certificate_name = var.ssl_certificate_name
   dns_zone_name        = var.dns_zone_name
-  subnet               = local.subnetwork
+  subnet               = local.subnetwork_self_link
   dns_create_record    = var.dns_create_record
   ip_address           = google_compute_address.private[0].address
 }
@@ -191,7 +193,7 @@ module "private_tcp_load_balancer" {
   fqdn              = var.fqdn
   instance_group    = module.vm.instance_group
   dns_zone_name     = var.dns_zone_name
-  subnet            = local.subnetwork
+  subnet            = local.subnetwork_self_link
   dns_create_record = var.dns_create_record
   ip_address        = google_compute_address.private[0].address
 }

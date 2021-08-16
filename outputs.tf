@@ -34,7 +34,7 @@ output "url" {
 
 output "network" {
   value       = local.network
-  description = "The name of the VPC network to which TFE is attached."
+  description = "The network to which TFE is attached."
 }
 
 output "service_account_email" {
@@ -44,7 +44,7 @@ output "service_account_email" {
 
 output "subnetwork" {
   value       = local.subnetwork
-  description = "The name of the VPC subnetwork to which TFE is attached."
+  description = "The subnetwork to which TFE is attached."
 }
 
 output "dns_configuration_notice" {
