@@ -1,9 +1,9 @@
 # TEST: Public Active/Active Terraform Enterprise
 
-## About This Example
+## About This Test
 
-This test for Terraform Enterprise creates a TFE
-installation with the following traits.:
+This test for Terraform Enterprise creates an
+installation with the following traits:
 
 - Active/Active mode
 
