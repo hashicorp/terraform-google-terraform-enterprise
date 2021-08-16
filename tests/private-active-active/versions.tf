@@ -7,9 +7,17 @@ terraform {
       version = "~> 3.54"
     }
 
-    tls = {
-      source  = "hashicorp/tls"
+    random = {
+      source  = "hashicorp/random"
       version = "~> 3.0"
+    }
+  }
+
+  backend "remote" {
+    organization = "terraform-enterprise-modules-test"
+
+    workspaces {
+      name = "google-private-active-active"
     }
   }
 }

@@ -1,7 +1,16 @@
 locals {
   http_proxy_port = "3128"
-  name            = "${var.namespace}-tfe-http-proxy"
-  subnet_range    = "10.0.0.0/16"
+  name            = "${random_pet.main.id}-proxy"
+}
+
+resource "random_pet" "main" {
+  length    = 1
+  prefix    = "praa"
+  separator = "-"
+}
+
+data "google_dns_managed_zone" "main" {
+  name = var.dns_zone_name
 }
 
 resource "google_service_account" "http_proxy" {
@@ -22,7 +31,7 @@ resource "google_compute_firewall" "http_proxy" {
 
   description             = "The firewall which allows internal access to the HTTP proxy."
   direction               = "INGRESS"
-  source_ranges           = [local.subnet_range]
+  source_ranges           = [module.tfe.subnetwork.ip_cidr_range]
   target_service_accounts = [google_service_account.http_proxy.email]
 
   allow {
@@ -91,16 +100,17 @@ module "tfe" {
   source = "../.."
 
   dns_zone_name        = var.dns_zone_name
-  fqdn                 = var.fqdn
-  namespace            = var.namespace
+  fqdn                 = "private-active-active.${trimsuffix(data.google_dns_managed_zone.main.dns_name, ".")}"
+  namespace            = random_pet.main.id
   node_count           = 2
   license_secret       = var.license_secret
-  ssl_certificate_name = google_compute_region_ssl_certificate.main.name
+  ssl_certificate_name = var.ssl_certificate_name
 
-  load_balancer           = "PRIVATE"
-  networking_subnet_range = local.subnet_range
-  proxy_ip                = "${google_compute_instance.http_proxy.network_interface[0].network_ip}:${local.http_proxy_port}"
-  redis_auth_enabled      = true
-  vm_disk_source_image    = data.google_compute_image.rhel.self_link
-  vm_machine_type         = "n1-standard-16"
+  iact_subnet_list       = var.iact_subnet_list
+  iact_subnet_time_limit = 1440
+  load_balancer          = "PRIVATE"
+  proxy_ip               = "${google_compute_instance.http_proxy.network_interface[0].network_ip}:${local.http_proxy_port}"
+  redis_auth_enabled     = true
+  vm_disk_source_image   = data.google_compute_image.rhel.self_link
+  vm_machine_type        = "n1-standard-16"
 }
