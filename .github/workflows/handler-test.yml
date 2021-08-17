@@ -289,6 +289,7 @@ jobs:
           INSTANCE_ZONE: ${{ steps.retrieve-instance-zone.outputs.stdout }}
         run: |
           gcloud compute ssh \
+          --quiet \
           --tunnel-through-iap \
           --zone="$INSTANCE_ZONE" \
           "$INSTANCE_NAME" \
