@@ -279,7 +279,7 @@ jobs:
 
       - name: Start SOCKS5 Proxy
         env:
-          INSTANCE_NAME: ${{ steps.retrieve-instance-id.outputs.stdout }}
+          INSTANCE_NAME: ${{ steps.retrieve-instance-name.outputs.stdout }}
         run: |
           gcloud compute ssh \
           --tunnel-through-iap \
