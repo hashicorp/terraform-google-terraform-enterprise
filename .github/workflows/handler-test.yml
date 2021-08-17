@@ -270,6 +270,12 @@ jobs:
         run: |
           terraform output -no-color -raw proxy_instance_name
 
+      - name: Retrieve Instance Zone
+        id: retrieve-instance-zone
+        working-directory: ${{ env.WORK_DIR_PATH }}
+        run: |
+          terraform output -no-color -raw proxy_instance_zone
+
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v0.2.1
         with:
@@ -280,6 +286,7 @@ jobs:
       - name: Start SOCKS5 Proxy
         env:
           INSTANCE_NAME: ${{ steps.retrieve-instance-name.outputs.stdout }}
+          INSTANCE_ZONE: ${{ steps.retrieve-instance-zone.outputs.stdout }}
         run: |
           gcloud compute ssh \
           --tunnel-through-iap \
