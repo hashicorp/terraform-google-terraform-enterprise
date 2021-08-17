@@ -54,14 +54,10 @@ module "service_accounts" {
   namespace      = var.namespace
 }
 
-locals {
-  network_module_enabled = var.network != ""
-}
-
 module "networking" {
   source = "./modules/networking"
 
-  count = local.network_module_enabled ? 1 : 0
+  count = var.network == null ? 1 : 0
 
   active_active        = local.active_active
   namespace            = var.namespace
@@ -74,10 +70,9 @@ module "networking" {
 }
 
 locals {
-  network              = local.network_module_enabled ? module.networking[0].network : null
-  network_self_link    = local.network_module_enabled ? module.networking[0].network.self_link : var.network
-  subnetwork           = local.network_module_enabled ? module.networking[0].subnetwork : null
-  subnetwork_self_link = local.network_module_enabled ? module.networking[0].subnetwork.self_link : var.subnetwork
+  networking_module_enabled = length(module.networking) > 0
+  network_self_link         = local.networking_module_enabled ? module.networking[0].network.self_link : var.network
+  subnetwork_self_link      = local.networking_module_enabled ? module.networking[0].subnetwork.self_link : var.subnetwork
 }
 
 module "database" {

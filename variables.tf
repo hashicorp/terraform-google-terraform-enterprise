@@ -66,12 +66,12 @@ variable "networking_ip_allow_list" {
   type        = list(string)
 }
 variable "network" {
-  default     = ""
+  default     = null
   description = "Pre-existing network self link"
   type        = string
 }
 variable "subnetwork" {
-  default     = ""
+  default     = null
   description = "Pre-existing subnetwork self link"
   type        = string
 }

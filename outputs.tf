@@ -33,7 +33,7 @@ output "url" {
 }
 
 output "network" {
-  value       = local.network
+  value       = local.networking_module_enabled ? module.networking[0].network : null
   description = "The network to which TFE is attached."
 }
 
@@ -43,7 +43,7 @@ output "service_account_email" {
 }
 
 output "subnetwork" {
-  value       = local.subnetwork
+  value       = local.networking_module_enabled ? module.networking[0].subnetwork : null
   description = "The subnetwork to which TFE is attached."
 }
 
