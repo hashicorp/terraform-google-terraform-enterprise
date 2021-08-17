@@ -22,6 +22,12 @@ output "proxy_instance_name" {
   description = "The name of the HTTP proxy compute instance."
 }
 
+output "proxy_instance_zone" {
+  value = google_compute_instance.http_proxy.zone
+
+  description = "The zone of the HTTP proxy compute instance."
+}
+
 output "tfe" {
   value = module.tfe
 
