@@ -290,6 +290,7 @@ jobs:
         run: |
           gcloud compute ssh \
           --quiet \
+          --ssh-key-expire-after="1440m" \
           --tunnel-through-iap \
           --zone="$INSTANCE_ZONE" \
           "$INSTANCE_NAME" \
