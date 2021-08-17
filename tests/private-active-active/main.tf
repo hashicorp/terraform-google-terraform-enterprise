@@ -27,7 +27,7 @@ resource "google_project_iam_member" "log_writer" {
 
 resource "google_compute_firewall" "http_proxy" {
   name    = local.name
-  network = module.tfe.network
+  network = module.tfe.network.self_link
 
   description             = "The firewall which allows internal access to the HTTP proxy."
   direction               = "INGRESS"
@@ -47,7 +47,7 @@ resource "google_compute_firewall" "http_proxy" {
 
 resource "google_compute_firewall" "ssh" {
   name    = "${local.name}-ssh"
-  network = module.tfe.network
+  network = module.tfe.network.self_link
 
   description             = "The firewall which allows the ingress of Identity-Aware Proxy SSH traffic to the HTTP proxy."
   direction               = "INGRESS"
@@ -86,7 +86,7 @@ resource "google_compute_instance" "http_proxy" {
   )
 
   network_interface {
-    subnetwork = module.tfe.subnetwork
+    subnetwork = module.tfe.subnetwork.self_link
   }
 
   service_account {
