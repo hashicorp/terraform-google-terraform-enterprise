@@ -106,7 +106,7 @@ module "tfe" {
   license_secret       = var.license_secret
   ssl_certificate_name = var.ssl_certificate_name
 
-  iact_subnet_list       = var.iact_subnet_list
+  iact_subnet_list       = ["${google_compute_instance.http_proxy.network_interface[0].network_ip}/32"]
   iact_subnet_time_limit = 1440
   load_balancer          = "PRIVATE"
   proxy_ip               = "${google_compute_instance.http_proxy.network_interface[0].network_ip}:${local.http_proxy_port}"

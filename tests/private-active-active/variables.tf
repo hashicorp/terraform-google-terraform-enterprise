@@ -3,15 +3,6 @@ variable "dns_zone_name" {
   type        = string
 }
 
-variable "iact_subnet_list" {
-  default     = []
-  description = <<-EOD
-  A list of IP address ranges which will be authorized to access the IACT. The ranges must be expressed
-  in CIDR notation.
-  EOD
-  type        = list(string)
-}
-
 variable "license_secret" {
   description = <<-EOD
   The Secret Manager secret which comprises the Base64 encoded Replicated license file. The Terraform provider calls
