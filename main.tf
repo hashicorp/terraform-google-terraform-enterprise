@@ -135,8 +135,7 @@ module "user_data" {
   iact_subnet_time_limit  = var.iact_subnet_time_limit
   trusted_proxies = concat(
     var.trusted_proxies,
-    # Include IP address ranges of the load balancer and the Google Front End service
-    ["${local.lb_address}/32", "130.211.0.0/22", "35.191.0.0/16"]
+    local.trusted_proxies
   )
 }
 
@@ -216,9 +215,21 @@ module "load_balancer" {
 }
 
 locals {
+  private_load_balancing_enabled = length(google_compute_address.private) > 0
   lb_address = (
-    length(google_compute_address.private) > 0 ? google_compute_address.private : google_compute_global_address.public
+    local.private_load_balancing_enabled ? google_compute_address.private : google_compute_global_address.public
   )[0].address
+  trusted_proxies = local.private_load_balancing_enabled ? compact([
+    "${local.lb_address}/32",
+    # Include IP address range of the reserve subnetwork for private load balancing
+    local.networking_module_enabled ? module.networking[0].reserve_subnetwork.ip_cidr_range : null
+    ]) : [
+    "${local.lb_address}/32",
+    # Include IP address ranges of the Google Front End service
+    "130.211.0.0/22",
+    "35.191.0.0/16"
+  ]
+
   hostname = var.dns_create_record ? var.fqdn : local.lb_address
   base_url = "https://${local.hostname}/"
 }
