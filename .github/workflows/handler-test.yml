@@ -294,7 +294,7 @@ jobs:
           --tunnel-through-iap \
           --zone="$INSTANCE_ZONE" \
           "$INSTANCE_NAME" \
-          -- -N -p 22 -D localhost:5000
+          -- -f -N -p 22 -D localhost:5000
 
       - name: Wait For TFE
         id: wait-for-tfe
