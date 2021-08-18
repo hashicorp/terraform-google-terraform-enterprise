@@ -298,7 +298,7 @@ jobs:
 
       - name: Wait For TFE
         id: wait-for-tfe
-        timeout-minutes: 15
+        timeout-minutes: 25
         env:
           HEALTH_CHECK_URL: ${{ steps.retrieve-health-check-url.outputs.stdout }}
         run: |
