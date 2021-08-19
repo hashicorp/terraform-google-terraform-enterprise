@@ -172,3 +172,9 @@ variable "ssl_certificate_name" {
   description = "Name of the created managed SSL certificate. Required when load_balancer == \"PUBLIC\" or load_balancer == \"PRIVATE\"."
   type        = string
 }
+# OBJECT STORE VARS
+variable "gcs_location" {
+  description = "Location of the bucket to act as the TFE Object Store"
+  type        = string
+  default     = "us"
+}

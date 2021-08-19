@@ -39,6 +39,7 @@ module "object_storage" {
   labels       = local.labels
   license_name = var.tfe_license_name
   license_path = var.tfe_license_path
+  location     = var.gcs_location
 }
 
 resource "google_storage_bucket_object" "proxy_cert" {
