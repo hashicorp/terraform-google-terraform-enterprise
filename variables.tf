@@ -107,7 +107,7 @@ variable "database_availability_type" {
   type        = string
 }
 variable "database_backup_start_time" {
-  default     = "00:00"
+  default     = "02:00"
   description = "Database backup start time"
   type        = string
 }
