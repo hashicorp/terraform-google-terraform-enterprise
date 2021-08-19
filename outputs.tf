@@ -33,8 +33,8 @@ output "url" {
 }
 
 output "network" {
-  value       = local.network
-  description = "The name of the VPC network to which TFE is attached."
+  value       = local.networking_module_enabled ? module.networking[0].network : null
+  description = "The network to which TFE is attached."
 }
 
 output "service_account_email" {
@@ -43,8 +43,8 @@ output "service_account_email" {
 }
 
 output "subnetwork" {
-  value       = local.subnetwork
-  description = "The name of the VPC subnetwork to which TFE is attached."
+  value       = local.networking_module_enabled ? module.networking[0].subnetwork : null
+  description = "The subnetwork to which TFE is attached."
 }
 
 output "dns_configuration_notice" {

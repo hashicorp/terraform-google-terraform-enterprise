@@ -1,10 +1,17 @@
-output "subnetwork" {
-  value = google_compute_subnetwork.tfe_subnet.self_link
+output "reserve_subnetwork" {
+  value = google_compute_subnetwork.reserve
 
-  description = "The self link of the subnetwork."
+  description = "The reserve subnetwork for private load balancing."
 }
-output "network" {
-  value = google_service_networking_connection.private_vpc_connection.network
 
-  description = "The self link of the network."
+output "subnetwork" {
+  value = google_compute_subnetwork.tfe_subnet
+
+  description = "The subnetwork."
+}
+
+output "network" {
+  value = google_compute_network.tfe_vpc
+
+  description = "The network."
 }

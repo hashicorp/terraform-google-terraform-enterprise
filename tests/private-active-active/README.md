@@ -1,21 +1,21 @@
-# TEST: Public Active/Active Terraform Enterprise
+# TEST: Private Active/Active Terraform Enterprise
 
 ## About This Test
 
-This test for Terraform Enterprise creates an
-installation with the following traits:
+This test for Terraform Enterprise creates an installation with the
+following traits:
 
 - Active/Active mode
 
-- a small VM machine type (n1-standard-4)
+- a medium VM machine type (n1-standard-16)
 
-- Ubuntu 20.04 as the VM image
+- Red Hat 7.8 as the VM image
 
-- a publicly accessible HTTP load balancer with TLS termination
+- a privately accessible HTTP load balancer with TLS termination
 
-- no proxy server
+- a proxy server with TLS pass-through
 
-- no Redis authentication
+- Redis authentication
 
 - no Redis encryption in transit
 

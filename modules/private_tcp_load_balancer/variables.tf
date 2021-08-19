@@ -28,7 +28,7 @@ variable "dns_create_record" {
   type        = bool
 }
 
-variable "subnet" {
+variable "subnetwork" {
   description = "The self link of the subnetwork to which the load balancer will be attached."
   type        = string
 }

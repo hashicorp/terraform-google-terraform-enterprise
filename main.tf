@@ -54,14 +54,10 @@ module "service_accounts" {
   namespace      = var.namespace
 }
 
-locals {
-  network_module_enabled = var.network != "" ? 0 : 1
-}
-
 module "networking" {
   source = "./modules/networking"
 
-  count = local.network_module_enabled
+  count = var.network == null ? 1 : 0
 
   active_active        = local.active_active
   namespace            = var.namespace
@@ -74,8 +70,9 @@ module "networking" {
 }
 
 locals {
-  network    = local.network_module_enabled == 1 ? module.networking[0].network : var.network
-  subnetwork = local.network_module_enabled == 1 ? module.networking[0].subnetwork : var.subnetwork
+  networking_module_enabled = length(module.networking) > 0
+  network_self_link         = local.networking_module_enabled ? module.networking[0].network.self_link : var.network
+  subnetwork_self_link      = local.networking_module_enabled ? module.networking[0].subnetwork.self_link : var.subnetwork
 }
 
 module "database" {
@@ -88,7 +85,7 @@ module "database" {
   namespace         = var.namespace
   backup_start_time = var.database_backup_start_time
   labels            = local.labels
-  network           = local.network
+  network           = local.network_self_link
 }
 
 module "redis" {
@@ -98,7 +95,7 @@ module "redis" {
   auth_enabled = var.redis_auth_enabled
   namespace    = var.namespace
   memory_size  = var.redis_memory_size
-  network      = local.network
+  network      = local.network_self_link
 }
 
 locals {
@@ -138,8 +135,7 @@ module "user_data" {
   iact_subnet_time_limit  = var.iact_subnet_time_limit
   trusted_proxies = concat(
     var.trusted_proxies,
-    # Include IP address ranges of the load balancer and the Google Front End service
-    ["${local.lb_address}/32", "130.211.0.0/22", "35.191.0.0/16"]
+    local.trusted_proxies
   )
 }
 
@@ -152,7 +148,7 @@ module "vm" {
   disk_size               = var.vm_disk_size
   disk_source_image       = var.vm_disk_source_image
   disk_type               = var.vm_disk_type
-  subnetwork              = local.subnetwork
+  subnetwork              = local.subnetwork_self_link
   metadata_startup_script = module.user_data.script
   labels                  = local.labels
   auto_healing_enabled    = var.vm_auto_healing_enabled
@@ -164,7 +160,7 @@ resource "google_compute_address" "private" {
   count = var.load_balancer != "PUBLIC" ? 1 : 0
 
   name         = "${var.namespace}-tfe-private-lb"
-  subnetwork   = local.subnetwork
+  subnetwork   = local.subnetwork_self_link
   address_type = "INTERNAL"
   purpose      = "GCE_ENDPOINT"
 }
@@ -178,7 +174,7 @@ module "private_load_balancer" {
   instance_group       = module.vm.instance_group
   ssl_certificate_name = var.ssl_certificate_name
   dns_zone_name        = var.dns_zone_name
-  subnet               = local.subnetwork
+  subnetwork           = local.subnetwork_self_link
   dns_create_record    = var.dns_create_record
   ip_address           = google_compute_address.private[0].address
 }
@@ -191,7 +187,7 @@ module "private_tcp_load_balancer" {
   fqdn              = var.fqdn
   instance_group    = module.vm.instance_group
   dns_zone_name     = var.dns_zone_name
-  subnet            = local.subnetwork
+  subnetwork        = local.subnetwork_self_link
   dns_create_record = var.dns_create_record
   ip_address        = google_compute_address.private[0].address
 }
@@ -219,9 +215,21 @@ module "load_balancer" {
 }
 
 locals {
+  private_load_balancing_enabled = length(google_compute_address.private) > 0
   lb_address = (
-    length(google_compute_address.private) > 0 ? google_compute_address.private : google_compute_global_address.public
+    local.private_load_balancing_enabled ? google_compute_address.private : google_compute_global_address.public
   )[0].address
+  trusted_proxies = local.private_load_balancing_enabled ? compact([
+    "${local.lb_address}/32",
+    # Include IP address range of the reserve subnetwork for private load balancing
+    local.networking_module_enabled ? module.networking[0].reserve_subnetwork.ip_cidr_range : null
+    ]) : [
+    "${local.lb_address}/32",
+    # Include IP address ranges of the Google Front End service
+    "130.211.0.0/22",
+    "35.191.0.0/16"
+  ]
+
   hostname = var.dns_create_record ? var.fqdn : local.lb_address
   base_url = "https://${local.hostname}/"
 }
