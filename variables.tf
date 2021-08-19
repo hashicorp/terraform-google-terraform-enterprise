@@ -102,7 +102,7 @@ variable "database_machine_type" {
   type        = string
 }
 variable "database_availability_type" {
-  default     = "ZONAL"
+  default     = "REGIONAL"
   description = "Database Availability Type"
   type        = string
 }
