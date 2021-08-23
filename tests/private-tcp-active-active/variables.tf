@@ -1,29 +1,35 @@
-variable "dns_zone_name" {
-  description = "The name of the DNS zone in which a record will be created."
-  type        = string
-}
-
-variable "fqdn" {
-  description = "The fully qualified domain name which will be assigned to the DNS record."
-  type        = string
-}
-
-variable "namespace" {
-  description = "A prefix which will be applied to all resource names."
-  type        = string
-}
-
-variable "ssl_certificate_name" {
-  description = <<-EOD
-  The name of an existing SSL certificate which will be used to authenticate connections to the load balancer.
-  EOD
-  type        = string
+variable "cloud_dns" {
+  description = "The Cloud DNS module which contains the managed zone in which a record will be created."
+  type = object({
+    domain = string
+    name   = string
+  })
 }
 
 variable "license_secret" {
-  description = <<-EOD
-  The Secret Manager secret which comprises the Base64 encoded Replicated license file. The Terraform provider calls
-  this value the secret_id and the GCP UI calls it the name.
-  EOD
-  type        = string
+  description = "The Secret Manager secret which comprises the Base64 encoded Replicated license file."
+  type = object({
+    secret_id = string
+  })
+}
+
+variable "mitmproxy_certificate_secret" {
+  description = "The Secret Manager secret which comprises the Base64 encoded PEM certificate for mitmproxy."
+  type = object({
+    secret_id = string
+  })
+}
+
+variable "mitmproxy_private_key_secret" {
+  description = "The Secret Manager secret which comprises the Base64 encoded PEM private key for mitmproxy."
+  type = object({
+    secret_id = string
+  })
+}
+
+variable "ssl_certificate" {
+  description = "The SSL certificate which will be used to authenticate connections to Terraform Enterprise."
+  type = object({
+    name = string
+  })
 }
