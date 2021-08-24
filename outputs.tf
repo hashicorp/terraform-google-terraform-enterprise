@@ -1,5 +1,5 @@
 output "replicated_console_password" {
-  value       = module.user_data.replicated_dashboard_password
+  value       = var.node_count > 1 ? module.user_data.replicated_dashboard_password :
   description = "Generated password for replicated dashboard"
 }
 
@@ -28,7 +28,13 @@ output "subnetwork" {
   description = "The name of the VPC subnetwork to which TFE is attached."
 }
 
+output "object_store_bucket" {
+  value       = module.object_storage.bucket
+  description = "Name of the GCS bucket used for the object store."
+}
+
 output "dns_configuration_notice" {
   value       = "If you are using external DNS, please make sure to create a DNS record using the lb_address output that has been provided"
   description = "A warning message."
 }
+
