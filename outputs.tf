@@ -1,5 +1,5 @@
 output "replicated_console_password" {
-  value       = var.node_count > 1 ? module.user_data.replicated_dashboard_password :
+  value       = "${var.node_count > 1 ? module.user_data.replicated_dashboard_password : ""}"
   description = "Generated password for replicated dashboard"
 }
 
