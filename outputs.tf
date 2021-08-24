@@ -1,6 +1,6 @@
 output "replicated_console_password" {
-  value       = "${var.node_count > 1 ? "" : module.user_data.replicated_dashboard_password }"
-  description = "Generated password for replicated dashboard"
+  value       = var.node_count > 1 ? "" : module.user_data.replicated_dashboard_password
+  description = "Generated password for replicated dashboard."
 }
 
 output "lb_address" {
@@ -10,7 +10,7 @@ output "lb_address" {
 
 output "login_url" {
   value       = "https://${local.hostname}/admin/account/new?token=${module.user_data.user_token.value}"
-  description = "Login URL to setup the TFE instance once it is initialized"
+  description = "Login URL to setup the TFE instance once it is initialized."
 }
 
 output "network" {
@@ -39,7 +39,7 @@ output "object_store_bucket_location" {
 }
 
 output "dns_configuration_notice" {
-  value       = "If you are using external DNS, please make sure to create a DNS record using the lb_address output that has been provided"
+  value       = "If you are using external DNS, please make sure to create a DNS record using the lb_address output that has been provided."
   description = "A warning message."
 }
 
