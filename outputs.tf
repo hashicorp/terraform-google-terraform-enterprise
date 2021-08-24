@@ -30,7 +30,12 @@ output "subnetwork" {
 
 output "object_store_bucket" {
   value       = module.object_storage.bucket
-  description = "Name of the GCS bucket used for the object store."
+  description = "Name of the GCS bucket used for the object store and TFE licence file."
+}
+
+output "object_store_bucket_location" {
+  value       = module.object_storage.location
+  description = "Location of the GCS bucket used for the object store and TFE licence file."
 }
 
 output "dns_configuration_notice" {

@@ -11,7 +11,7 @@ variable "labels" {
 variable "location" {
   description = "Location of the GCS bucket"
   type        = string
-  default     = "us"
+  default     = "US"
 }
 
 variable "license_name" {
