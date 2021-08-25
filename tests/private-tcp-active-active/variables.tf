@@ -1,35 +1,35 @@
-variable "cloud_dns" {
-  description = "The Cloud DNS module which contains the managed zone in which a record will be created."
-  type = object({
-    domain = string
-    name   = string
-  })
+variable "cloud_dns_domain" {
+  description = "The domain of the Cloud DNS zone in which a record will be created."
+  type        = string
 }
 
-variable "license_secret" {
-  description = "The Secret Manager secret which comprises the Base64 encoded Replicated license file."
-  type = object({
-    secret_id = string
-  })
+variable "cloud_dns_name" {
+  description = "The name of the Cloud DNS zone in which a record will be created."
+  type        = string
 }
 
-variable "mitmproxy_certificate_secret" {
-  description = "The Secret Manager secret which comprises the Base64 encoded PEM certificate for mitmproxy."
-  type = object({
-    secret_id = string
-  })
+variable "license_secret_id" {
+  description = "The identity of the Secret Manager secret which comprises the Base64 encoded Replicated license file."
+  type        = string
 }
 
-variable "mitmproxy_private_key_secret" {
-  description = "The Secret Manager secret which comprises the Base64 encoded PEM private key for mitmproxy."
-  type = object({
-    secret_id = string
-  })
+variable "mitmproxy_certificate_secret_id" {
+  description = <<-EOD
+  The identity of the Secret Manager secret which comprises the Base64 encoded PEM certificate for mitmproxy.
+  EOD
+  type        = string
 }
 
-variable "ssl_certificate" {
-  description = "The SSL certificate which will be used to authenticate connections to Terraform Enterprise."
-  type = object({
-    name = string
-  })
+variable "mitmproxy_private_key_secret_id" {
+  description = <<-EOD
+  The identity of the Secret Manager secret which comprises the Base64 encoded PEM private key for mitmproxy.
+  EOD
+  type        = string
+}
+
+variable "ssl_certificate_name" {
+  description = <<-EOD
+  The name of the SSL certificate which will be used to authenticate connections to Terraform Enterprise.
+  EOD
+  type        = string
 }

@@ -82,9 +82,9 @@ resource "google_compute_instance" "http_proxy" {
   metadata_startup_script = templatefile(
     "${path.module}/templates/startup.sh.tpl",
     {
-      certificate_secret_id = var.mitmproxy_certificate_secret.secret_id
+      certificate_secret_id = var.mitmproxy_certificate_secret_id
       http_proxy_port       = local.http_proxy_port
-      private_key_secret_id = var.mitmproxy_private_key_secret.secret_id
+      private_key_secret_id = var.mitmproxy_private_key_secret_id
     }
   )
 
@@ -102,12 +102,12 @@ resource "google_compute_instance" "http_proxy" {
 module "tfe" {
   source = "../.."
 
-  dns_zone_name        = var.cloud_dns.name
-  fqdn                 = "private-tcp-active-active.${var.cloud_dns.domain}"
+  dns_zone_name        = var.cloud_dns_name
+  fqdn                 = "private-tcp-active-active.${var.cloud_dns_domain}"
   namespace            = random_pet.main.id
   node_count           = 2
-  license_secret       = var.license_secret.secret_id
-  ssl_certificate_name = var.ssl_certificate.name
+  license_secret       = var.license_secret_id
+  ssl_certificate_name = var.ssl_certificate_name
 
   iact_subnet_list       = ["${google_compute_instance.http_proxy.network_interface[0].network_ip}/32"]
   iact_subnet_time_limit = 1440
