@@ -167,7 +167,26 @@ variable "fqdn" {
   type        = string
 }
 variable "ssl_certificate_name" {
+  default     = null
   description = "Name of the created managed SSL certificate. Required when load_balancer == \"PUBLIC\" or load_balancer == \"PRIVATE\"."
+  type        = string
+}
+
+variable "ssl_certificate_secret" {
+  default     = null
+  description = <<-EOD
+  The Secret Manager secret which comprises the Base64 encoded PEM certificate file. The Terraform provider calls this
+  value the secret_id and the GCP UI calls it the name. This value is only used when load_balancer == "PRIVATE_TCP".
+  EOD
+  type        = string
+}
+
+variable "ssl_private_key_secret" {
+  default     = null
+  description = <<-EOD
+  The Secret Manager secret which comprises the Base64 encoded PEM private key file. The Terraform provider calls this
+  value the secret_id and the GCP UI calls it the name. This value is only used when load_balancer == "PRIVATE_TCP".
+  EOD
   type        = string
 }
 

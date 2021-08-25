@@ -49,9 +49,11 @@ resource "google_storage_bucket_object" "proxy_cert" {
 module "service_accounts" {
   source = "./modules/service_accounts"
 
-  bucket         = module.object_storage.bucket
-  license_secret = var.license_secret
-  namespace      = var.namespace
+  bucket                 = module.object_storage.bucket
+  license_secret         = var.license_secret
+  namespace              = var.namespace
+  ssl_certificate_secret = var.ssl_certificate_secret
+  ssl_private_key_secret = var.ssl_private_key_secret
 }
 
 module "networking" {
@@ -138,6 +140,8 @@ module "user_data" {
   no_proxy                = [local.common_fqdn, var.networking_subnet_range]
   iact_subnet_list        = var.iact_subnet_list
   iact_subnet_time_limit  = var.iact_subnet_time_limit
+  ssl_certificate_secret  = var.ssl_certificate_secret
+  ssl_private_key_secret  = var.ssl_private_key_secret
   trusted_proxies = concat(
     var.trusted_proxies,
     local.trusted_proxies

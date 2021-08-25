@@ -27,9 +27,16 @@ variable "mitmproxy_private_key_secret_id" {
   type        = string
 }
 
-variable "ssl_certificate_name" {
+variable "ssl_certificate_secret_id" {
   description = <<-EOD
-  The name of the SSL certificate which will be used to authenticate connections to Terraform Enterprise.
+  The identity of the Secret Manager secret which comprises the Base64 encoded PEM certificate for Terraform Enterprise.
+  EOD
+  type        = string
+}
+
+variable "ssl_private_key_secret_id" {
+  description = <<-EOD
+  The identity of the Secret Manager secret which comprises the Base64 encoded PEM private key for Terraform Enterprise.
   EOD
   type        = string
 }

@@ -38,3 +38,19 @@ resource "google_secret_manager_secret_iam_member" "license" {
   role      = "roles/secretmanager.secretAccessor"
   secret_id = var.license_secret
 }
+
+resource "google_secret_manager_secret_iam_member" "ssl_certificate" {
+  count = var.ssl_certificate_secret != null ? 1 : 0
+
+  member    = local.member
+  role      = "roles/secretmanager.secretAccessor"
+  secret_id = var.ssl_certificate_secret
+}
+
+resource "google_secret_manager_secret_iam_member" "ssl_private_key" {
+  count = var.ssl_private_key_secret != null ? 1 : 0
+
+  member    = local.member
+  role      = "roles/secretmanager.secretAccessor"
+  secret_id = var.ssl_private_key_secret
+}

@@ -59,6 +59,7 @@ fi
 
 mkdir -p /etc/docker
 mkdir -p /opt/hashicorp/data
+mkdir -p ${lib_directory}
 
 # Provision settings
 echo "${settings}" | base64 -d > /etc/ptfe-settings.json
@@ -73,9 +74,19 @@ cp ./ptfe-settings.json.updated /etc/ptfe-settings.json
 http_proxy="" https_proxy="" gcloud secrets versions access latest --secret="${license_secret}" | \
   base64 --decode --ignore-garbage > ${license_file_location}
 
+%{ if ssl_certificate_secret != null && ssl_private_key_secret != null ~}
+# Retrieve SSL certificate
+http_proxy="" https_proxy="" gcloud secrets versions access latest --secret="${ssl_certificate_secret}" | \
+  base64 --decode --ignore-garbage > ${ssl_certificate_pathname}
+
+# Retrieve SSL private key
+http_proxy="" https_proxy="" gcloud secrets versions access latest --secret="${ssl_private_key_secret}" | \
+  base64 --decode --ignore-garbage > ${ssl_private_key_pathname}
+%{ endif ~}
+
 %{ if airgap_url != "" ~}
 # Retrieve airgap config
-http_proxy="" https_proxy="" gsutil cp ${airgap_url} /var/lib/ptfe/ptfe.airgap
+http_proxy="" https_proxy="" gsutil cp ${airgap_url} ${airgap_pathname}
 %{ endif ~}
 
 %{ if monitoring_enabled ~}
