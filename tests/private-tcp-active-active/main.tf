@@ -1,6 +1,7 @@
 locals {
-  http_proxy_port = "3128"
-  name            = "${random_pet.main.id}-proxy"
+  http_proxy_account = "serviceAccount:${google_service_account.http_proxy.email}"
+  http_proxy_port    = "3128"
+  name               = "${random_pet.main.id}-proxy"
 }
 
 resource "random_pet" "main" {
@@ -17,8 +18,20 @@ resource "google_service_account" "http_proxy" {
 }
 
 resource "google_project_iam_member" "log_writer" {
-  member = "serviceAccount:${google_service_account.http_proxy.email}"
+  member = local.http_proxy_account
   role   = "roles/logging.logWriter"
+}
+
+resource "google_secret_manager_secret_iam_member" "http_proxy_certificate" {
+  member    = local.http_proxy_account
+  role      = "roles/secretmanager.secretAccessor"
+  secret_id = var.mitmproxy_certificate_secret_id
+}
+
+resource "google_secret_manager_secret_iam_member" "http_proxy_private_key" {
+  member    = local.http_proxy_account
+  role      = "roles/secretmanager.secretAccessor"
+  secret_id = var.mitmproxy_private_key_secret_id
 }
 
 resource "google_compute_firewall" "http_proxy" {
