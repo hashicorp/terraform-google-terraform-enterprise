@@ -43,3 +43,8 @@ output "dns_configuration_notice" {
   description = "A warning message."
 }
 
+output "startup_notice" {
+  value       = "Please wait up to ten minutes for the system to fully start up before attempting to log in."
+  description = "A warning message."
+}
+
