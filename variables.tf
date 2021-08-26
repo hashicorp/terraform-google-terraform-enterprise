@@ -54,7 +54,7 @@ variable "networking_subnet_range" {
 }
 variable "networking_reserve_subnet_range" {
   default     = "10.1.0.0/16"
-  description = <<-EO.D
+  description = <<-EOD
   The range of IP addresses to reserve for the subnetwork dedicated to internal HTTPS load balancing, expressed in CIDR
   format.
   EOD
@@ -156,7 +156,7 @@ variable "vm_auto_healing_enabled" {
 }
 # TFE VARS
 variable "license_secret" {
-  description = <<-EO.D
+  description = <<-EOD
   The Secret Manager secret which comprises the Base64 encoded Replicated license file. The Terraform provider calls
   this value the secret_id and the GCP UI calls it the name.
   EOD
