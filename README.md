@@ -1,10 +1,7 @@
 # Terraform Enterprise GCP Module
 
-**IMPORTANT**: You are viewing a **beta version** of the official
-module to install Terraform Enterprise. This new version is
-**incompatible with earlier versions**, and it is not currently meant
-for production use. Please contact your Customer Success Manager for
-details before using.
+**IMPORTANT**: You are viewing a **beta version** of the official module to install Terraform Enterprise. This new version is
+**incompatible with earlier versions**, and it is not currently meant for production use. Please contact your Customer Success Manager for details before using.
 
 This is a Terraform module for provisioning a Terraform Enterprise Cluster on GCP. Terraform Enterprise is our self-hosted distribution of Terraform Cloud. It offers enterprises a private instance of the Terraform Cloud application, with no resource limits and with additional enterprise-grade architectural features like audit logging and SAML single sign-on.
 
@@ -25,7 +22,7 @@ This module is intended to run in a GCP project with minimal preparation, howeve
 
 The SSL certificate for the TFE load balancer is a pre-requisite for this module.
 
-The certificate can be provisioned in [GCP here](https://console.cloud.google.com/net-services/loadbalancing/advanced/sslCertificates/list) either by creating a managed GCP certificate or by uploading an existing certificate.
+The certificate can be provisioned in [GCP here](https://console.cloud.google.com/net-services/loadbalancing/advanced/sslCertificates/list) either by creating a managed GCP certificate or by uploading an existing certificate. To upload your own certificate, you need to use the advanced menu to manage the load balancer resources.
 
 For more information on provisioning certificates in GCP, read the [documentation here](https://cloud.google.com/load-balancing/docs/ssl-certificates/google-managed-certs).
 

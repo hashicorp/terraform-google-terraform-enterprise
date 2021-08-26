@@ -1,11 +1,11 @@
 output "replicated_console_password" {
-  value       = module.user_data.replicated_dashboard_password
-  description = "Generated password for replicated dashboard"
+  value       = var.node_count > 1 ? "" : module.user_data.replicated_dashboard_password
+  description = "Generated password for replicated dashboard."
 }
 
 output "lb_address" {
   value       = local.lb_address
-  description = "Load Balancer Address"
+  description = "Load Balancer Address."
 }
 
 output "health_check_url" {
@@ -48,6 +48,21 @@ output "subnetwork" {
 }
 
 output "dns_configuration_notice" {
-  value       = "If you are using external DNS, please make sure to create a DNS record using the lb_address output that has been provided"
+  value       = "If you are using external DNS, please make sure to create a DNS record using the lb_address output that has been provided."
+  description = "A warning message."
+}
+
+output "object_store_bucket" {
+  value       = module.object_storage.bucket
+  description = "Name of the GCS bucket used for the object store and TFE licence file."
+}
+
+output "object_store_bucket_location" {
+  value       = module.object_storage.location
+  description = "Location of the GCS bucket used for the object store and TFE licence file."
+}
+
+output "startup_notice" {
+  value       = "Please wait up to ten minutes for the system to fully start up before attempting to log in."
   description = "A warning message."
 }

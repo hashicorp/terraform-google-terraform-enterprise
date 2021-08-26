@@ -37,6 +37,7 @@ module "object_storage" {
 
   namespace = var.namespace
   labels    = local.labels
+  location  = var.object_store_location
 }
 
 resource "google_storage_bucket_object" "proxy_cert" {

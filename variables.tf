@@ -1,20 +1,20 @@
 
 variable "dns_create_record" {
   default     = true
-  description = "If true, will create a DNS record. If false, no record will be created and IP of load balancer will instead be output"
+  description = "If true, will create a DNS record. If false, no record will be created and IP of load balancer will instead. be output"
   type        = bool
 }
 variable "dns_zone_name" {
   default     = ""
-  description = "Name of the DNS zone set up in GCP"
+  description = "Name of the DNS zone set up in GCP."
   type        = string
 }
 variable "namespace" {
-  description = "Prefix for naming resources"
+  description = "Prefix for naming resources."
   type        = string
 }
 variable "node_count" {
-  description = "Number of TFE nodes. Between 1 and 5"
+  description = "Number of TFE nodes. Between 1 and 5."
   type        = number
   validation {
     condition     = var.node_count <= 5
@@ -23,38 +23,38 @@ variable "node_count" {
 }
 variable "proxy_ip" {
   default     = ""
-  description = "IP Address of the proxy server"
+  description = "IP Address of the proxy server."
   type        = string
 }
 variable "proxy_cert_name" {
   default     = "proxy-cert"
-  description = "Name for the stored proxy certificate bundle"
+  description = "Name for the stored proxy certificate bundle."
   type        = string
 }
 variable "proxy_cert_path" {
   default     = ""
-  description = "Local path to the proxy certificate bundle"
+  description = "Local path to the proxy certificate bundle."
   type        = string
 }
 # NETWORKING VARS
 variable "networking_firewall_ports" {
   default     = []
-  description = "Additional ports to open in the firewall"
+  description = "Additional ports to open in the firewall."
   type        = list(string)
 }
 variable "networking_healthcheck_ips" {
   default     = ["35.191.0.0/16", "209.85.152.0/22", "209.85.204.0/22", "130.211.0.0/22"]
-  description = "Allowed IPs required for healthcheck. Provided by GCP"
+  description = "Allowed IPs required for healthcheck. Provided by GCP."
   type        = list(string)
 }
 variable "networking_subnet_range" {
   default     = "10.0.0.0/16"
-  description = "CIDR block for the created subnet"
+  description = "CIDR block for the created subnet."
   type        = string
 }
 variable "networking_reserve_subnet_range" {
   default     = "10.1.0.0/16"
-  description = <<-EOD
+  description = <<-EO.D
   The range of IP addresses to reserve for the subnetwork dedicated to internal HTTPS load balancing, expressed in CIDR
   format.
   EOD
@@ -62,17 +62,17 @@ variable "networking_reserve_subnet_range" {
 }
 variable "networking_ip_allow_list" {
   default     = ["0.0.0.0/0"]
-  description = "List of allowed IPs for the firewall"
+  description = "List of allowed IPs for the firewall."
   type        = list(string)
 }
 variable "network" {
   default     = null
-  description = "Pre-existing network self link"
+  description = "Pre-existing network self link."
   type        = string
 }
 variable "subnetwork" {
   default     = null
-  description = "Pre-existing subnetwork self link"
+  description = "Pre-existing subnetwork self link."
   type        = string
 }
 variable "load_balancer" {
@@ -88,38 +88,38 @@ variable "load_balancer" {
 # DATABASE VARS
 variable "database_name" {
   default     = "tfe"
-  description = "Postgres database name"
+  description = "Postgres database name."
   type        = string
 }
 variable "database_user" {
   default     = "tfe_user"
-  description = "Postgres username"
+  description = "Postgres username."
   type        = string
 }
 variable "database_machine_type" {
   default     = "db-custom-4-16384"
-  description = "Database machine type"
+  description = "Database machine type."
   type        = string
 }
 variable "database_availability_type" {
   default     = "ZONAL"
-  description = "Database Availability Type"
+  description = "Database Availability Type."
   type        = string
 }
 variable "database_backup_start_time" {
   default     = "00:00"
-  description = "Database backup start time"
+  description = "Database backup start time."
   type        = string
 }
 # REDIS VARS
 variable "redis_auth_enabled" {
   default     = true
-  description = "A toggle to enable Redis authentication"
+  description = "A toggle to enable Redis authentication."
   type        = bool
 }
 variable "redis_memory_size" {
   default     = 6
-  description = "Redis memory size in GiB"
+  description = "Redis memory size in GiB."
   type        = number
 }
 # REPLICATED VARS
@@ -131,39 +131,39 @@ variable "release_sequence" {
 # VM VARS
 variable "vm_machine_type" {
   default     = "n1-standard-4"
-  description = "VM Machine Type"
+  description = "VM Machine Type."
   type        = string
 }
 variable "vm_disk_size" {
   default     = 50
-  description = "VM Disk size. Should be at least 50"
+  description = "VM Disk size. Should be at least 50."
   type        = number
 }
 variable "vm_disk_source_image" {
   default     = "projects/ubuntu-os-cloud/global/images/family/ubuntu-2004-lts"
-  description = "VM Disk source image"
+  description = "VM Disk source image."
   type        = string
 }
 variable "vm_disk_type" {
   default     = "pd-ssd"
-  description = "VM Disk type. SSD recommended"
+  description = "VM Disk type. SSD recommended."
   type        = string
 }
 variable "vm_auto_healing_enabled" {
   default     = false
-  description = "Auto healing for the instance group"
+  description = "Auto healing for the instance group."
   type        = bool
 }
 # TFE VARS
 variable "license_secret" {
-  description = <<-EOD
+  description = <<-EO.D
   The Secret Manager secret which comprises the Base64 encoded Replicated license file. The Terraform provider calls
   this value the secret_id and the GCP UI calls it the name.
   EOD
   type        = string
 }
 variable "fqdn" {
-  description = "Fully qualified domain name for the TFE endpoint"
+  description = "Fully qualified domain name for the TFE endpoint."
   type        = string
 }
 variable "ssl_certificate_name" {
@@ -195,4 +195,11 @@ variable "trusted_proxies" {
   those made to the IACT endpoint.
   EOD
   type        = list(string)
+}
+
+# OBJECT STORE VARS
+variable "object_store_location" {
+  description = "Location of the bucket to act as the TFE Object Store and to store the TFE licence file."
+  type        = string
+  default     = "US"
 }
