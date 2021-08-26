@@ -30,7 +30,7 @@ manner of the Bank persona:
 
 ```hcl
 module "tfe" {
-  source = "git@github.com:hashicorp/espd-tfe-gcp.git"
+  source = "git@github.com:hashicorp/terraform-google-terraform-enterprise-tfe-gcp.git"
 
   dns_zone_name        = "<Name of the DNS zone in which a record set will be created>"
   fqdn                 = "<Fully qualified domain name>"
