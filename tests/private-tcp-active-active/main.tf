@@ -95,9 +95,9 @@ resource "google_compute_instance" "http_proxy" {
   metadata_startup_script = templatefile(
     "${path.module}/templates/startup.sh.tpl",
     {
-      certificate_secret_id = var.mitmproxy_certificate_secret_id
+      certificate_secret_id = var.ssl_certificate_secret_id
       http_proxy_port       = local.http_proxy_port
-      private_key_secret_id = var.mitmproxy_private_key_secret_id
+      private_key_secret_id = var.ssl_private_key_secret_id
     }
   )
 
