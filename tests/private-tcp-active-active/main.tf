@@ -121,6 +121,7 @@ module "tfe" {
   node_count     = 2
   license_secret = var.license_secret_id
 
+  ca_certificate_secret  = var.ssl_certificate_secret_id
   iact_subnet_list       = ["${google_compute_instance.http_proxy.network_interface[0].network_ip}/32"]
   iact_subnet_time_limit = 1440
   load_balancer          = "PRIVATE_TCP"

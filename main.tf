@@ -39,21 +39,12 @@ module "object_storage" {
   labels    = local.labels
 }
 
-resource "google_storage_bucket_object" "proxy_cert" {
-  count  = var.proxy_cert_path != "" ? 1 : 0
-  name   = var.proxy_cert_name
-  source = var.proxy_cert_path
-  bucket = module.object_storage.bucket
-}
-
 module "service_accounts" {
   source = "./modules/service_accounts"
 
-  bucket                 = module.object_storage.bucket
-  license_secret         = var.license_secret
-  namespace              = var.namespace
-  ssl_certificate_secret = var.ssl_certificate_secret
-  ssl_private_key_secret = var.ssl_private_key_secret
+  bucket    = module.object_storage.bucket
+  namespace = var.namespace
+  secrets   = [var.ca_certificate_secret, var.license_secret, var.ssl_certificate_secret, var.ssl_private_key_secret]
 }
 
 module "networking" {
@@ -101,7 +92,6 @@ module "redis" {
 }
 
 locals {
-  proxy_cert = length(google_storage_bucket_object.proxy_cert) > 0 ? google_storage_bucket_object.proxy_cert[0].name : ""
   redis = length(module.redis) > 0 ? module.redis[0] : {
     host     = ""
     password = ""
@@ -117,6 +107,7 @@ locals {
 module "user_data" {
   source = "./modules/user_data"
 
+  ca_certificate_secret   = var.ca_certificate_secret
   fqdn                    = local.common_fqdn
   airgap_url              = ""
   gcs_bucket              = module.object_storage.bucket
@@ -135,7 +126,6 @@ module "user_data" {
   release_sequence        = var.release_sequence
   active_active           = local.active_active
   proxy_ip                = var.proxy_ip
-  proxy_cert              = local.proxy_cert
   namespace               = var.namespace
   no_proxy                = [local.common_fqdn, var.networking_subnet_range]
   iact_subnet_list        = var.iact_subnet_list

@@ -26,12 +26,15 @@ variable "namespace" {
   description = "A prefix which will be applied to all resource names."
   type        = string
 }
-# Optional Variables
-variable "proxy_cert" {
-  default     = ""
-  description = "The name of the storage bucket object which comprises a proxy server certificate bundle."
+
+variable "ca_certificate_secret" {
+  description = <<-EOD
+  The Secret Manager secret which comprises the Base64 encoded PEM certificate file for a Certificate Authority. The
+  Terraform provider calls this value the secret_id and the GCP UI calls it the name.
+  EOD
   type        = string
 }
+
 variable "proxy_ip" {
   default     = ""
   description = "The IP address of a proxy server through which all traffic from the compute instances will be routed."

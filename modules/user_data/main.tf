@@ -259,6 +259,7 @@ locals {
     {
       airgap_pathname          = local.airgap_pathname
       airgap_url               = var.airgap_url
+      ca_certificate_secret    = var.ca_certificate_secret
       docker_config            = filebase64("${path.module}/files/daemon.json")
       bucket_name              = var.gcs_bucket
       lib_directory            = local.lib_directory
@@ -270,7 +271,6 @@ locals {
       active_active            = var.active_active
       namespace                = var.namespace
       proxy_ip                 = var.proxy_ip
-      proxy_cert               = var.proxy_cert
       ssl_certificate_pathname = local.ssl_certificate_pathname
       ssl_certificate_secret   = var.ssl_certificate_secret
       ssl_private_key_pathname = local.ssl_private_key_pathname

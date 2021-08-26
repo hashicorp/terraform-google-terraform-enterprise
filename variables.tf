@@ -26,16 +26,16 @@ variable "proxy_ip" {
   description = "IP Address of the proxy server"
   type        = string
 }
-variable "proxy_cert_name" {
-  default     = "proxy-cert"
-  description = "Name for the stored proxy certificate bundle"
+
+variable "ca_certificate_secret" {
+  default     = null
+  description = <<-EOD
+  The Secret Manager secret which comprises the Base64 encoded PEM certificate file for a Certificate Authority. The
+  Terraform provider calls this value the secret_id and the GCP UI calls it the name.
+  EOD
   type        = string
 }
-variable "proxy_cert_path" {
-  default     = ""
-  description = "Local path to the proxy certificate bundle"
-  type        = string
-}
+
 # NETWORKING VARS
 variable "networking_firewall_ports" {
   default     = []

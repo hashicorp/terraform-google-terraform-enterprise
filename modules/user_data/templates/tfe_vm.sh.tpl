@@ -15,6 +15,11 @@ case "$release_name" in
     exit 1
 esac
 
+# Provision settings
+echo "${settings}" | base64 --decode > /etc/ptfe-settings.json
+echo "${replicated}" | base64 --decode > /etc/replicated.conf
+echo "${docker_config}" | base64 --decode > /etc/docker/daemon.json
+
 %{ if proxy_ip != "" ~}
 # Proxy Config
 /bin/cat <<EOF >>/etc/environment
@@ -33,42 +38,43 @@ export http_proxy="http://${proxy_ip}"
 export https_proxy="https://${proxy_ip}"
 export no_proxy="${no_proxy}"
 
-%{ if proxy_cert != "" ~}
+%{ endif ~}
+%{ if ca_certificate_secret != null ~}
+ca_certificate_directory="/dev/null"
+
 if [[ $distribution == "ubuntu" ]]
 then
-  mkdir -p /usr/local/share/ca-certificates/extra
-  cert_pathname="/usr/local/share/ca-certificates/extra/cust-ca-certificates.crt"
-  # The installed version of gsutil does not support no_proxy
-  # https://github.com/GoogleCloudPlatform/gsutil/issues/1178
-  http_proxy="" https_proxy="" gsutil cp "gs://${bucket_name}/${proxy_cert}" $${cert_pathname}
+  ca_certificate_directory="/usr/local/share/ca-certificates/extra"
+elif [[ $distribution == "rhel" ]]
+  ca_certificate_directory="/usr/share/pki/ca-trust-source/anchors"
+fi
+
+mkdir --parents "$ca_certificate_directory"
+
+certificate_data="$( \
+  http_proxy="" https_proxy="" gcloud secrets versions access latest --secret="${ca_certificate_secret}" | \
+    base64 --decode --ignore-garbage \
+)"
+echo "$certificate_data" > "$ca_certificate_directory/tfe-ca-certificate.crt"
+
+if [[ $distribution == "ubuntu" ]]
+then
   update-ca-certificates
   apt-get -y update
   apt-get -y install jq
 elif [[ $distribution == "rhel" ]]
 then
-  mkdir -p /usr/share/pki/ca-trust-source/anchors
-  cert_pathname="/usr/share/pki/ca-trust-source/anchors/cust-ca-certificates.crt"
-  # The installed version of gsutil does not support no_proxy
-  # https://github.com/GoogleCloudPlatform/gsutil/issues/1178
-  http_proxy="" https_proxy="" gsutil cp "gs://${bucket_name}/${proxy_cert}" $${cert_pathname}
   update-ca-trust
   yum -y install jq
 fi
-%{ endif ~}
-%{ endif ~}
 
+cp /etc/ptfe-settings.json /etc/ptfe-settings-without-ca-certs.json
+jq ". + { ca_certs: { value: \"$certificate_data\" } }" -- /etc/ptfe-settings-without-ca-certs.json > ptfe-settings.json
+
+%{ endif ~}
 mkdir -p /etc/docker
 mkdir -p /opt/hashicorp/data
 mkdir -p ${lib_directory}
-
-# Provision settings
-echo "${settings}" | base64 -d > /etc/ptfe-settings.json
-echo "${replicated}" | base64 -d > /etc/replicated.conf
-echo "${docker_config}" | base64 -d > /etc/docker/daemon.json
-%{ if proxy_ip != "" && proxy_cert != "" ~}
-jq ". + { ca_certs: { value: \"$(cat $${cert_pathname})\" } }" -- /etc/ptfe-settings.json > ptfe-settings.json.updated
-cp ./ptfe-settings.json.updated /etc/ptfe-settings.json
-%{ endif ~}
 
 # Retrieve license
 http_proxy="" https_proxy="" gcloud secrets versions access latest --secret="${license_secret}" | \
