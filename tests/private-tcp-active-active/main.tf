@@ -25,13 +25,13 @@ resource "google_project_iam_member" "log_writer" {
 resource "google_secret_manager_secret_iam_member" "http_proxy_certificate" {
   member    = local.http_proxy_account
   role      = "roles/secretmanager.secretAccessor"
-  secret_id = var.mitmproxy_certificate_secret_id
+  secret_id = var.ssl_certificate_secret_id
 }
 
 resource "google_secret_manager_secret_iam_member" "http_proxy_private_key" {
   member    = local.http_proxy_account
   role      = "roles/secretmanager.secretAccessor"
-  secret_id = var.mitmproxy_private_key_secret_id
+  secret_id = var.ssl_private_key_secret_id
 }
 
 resource "google_compute_firewall" "http_proxy" {

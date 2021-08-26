@@ -13,20 +13,6 @@ variable "license_secret_id" {
   type        = string
 }
 
-variable "mitmproxy_certificate_secret_id" {
-  description = <<-EOD
-  The identity of the Secret Manager secret which comprises the Base64 encoded PEM certificate for mitmproxy.
-  EOD
-  type        = string
-}
-
-variable "mitmproxy_private_key_secret_id" {
-  description = <<-EOD
-  The identity of the Secret Manager secret which comprises the Base64 encoded PEM private key for mitmproxy.
-  EOD
-  type        = string
-}
-
 variable "ssl_certificate_secret_id" {
   description = <<-EOD
   The identity of the Secret Manager secret which comprises the Base64 encoded PEM certificate for Terraform Enterprise.
