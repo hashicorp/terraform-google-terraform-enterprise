@@ -25,13 +25,13 @@ resource "google_project_iam_member" "log_writer" {
 resource "google_secret_manager_secret_iam_member" "http_proxy_certificate" {
   member    = local.http_proxy_account
   role      = "roles/secretmanager.secretAccessor"
-  secret_id = var.ssl_certificate_secret_id
+  secret_id = var.ca_certificate_secret_id
 }
 
 resource "google_secret_manager_secret_iam_member" "http_proxy_private_key" {
   member    = local.http_proxy_account
   role      = "roles/secretmanager.secretAccessor"
-  secret_id = var.ssl_private_key_secret_id
+  secret_id = var.ca_private_key_secret_id
 }
 
 resource "google_compute_firewall" "http_proxy" {
@@ -95,9 +95,9 @@ resource "google_compute_instance" "http_proxy" {
   metadata_startup_script = templatefile(
     "${path.module}/templates/startup.sh.tpl",
     {
-      certificate_secret_id = var.ssl_certificate_secret_id
+      certificate_secret_id = var.ca_certificate_secret_id
       http_proxy_port       = local.http_proxy_port
-      private_key_secret_id = var.ssl_private_key_secret_id
+      private_key_secret_id = var.ca_private_key_secret_id
     }
   )
 
@@ -121,7 +121,7 @@ module "tfe" {
   node_count     = 2
   license_secret = var.license_secret_id
 
-  ca_certificate_secret  = var.ssl_certificate_secret_id
+  ca_certificate_secret  = var.ca_certificate_secret_id
   iact_subnet_list       = ["${google_compute_instance.http_proxy.network_interface[0].network_ip}/32"]
   iact_subnet_time_limit = 1440
   load_balancer          = "PRIVATE_TCP"
