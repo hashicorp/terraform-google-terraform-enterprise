@@ -214,11 +214,12 @@ locals {
   }
 
   license_file_location = "/etc/ptfe-license.rli"
+  settings_pathname     = "/etc/ptfe-settings.json"
   replicated_base_config = {
     BypassPreflightChecks        = true
     DaemonAuthenticationPassword = random_string.password.result
     DaemonAuthenticationType     = "password"
-    ImportSettingsFrom           = "/etc/ptfe-settings.json"
+    ImportSettingsFrom           = local.settings_pathname
     LicenseFileLocation          = local.license_file_location
     TlsBootstrapHostname         = var.fqdn
   }
@@ -260,6 +261,7 @@ locals {
       airgap_pathname          = local.airgap_pathname
       airgap_url               = var.airgap_url
       ca_certificate_secret    = var.ca_certificate_secret
+      disk_directory           = var.disk_path
       docker_config            = filebase64("${path.module}/files/daemon.json")
       bucket_name              = var.gcs_bucket
       lib_directory            = local.lib_directory
@@ -271,6 +273,7 @@ locals {
       active_active            = var.active_active
       namespace                = var.namespace
       proxy_ip                 = var.proxy_ip
+      settings_pathname        = local.settings_pathname
       ssl_certificate_pathname = local.ssl_certificate_pathname
       ssl_certificate_secret   = var.ssl_certificate_secret
       ssl_private_key_pathname = local.ssl_private_key_pathname
