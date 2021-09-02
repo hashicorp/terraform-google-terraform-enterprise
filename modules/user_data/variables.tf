@@ -26,12 +26,15 @@ variable "namespace" {
   description = "A prefix which will be applied to all resource names."
   type        = string
 }
-# Optional Variables
-variable "proxy_cert" {
-  default     = ""
-  description = "The name of the storage bucket object which comprises a proxy server certificate bundle."
+
+variable "ca_certificate_secret" {
+  description = <<-EOD
+  The Secret Manager secret which comprises the Base64 encoded PEM certificate file for a Certificate Authority. The
+  Terraform provider calls this value the secret_id and the GCP UI calls it the name.
+  EOD
   type        = string
 }
+
 variable "proxy_ip" {
   default     = ""
   description = "The IP address of a proxy server through which all traffic from the compute instances will be routed."
@@ -236,6 +239,21 @@ variable "release_sequence" {
   default     = 0
 }
 
+variable "ssl_certificate_secret" {
+  description = <<-EOD
+  The Secret Manager secret which comprises the Base64 encoded PEM certificate file. The Terraform provider calls this
+  value the secret_id and the GCP UI calls it the name.
+  EOD
+  type        = string
+}
+
+variable "ssl_private_key_secret" {
+  description = <<-EOD
+  The Secret Manager secret which comprises the Base64 encoded PEM private key file. The Terraform provider calls this
+  value the secret_id and the GCP UI calls it the name.
+  EOD
+  type        = string
+}
 
 ## External GCP Configs
 
@@ -254,26 +272,5 @@ variable "gcs_credentials" {
 variable "gcs_project" {
   default     = ""
   description = "The ID of the project in which the storage bucket resides."
-  type        = string
-}
-
-
-# Misc Variables
-
-variable "letsencrypt_email" {
-  default     = ""
-  description = "The email address to use when obtaining a certificate from Let's Encrypt. An empty string disables the Let's Encrypt integration. (Do not set this if you are using the server_cert_path/server_key_path parameters)"
-  type        = string
-}
-
-variable "server_cert_path" {
-  default     = ""
-  description = "Path on the remote server to a well known certificate in PEM format. (Do not set this if you are setting the letsencrypt_email parameter)"
-  type        = string
-}
-
-variable "server_key_path" {
-  default     = ""
-  description = "Path on the remote server to the private key of the well known certificate set in server_cert_path. Required if server_cert_path is set. (Do not set this if you are setting the letsencrypt_email parameter"
   type        = string
 }

@@ -214,30 +214,21 @@ locals {
   }
 
   license_file_location = "/etc/ptfe-license.rli"
+  settings_pathname     = "/etc/ptfe-settings.json"
   replicated_base_config = {
     BypassPreflightChecks        = true
     DaemonAuthenticationPassword = random_string.password.result
     DaemonAuthenticationType     = "password"
-    ImportSettingsFrom           = "/etc/ptfe-settings.json"
+    ImportSettingsFrom           = local.settings_pathname
     LicenseFileLocation          = local.license_file_location
-    TlsBootstrapType             = "self-signed"
     TlsBootstrapHostname         = var.fqdn
   }
 
+  lib_directory   = "/var/lib/ptfe"
+  airgap_pathname = "${local.lib_directory}/ptfe.airgap"
+
   airgap_config = {
-    LicenseBootstrapAirgapPackagePath = "/var/lib/ptfe/ptfe.airgap"
-  }
-
-  letsencrypt_config = {
-    TlsBootstrapCert = "/etc/letsencrypt/live/${var.fqdn}/fullchain.pem"
-    TlsBootstrapKey  = "/etc/letsencrypt/live/${var.fqdn}/privkey.pem"
-    TlsBootstrapType = "server-path"
-  }
-
-  generic_tls_config = {
-    TlsBootstrapCert = var.server_cert_path
-    TlsBootstrapKey  = var.server_key_path
-    TlsBootstrapType = "server-path"
+    LicenseBootstrapAirgapPackagePath = local.airgap_pathname
   }
 
   release_pin_config = {
@@ -250,28 +241,43 @@ locals {
   tfe_configs      = jsonencode(merge(local.base_configs, local.base_external_configs, local.external_google_configs, local.is_redis_configs))
 
   # build replicated config json
-  is_airgap      = var.airgap_url != "" ? local.airgap_config : {}
-  is_letsencrypt = var.letsencrypt_email != "" ? local.letsencrypt_config : {}
-  is_generic_tls = var.server_cert_path != "" ? local.generic_tls_config : {}
-  is_pinned      = var.release_sequence != 0 ? local.release_pin_config : {}
+  is_airgap                = var.airgap_url != "" ? local.airgap_config : {}
+  is_pinned                = var.release_sequence != 0 ? local.release_pin_config : {}
+  ssl_certificate_pathname = "${local.lib_directory}/certificate.pem"
+  ssl_private_key_pathname = "${local.lib_directory}/private-key.pem"
+  tls = (var.ssl_certificate_secret == null || var.ssl_private_key_secret == null) ? {
+    TlsBootstrapType = "self-signed"
+    } : {
+    TlsBootstrapCert = local.ssl_certificate_pathname
+    TlsBootstrapKey  = local.ssl_private_key_pathname
+    TlsBootstrapType = "server-path"
+  }
 
-  repl_configs = jsonencode(merge(local.replicated_base_config, local.is_airgap, local.is_letsencrypt, local.is_generic_tls, local.is_pinned))
+  repl_configs = jsonencode(merge(local.replicated_base_config, local.is_airgap, local.is_pinned, local.tls))
 
   user_data = templatefile(
     "${path.module}/templates/tfe_vm.sh.tpl",
     {
-      airgap_url            = var.airgap_url
-      docker_config         = filebase64("${path.module}/files/daemon.json")
-      bucket_name           = var.gcs_bucket
-      license_file_location = local.license_file_location
-      license_secret        = var.license_secret
-      monitoring_enabled    = var.monitoring_enabled
-      replicated            = base64encode(local.repl_configs)
-      settings              = base64encode(local.tfe_configs)
-      active_active         = var.active_active
-      namespace             = var.namespace
-      proxy_ip              = var.proxy_ip
-      proxy_cert            = var.proxy_cert
+      airgap_pathname          = local.airgap_pathname
+      airgap_url               = var.airgap_url
+      ca_certificate_secret    = var.ca_certificate_secret
+      disk_directory           = var.disk_path
+      docker_config            = filebase64("${path.module}/files/daemon.json")
+      bucket_name              = var.gcs_bucket
+      lib_directory            = local.lib_directory
+      license_file_location    = local.license_file_location
+      license_secret           = var.license_secret
+      monitoring_enabled       = var.monitoring_enabled
+      replicated               = base64encode(local.repl_configs)
+      settings                 = base64encode(local.tfe_configs)
+      active_active            = var.active_active
+      namespace                = var.namespace
+      proxy_ip                 = var.proxy_ip
+      settings_pathname        = local.settings_pathname
+      ssl_certificate_pathname = local.ssl_certificate_pathname
+      ssl_certificate_secret   = var.ssl_certificate_secret
+      ssl_private_key_pathname = local.ssl_private_key_pathname
+      ssl_private_key_secret   = var.ssl_private_key_secret
       no_proxy = join(
         ",",
         concat(

@@ -5,18 +5,22 @@ set -e -u -o pipefail
 # Set intial start time - used to calculate total time
 SECONDS=0 #Start Time
 
-mkdir -p /etc/mitmproxy
+confdir="/etc/mitmproxy"
 
-touch /etc/systemd/system/mitmproxy.service
-chown root:root /etc/systemd/system/mitmproxy.service
-chmod 0644 /etc/systemd/system/mitmproxy.service
+mkdir -p $confdir
 
-cat <<EOF >/etc/systemd/system/mitmproxy.service
+service="/etc/systemd/system/mitmproxy.service"
+
+touch $service
+chown root:root $service
+chmod 0644 $service
+
+cat <<EOF >$service
 [Unit]
 Description=mitmproxy
-ConditionPathExists=/etc/mitmproxy
+ConditionPathExists=$confdir
 [Service]
-ExecStart=/usr/local/bin/mitmdump -p ${http_proxy_port} --set confdir=/etc/mitmproxy --ssl-insecure
+ExecStart=/usr/local/bin/mitmdump -p ${http_proxy_port} --set confdir=$confdir
 Restart=always
 [Install]
 WantedBy=multi-user.target
@@ -27,10 +31,9 @@ curl -Lo /tmp/mitmproxy.tar.gz https://snapshots.mitmproxy.org/6.0.2/mitmproxy-6
 tar xvf /tmp/mitmproxy.tar.gz -C /usr/local/bin/
 
 echo "[$(date +"%FT%T")]  Deploying certificates for mitmproxy"
-cat <<EOF >/etc/mitmproxy/mitmproxy-ca.pem
-${certificate}
-${private_key}
-EOF
+certificate="$confdir/mitmproxy-ca.pem"
+gcloud secrets versions access latest --secret ${certificate_secret_id} | base64 --decode | tee $certificate
+gcloud secrets versions access latest --secret ${private_key_secret_id} | base64 --decode | tee --append $certificate
 
 echo "[$(date +"%FT%T")]  Starting mitmproxy service"
 systemctl daemon-reload

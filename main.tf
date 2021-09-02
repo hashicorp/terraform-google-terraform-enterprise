@@ -39,19 +39,12 @@ module "object_storage" {
   labels    = local.labels
 }
 
-resource "google_storage_bucket_object" "proxy_cert" {
-  count  = var.proxy_cert_path != "" ? 1 : 0
-  name   = var.proxy_cert_name
-  source = var.proxy_cert_path
-  bucket = module.object_storage.bucket
-}
-
 module "service_accounts" {
   source = "./modules/service_accounts"
 
-  bucket         = module.object_storage.bucket
-  license_secret = var.license_secret
-  namespace      = var.namespace
+  bucket    = module.object_storage.bucket
+  namespace = var.namespace
+  secrets   = [var.ca_certificate_secret, var.license_secret, var.ssl_certificate_secret, var.ssl_private_key_secret]
 }
 
 module "networking" {
@@ -99,18 +92,23 @@ module "redis" {
 }
 
 locals {
-  proxy_cert = length(google_storage_bucket_object.proxy_cert) > 0 ? google_storage_bucket_object.proxy_cert[0].name : ""
   redis = length(module.redis) > 0 ? module.redis[0] : {
     host     = ""
     password = ""
     port     = ""
   }
+
+  common_fqdn = trimsuffix(var.fqdn, ".")
+  # Ensure that the FQDN is in the fully qualified format that GCP expects.
+  # Trimming and re-adding the suffix ensures that either format can be provided for var.fqdn.
+  full_fqdn = "${local.common_fqdn}."
 }
 
 module "user_data" {
   source = "./modules/user_data"
 
-  fqdn                    = var.fqdn
+  ca_certificate_secret   = var.ca_certificate_secret
+  fqdn                    = local.common_fqdn
   airgap_url              = ""
   gcs_bucket              = module.object_storage.bucket
   gcs_credentials         = module.service_accounts.credentials
@@ -128,11 +126,12 @@ module "user_data" {
   release_sequence        = var.release_sequence
   active_active           = local.active_active
   proxy_ip                = var.proxy_ip
-  proxy_cert              = local.proxy_cert
   namespace               = var.namespace
-  no_proxy                = [var.fqdn, var.networking_subnet_range]
+  no_proxy                = [local.common_fqdn, var.networking_subnet_range]
   iact_subnet_list        = var.iact_subnet_list
   iact_subnet_time_limit  = var.iact_subnet_time_limit
+  ssl_certificate_secret  = var.ssl_certificate_secret
+  ssl_private_key_secret  = var.ssl_private_key_secret
   trusted_proxies = concat(
     var.trusted_proxies,
     local.trusted_proxies
@@ -170,7 +169,7 @@ module "private_load_balancer" {
   source = "./modules/private_load_balancer"
 
   namespace            = var.namespace
-  fqdn                 = var.fqdn
+  fqdn                 = local.full_fqdn
   instance_group       = module.vm.instance_group
   ssl_certificate_name = var.ssl_certificate_name
   dns_zone_name        = var.dns_zone_name
@@ -184,7 +183,7 @@ module "private_tcp_load_balancer" {
   source = "./modules/private_tcp_load_balancer"
 
   namespace         = var.namespace
-  fqdn              = var.fqdn
+  fqdn              = local.full_fqdn
   instance_group    = module.vm.instance_group
   dns_zone_name     = var.dns_zone_name
   subnetwork        = local.subnetwork_self_link
@@ -206,7 +205,7 @@ module "load_balancer" {
   source = "./modules/load_balancer"
 
   namespace            = var.namespace
-  fqdn                 = var.fqdn
+  fqdn                 = local.full_fqdn
   instance_group       = module.vm.instance_group
   ssl_certificate_name = var.ssl_certificate_name
   dns_zone_name        = var.dns_zone_name
@@ -230,6 +229,6 @@ locals {
     "35.191.0.0/16"
   ]
 
-  hostname = var.dns_create_record ? var.fqdn : local.lb_address
+  hostname = var.dns_create_record ? local.common_fqdn : local.lb_address
   base_url = "https://${local.hostname}/"
 }

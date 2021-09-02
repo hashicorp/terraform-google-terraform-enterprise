@@ -3,7 +3,7 @@ resource "google_dns_record_set" "main" {
 
   managed_zone = var.dns_zone_name
   # The name must end with a ".".
-  name    = "${var.fqdn}."
+  name    = var.fqdn
   rrdatas = [var.ip_address]
   ttl     = 300
   type    = "A"

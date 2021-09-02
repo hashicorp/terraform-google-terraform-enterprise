@@ -16,6 +16,7 @@ To define addresses that can be reached without the proxy, configure the `no_pro
 ```hcl
 module "tfe_node" {
   source               = "git@github.com:hashicorp/espd-tfe-gcp.git"
+
   namespace            = "<Namespace to uniquely identify resources>"
   node_count           = "<Number of TFE nodes to provision>"
   license_secret       = "<Secret Manager secret comprising license>
@@ -23,8 +24,7 @@ module "tfe_node" {
   ssl_certificate_name = "<Name of the SSL certificate provisioned in GCP>"
   dns_zone_name        = "<Name of the DNS zone in which a record set will be created>"
   proxy_ip             = "<IP address of the existing proxy>"
-  proxy_cert_name      = "<Name of the proxy CA certificate bundle>"
-  proxy_cert_path      = "<Local path to the CA certificate bundle>"
+  ca_certificate_secret = "<Secret Manager secret comprising CA certificate>
   network              = "<The self link of the host project's network to use>"
   subnetwork           = "<The self link of the host project's subnetwork to use>"
 }
@@ -46,9 +46,10 @@ this value the secret_id and the GCP UI calls it the name.
 
 `node_count` - Number of TFE nodes to provision. A number greater than 1 will enable Active/Active
 
-`proxy_cert_name` - Name of the proxy CA certificate bundle
-
-`proxy_cert_path` - Local path to the CA certificate bundle
+`ca_certificate_secret` - The Secret Manager secret which comprises the
+Base64 encoded certificate file of the Certificate Authority for the
+deployment. The Terraform provider calls this value the secret_id and
+the GCP UI calls it the name.
 
 `proxy_ip` - IP address of the existing proxy
 

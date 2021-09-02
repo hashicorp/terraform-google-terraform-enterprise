@@ -1,9 +1,13 @@
-resource "random_pet" "name" {
-  length = 2
+resource "random_id" "account" {
+  # 30 bytes ensures that enough characters are generated to satisfy the service account ID requirements, regardless of
+  # the prefix.
+  byte_length = 30
+  prefix      = "${var.namespace}-tfe-"
 }
 
 resource "google_service_account" "main" {
-  account_id   = "${var.namespace}-tfe-${random_pet.name.id}"
+  # Limit the string used to 30 characters.
+  account_id   = substr(random_id.account.dec, 0, 30)
   display_name = "TFE"
   description  = "Service Account used by Terraform Enterprise."
 }
@@ -33,8 +37,10 @@ resource "google_project_iam_member" "log_writer" {
   role   = "roles/logging.logWriter"
 }
 
-resource "google_secret_manager_secret_iam_member" "license" {
+resource "google_secret_manager_secret_iam_member" "secrets" {
+  for_each = toset(compact(var.secrets))
+
   member    = local.member
   role      = "roles/secretmanager.secretAccessor"
-  secret_id = var.license_secret
+  secret_id = each.value
 }

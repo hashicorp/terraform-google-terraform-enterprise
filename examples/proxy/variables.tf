@@ -1,3 +1,11 @@
+variable "ca_certificate_secret" {
+  description = <<-EOD
+  The Secret Manager secret which comprises the Base64 encoded PEM certificate file for a Certificate Authority. The
+  Terraform provider calls this value the secret_id and the GCP UI calls it the name.
+  EOD
+  type        = string
+}
+
 variable "namespace" {
   description = "A prefix which will be applied to all resource names."
   type        = string
@@ -24,18 +32,6 @@ variable "dns_zone_name" {
 
 variable "proxy_ip" {
   description = "The IP address of a proxy server through which all traffic from the compute instances will be routed."
-  type        = string
-}
-
-variable "proxy_cert_name" {
-  description = <<-EOD
-  The name that will be assigned to the proxy certificate bundle when it is uploaded to the storage bucket.
-  EOD
-  type        = string
-}
-
-variable "proxy_cert_path" {
-  description = "The pathname of the proxy certificate bundle."
   type        = string
 }
 
