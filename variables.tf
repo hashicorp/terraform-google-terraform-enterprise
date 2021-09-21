@@ -36,6 +36,12 @@ variable "ca_certificate_secret" {
   type        = string
 }
 
+variable "labels" {
+  type        = map(string)
+  description = "Labels to apply to resources"
+  default     = { "label" : "label" }
+}
+
 # NETWORKING VARS
 variable "networking_firewall_ports" {
   default     = []

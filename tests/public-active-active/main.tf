@@ -30,4 +30,14 @@ module "tfe" {
   redis_auth_enabled     = false
   vm_disk_source_image   = data.google_compute_image.ubuntu.self_link
   vm_machine_type        = "n1-standard-4"
+
+  labels = {
+    terraform   = "true"
+    department  = "engineering"
+    product     = "terraform-enterprise"
+    repository  = "terraform-google-terraform-enterprise"
+    description = "public-active-active"
+    environment = "test"
+    team        = "tf-on-prem"
+  }
 }

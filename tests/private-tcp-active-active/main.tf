@@ -2,6 +2,16 @@ locals {
   http_proxy_account = "serviceAccount:${google_service_account.http_proxy.email}"
   http_proxy_port    = "3128"
   name               = "${random_pet.main.id}-proxy"
+
+  labels = {
+    terraform   = "true"
+    department  = "engineering"
+    product     = "terraform-enterprise"
+    repository  = "terraform-google-terraform-enterprise"
+    description = "private-tcp-active-active"
+    environment = "test"
+    team        = "tf-on-prem"
+  }
 }
 
 resource "random_pet" "main" {
@@ -110,6 +120,9 @@ resource "google_compute_instance" "http_proxy" {
 
     email = google_service_account.http_proxy.email
   }
+
+  labels = local.labels
+
 }
 
 module "tfe" {
@@ -120,6 +133,7 @@ module "tfe" {
   namespace      = random_pet.main.id
   node_count     = 2
   license_secret = var.license_secret_id
+  labels         = local.labels
 
   ca_certificate_secret  = var.ca_certificate_secret_id
   iact_subnet_list       = ["${google_compute_instance.http_proxy.network_interface[0].network_ip}/32"]
