@@ -36,7 +36,7 @@ variable "ca_certificate_secret" {
 }
 
 variable "proxy_ip" {
-  default     = ""
+  default     = null
   description = "The IP address of a proxy server through which all traffic from the compute instances will be routed."
   type        = string
 }
@@ -63,7 +63,7 @@ variable "capacity_memory" {
 }
 
 variable "ca_certs" {
-  default     = ""
+  default     = null
   description = <<-EOD
   A custom Certificate Authority certificate bundle to be used for authenticating connections with Terraform Enterprise.
   EOD
@@ -96,7 +96,7 @@ variable "enable_metrics_collection" {
 }
 
 variable "extra_no_proxy" {
-  default     = ""
+  default     = null
   description = <<-EOD
   A list of hosts for which Terraform Enterprise will not use a proxy to access. The list must be a comma-separated
   string, like \".example.com,.example.org\".
@@ -111,6 +111,7 @@ variable "hairpin_addressing" {
 }
 
 variable "iact_subnet_list" {
+  default     = null
   description = <<-EOD
   A list of IP address ranges which will be authorized to access the IACT. The ranges must be expressed
   in CIDR notation.
@@ -119,6 +120,7 @@ variable "iact_subnet_list" {
 }
 
 variable "iact_subnet_time_limit" {
+  default     = null
   description = <<-EOD
   The time limit for IP addresses from iact_subnet_list to access the IACT. The value must be expressed in minutes.
   EOD
@@ -152,6 +154,7 @@ variable "tls_vers" {
 }
 
 variable "trusted_proxies" {
+  default     = null
   description = <<-EOD
   A list of IP address ranges which will be considered safe to ignore when evaluating the IP addresses of requests like
   those made to the IACT endpoint.
@@ -162,13 +165,13 @@ variable "trusted_proxies" {
 ## Base External Configs
 
 variable "pg_dbname" {
-  default     = ""
+  default     = null
   description = "The name of the PostgreSQL database in which Terraform Enterprise will store data."
   type        = string
 }
 
 variable "pg_extra_params" {
-  default     = ""
+  default     = null
   description = <<-EOD
   Extra parameters to use when establishing connections to the PostgreSQL database; these parameters must be formatted
   like \"key1=value&key2=value2\".
@@ -177,37 +180,37 @@ variable "pg_extra_params" {
 }
 
 variable "pg_netloc" {
-  default     = ""
+  default     = null
   description = "The private IP address of the SQL database instance."
   type        = string
 }
 
 variable "pg_password" {
-  default     = ""
+  default     = null
   description = "The password of the PostgreSQL user which is authorized to manage the Terraform Enterprise database."
   type        = string
 }
 
 variable "pg_user" {
-  default     = ""
+  default     = null
   description = "The name of the PostgreSQL user which is authorized to manage the Terraform Enterprise database."
   type        = string
 }
 
 variable "redis_host" {
-  default     = ""
+  default     = null
   description = "The hostname of the Redis endpoint."
   type        = string
 }
 
 variable "redis_pass" {
-  default     = ""
+  default     = null
   description = "The password for authenticating with the Redis endpoint."
   type        = string
 }
 
 variable "redis_port" {
-  default     = ""
+  default     = null
   description = "The port number of the Redis endpoint."
   type        = string
 }
@@ -228,8 +231,8 @@ variable "redis_use_tls" {
 ## Replicated Configs
 
 variable "airgap_url" {
-  default     = ""
-  description = "The URL of the storage bucket object that comprises a airgap package."
+  default     = null
+  description = "The URL of the storage bucket object that comprises an airgap package."
   type        = string
 }
 
@@ -258,19 +261,19 @@ variable "ssl_private_key_secret" {
 ## External GCP Configs
 
 variable "gcs_bucket" {
-  default     = ""
+  default     = null
   description = "The name of the storage bucket in which Terraform Enterprise will store data."
   type        = string
 }
 
 variable "gcs_credentials" {
-  default     = ""
+  default     = null
   description = "The private key of the service account which is authorized to access the storage bucket."
   type        = string
 }
 
 variable "gcs_project" {
-  default     = ""
+  default     = null
   description = "The ID of the project in which the storage bucket resides."
   type        = string
 }

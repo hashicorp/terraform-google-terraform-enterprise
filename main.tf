@@ -109,7 +109,7 @@ module "user_data" {
 
   ca_certificate_secret   = var.ca_certificate_secret
   fqdn                    = local.common_fqdn
-  airgap_url              = ""
+  airgap_url              = var.airgap_url
   gcs_bucket              = module.object_storage.bucket
   gcs_credentials         = module.service_accounts.credentials
   gcs_project             = module.object_storage.project

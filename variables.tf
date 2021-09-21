@@ -5,7 +5,7 @@ variable "dns_create_record" {
   type        = bool
 }
 variable "dns_zone_name" {
-  default     = ""
+  default     = null
   description = "Name of the DNS zone set up in GCP"
   type        = string
 }
@@ -22,7 +22,7 @@ variable "node_count" {
   }
 }
 variable "proxy_ip" {
-  default     = ""
+  default     = null
   description = "IP Address of the proxy server"
   type        = string
 }
@@ -127,6 +127,12 @@ variable "release_sequence" {
   default     = 0
   description = "Release sequence of Terraform Enterprise to install."
   type        = number
+}
+
+variable "airgap_url" {
+  default     = null
+  description = "The URL of the storage bucket object that comprises an airgap package."
+  type        = string
 }
 # VM VARS
 variable "vm_machine_type" {
