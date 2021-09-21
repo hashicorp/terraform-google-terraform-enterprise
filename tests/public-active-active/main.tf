@@ -32,6 +32,7 @@ module "tfe" {
   vm_machine_type        = "n1-standard-4"
 
   labels = {
+    oktodelete  = "true"
     terraform   = "true"
     department  = "engineering"
     product     = "terraform-enterprise"

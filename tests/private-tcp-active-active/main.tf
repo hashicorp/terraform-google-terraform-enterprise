@@ -4,6 +4,7 @@ locals {
   name               = "${random_pet.main.id}-proxy"
 
   labels = {
+    oktodelete  = "true"
     terraform   = "true"
     department  = "engineering"
     product     = "terraform-enterprise"
