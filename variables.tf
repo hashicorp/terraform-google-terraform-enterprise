@@ -178,7 +178,7 @@ variable "extra_no_proxy" {
   A list of hosts for which Terraform Enterprise will not use a proxy to access. The list must be a comma-separated
   string, like \".example.com,.example.org\".
   EOD
-  type        = string
+  type        = list(string)
 }
 variable "fqdn" {
   description = "Fully qualified domain name for the TFE endpoint"

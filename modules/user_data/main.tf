@@ -78,7 +78,7 @@ locals {
     }
 
     extra_no_proxy = {
-      value = var.extra_no_proxy == null ? "" : join(",", var.extra_no_proxy)
+      value = join(",", var.extra_no_proxy)
     }
 
     hairpin_addressing = {
