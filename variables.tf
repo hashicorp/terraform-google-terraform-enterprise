@@ -26,7 +26,6 @@ variable "proxy_ip" {
   description = "IP Address of the proxy server"
   type        = string
 }
-
 variable "ca_certificate_secret" {
   default     = null
   description = <<-EOD
@@ -134,12 +133,6 @@ variable "release_sequence" {
   description = "Release sequence of Terraform Enterprise to install."
   type        = number
 }
-
-variable "airgap_url" {
-  default     = null
-  description = "The URL of the storage bucket object that comprises an airgap package."
-  type        = string
-}
 # VM VARS
 variable "vm_machine_type" {
   default     = "n1-standard-4"
@@ -167,10 +160,23 @@ variable "vm_auto_healing_enabled" {
   type        = bool
 }
 # TFE VARS
-variable "license_secret" {
+variable "airgap_url" {
+  default     = null
+  description = "The URL of the storage bucket object that comprises an airgap package."
+  type        = string
+}
+variable "ca_certs" {
+  default     = null
   description = <<-EOD
-  The Secret Manager secret which comprises the Base64 encoded Replicated license file. The Terraform provider calls
-  this value the secret_id and the GCP UI calls it the name.
+  A custom Certificate Authority certificate bundle to be used for authenticating connections with Terraform Enterprise.
+  EOD
+  type        = string
+}
+variable "extra_no_proxy" {
+  default     = null
+  description = <<-EOD
+  A list of hosts for which Terraform Enterprise will not use a proxy to access. The list must be a comma-separated
+  string, like \".example.com,.example.org\".
   EOD
   type        = string
 }
@@ -178,26 +184,10 @@ variable "fqdn" {
   description = "Fully qualified domain name for the TFE endpoint"
   type        = string
 }
-variable "ssl_certificate_name" {
-  default     = null
-  description = "Name of the created managed SSL certificate. Required when load_balancer == \"PUBLIC\" or load_balancer == \"PRIVATE\"."
-  type        = string
-}
-
-variable "ssl_certificate_secret" {
-  default     = null
+variable "license_secret" {
   description = <<-EOD
-  The Secret Manager secret which comprises the Base64 encoded PEM certificate file. The Terraform provider calls this
-  value the secret_id and the GCP UI calls it the name. This value is only used when load_balancer == "PRIVATE_TCP".
-  EOD
-  type        = string
-}
-
-variable "ssl_private_key_secret" {
-  default     = null
-  description = <<-EOD
-  The Secret Manager secret which comprises the Base64 encoded PEM private key file. The Terraform provider calls this
-  value the secret_id and the GCP UI calls it the name. This value is only used when load_balancer == "PRIVATE_TCP".
+  The Secret Manager secret which comprises the Base64 encoded Replicated license file. The Terraform provider calls
+  this value the secret_id and the GCP UI calls it the name.
   EOD
   type        = string
 }
@@ -210,7 +200,6 @@ variable "iact_subnet_list" {
   EOD
   type        = list(string)
 }
-
 variable "iact_subnet_time_limit" {
   default     = 60
   description = <<-EOD
@@ -218,7 +207,27 @@ variable "iact_subnet_time_limit" {
   EOD
   type        = number
 }
-
+variable "ssl_certificate_name" {
+  default     = null
+  description = "Name of the created managed SSL certificate. Required when load_balancer == \"PUBLIC\" or load_balancer == \"PRIVATE\"."
+  type        = string
+}
+variable "ssl_certificate_secret" {
+  default     = null
+  description = <<-EOD
+  The Secret Manager secret which comprises the Base64 encoded PEM certificate file. The Terraform provider calls this
+  value the secret_id and the GCP UI calls it the name. This value is only used when load_balancer == "PRIVATE_TCP".
+  EOD
+  type        = string
+}
+variable "ssl_private_key_secret" {
+  default     = null
+  description = <<-EOD
+  The Secret Manager secret which comprises the Base64 encoded PEM private key file. The Terraform provider calls this
+  value the secret_id and the GCP UI calls it the name. This value is only used when load_balancer == "PRIVATE_TCP".
+  EOD
+  type        = string
+}
 variable "trusted_proxies" {
   default     = []
   description = <<-EOD

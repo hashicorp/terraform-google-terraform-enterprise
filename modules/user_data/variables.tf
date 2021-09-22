@@ -36,7 +36,6 @@ variable "ca_certificate_secret" {
 }
 
 variable "proxy_ip" {
-  default     = null
   description = "The IP address of a proxy server through which all traffic from the compute instances will be routed."
   type        = string
 }
@@ -63,7 +62,6 @@ variable "capacity_memory" {
 }
 
 variable "ca_certs" {
-  default     = null
   description = <<-EOD
   A custom Certificate Authority certificate bundle to be used for authenticating connections with Terraform Enterprise.
   EOD
@@ -96,12 +94,11 @@ variable "enable_metrics_collection" {
 }
 
 variable "extra_no_proxy" {
-  default     = null
   description = <<-EOD
   A list of hosts for which Terraform Enterprise will not use a proxy to access. The list must be a comma-separated
   string, like \".example.com,.example.org\".
   EOD
-  type        = string
+  type        = list(string)
 }
 
 variable "hairpin_addressing" {

@@ -78,7 +78,7 @@ locals {
     }
 
     extra_no_proxy = {
-      value = var.extra_no_proxy == null ? "" : var.extra_no_proxy
+      value = var.extra_no_proxy == null ? "" : join(",", var.extra_no_proxy)
     }
 
     hairpin_addressing = {
@@ -259,7 +259,7 @@ locals {
     "${path.module}/templates/tfe_vm.sh.tpl",
     {
       airgap_pathname          = local.airgap_pathname
-      airgap_url               = var.airgap_url == null ? "" : var.airgap_url
+      airgap_url               = var.airgap_url
       ca_certificate_secret    = var.ca_certificate_secret
       disk_directory           = var.disk_path
       docker_config            = filebase64("${path.module}/files/daemon.json")
@@ -272,7 +272,7 @@ locals {
       settings                 = base64encode(local.tfe_configs)
       active_active            = var.active_active
       namespace                = var.namespace
-      proxy_ip                 = var.proxy_ip == null ? "" : var.proxy_ip
+      proxy_ip                 = var.proxy_ip
       settings_pathname        = local.settings_pathname
       ssl_certificate_pathname = local.ssl_certificate_pathname
       ssl_certificate_secret   = var.ssl_certificate_secret
