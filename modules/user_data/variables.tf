@@ -94,10 +94,7 @@ variable "enable_metrics_collection" {
 }
 
 variable "extra_no_proxy" {
-  description = <<-EOD
-  A list of hosts for which Terraform Enterprise will not use a proxy to access. The list must be a comma-separated
-  string, like \".example.com,.example.org\".
-  EOD
+  description = "A list of hosts for which Terraform Enterprise will not use a proxy to access."
   type        = list(string)
 }
 
