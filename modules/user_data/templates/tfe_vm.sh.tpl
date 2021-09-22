@@ -35,7 +35,7 @@ docker_daemon_pathname="$docker_directory/daemon.json"
 echo "[Terraform Enterprise] Writing Docker daemon to '$docker_daemon_pathname'" | tee -a $log_pathname
 echo "${docker_config}" | base64 --decode > $docker_daemon_pathname
 
-%{ if proxy_ip != "" ~}
+%{ if proxy_ip != null ~}
 environment_pathname="/etc/environment"
 echo "[Terraform Enterprise] Configuring environment proxy in '$environment_pathname'" | tee -a $log_pathname
 /bin/cat <<EOF >>$environment_pathname
@@ -129,7 +129,7 @@ http_proxy="" https_proxy="" gcloud secrets versions access latest --secret="${s
   base64 --decode --ignore-garbage > ${ssl_private_key_pathname}
 
 %{ endif ~}
-%{ if airgap_url != "" ~}
+%{ if airgap_url != null ~}
 echo "[Terraform Enterprise] Copying airgap storage object '${airgap_url}' to '${airgap_pathname}'" | tee -a $log_pathname
 http_proxy="" https_proxy="" gsutil cp ${airgap_url} ${airgap_pathname}
 
@@ -172,7 +172,7 @@ $install_pathname \
   fast-timeouts \
   private-address="$private_ip" \
   public-address="$private_ip" \
-  %{ if proxy_ip != "" ~}
+  %{ if proxy_ip != null ~}
   http-proxy="${proxy_ip}" \
   additional-no-proxy="${no_proxy}" \
   %{ else ~}

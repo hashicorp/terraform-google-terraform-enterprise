@@ -16,7 +16,7 @@ resource "google_sql_database_instance" "tfe" {
     }
 
     backup_configuration {
-      enabled    = var.backup_start_time == "" ? false : true
+      enabled    = var.backup_start_time == null ? false : true
       start_time = var.backup_start_time
     }
 

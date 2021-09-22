@@ -78,7 +78,7 @@ locals {
     }
 
     extra_no_proxy = {
-      value = var.extra_no_proxy
+      value = join(",", var.extra_no_proxy)
     }
 
     hairpin_addressing = {
@@ -241,7 +241,7 @@ locals {
   tfe_configs      = jsonencode(merge(local.base_configs, local.base_external_configs, local.external_google_configs, local.is_redis_configs))
 
   # build replicated config json
-  is_airgap                = var.airgap_url != "" ? local.airgap_config : {}
+  is_airgap                = var.airgap_url == null ? {} : local.airgap_config
   is_pinned                = var.release_sequence != 0 ? local.release_pin_config : {}
   ssl_certificate_pathname = "${local.lib_directory}/certificate.pem"
   ssl_private_key_pathname = "${local.lib_directory}/private-key.pem"

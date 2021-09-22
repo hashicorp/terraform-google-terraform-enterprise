@@ -13,5 +13,5 @@ output "port" {
 output "password" {
   value = google_redis_instance.redis.auth_string
 
-  description = "The "
+  description = "The password to the Redis instance."
 }
