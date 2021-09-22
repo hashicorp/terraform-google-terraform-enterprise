@@ -19,12 +19,11 @@ variable "availability_type" {
 }
 
 variable "disk_size" {
-  default     = 50
   description = "The size of the SQL database instance data disk, expressed in gigabytes."
   type        = number
 }
+
 variable "postgres_version" {
-  default     = "POSTGRES_9_6"
   description = "The version of PostgreSQL to be installed on the SQL database instance."
   type        = string
 }

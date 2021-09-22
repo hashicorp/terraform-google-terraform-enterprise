@@ -59,6 +59,7 @@ module "networking" {
   healthcheck_ips      = var.networking_healthcheck_ips
   service_account      = module.service_accounts.email
   ip_allow_list        = var.networking_ip_allow_list
+  ssh_source_ranges    = var.ssh_source_ranges
 }
 
 locals {
@@ -73,11 +74,13 @@ module "database" {
   dbname            = var.database_name
   username          = var.database_user
   machine_type      = var.database_machine_type
+  disk_size         = var.postgres_disk_size
   availability_type = var.database_availability_type
   namespace         = var.namespace
   backup_start_time = var.database_backup_start_time
   labels            = var.labels
   network           = local.network_self_link
+  postgres_version  = var.postgres_version
 }
 
 module "redis" {
@@ -107,33 +110,43 @@ locals {
 module "user_data" {
   source = "./modules/user_data"
 
-  airgap_url              = var.airgap_url
-  ca_certificate_secret   = var.ca_certificate_secret
-  ca_certs                = var.ca_certs
-  extra_no_proxy          = var.extra_no_proxy
-  fqdn                    = local.common_fqdn
-  gcs_bucket              = module.object_storage.bucket
-  gcs_credentials         = module.service_accounts.credentials
-  gcs_project             = module.object_storage.project
-  license_secret          = var.license_secret
-  pg_netloc               = module.database.netloc
-  pg_dbname               = module.database.dbname
-  pg_user                 = module.database.user
-  pg_password             = module.database.password
-  pg_extra_params         = "sslmode=require"
-  redis_host              = local.redis.host
-  redis_pass              = local.redis.password
-  redis_port              = local.redis.port
-  redis_use_password_auth = var.redis_auth_enabled
-  release_sequence        = var.release_sequence
-  active_active           = local.active_active
-  proxy_ip                = var.proxy_ip
-  namespace               = var.namespace
-  no_proxy                = [local.common_fqdn, var.networking_subnet_range]
-  iact_subnet_list        = var.iact_subnet_list
-  iact_subnet_time_limit  = var.iact_subnet_time_limit
-  ssl_certificate_secret  = var.ssl_certificate_secret
-  ssl_private_key_secret  = var.ssl_private_key_secret
+  airgap_url                = var.airgap_url
+  ca_certificate_secret     = var.ca_certificate_secret
+  ca_certs                  = var.ca_certs
+  capacity_concurrency      = var.capacity_concurrency
+  capacity_memory           = var.capacity_memory
+  custom_image_tag          = var.custom_image_tag
+  disk_path                 = var.disk_path
+  enable_metrics_collection = var.enable_metrics_collection
+  extra_no_proxy            = var.extra_no_proxy
+  fqdn                      = local.common_fqdn
+  gcs_bucket                = module.object_storage.bucket
+  gcs_credentials           = module.service_accounts.credentials
+  gcs_project               = module.object_storage.project
+  hairpin_addressing        = var.hairpin_addressing
+  license_secret            = var.license_secret
+  monitoring_enabled        = var.monitoring_enabled
+  pg_netloc                 = module.database.netloc
+  pg_dbname                 = module.database.dbname
+  pg_user                   = module.database.user
+  pg_password               = module.database.password
+  pg_extra_params           = "sslmode=require"
+  redis_host                = local.redis.host
+  redis_pass                = local.redis.password
+  redis_port                = local.redis.port
+  redis_use_password_auth   = var.redis_auth_enabled
+  redis_use_tls             = var.redis_use_tls
+  release_sequence          = var.release_sequence
+  active_active             = local.active_active
+  proxy_ip                  = var.proxy_ip
+  namespace                 = var.namespace
+  no_proxy                  = [local.common_fqdn, var.networking_subnet_range]
+  iact_subnet_list          = var.iact_subnet_list
+  iact_subnet_time_limit    = var.iact_subnet_time_limit
+  ssl_certificate_secret    = var.ssl_certificate_secret
+  ssl_private_key_secret    = var.ssl_private_key_secret
+  tbw_image                 = var.tbw_image
+  tls_vers                  = var.tls_vers
   trusted_proxies = concat(
     var.trusted_proxies,
     local.trusted_proxies

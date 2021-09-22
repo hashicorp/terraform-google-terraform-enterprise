@@ -23,5 +23,4 @@ variable "auth_enabled" {
 variable "labels" {
   type        = map(string)
   description = "Labels to apply to resources"
-  default     = {}
 }
