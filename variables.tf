@@ -173,11 +173,8 @@ variable "ca_certs" {
   type        = string
 }
 variable "extra_no_proxy" {
-  default     = null
-  description = <<-EOD
-  A list of hosts for which Terraform Enterprise will not use a proxy to access. The list must be a comma-separated
-  string, like \".example.com,.example.org\".
-  EOD
+  default     = []
+  description = "A list of hosts for which Terraform Enterprise will not use a proxy to access."
   type        = list(string)
 }
 variable "fqdn" {
