@@ -1,5 +1,4 @@
 locals {
-  labels                      = { "label" : "label" } # TODO - not verified until apply
   disable_services_on_destroy = false
 }
 
@@ -36,7 +35,7 @@ module "object_storage" {
   source = "./modules/object_storage"
 
   namespace = var.namespace
-  labels    = local.labels
+  labels    = var.labels
 }
 
 module "service_accounts" {
@@ -77,7 +76,7 @@ module "database" {
   availability_type = var.database_availability_type
   namespace         = var.namespace
   backup_start_time = var.database_backup_start_time
-  labels            = local.labels
+  labels            = var.labels
   network           = local.network_self_link
 }
 
@@ -89,6 +88,7 @@ module "redis" {
   namespace    = var.namespace
   memory_size  = var.redis_memory_size
   network      = local.network_self_link
+  labels       = var.labels
 }
 
 locals {
@@ -149,7 +149,7 @@ module "vm" {
   disk_type               = var.vm_disk_type
   subnetwork              = local.subnetwork_self_link
   metadata_startup_script = module.user_data.script
-  labels                  = local.labels
+  labels                  = var.labels
   auto_healing_enabled    = var.vm_auto_healing_enabled
   service_account         = module.service_accounts.email
   node_count              = var.node_count
