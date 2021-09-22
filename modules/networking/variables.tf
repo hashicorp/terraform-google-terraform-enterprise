@@ -56,6 +56,6 @@ variable "ip_allow_list" {
 }
 
 variable "ssh_source_ranges" {
-  description = "The source IP address ranges from which SSH traffic will be permitted; these ranges must be expressed in CIDR notation. The default value permits traffic from GCP's Identity-Aware Proxy."
+  description = "The source IP address ranges from which SSH traffic will be permitted; these ranges must be expressed in CIDR notation."
   type        = list(string)
 }
