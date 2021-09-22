@@ -19,3 +19,9 @@ variable "auth_enabled" {
   description = "A toggle to control authentication on the Redis instance."
   type        = bool
 }
+
+variable "labels" {
+  type        = map(string)
+  description = "Labels to apply to resources"
+  default     = {}
+}

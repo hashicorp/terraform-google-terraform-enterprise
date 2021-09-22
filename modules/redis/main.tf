@@ -13,4 +13,6 @@ resource "google_redis_instance" "redis" {
 
   redis_version = "REDIS_5_0"
   display_name  = "${var.namespace} TFE Instance"
+
+  labels    = var.labels
 }

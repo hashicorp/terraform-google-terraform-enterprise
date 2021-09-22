@@ -88,6 +88,7 @@ module "redis" {
   namespace    = var.namespace
   memory_size  = var.redis_memory_size
   network      = local.network_self_link
+  labels       = var.labels
 }
 
 locals {
