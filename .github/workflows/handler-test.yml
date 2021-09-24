@@ -576,7 +576,7 @@ jobs:
           RESPONSE: ${{ steps.create-admin.outputs.response }}
         run: |
           token=$(echo "$RESPONSE" | jq --raw-output '.token')
-          echo "::set-output name=token::token"
+          echo "::set-output name=token::$token"
 
       - name: Run k6 Smoke Test
         id: run-smoke-test
