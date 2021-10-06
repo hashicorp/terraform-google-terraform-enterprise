@@ -47,7 +47,7 @@ variable "labels" {
   default     = {}
 }
 
-# NETWORKING 
+# NETWORKING
 # -----------
 variable "networking_firewall_ports" {
   default     = []
@@ -150,7 +150,7 @@ variable "postgres_disk_size" {
 }
 
 variable "postgres_version" {
-  default     = "POSTGRES_9_6"
+  default     = "POSTGRES_12_8"
   description = "The version of PostgreSQL to be installed on the SQL database instance."
   type        = string
 }
