@@ -150,7 +150,7 @@ variable "postgres_disk_size" {
 }
 
 variable "postgres_version" {
-  default     = "POSTGRES_12_8"
+  default     = "POSTGRES_12"
   description = "The version of PostgreSQL to be installed on the SQL database instance."
   type        = string
 }
