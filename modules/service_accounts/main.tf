@@ -33,10 +33,32 @@ resource "google_project_iam_member" "log_writer" {
   role   = "roles/logging.logWriter"
 }
 
-resource "google_secret_manager_secret_iam_member" "secrets" {
-  for_each = toset(compact(var.secrets))
+resource "google_secret_manager_secret_iam_member" "license_secret" {
+  member    = local.member
+  role      = "roles/secretmanager.secretAccessor"
+  secret_id = var.license_secret
+}
+
+resource "google_secret_manager_secret_iam_member" "ca_certificate_secret" {
+  count = var.ca_certificate_secret == null ? 0 : 1
 
   member    = local.member
   role      = "roles/secretmanager.secretAccessor"
-  secret_id = each.value
+  secret_id = var.ca_certificate_secret
+}
+
+resource "google_secret_manager_secret_iam_member" "ssl_certificate_secret" {
+  count = var.ssl_certificate_secret == null ? 0 : 1
+
+  member    = local.member
+  role      = "roles/secretmanager.secretAccessor"
+  secret_id = var.ssl_certificate_secret
+}
+
+resource "google_secret_manager_secret_iam_member" "ssl_private_key_secret" {
+  count = var.ssl_private_key_secret == null ? 0 : 1
+
+  member    = local.member
+  role      = "roles/secretmanager.secretAccessor"
+  secret_id = var.ssl_private_key_secret
 }

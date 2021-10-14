@@ -33,9 +33,12 @@ module "object_storage" {
 module "service_accounts" {
   source = "./modules/service_accounts"
 
-  bucket    = module.object_storage.bucket
-  namespace = var.namespace
-  secrets   = [var.ca_certificate_secret, var.license_secret, var.ssl_certificate_secret, var.ssl_private_key_secret]
+  bucket                 = module.object_storage.bucket
+  ca_certificate_secret  = var.ca_certificate_secret
+  license_secret         = var.license_secret
+  namespace              = var.namespace
+  ssl_certificate_secret = var.ssl_certificate_secret
+  ssl_private_key_secret = var.ssl_private_key_secret
 }
 
 module "networking" {
