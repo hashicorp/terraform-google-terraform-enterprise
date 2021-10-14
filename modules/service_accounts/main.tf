@@ -16,10 +16,6 @@ resource "google_service_account_key" "key" {
   service_account_id = google_service_account.main.name
 }
 
-locals {
-  member = "serviceAccount:${google_service_account.main.email}"
-}
-
 resource "google_storage_bucket_iam_member" "member_object" {
   bucket = var.bucket
   role   = "roles/storage.objectAdmin"

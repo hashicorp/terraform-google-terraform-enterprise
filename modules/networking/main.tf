@@ -41,12 +41,6 @@ resource "google_compute_router_nat" "nat" {
   }
 }
 
-locals {
-  standalone_ports    = ["80", "443", "8800"]
-  active_active_ports = ["80", "443"]
-  ports               = var.active_active ? local.active_active_ports : local.standalone_ports
-}
-
 resource "google_compute_firewall" "tfe" {
   name    = "${var.namespace}-firewall"
   network = google_compute_network.tfe_vpc.name
