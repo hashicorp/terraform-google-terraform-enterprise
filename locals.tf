@@ -33,6 +33,7 @@ locals {
     "35.191.0.0/16"
   ]
 
-  hostname = var.dns_create_record ? local.common_fqdn : local.lb_address
-  base_url = "https://${local.hostname}/"
+  hostname               = var.dns_create_record ? local.common_fqdn : local.lb_address
+  base_url               = "https://${local.hostname}/"
+  replicated_console_url = "https://${local.hostname}:8800/"
 }

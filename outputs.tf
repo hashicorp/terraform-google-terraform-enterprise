@@ -3,6 +3,11 @@ output "replicated_console_password" {
   description = "Generated password for replicated dashboard"
 }
 
+output "replicated_console_url" {
+  value       = local.replicated_console_url
+  description = "The URL of the Terraform Enterprise administration console."
+}
+
 output "lb_address" {
   value       = local.lb_address
   description = "Load Balancer Address"
