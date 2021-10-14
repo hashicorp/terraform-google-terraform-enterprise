@@ -70,8 +70,8 @@ module "tfe" {
   node_count           = var.node_count
   license_secret       = var.license_secret
   fqdn                 = var.fqdn
-  // For self-signed certs use
-  // ssl_certificate_name = google_compute_region_ssl_certificate.main.name
+  # For self-signed certs use
+  # ssl_certificate_name = google_compute_region_ssl_certificate.main.name
   ssl_certificate_name = var.ssl_certificate_name
   dns_zone_name        = var.dns_zone_name
   load_balancer = "PUBLIC"
