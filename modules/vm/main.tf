@@ -1,3 +1,15 @@
+resource "google_compute_region_disk" "mounted_disk" {
+  count = var.disk_enabled ? 1 : 0
+
+  name          = "${var.namespace}-tfe-mounted-disk"
+  replica_zones = local.zones
+
+  description = "A disk to be used for the Mounted Disk operational mode of Terraform Enterprise"
+  labels      = var.labels
+  type        = "pd-ssd"
+  size        = 40
+}
+
 resource "google_compute_instance_template" "main" {
   name_prefix  = "${var.namespace}-tfe-template-"
   machine_type = var.machine_type
@@ -8,8 +20,21 @@ resource "google_compute_instance_template" "main" {
     boot         = true
     disk_size_gb = var.disk_size
     disk_type    = var.disk_type
+    labels       = var.labels
     mode         = "READ_WRITE"
     type         = "PERSISTENT"
+  }
+
+  dynamic "disk" {
+    for_each = google_compute_region_disk.mounted_disk
+    content {
+      source = disk.value.name
+
+      auto_delete = false
+      boot        = false
+      interface   = "SCSI"
+      mode        = "READ_WRITE"
+    }
   }
 
   network_interface {
@@ -44,7 +69,8 @@ resource "google_compute_region_instance_group_manager" "main" {
     instance_template = google_compute_instance_template.main.self_link
   }
 
-  target_size = var.node_count
+  distribution_policy_zones = local.zones
+  target_size               = var.node_count
 
   dynamic "named_port" {
     for_each = local.named_ports

@@ -58,3 +58,8 @@ variable "node_count" {
   description = "The number of compute instances to create."
   type        = number
 }
+
+variable "disk_enabled" {
+  description = "A toggle to control the use of Mounted Disk mode."
+  type        = bool
+}
