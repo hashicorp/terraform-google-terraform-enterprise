@@ -114,6 +114,16 @@ variable "iact_subnet_time_limit" {
   type        = number
 }
 
+variable "disk_enabled" {
+  description = "A toggle to control the use of Mounted Disk mode."
+  type        = bool
+}
+
+variable "external_enabled" {
+  description = "A toggle to control the use of External Services mode."
+  type        = bool
+}
+
 variable "tbw_image" {
   description = <<-EOD
   An indicator of which type of Terraform Build Worker image will be used. The value must be one of: \"default_image\";

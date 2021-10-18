@@ -1,5 +1,5 @@
 locals {
-  base_configs = {
+  base_settings = {
     archivist_token = {
       value = random_id.archivist_token.hex
     }
@@ -24,8 +24,9 @@ locals {
       value = var.custom_image_tag
     }
 
-    disk_path = {
-      value = var.disk_path
+    enable_active_active = {
+      # This will be overwritten if var.active_active == true
+      value = "0"
     }
 
     enable_metrics_collection = {
@@ -61,16 +62,12 @@ locals {
     }
 
     installation_type = {
-      value = "production"
+      # This will be overwritten if disk_enabled == true or external_enabled == true
+      value = "poc"
     }
 
     internal_api_token = {
       value = random_id.internal_api_token.hex
-    }
-
-    production_type = {
-      # if external this will be overridden by the merge function
-      value = "disk"
     }
 
     registry_session_encryption_key = {
@@ -102,9 +99,43 @@ locals {
     }
   }
 
-  base_external_configs = {
-    enable_active_active = {
-      value = var.active_active ? "1" : "0"
+  disk_settings = var.disk_enabled ? {
+    installation_type = {
+      value = "production"
+    }
+
+    production_type = {
+      value = "disk"
+    }
+
+    disk_path = {
+      value = var.disk_path
+    }
+  } : {}
+
+  external_settings = var.external_enabled ? {
+    installation_type = {
+      value = "production"
+    }
+
+    production_type = {
+      value = "external"
+    }
+
+    gcs_bucket = {
+      value = var.gcs_bucket
+    }
+
+    gcs_credentials = {
+      value = var.gcs_credentials
+    }
+
+    gcs_project = {
+      value = var.gcs_project
+    }
+
+    placement = {
+      value = "placement_gcs"
     }
 
     pg_dbname = {
@@ -126,13 +157,13 @@ locals {
     pg_user = {
       value = var.pg_user
     }
+  } : {}
 
-    production_type = {
-      value = "external"
+  active_active_settings = var.active_active ? {
+    enable_active_active = {
+      value = "1"
     }
-  }
 
-  redis_configs = {
     redis_host = {
       value = var.redis_host
     }
@@ -152,25 +183,7 @@ locals {
     redis_use_tls = {
       value = var.redis_use_tls ? "1" : "0"
     }
-  }
-
-  external_google_configs = {
-    gcs_bucket = {
-      value = var.gcs_bucket
-    }
-
-    gcs_credentials = {
-      value = var.gcs_credentials
-    }
-
-    gcs_project = {
-      value = var.gcs_project
-    }
-
-    placement = {
-      value = "placement_gcs"
-    }
-  }
+  } : {}
 
   license_file_location = "/etc/ptfe-license.rli"
   settings_pathname     = "/etc/ptfe-settings.json"
@@ -196,8 +209,13 @@ locals {
 
   # Build tfe config json
   # take all the partials and merge them into the base configs, if false, merging empty map is noop
-  is_redis_configs = var.active_active ? local.redis_configs : {}
-  tfe_configs      = jsonencode(merge(local.base_configs, local.base_external_configs, local.external_google_configs, local.is_redis_configs))
+  settings = jsonencode(merge(
+    local.base_settings,
+    local.disk_settings,
+    local.external_settings,
+    local.active_active_settings
+    )
+  )
 
   # build replicated config json
   is_airgap                = var.airgap_url == null ? {} : local.airgap_config
@@ -220,7 +238,7 @@ locals {
       airgap_pathname          = local.airgap_pathname
       airgap_url               = var.airgap_url
       ca_certificate_secret    = var.ca_certificate_secret
-      disk_directory           = var.disk_path
+      disk_path                = var.disk_enabled ? var.disk_path : null
       docker_config            = filebase64("${path.module}/files/daemon.json")
       bucket_name              = var.gcs_bucket
       lib_directory            = local.lib_directory
@@ -228,7 +246,7 @@ locals {
       license_secret           = var.license_secret
       monitoring_enabled       = var.monitoring_enabled
       replicated               = base64encode(local.repl_configs)
-      settings                 = base64encode(local.tfe_configs)
+      settings                 = base64encode(local.settings)
       active_active            = var.active_active
       namespace                = var.namespace
       proxy_ip                 = var.proxy_ip

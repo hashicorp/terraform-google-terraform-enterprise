@@ -11,7 +11,7 @@ output "replicated_dashboard_password" {
 }
 
 output "user_token" {
-  value = local.base_configs.user_token
+  value = local.base_settings.user_token
 
   description = "The IACT."
 }
