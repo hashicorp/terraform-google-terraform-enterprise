@@ -41,17 +41,11 @@ resource "google_compute_router_nat" "nat" {
   }
 }
 
-locals {
-  standalone_ports    = ["80", "443", "8800"]
-  active_active_ports = ["80", "443"]
-  ports               = var.active_active ? local.active_active_ports : local.standalone_ports
-}
-
 resource "google_compute_firewall" "tfe" {
   name    = "${var.namespace}-firewall"
   network = google_compute_network.tfe_vpc.name
 
-  target_service_accounts = [var.service_account]
+  target_service_accounts = [var.service_account.email]
 
   allow {
     protocol = "icmp"
@@ -59,7 +53,7 @@ resource "google_compute_firewall" "tfe" {
 
   allow {
     protocol = "tcp"
-    ports    = concat(local.ports, var.firewall_ports)
+    ports    = concat(var.enable_active_active ? ["80", "443"] : ["80", "443", "8800"], var.firewall_ports)
   }
 
   source_ranges = var.ip_allow_list
@@ -70,7 +64,7 @@ resource "google_compute_firewall" "lb_healthchecks" {
   network       = google_compute_network.tfe_vpc.name
   source_ranges = concat([google_compute_subnetwork.tfe_subnet.ip_cidr_range], var.healthcheck_ips)
 
-  target_service_accounts = [var.service_account]
+  target_service_accounts = [var.service_account.email]
 
   allow {
     protocol = "tcp"
@@ -84,7 +78,7 @@ resource "google_compute_firewall" "ssh" {
   description             = "The firewall which allows the ingress of SSH traffic to the TFE deployment."
   direction               = "INGRESS"
   source_ranges           = var.ssh_source_ranges
-  target_service_accounts = [var.service_account]
+  target_service_accounts = [var.service_account.email]
 
   allow {
     protocol = "tcp"

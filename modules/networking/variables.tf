@@ -1,4 +1,4 @@
-variable "active_active" {
+variable "enable_active_active" {
   description = "A toggle which controls support for deploying Terraform Enterprise in Active/Active mode."
   type        = bool
 }
@@ -42,9 +42,11 @@ variable "healthcheck_ips" {
 
 variable "service_account" {
   description = <<-EOD
-  The email address of the service account which is assigned to the Terraform Enterprise compute instances.
+  The service account which is assigned to the Terraform Enterprise compute instances.
   EOD
-  type        = string
+  type = object({
+    email = string
+  })
 }
 
 variable "ip_allow_list" {

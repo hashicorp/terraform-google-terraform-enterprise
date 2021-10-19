@@ -1,75 +1,69 @@
-locals {
+module "project_factory_project_services" {
+  source  = "terraform-google-modules/project-factory/google//modules/project_services"
+  version = "~> 11.2"
+
+  project_id = null
+
+  activate_apis = compact([
+    "iam.googleapis.com",
+    "logging.googleapis.com",
+    (local.enable_database_module ? "sqladmin.googleapis.com" : null),
+    (local.enable_networking_module ? "networkmanagement.googleapis.com" : null),
+    (local.enable_networking_module ? "servicenetworking.googleapis.com" : null),
+    (local.enable_redis_module ? "redis.googleapis.com" : null),
+  ])
+  disable_dependent_services  = false
   disable_services_on_destroy = false
-}
-
-resource "google_project_service" "iam" {
-  service            = "iam.googleapis.com"
-  disable_on_destroy = local.disable_services_on_destroy
-}
-
-resource "google_project_service" "cloudapi" {
-  service            = "cloudapis.googleapis.com"
-  disable_on_destroy = local.disable_services_on_destroy
-}
-
-resource "google_project_service" "servicenetworking" {
-  service            = "servicenetworking.googleapis.com"
-  disable_on_destroy = local.disable_services_on_destroy
-}
-
-resource "google_project_service" "sqladmin" {
-  service            = "sqladmin.googleapis.com"
-  disable_on_destroy = local.disable_services_on_destroy
-}
-
-resource "google_project_service" "redis" {
-  service            = "redis.googleapis.com"
-  disable_on_destroy = local.disable_services_on_destroy
-}
-
-locals {
-  active_active = var.node_count >= 2
 }
 
 module "object_storage" {
   source = "./modules/object_storage"
 
-  namespace = var.namespace
-  labels    = var.labels
+  count = local.enable_object_storage_module ? 1 : 0
+
+  namespace       = var.namespace
+  labels          = var.labels
+  service_account = module.service_accounts.service_account
 }
 
 module "service_accounts" {
   source = "./modules/service_accounts"
 
-  bucket    = module.object_storage.bucket
-  namespace = var.namespace
-  secrets   = [var.ca_certificate_secret, var.license_secret, var.ssl_certificate_secret, var.ssl_private_key_secret]
+  ca_certificate_secret  = var.ca_certificate_secret
+  license_secret         = var.license_secret
+  namespace              = var.namespace
+  ssl_certificate_secret = var.ssl_certificate_secret
+  ssl_private_key_secret = var.ssl_private_key_secret
+
+  depends_on = [
+    module.project_factory_project_services
+  ]
 }
 
 module "networking" {
   source = "./modules/networking"
 
-  count = var.network == null ? 1 : 0
+  count = local.enable_networking_module ? 1 : 0
 
-  active_active        = local.active_active
+  enable_active_active = local.enable_active_active
   namespace            = var.namespace
   subnet_range         = var.networking_subnet_range
   reserve_subnet_range = var.networking_reserve_subnet_range
   firewall_ports       = var.networking_firewall_ports
   healthcheck_ips      = var.networking_healthcheck_ips
-  service_account      = module.service_accounts.email
+  service_account      = module.service_accounts.service_account
   ip_allow_list        = var.networking_ip_allow_list
   ssh_source_ranges    = var.ssh_source_ranges
-}
 
-locals {
-  networking_module_enabled = length(module.networking) > 0
-  network_self_link         = local.networking_module_enabled ? module.networking[0].network.self_link : var.network
-  subnetwork_self_link      = local.networking_module_enabled ? module.networking[0].subnetwork.self_link : var.subnetwork
+  depends_on = [
+    module.project_factory_project_services
+  ]
 }
 
 module "database" {
   source = "./modules/database"
+
+  count = local.enable_database_module ? 1 : 0
 
   dbname            = var.database_name
   username          = var.database_user
@@ -81,30 +75,26 @@ module "database" {
   labels            = var.labels
   network           = local.network_self_link
   postgres_version  = var.postgres_version
+
+  depends_on = [
+    module.project_factory_project_services
+  ]
 }
 
 module "redis" {
   source = "./modules/redis"
-  count  = local.active_active ? 1 : 0
+
+  count = local.enable_redis_module ? 1 : 0
 
   auth_enabled = var.redis_auth_enabled
   namespace    = var.namespace
   memory_size  = var.redis_memory_size
   network      = local.network_self_link
   labels       = var.labels
-}
 
-locals {
-  redis = length(module.redis) > 0 ? module.redis[0] : {
-    host     = ""
-    password = ""
-    port     = ""
-  }
-
-  common_fqdn = trimsuffix(var.fqdn, ".")
-  # Ensure that the FQDN is in the fully qualified format that GCP expects.
-  # Trimming and re-adding the suffix ensures that either format can be provided for var.fqdn.
-  full_fqdn = "${local.common_fqdn}."
+  depends_on = [
+    module.project_factory_project_services
+  ]
 }
 
 module "user_data" {
@@ -116,20 +106,23 @@ module "user_data" {
   capacity_concurrency      = var.capacity_concurrency
   capacity_memory           = var.capacity_memory
   custom_image_tag          = var.custom_image_tag
+  enable_disk               = local.enable_disk
+  disk_device_name          = local.disk_device_name
   disk_path                 = var.disk_path
   enable_metrics_collection = var.enable_metrics_collection
+  enable_external           = local.enable_external
   extra_no_proxy            = var.extra_no_proxy
   fqdn                      = local.common_fqdn
-  gcs_bucket                = module.object_storage.bucket
+  gcs_bucket                = local.object_storage.bucket
   gcs_credentials           = module.service_accounts.credentials
-  gcs_project               = module.object_storage.project
+  gcs_project               = local.object_storage.project
   hairpin_addressing        = var.hairpin_addressing
   license_secret            = var.license_secret
   monitoring_enabled        = var.monitoring_enabled
-  pg_netloc                 = module.database.netloc
-  pg_dbname                 = module.database.dbname
-  pg_user                   = module.database.user
-  pg_password               = module.database.password
+  pg_netloc                 = local.database.netloc
+  pg_dbname                 = local.database.dbname
+  pg_user                   = local.database.user
+  pg_password               = local.database.password
   pg_extra_params           = "sslmode=require"
   redis_host                = local.redis.host
   redis_pass                = local.redis.password
@@ -137,7 +130,7 @@ module "user_data" {
   redis_use_password_auth   = var.redis_auth_enabled
   redis_use_tls             = var.redis_use_tls
   release_sequence          = var.release_sequence
-  active_active             = local.active_active
+  enable_active_active      = local.enable_active_active
   proxy_ip                  = var.proxy_ip
   namespace                 = var.namespace
   no_proxy                  = [local.common_fqdn, var.networking_subnet_range]
@@ -153,21 +146,77 @@ module "user_data" {
   )
 }
 
-module "vm" {
-  source = "./modules/vm"
+module "vm_instance_template" {
+  source  = "terraform-google-modules/vm/google//modules/instance_template"
+  version = "~> 7.1"
 
-  active_active           = local.active_active
-  namespace               = var.namespace
-  machine_type            = var.vm_machine_type
-  disk_size               = var.vm_disk_size
-  disk_source_image       = var.vm_disk_source_image
-  disk_type               = var.vm_disk_type
-  subnetwork              = local.subnetwork_self_link
-  metadata_startup_script = module.user_data.script
-  labels                  = var.labels
-  auto_healing_enabled    = var.vm_auto_healing_enabled
-  service_account         = module.service_accounts.email
-  node_count              = var.node_count
+  name_prefix = "${var.namespace}-tfe-template-"
+
+  additional_disks = [
+    {
+      auto_delete  = true
+      boot         = false
+      device_name  = local.disk_device_name
+      disk_labels  = var.labels
+      disk_name    = "tfe-mounted"
+      disk_size_gb = 40
+      disk_type    = "pd-ssd"
+      mode         = "READ_WRITE"
+    }
+  ]
+  auto_delete    = true
+  can_ip_forward = true
+  disk_labels    = var.labels
+  disk_type      = var.vm_disk_type
+  disk_size_gb   = var.vm_disk_size
+  labels         = var.labels
+  machine_type   = var.vm_machine_type
+  service_account = {
+    scopes = ["cloud-platform"]
+
+    email = module.service_accounts.service_account.email
+  }
+  source_image   = var.vm_disk_source_image
+  startup_script = module.user_data.script
+  subnetwork     = local.subnetwork_self_link
+}
+
+module "vm_mig" {
+  source  = "terraform-google-modules/vm/google//modules/mig"
+  version = "~> 7.1"
+
+  instance_template = module.vm_instance_template.self_link
+  region            = null
+
+  health_check = {
+    check_interval_sec  = 60
+    healthy_threshold   = 2
+    host                = null
+    initial_delay_sec   = 600
+    port                = 443
+    proxy_header        = null
+    request             = null
+    request_path        = "/_health_check"
+    response            = null
+    timeout_sec         = 10
+    type                = "https"
+    unhealthy_threshold = 6
+  }
+  health_check_name = "${var.namespace}-tfe-health-check"
+  hostname          = "${var.namespace}-tfe"
+  named_ports = concat(
+    [{
+      name = "https"
+      port = 443
+    }],
+    (
+      local.enable_active_active ? [] : [{
+        name = "console"
+        port = 8800
+      }]
+    )
+  )
+  target_size = var.node_count
 }
 
 resource "google_compute_address" "private" {
@@ -185,7 +234,7 @@ module "private_load_balancer" {
 
   namespace            = var.namespace
   fqdn                 = local.full_fqdn
-  instance_group       = module.vm.instance_group
+  instance_group       = module.vm_mig.instance_group
   ssl_certificate_name = var.ssl_certificate_name
   dns_zone_name        = var.dns_zone_name
   subnetwork           = local.subnetwork_self_link
@@ -199,7 +248,7 @@ module "private_tcp_load_balancer" {
 
   namespace         = var.namespace
   fqdn              = local.full_fqdn
-  instance_group    = module.vm.instance_group
+  instance_group    = module.vm_mig.instance_group
   dns_zone_name     = var.dns_zone_name
   subnetwork        = local.subnetwork_self_link
   dns_create_record = var.dns_create_record
@@ -221,29 +270,9 @@ module "load_balancer" {
 
   namespace            = var.namespace
   fqdn                 = local.full_fqdn
-  instance_group       = module.vm.instance_group
+  instance_group       = module.vm_mig.instance_group
   ssl_certificate_name = var.ssl_certificate_name
   dns_zone_name        = var.dns_zone_name
   dns_create_record    = var.dns_create_record
   ip_address           = google_compute_global_address.public[0].address
-}
-
-locals {
-  private_load_balancing_enabled = length(google_compute_address.private) > 0
-  lb_address = (
-    local.private_load_balancing_enabled ? google_compute_address.private : google_compute_global_address.public
-  )[0].address
-  trusted_proxies = local.private_load_balancing_enabled ? compact([
-    "${local.lb_address}/32",
-    # Include IP address range of the reserve subnetwork for private load balancing
-    local.networking_module_enabled ? module.networking[0].reserve_subnetwork.ip_cidr_range : null
-    ]) : [
-    "${local.lb_address}/32",
-    # Include IP address ranges of the Google Front End service
-    "130.211.0.0/22",
-    "35.191.0.0/16"
-  ]
-
-  hostname = var.dns_create_record ? local.common_fqdn : local.lb_address
-  base_url = "https://${local.hostname}/"
 }

@@ -31,17 +31,30 @@ For more information on provisioning certificates in GCP, read the [documentatio
 
 Examples of creating a self-signed certificate for use with internal load balancers can be found within the examples.
 
-### Permissions and APIs
+### Project Service APIs
 
-The following APIs are required and will be enabled by the module:
+The following sections list the APIs that will be enabled in general
+and for specific operation modes.
+
+#### General
+
+- [Cloud Logging API](https://cloud.google.com/logging/docs/reference/v2/rest)
+- [Identity and Access Management API](https://cloud.google.com/iam/docs/reference/rest)
+- [Service Networking API](https://cloud.google.com/service-infrastructure/docs/service-networking/reference/rest)
+  (unless an existing network is used)
+
+#### External Services Mode
 
 - [Cloud SQL Admin API](https://cloud.google.com/sql/docs/sqlserver/admin-api/rest)
-- [Google Cloud APIs](https://cloud.google.com/apis/docs/overview)
-- [Google Cloud Memorystore for Redis API](https://cloud.google.com/memorystore/docs/redis/reference/rest)
-- [Identity and Access Management API](https://cloud.google.com/iam/docs)
-- [Service Networking API](https://cloud.google.com/service-infrastructure/docs/service-networking/getting-started?hl=en_US)
 
-If you are using a service account to authenticate calls to Google Cloud APIs, the following roles are required:
+##### Active/Active
+
+- [Memorystore for Redis API](https://cloud.google.com/memorystore/docs/redis/reference/rest)
+
+### Permissions
+
+If you are using a service account to authenticate calls to Google
+Cloud APIs, the following roles are required:
 
 - [Basic Editor role](https://cloud.google.com/iam/docs/understanding-roles#basic-definitions)
 - [Service Networking Admin](https://cloud.google.com/iam/docs/understanding-roles#service-networking-roles)

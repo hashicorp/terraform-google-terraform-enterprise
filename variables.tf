@@ -18,11 +18,14 @@ variable "namespace" {
 }
 
 variable "node_count" {
-  description = "Number of TFE nodes. Between 1 and 5"
+  description = <<-EOD
+  The number of Terraform Enterprise nodes to deploy. Setting this value greater than 1 will enable Active/Active,
+  forcing the Production installation type and the External production type.
+  EOD
   type        = number
   validation {
-    condition     = var.node_count <= 5
-    error_message = "The node_count value must be less than or equal to 5."
+    condition     = var.node_count >= 0 && var.node_count <= 2
+    error_message = "The node_count value must be between 0 and 2, inclusively."
   }
 }
 
@@ -195,12 +198,6 @@ variable "vm_disk_type" {
   type        = string
 }
 
-variable "vm_auto_healing_enabled" {
-  default     = false
-  description = "Auto healing for the instance group"
-  type        = bool
-}
-
 # USER DATA / TFE
 # ---------------
 variable "release_sequence" {
@@ -314,6 +311,20 @@ variable "redis_use_tls" {
   default     = false
   description = "A toggle to control the use of TLS when connecting to the Redis endpoint."
   type        = bool
+}
+
+variable "operational_mode" {
+  default     = "external"
+  description = <<-EOD
+  A special string to control the operational mode of Terraform Enterprise. Valid values are: "external" for External
+  Services mode; "disk" for Mounted Disk mode; "poc" for Demo mode.
+  EOD
+  type        = string
+
+  validation {
+    condition     = contains(["external", "disk", "poc"], var.operational_mode)
+    error_message = "The operational_mode value must be one of: \"external\"; \"disk\"; \"poc\"."
+  }
 }
 
 variable "ssl_certificate_name" {
