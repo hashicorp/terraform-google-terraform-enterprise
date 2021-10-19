@@ -128,7 +128,7 @@ mount --options discard,defaults $device ${disk_path}
 chmod og+rw ${disk_path}
 
 echo "[Terraform Enterprise] Configuring automatic mounting of '$device' to directory at '${disk_path}' on reboot" | tee -a $log_pathname
-echo "UUID=$(lsblk --noheadings --output uuid $device) ${disk_path} ext4 discard,defaults,MOUNT_OPTION 0 2" >> /etc/fstab
+echo "UUID=$(lsblk --noheadings --output uuid $device) ${disk_path} ext4 discard,defaults 0 2" >> /etc/fstab
 
 %{ endif ~}
 echo "[Terraform Enterprise] Creating Terraform Enterprise library directory at '${lib_directory}'" | tee -a $log_pathname
