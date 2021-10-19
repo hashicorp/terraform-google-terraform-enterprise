@@ -74,6 +74,7 @@ variable "custom_image_tag" {
 
 variable "disk_device_name" {
   description = "The name of the disk device on which Terraform Enterprise will store data in Mounted Disk mode."
+  type        = string
 }
 
 variable "disk_path" {
