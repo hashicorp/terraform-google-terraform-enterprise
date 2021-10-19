@@ -45,7 +45,7 @@ resource "google_compute_firewall" "tfe" {
   name    = "${var.namespace}-firewall"
   network = google_compute_network.tfe_vpc.name
 
-  target_service_accounts = [var.service_account]
+  target_service_accounts = [var.service_account.email]
 
   allow {
     protocol = "icmp"
@@ -64,7 +64,7 @@ resource "google_compute_firewall" "lb_healthchecks" {
   network       = google_compute_network.tfe_vpc.name
   source_ranges = concat([google_compute_subnetwork.tfe_subnet.ip_cidr_range], var.healthcheck_ips)
 
-  target_service_accounts = [var.service_account]
+  target_service_accounts = [var.service_account.email]
 
   allow {
     protocol = "tcp"
@@ -78,7 +78,7 @@ resource "google_compute_firewall" "ssh" {
   description             = "The firewall which allows the ingress of SSH traffic to the TFE deployment."
   direction               = "INGRESS"
   source_ranges           = var.ssh_source_ranges
-  target_service_accounts = [var.service_account]
+  target_service_accounts = [var.service_account.email]
 
   allow {
     protocol = "tcp"

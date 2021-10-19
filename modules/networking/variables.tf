@@ -42,9 +42,11 @@ variable "healthcheck_ips" {
 
 variable "service_account" {
   description = <<-EOD
-  The email address of the service account which is assigned to the Terraform Enterprise compute instances.
+  The service account which is assigned to the Terraform Enterprise compute instances.
   EOD
-  type        = string
+  type        = object({
+    email = string
+  })
 }
 
 variable "ip_allow_list" {
