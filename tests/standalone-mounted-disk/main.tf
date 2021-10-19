@@ -1,6 +1,6 @@
 resource "random_pet" "main" {
   length    = 1
-  prefix    = "stm"
+  prefix    = "smd"
   separator = "-"
 }
 
