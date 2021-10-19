@@ -44,7 +44,7 @@ variable "service_account" {
   description = <<-EOD
   The service account which is assigned to the Terraform Enterprise compute instances.
   EOD
-  type        = object({
+  type = object({
     email = string
   })
 }
