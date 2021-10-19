@@ -195,12 +195,6 @@ variable "vm_disk_type" {
   type        = string
 }
 
-variable "vm_auto_healing_enabled" {
-  default     = false
-  description = "Auto healing for the instance group"
-  type        = bool
-}
-
 # USER DATA / TFE
 # ---------------
 variable "release_sequence" {

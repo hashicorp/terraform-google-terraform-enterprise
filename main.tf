@@ -129,21 +129,77 @@ module "user_data" {
   )
 }
 
-module "vm" {
-  source = "./modules/vm"
+module "vm_instance_template" {
+  source  = "terraform-google-modules/vm/google//modules/instance_template"
+  version = "~> 7.1"
 
-  active_active           = local.active_active
-  namespace               = var.namespace
-  machine_type            = var.vm_machine_type
-  disk_size               = var.vm_disk_size
-  disk_source_image       = var.vm_disk_source_image
-  disk_type               = var.vm_disk_type
-  subnetwork              = local.subnetwork_self_link
-  metadata_startup_script = module.user_data.script
-  labels                  = var.labels
-  auto_healing_enabled    = var.vm_auto_healing_enabled
-  service_account         = module.service_accounts.email
-  node_count              = var.node_count
+  name_prefix = "${var.namespace}-tfe-template-"
+
+  additional_disks = [
+    {
+      auto_delete  = true
+      boot         = false
+      device_name  = local.disk_device_name
+      disk_labels  = var.labels
+      disk_name    = "tfe-mounted"
+      disk_size_gb = 40
+      disk_type    = "pd-ssd"
+      mode         = "READ_WRITE"
+    }
+  ]
+  auto_delete    = true
+  can_ip_forward = true
+  disk_labels    = var.labels
+  disk_type      = var.vm_disk_type
+  disk_size_gb   = var.vm_disk_size
+  labels         = var.labels
+  machine_type   = var.vm_machine_type
+  service_account = {
+    scopes = ["cloud-platform"]
+
+    email = module.service_accounts.email
+  }
+  source_image   = var.vm_disk_source_image
+  startup_script = module.user_data.script
+  subnetwork     = local.subnetwork_self_link
+}
+
+module "vm_mig" {
+  source  = "terraform-google-modules/vm/google//modules/mig"
+  version = "~> 7.1"
+
+  instance_template = module.vm_instance_template.self_link
+  region            = null
+
+  health_check = {
+    check_interval_sec  = 60
+    healthy_threshold   = 2
+    host                = null
+    initial_delay_sec   = 600
+    port                = 443
+    proxy_header        = null
+    request             = null
+    request_path        = "/_health_check"
+    response            = null
+    timeout_sec         = 10
+    type                = "https"
+    unhealthy_threshold = 6
+  }
+  health_check_name = "${var.namespace}-tfe-health-check"
+  hostname          = "${var.namespace}-tfe"
+  named_ports = concat(
+    [{
+      name = "https"
+      port = 443
+    }],
+    (
+      local.enable_active_active ? [] : [{
+        name = "console"
+        port = 8800
+      }]
+    )
+  )
+  target_size = var.node_count
 }
 
 resource "google_compute_address" "private" {
@@ -161,7 +217,7 @@ module "private_load_balancer" {
 
   namespace            = var.namespace
   fqdn                 = local.full_fqdn
-  instance_group       = module.vm.instance_group
+  instance_group       = module.vm_mig.instance_group
   ssl_certificate_name = var.ssl_certificate_name
   dns_zone_name        = var.dns_zone_name
   subnetwork           = local.subnetwork_self_link
@@ -175,7 +231,7 @@ module "private_tcp_load_balancer" {
 
   namespace         = var.namespace
   fqdn              = local.full_fqdn
-  instance_group    = module.vm.instance_group
+  instance_group    = module.vm_mig.instance_group
   dns_zone_name     = var.dns_zone_name
   subnetwork        = local.subnetwork_self_link
   dns_create_record = var.dns_create_record
@@ -197,7 +253,7 @@ module "load_balancer" {
 
   namespace            = var.namespace
   fqdn                 = local.full_fqdn
-  instance_group       = module.vm.instance_group
+  instance_group       = module.vm_mig.instance_group
   ssl_certificate_name = var.ssl_certificate_name
   dns_zone_name        = var.dns_zone_name
   dns_create_record    = var.dns_create_record
