@@ -17,12 +17,16 @@ resource "google_service_account_key" "key" {
 }
 
 resource "google_storage_bucket_iam_member" "member_object" {
+  count = var.bucket == null ? 0 : 1
+
   bucket = var.bucket
   role   = "roles/storage.objectAdmin"
   member = local.member
 }
 
 resource "google_storage_bucket_iam_member" "member_bucket" {
+  count = var.bucket == null ? 0 : 1
+
   bucket = var.bucket
   role   = "roles/storage.legacyBucketReader"
   member = local.member

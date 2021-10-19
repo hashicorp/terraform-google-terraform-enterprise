@@ -108,10 +108,10 @@ jq ". + { ca_certs: { value: \"$certificate_data\" } }" -- $original_settings_pa
 
 %{ endif ~}
 %{ if disk_path != null ~}
-device="/dev/sdb"
+device="/dev/${disk_device_name}"
 echo "[Terraform Enterprise] Checking disk at '$device' for EXT4 filesystem" | tee -a $log_pathname
 
-if [[ lsblk --fs $device | grep ext4 ]]
+if lsblk --fs $device | grep ext4
 then
   echo "[Terraform Enterprise] EXT4 filesystem detected on disk at '$device'" | tee -a $log_pathname
 else
@@ -199,7 +199,7 @@ $install_pathname \
   %{ else ~}
   no-proxy \
   %{ endif ~}
-  %{if active_active ~}
+  %{if enable_active_active ~}
   disable-replicated-ui \
   %{ endif ~}
   | tee -a $log_pathname

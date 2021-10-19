@@ -13,7 +13,7 @@ variable "license_secret" {
   type        = string
 }
 
-variable "active_active" {
+variable "enable_active_active" {
   description = "A toggle which controls support for deploying Terraform Enterprise in Active/Active mode."
   type        = bool
 }
@@ -72,8 +72,12 @@ variable "custom_image_tag" {
   type        = string
 }
 
+variable "disk_device_name" {
+  description = "The name of the disk device on which Terraform Enterprise will store data in Mounted Disk mode."
+}
+
 variable "disk_path" {
-  description = "The pathname of the directory in which Terraform Enterprise will store data on the compute instances."
+  description = "The pathname of the directory in which Terraform Enterprise will store data in Mounted Disk mode."
   type        = string
 }
 
@@ -114,12 +118,12 @@ variable "iact_subnet_time_limit" {
   type        = number
 }
 
-variable "disk_enabled" {
+variable "enable_disk" {
   description = "A toggle to control the use of Mounted Disk mode."
   type        = bool
 }
 
-variable "external_enabled" {
+variable "enable_external" {
   description = "A toggle to control the use of External Services mode."
   type        = bool
 }

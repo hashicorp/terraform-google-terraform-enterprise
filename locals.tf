@@ -1,17 +1,24 @@
 locals {
-  disable_services_on_destroy = false
+  disk_device_name         = "sdb"
+  enable_active_active     = var.node_count >= 2
+  enable_external          = var.operational_mode == "external" || local.enable_active_active
+  enable_database_module   = local.enable_external
+  enable_disk              = var.operational_mode == "disk" && !local.enable_active_active
+  enable_networking_module = var.network == null
+  enable_object_storage_module = local.enable_external
+  enable_redis_module      = local.enable_active_active
 
-  active_active = var.node_count >= 2
+  network_self_link    = try(module.networking[0].network.self_link, var.network)
+  subnetwork_self_link = try(module.networking[0].subnetwork.self_link, var.subnetwork)
 
-  networking_module_enabled = length(module.networking) > 0
-  network_self_link         = local.networking_module_enabled ? module.networking[0].network.self_link : var.network
-  subnetwork_self_link      = local.networking_module_enabled ? module.networking[0].subnetwork.self_link : var.subnetwork
-
-  redis = length(module.redis) > 0 ? module.redis[0] : {
-    host     = ""
-    password = ""
-    port     = ""
-  }
+  redis = try(
+    module.redis[0],
+    {
+      host     = null
+      password = null
+      port     = null
+    }
+  )
 
   common_fqdn = trimsuffix(var.fqdn, ".")
   # Ensure that the FQDN is in the fully qualified format that GCP expects.
@@ -25,7 +32,7 @@ locals {
   trusted_proxies = local.private_load_balancing_enabled ? compact([
     "${local.lb_address}/32",
     # Include IP address range of the reserve subnetwork for private load balancing
-    local.networking_module_enabled ? module.networking[0].reserve_subnetwork.ip_cidr_range : null
+    try(module.networking[0].reserve_subnetwork.ip_cidr_range, null)
     ]) : [
     "${local.lb_address}/32",
     # Include IP address ranges of the Google Front End service
@@ -36,4 +43,22 @@ locals {
   hostname               = var.dns_create_record ? local.common_fqdn : local.lb_address
   base_url               = "https://${local.hostname}/"
   replicated_console_url = "https://${local.hostname}:8800/"
+
+  object_storage = try(
+    module.object_storage[0],
+    {
+      bucket  = null
+      project = null
+    }
+  )
+
+  database = try(
+    module.database[0],
+    {
+      dbname   = null
+      netloc   = null
+      password = null
+      user     = null
+    }
+  )
 }

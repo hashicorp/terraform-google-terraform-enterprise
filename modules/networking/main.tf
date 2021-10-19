@@ -53,7 +53,7 @@ resource "google_compute_firewall" "tfe" {
 
   allow {
     protocol = "tcp"
-    ports    = concat(local.ports, var.firewall_ports)
+    ports    = concat(var.enable_active_active ? ["80", "443"] : ["80", "443", "8800"], var.firewall_ports)
   }
 
   source_ranges = var.ip_allow_list

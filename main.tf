@@ -1,30 +1,25 @@
-resource "google_project_service" "iam" {
-  service            = "iam.googleapis.com"
-  disable_on_destroy = local.disable_services_on_destroy
-}
+module "project_factory_project_services" {
+  source  = "terraform-google-modules/project-factory/google//modules/project_services"
+  version = "~> 11.2"
 
-resource "google_project_service" "cloudapi" {
-  service            = "cloudapis.googleapis.com"
-  disable_on_destroy = local.disable_services_on_destroy
-}
+  project_id = null
 
-resource "google_project_service" "servicenetworking" {
-  service            = "servicenetworking.googleapis.com"
-  disable_on_destroy = local.disable_services_on_destroy
-}
-
-resource "google_project_service" "sqladmin" {
-  service            = "sqladmin.googleapis.com"
-  disable_on_destroy = local.disable_services_on_destroy
-}
-
-resource "google_project_service" "redis" {
-  service            = "redis.googleapis.com"
-  disable_on_destroy = local.disable_services_on_destroy
+  activate_apis = compact([
+    "iam.googleapis.com",
+    "logging.googleapis.com",
+    (local.enable_database_module ? "sqladmin.googleapis.com" : null),
+    (local.enable_networking_module ? "networkmanagement.googleapis.com" : null),
+    (local.enable_networking_module ? "servicenetworking.googleapis.com" : null),
+    (local.enable_redis_module ? "redis.googleapis.com" : null),
+  ])
+  disable_dependent_services  = false
+  disable_services_on_destroy = false
 }
 
 module "object_storage" {
   source = "./modules/object_storage"
+
+  count = local.enable_object_storage_module ? 1 : 0
 
   namespace = var.namespace
   labels    = var.labels
@@ -33,20 +28,24 @@ module "object_storage" {
 module "service_accounts" {
   source = "./modules/service_accounts"
 
-  bucket                 = module.object_storage.bucket
+  bucket                 = local.object_storage.bucket
   ca_certificate_secret  = var.ca_certificate_secret
   license_secret         = var.license_secret
   namespace              = var.namespace
   ssl_certificate_secret = var.ssl_certificate_secret
   ssl_private_key_secret = var.ssl_private_key_secret
+
+  depends_on = [
+    module.project_factory_project_services
+  ]
 }
 
 module "networking" {
   source = "./modules/networking"
 
-  count = var.network == null ? 1 : 0
+  count = local.enable_networking_module ? 1 : 0
 
-  active_active        = local.active_active
+  enable_active_active = local.enable_active_active
   namespace            = var.namespace
   subnet_range         = var.networking_subnet_range
   reserve_subnet_range = var.networking_reserve_subnet_range
@@ -55,10 +54,16 @@ module "networking" {
   service_account      = module.service_accounts.email
   ip_allow_list        = var.networking_ip_allow_list
   ssh_source_ranges    = var.ssh_source_ranges
+
+  depends_on = [
+    module.project_factory_project_services
+  ]
 }
 
 module "database" {
   source = "./modules/database"
+
+  count = local.enable_database_module ? 1 : 0
 
   dbname            = var.database_name
   username          = var.database_user
@@ -70,17 +75,26 @@ module "database" {
   labels            = var.labels
   network           = local.network_self_link
   postgres_version  = var.postgres_version
+
+  depends_on = [
+    module.project_factory_project_services
+  ]
 }
 
 module "redis" {
   source = "./modules/redis"
-  count  = local.active_active ? 1 : 0
+
+  count = local.enable_redis_module ? 1 : 0
 
   auth_enabled = var.redis_auth_enabled
   namespace    = var.namespace
   memory_size  = var.redis_memory_size
   network      = local.network_self_link
   labels       = var.labels
+
+  depends_on = [
+    module.project_factory_project_services
+  ]
 }
 
 module "user_data" {
@@ -92,20 +106,23 @@ module "user_data" {
   capacity_concurrency      = var.capacity_concurrency
   capacity_memory           = var.capacity_memory
   custom_image_tag          = var.custom_image_tag
+  enable_disk               = local.enable_disk
+  disk_device_name          = local.disk_device_name
   disk_path                 = var.disk_path
   enable_metrics_collection = var.enable_metrics_collection
+  enable_external           = local.enable_external
   extra_no_proxy            = var.extra_no_proxy
   fqdn                      = local.common_fqdn
-  gcs_bucket                = module.object_storage.bucket
+  gcs_bucket                = local.object_storage.bucket
   gcs_credentials           = module.service_accounts.credentials
-  gcs_project               = module.object_storage.project
+  gcs_project               = local.object_storage.project
   hairpin_addressing        = var.hairpin_addressing
   license_secret            = var.license_secret
   monitoring_enabled        = var.monitoring_enabled
-  pg_netloc                 = module.database.netloc
-  pg_dbname                 = module.database.dbname
-  pg_user                   = module.database.user
-  pg_password               = module.database.password
+  pg_netloc                 = local.database.netloc
+  pg_dbname                 = local.database.dbname
+  pg_user                   = local.database.user
+  pg_password               = local.database.password
   pg_extra_params           = "sslmode=require"
   redis_host                = local.redis.host
   redis_pass                = local.redis.password
@@ -113,7 +130,7 @@ module "user_data" {
   redis_use_password_auth   = var.redis_auth_enabled
   redis_use_tls             = var.redis_use_tls
   release_sequence          = var.release_sequence
-  active_active             = local.active_active
+  enable_active_active      = local.enable_active_active
   proxy_ip                  = var.proxy_ip
   namespace                 = var.namespace
   no_proxy                  = [local.common_fqdn, var.networking_subnet_range]

@@ -1,4 +1,4 @@
-variable "active_active" {
+variable "enable_active_active" {
   description = "A toggle which controls support for deploying Terraform Enterprise in Active/Active mode."
   type        = bool
 }

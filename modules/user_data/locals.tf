@@ -25,7 +25,7 @@ locals {
     }
 
     enable_active_active = {
-      # This will be overwritten if var.active_active == true
+      # This will be overwritten if var.enable_active_active == true
       value = "0"
     }
 
@@ -62,7 +62,7 @@ locals {
     }
 
     installation_type = {
-      # This will be overwritten if disk_enabled == true or external_enabled == true
+      # This will be overwritten if enable_disk == true or enable_external == true
       value = "poc"
     }
 
@@ -99,7 +99,7 @@ locals {
     }
   }
 
-  disk_settings = var.disk_enabled ? {
+  disk_settings = var.enable_disk ? {
     installation_type = {
       value = "production"
     }
@@ -113,7 +113,7 @@ locals {
     }
   } : {}
 
-  external_settings = var.external_enabled ? {
+  external_settings = var.enable_external ? {
     installation_type = {
       value = "production"
     }
@@ -159,7 +159,7 @@ locals {
     }
   } : {}
 
-  active_active_settings = var.active_active ? {
+  active_active_settings = var.enable_active_active ? {
     enable_active_active = {
       value = "1"
     }
@@ -238,7 +238,8 @@ locals {
       airgap_pathname          = local.airgap_pathname
       airgap_url               = var.airgap_url
       ca_certificate_secret    = var.ca_certificate_secret
-      disk_path                = var.disk_enabled ? var.disk_path : null
+      disk_device_name         = var.disk_device_name
+      disk_path                = var.enable_disk ? var.disk_path : null
       docker_config            = filebase64("${path.module}/files/daemon.json")
       bucket_name              = var.gcs_bucket
       lib_directory            = local.lib_directory
@@ -247,7 +248,7 @@ locals {
       monitoring_enabled       = var.monitoring_enabled
       replicated               = base64encode(local.repl_configs)
       settings                 = base64encode(local.settings)
-      active_active            = var.active_active
+      enable_active_active     = var.enable_active_active
       namespace                = var.namespace
       proxy_ip                 = var.proxy_ip
       settings_pathname        = local.settings_pathname
