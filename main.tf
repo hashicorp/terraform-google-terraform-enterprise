@@ -21,14 +21,14 @@ module "object_storage" {
 
   count = local.enable_object_storage_module ? 1 : 0
 
-  namespace = var.namespace
-  labels    = var.labels
+  namespace       = var.namespace
+  labels          = var.labels
+  service_account = module.service_accounts.service_account
 }
 
 module "service_accounts" {
   source = "./modules/service_accounts"
 
-  bucket                 = local.object_storage.bucket
   ca_certificate_secret  = var.ca_certificate_secret
   license_secret         = var.license_secret
   namespace              = var.namespace
@@ -51,7 +51,7 @@ module "networking" {
   reserve_subnet_range = var.networking_reserve_subnet_range
   firewall_ports       = var.networking_firewall_ports
   healthcheck_ips      = var.networking_healthcheck_ips
-  service_account      = module.service_accounts.email
+  service_account      = module.service_accounts.service_account
   ip_allow_list        = var.networking_ip_allow_list
   ssh_source_ranges    = var.ssh_source_ranges
 
@@ -174,7 +174,7 @@ module "vm_instance_template" {
   service_account = {
     scopes = ["cloud-platform"]
 
-    email = module.service_accounts.email
+    email = module.service_accounts.service_account.email
   }
   source_image   = var.vm_disk_source_image
   startup_script = module.user_data.script

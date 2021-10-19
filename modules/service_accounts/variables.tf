@@ -1,8 +1,3 @@
-variable "bucket" {
-  description = "The self link of the storage bucket in which Terraform Enterprise stores data."
-  type        = string
-}
-
 variable "ca_certificate_secret" {
   description = <<-EOD
   The Secret Manager secret which comprises the Base64 encoded PEM certificate file for a Certificate Authority. The

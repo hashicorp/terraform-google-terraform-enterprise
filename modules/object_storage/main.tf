@@ -9,3 +9,15 @@ resource "google_storage_bucket" "tfe" {
   force_destroy = true
   labels        = var.labels
 }
+
+resource "google_storage_bucket_iam_member" "object_admin" {
+  bucket = google_storage_bucket.tfe.name
+  member = local.member
+  role   = "roles/storage.objectAdmin"
+}
+
+resource "google_storage_bucket_iam_member" "legacy_bucket_reader" {
+  bucket = google_storage_bucket.tfe.name
+  member = local.member
+  role   = "roles/storage.legacyBucketReader"
+}

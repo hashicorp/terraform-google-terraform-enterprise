@@ -16,22 +16,6 @@ resource "google_service_account_key" "key" {
   service_account_id = google_service_account.main.name
 }
 
-resource "google_storage_bucket_iam_member" "member_object" {
-  count = var.bucket == null ? 0 : 1
-
-  bucket = var.bucket
-  role   = "roles/storage.objectAdmin"
-  member = local.member
-}
-
-resource "google_storage_bucket_iam_member" "member_bucket" {
-  count = var.bucket == null ? 0 : 1
-
-  bucket = var.bucket
-  role   = "roles/storage.legacyBucketReader"
-  member = local.member
-}
-
 resource "google_project_iam_member" "log_writer" {
   member = local.member
   role   = "roles/logging.logWriter"

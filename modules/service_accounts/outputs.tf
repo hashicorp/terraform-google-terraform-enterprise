@@ -3,8 +3,8 @@ output "credentials" {
 
   description = "The private key of the service account."
 }
-output "email" {
-  value = google_service_account.main.email
+output "service_account" {
+  value = google_service_account.main
 
-  description = "The email address of the service account."
+  description = "The service account."
 }

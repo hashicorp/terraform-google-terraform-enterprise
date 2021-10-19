@@ -42,9 +42,9 @@ output "network" {
   description = "The network to which TFE is attached."
 }
 
-output "service_account_email" {
-  value       = module.service_accounts.email
-  description = "The email address of the service account associated with the TFE instance."
+output "service_account" {
+  value       = module.service_accounts.service_account
+  description = "The service account associated with the TFE instance."
 }
 
 output "subnetwork" {
