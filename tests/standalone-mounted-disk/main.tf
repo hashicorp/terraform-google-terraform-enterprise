@@ -26,7 +26,7 @@ module "tfe" {
   license_secret       = google_secret_manager_secret.license.secret_id
   ssl_certificate_name = "wildcard"
 
-  iact_subnet_list       = var.iact_subnet_list
+  iact_subnet_list       = ["0.0.0.0/0"]
   iact_subnet_time_limit = 60
   labels = {
     department  = "engineering"
