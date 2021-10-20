@@ -1,5 +1,5 @@
 data "google_dns_managed_zone" "main" {
-  name = "ptfe-replicated"
+  name = "public"
 }
 
 data "google_compute_image" "ubuntu" {

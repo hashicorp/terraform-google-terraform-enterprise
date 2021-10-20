@@ -24,7 +24,7 @@ module "tfe" {
   namespace            = random_pet.main.id
   node_count           = 1
   license_secret       = google_secret_manager_secret.license.secret_id
-  ssl_certificate_name = "ptfe-replicated-wildcard"
+  ssl_certificate_name = "wildcard"
 
   iact_subnet_list       = var.iact_subnet_list
   iact_subnet_time_limit = 60
