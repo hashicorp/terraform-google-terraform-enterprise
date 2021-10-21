@@ -9,11 +9,8 @@
 # .tfvars files
 *.tfvars
 
-# Examples
-examples/*/*.tfstate
-examples/*/*.tfstate.*
-examples/*/*.tfvars
-examples/**/*.pem
+# Key files
+*.pem
 
 .DS_Store
 
