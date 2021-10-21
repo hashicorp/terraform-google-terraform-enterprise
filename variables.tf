@@ -198,6 +198,12 @@ variable "vm_disk_type" {
   type        = string
 }
 
+variable "vm_metadata" {
+  default     = {}
+  description = "Metadata key/value pairs to make available from within the compute instances."
+  type        = map(string)
+}
+
 # USER DATA / TFE
 # ---------------
 variable "release_sequence" {

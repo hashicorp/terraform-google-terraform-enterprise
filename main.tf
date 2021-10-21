@@ -171,6 +171,7 @@ module "vm_instance_template" {
   disk_size_gb   = var.vm_disk_size
   labels         = var.labels
   machine_type   = var.vm_machine_type
+  metadata       = var.vm_metadata
   service_account = {
     scopes = ["cloud-platform"]
 
