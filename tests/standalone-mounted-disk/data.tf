@@ -18,6 +18,7 @@ data "google_compute_instance" "tfe" {
 
 # This null_data_source is used to prevent Terraform from trying to render local_file.ssh_config file before data.
 # google_compute_instance.tfe is available.
+# See https://github.com/hashicorp/terraform-provider-local/issues/57
 data "null_data_source" "instance" {
   inputs = {
     name       = data.google_compute_instance.tfe.name
