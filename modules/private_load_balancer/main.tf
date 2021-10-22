@@ -57,9 +57,13 @@ resource "google_compute_region_target_https_proxy" "lb" {
 }
 
 resource "google_compute_forwarding_rule" "lb" {
-  name                  = "${var.namespace}-tfe-internal-lb"
+  provider = google-beta
+
+  name = "${var.namespace}-tfe-internal-lb"
+
   ip_address            = var.ip_address
   ip_protocol           = "TCP"
+  labels                = var.labels
   load_balancing_scheme = "INTERNAL_MANAGED"
   port_range            = 443
   subnetwork            = var.subnetwork

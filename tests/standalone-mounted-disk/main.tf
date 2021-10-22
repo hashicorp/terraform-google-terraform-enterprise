@@ -9,6 +9,8 @@ resource "google_secret_manager_secret" "license" {
     automatic = true
   }
   secret_id = random_pet.main.id
+
+  labels = local.labels
 }
 
 resource "google_secret_manager_secret_version" "license" {

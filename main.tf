@@ -238,6 +238,7 @@ module "private_load_balancer" {
   instance_group       = module.vm_mig.instance_group
   ssl_certificate_name = var.ssl_certificate_name
   dns_zone_name        = var.dns_zone_name
+  labels               = var.labels
   subnetwork           = local.subnetwork_self_link
   dns_create_record    = var.dns_create_record
   ip_address           = google_compute_address.private[0].address
@@ -251,6 +252,7 @@ module "private_tcp_load_balancer" {
   fqdn              = local.full_fqdn
   instance_group    = module.vm_mig.instance_group
   dns_zone_name     = var.dns_zone_name
+  labels            = var.labels
   subnetwork        = local.subnetwork_self_link
   dns_create_record = var.dns_create_record
   ip_address        = google_compute_address.private[0].address
@@ -269,6 +271,7 @@ module "load_balancer" {
   count  = var.load_balancer == "PUBLIC" ? 1 : 0
   source = "./modules/load_balancer"
 
+  labels               = var.labels
   namespace            = var.namespace
   fqdn                 = local.full_fqdn
   instance_group       = module.vm_mig.instance_group

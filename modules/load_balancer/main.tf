@@ -76,6 +76,7 @@ resource "google_compute_global_forwarding_rule" "lb" {
   description           = "The global forwarding rule of the public load balancer for TFE."
   ip_address            = var.ip_address
   ip_protocol           = "TCP"
+  labels                = var.labels
   load_balancing_scheme = "EXTERNAL"
   port_range            = 443
 }
