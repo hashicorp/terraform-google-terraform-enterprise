@@ -158,7 +158,7 @@ module "vm_instance_template" {
       boot         = false
       device_name  = local.disk_device_name
       disk_labels  = var.labels
-      disk_name    = "tfe-mounted"
+      disk_name    = "${var.namespace}-tfe-mounted"
       disk_size_gb = 40
       disk_type    = "pd-ssd"
       mode         = "READ_WRITE"
