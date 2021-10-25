@@ -28,6 +28,11 @@ variable "dns_create_record" {
   type        = bool
 }
 
+variable "labels" {
+  description = "Labels which will be applied to all applicable resources."
+  type        = map(string)
+}
+
 variable "subnetwork" {
   description = "The self link of the subnetwork to which the load balancer will be attached."
   type        = string

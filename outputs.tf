@@ -56,3 +56,9 @@ output "dns_configuration_notice" {
   value       = "If you are using external DNS, please make sure to create a DNS record using the lb_address output that has been provided"
   description = "A warning message."
 }
+
+output "vm_mig" {
+  value = module.vm_mig
+
+  description = "The managed instance group module."
+}

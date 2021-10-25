@@ -158,7 +158,7 @@ module "vm_instance_template" {
       boot         = false
       device_name  = local.disk_device_name
       disk_labels  = var.labels
-      disk_name    = "tfe-mounted"
+      disk_name    = "${var.namespace}-tfe-mounted"
       disk_size_gb = 40
       disk_type    = "pd-ssd"
       mode         = "READ_WRITE"
@@ -171,6 +171,7 @@ module "vm_instance_template" {
   disk_size_gb   = var.vm_disk_size
   labels         = var.labels
   machine_type   = var.vm_machine_type
+  metadata       = var.vm_metadata
   service_account = {
     scopes = ["cloud-platform"]
 
@@ -237,6 +238,7 @@ module "private_load_balancer" {
   instance_group       = module.vm_mig.instance_group
   ssl_certificate_name = var.ssl_certificate_name
   dns_zone_name        = var.dns_zone_name
+  labels               = var.labels
   subnetwork           = local.subnetwork_self_link
   dns_create_record    = var.dns_create_record
   ip_address           = google_compute_address.private[0].address
@@ -250,6 +252,7 @@ module "private_tcp_load_balancer" {
   fqdn              = local.full_fqdn
   instance_group    = module.vm_mig.instance_group
   dns_zone_name     = var.dns_zone_name
+  labels            = var.labels
   subnetwork        = local.subnetwork_self_link
   dns_create_record = var.dns_create_record
   ip_address        = google_compute_address.private[0].address
@@ -268,6 +271,7 @@ module "load_balancer" {
   count  = var.load_balancer == "PUBLIC" ? 1 : 0
   source = "./modules/load_balancer"
 
+  labels               = var.labels
   namespace            = var.namespace
   fqdn                 = local.full_fqdn
   instance_group       = module.vm_mig.instance_group

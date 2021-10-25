@@ -46,6 +46,7 @@ resource "google_compute_forwarding_rule" "lb" {
   backend_service       = google_compute_region_backend_service.lb.self_link
   ip_address            = var.ip_address
   ip_protocol           = "TCP"
+  labels                = var.labels
   load_balancing_scheme = "INTERNAL"
   # network               = google_compute_region_backend_service.lb.network
   ports      = [443]

@@ -18,6 +18,11 @@ variable "ip_address" {
   type        = string
 }
 
+variable "labels" {
+  description = "Labels which will be applied to all applicable resources."
+  type        = map(string)
+}
+
 variable "ssl_certificate_name" {
   description = <<-EOD
   The name of an existing SSL certificate which will be used to authenticate connections to the load balancer.
