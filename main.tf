@@ -152,7 +152,7 @@ module "vm_instance_template" {
 
   name_prefix = "${var.namespace}-tfe-template-"
 
-  additional_disks = [
+  additional_disks = local.enable_disk ? [
     {
       auto_delete  = true
       boot         = false
@@ -163,7 +163,7 @@ module "vm_instance_template" {
       disk_type    = "pd-ssd"
       mode         = "READ_WRITE"
     }
-  ]
+  ] : []
   auto_delete    = true
   can_ip_forward = true
   disk_labels    = var.labels
