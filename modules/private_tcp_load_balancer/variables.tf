@@ -34,6 +34,8 @@ variable "labels" {
 }
 
 variable "subnetwork" {
-  description = "The self link of the subnetwork to which the load balancer will be attached."
-  type        = string
+  description = "The subnetwork to which the load balancer will be attached."
+  type = object({
+    self_link = string
+  })
 }

@@ -15,3 +15,9 @@ output "network" {
 
   description = "The network."
 }
+
+output "service_networking_connection" {
+  value = google_service_networking_connection.private_vpc_connection
+
+  description = "The private connection between the network and GCP services."
+}

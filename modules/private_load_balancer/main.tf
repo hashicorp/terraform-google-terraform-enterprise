@@ -66,6 +66,6 @@ resource "google_compute_forwarding_rule" "lb" {
   labels                = var.labels
   load_balancing_scheme = "INTERNAL_MANAGED"
   port_range            = 443
-  subnetwork            = var.subnetwork
+  subnetwork            = var.subnetwork.self_link
   target                = google_compute_region_target_https_proxy.lb.self_link
 }

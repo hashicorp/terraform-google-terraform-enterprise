@@ -10,9 +10,11 @@ variable "memory_size" {
   type        = number
 }
 
-variable "network" {
-  description = "The self link of the network to which the Redis instance will be attached."
-  type        = string
+variable "service_networking_connection" {
+  description = "The private service networking connection that will connect Redis to the network."
+  type = object({
+    network = string
+  })
 }
 
 variable "auth_enabled" {

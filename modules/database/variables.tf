@@ -43,7 +43,9 @@ variable "labels" {
   type        = map(string)
 }
 
-variable "network" {
-  description = "The self link of the network to which resources will be attached."
-  type        = string
+variable "service_networking_connection" {
+  description = "The private service networking connection that will connect PostgreSQL to the network."
+  type = object({
+    network = string
+  })
 }
