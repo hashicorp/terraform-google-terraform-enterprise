@@ -65,16 +65,16 @@ module "database" {
 
   count = local.enable_database_module ? 1 : 0
 
-  dbname            = var.database_name
-  username          = var.database_user
-  machine_type      = var.database_machine_type
-  disk_size         = var.postgres_disk_size
-  availability_type = var.database_availability_type
-  namespace         = var.namespace
-  backup_start_time = var.database_backup_start_time
-  labels            = var.labels
-  network           = local.network_self_link
-  postgres_version  = var.postgres_version
+  dbname                        = var.database_name
+  username                      = var.database_user
+  machine_type                  = var.database_machine_type
+  disk_size                     = var.postgres_disk_size
+  availability_type             = var.database_availability_type
+  namespace                     = var.namespace
+  backup_start_time             = var.database_backup_start_time
+  labels                        = var.labels
+  service_networking_connection = local.service_networking_connection
+  postgres_version              = var.postgres_version
 
   depends_on = [
     module.project_factory_project_services
@@ -86,11 +86,11 @@ module "redis" {
 
   count = local.enable_redis_module ? 1 : 0
 
-  auth_enabled = var.redis_auth_enabled
-  namespace    = var.namespace
-  memory_size  = var.redis_memory_size
-  network      = local.network_self_link
-  labels       = var.labels
+  auth_enabled                  = var.redis_auth_enabled
+  namespace                     = var.namespace
+  memory_size                   = var.redis_memory_size
+  service_networking_connection = local.service_networking_connection
+  labels                        = var.labels
 
   depends_on = [
     module.project_factory_project_services
@@ -179,7 +179,7 @@ module "vm_instance_template" {
   }
   source_image   = var.vm_disk_source_image
   startup_script = module.user_data.script
-  subnetwork     = local.subnetwork_self_link
+  subnetwork     = local.subnetwork.self_link
 }
 
 module "vm_mig" {
@@ -224,7 +224,7 @@ resource "google_compute_address" "private" {
   count = var.load_balancer != "PUBLIC" ? 1 : 0
 
   name         = "${var.namespace}-tfe-private-lb"
-  subnetwork   = local.subnetwork_self_link
+  subnetwork   = local.subnetwork.self_link
   address_type = "INTERNAL"
   purpose      = "GCE_ENDPOINT"
 }
@@ -239,7 +239,7 @@ module "private_load_balancer" {
   ssl_certificate_name = var.ssl_certificate_name
   dns_zone_name        = var.dns_zone_name
   labels               = var.labels
-  subnetwork           = local.subnetwork_self_link
+  subnetwork           = local.subnetwork
   dns_create_record    = var.dns_create_record
   ip_address           = google_compute_address.private[0].address
 }
@@ -253,7 +253,7 @@ module "private_tcp_load_balancer" {
   instance_group    = module.vm_mig.instance_group
   dns_zone_name     = var.dns_zone_name
   labels            = var.labels
-  subnetwork        = local.subnetwork_self_link
+  subnetwork        = local.subnetwork
   dns_create_record = var.dns_create_record
   ip_address        = google_compute_address.private[0].address
 }

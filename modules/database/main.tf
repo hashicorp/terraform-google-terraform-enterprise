@@ -12,7 +12,7 @@ resource "google_sql_database_instance" "tfe" {
     disk_size         = var.disk_size
     ip_configuration {
       ipv4_enabled    = false
-      private_network = var.network
+      private_network = var.service_networking_connection.network
     }
 
     backup_configuration {

@@ -50,5 +50,5 @@ resource "google_compute_forwarding_rule" "lb" {
   load_balancing_scheme = "INTERNAL"
   # network               = google_compute_region_backend_service.lb.network
   ports      = [443]
-  subnetwork = var.subnetwork
+  subnetwork = var.subnetwork.self_link
 }
