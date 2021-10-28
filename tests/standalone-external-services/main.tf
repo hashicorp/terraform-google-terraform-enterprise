@@ -26,6 +26,7 @@ module "tfe" {
   license_secret       = google_secret_manager_secret.license.secret_id
   ssl_certificate_name = "wildcard"
 
+  custom_image_tag       = "${local.repository_location}-docker.pkg.dev/ptfe-testing/${local.repository_name}/rhel-7.9:latest"
   iact_subnet_list       = ["0.0.0.0/0"]
   iact_subnet_time_limit = 60
   labels = {
@@ -42,4 +43,13 @@ module "tfe" {
   operational_mode     = "external"
   vm_disk_source_image = data.google_compute_image.ubuntu.self_link
   vm_machine_type      = "n1-standard-4"
+}
+
+resource "google_artifact_registry_repository_iam_member" "main" {
+  provider = google-beta
+
+  location   = local.repository_location
+  member     = "serviceAccount:${module.tfe.service_account.email}"
+  repository = local.repository_name
+  role       = "roles/artifactregistry.reader"
 }
