@@ -203,3 +203,13 @@ $install_pathname \
   disable-replicated-ui \
   %{ endif ~}
   | tee -a $log_pathname
+
+%{ if custom_image_tag != null ~}
+%{ if length(regexall("^.+-docker\\.pkg\\.dev|^.*\\.?gcr\\.io", custom_image_tag)) > 0 ~}
+echo "[Terraform Enterprise] Registering gcloud as a Docker credential helper" | tee -a
+gcloud auth configure-docker --quiet ${split("/", custom_image_tag)[0]}
+
+%{ endif ~}
+echo "[Terraform Enterprise] Pulling custom worker image '${custom_image_tag}'" | tee -a
+docker pull ${custom_image_tag}
+%{ endif ~}

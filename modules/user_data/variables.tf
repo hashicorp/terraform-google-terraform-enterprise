@@ -68,7 +68,10 @@ variable "capacity_memory" {
 }
 
 variable "custom_image_tag" {
-  description = "The tag of the Docker image to be used as the custom Terraform Build Worker image."
+  description = <<-EOD
+  The tag of the Docker image to be used as the custom Terraform Build Worker image. A null value will cause the
+  default image to be used.
+  EOD
   type        = string
 }
 
@@ -127,18 +130,6 @@ variable "enable_disk" {
 variable "enable_external" {
   description = "A toggle to control the use of External Services mode."
   type        = bool
-}
-
-variable "tbw_image" {
-  description = <<-EOD
-  An indicator of which type of Terraform Build Worker image will be used. The value must be one of: \"default_image\";
-  \"custom_image\".
-  EOD
-  type        = string
-  validation {
-    condition     = contains(["default_image", "custom_image"], var.tbw_image)
-    error_message = "The tbw_image value must be one of: \"default_image\"; \"custom_image\"."
-  }
 }
 
 variable "tls_vers" {
