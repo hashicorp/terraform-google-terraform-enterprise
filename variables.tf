@@ -241,8 +241,11 @@ variable "capacity_memory" {
 }
 
 variable "custom_image_tag" {
-  default     = "hashicorp/build-worker:now"
-  description = "The tag of the Docker image to be used as the custom Terraform Build Worker image."
+  default     = null
+  description = <<-EOD
+  The tag of the Docker image to be used as the custom Terraform Build Worker image. A null value will cause the
+  default image to be used.
+  EOD
   type        = string
 }
 
@@ -355,19 +358,6 @@ variable "ssl_private_key_secret" {
   value the secret_id and the GCP UI calls it the name. This value is only used when load_balancer == "PRIVATE_TCP".
   EOD
   type        = string
-}
-
-variable "tbw_image" {
-  default     = "default_image"
-  description = <<-EOD
-  An indicator of which type of Terraform Build Worker image will be used. The value must be one of: \"default_image\";
-  \"custom_image\".
-  EOD
-  type        = string
-  validation {
-    condition     = contains(["default_image", "custom_image"], var.tbw_image)
-    error_message = "The tbw_image value must be one of: \"default_image\"; \"custom_image\"."
-  }
 }
 
 variable "tls_vers" {

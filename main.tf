@@ -138,7 +138,6 @@ module "user_data" {
   iact_subnet_time_limit    = var.iact_subnet_time_limit
   ssl_certificate_secret    = var.ssl_certificate_secret
   ssl_private_key_secret    = var.ssl_private_key_secret
-  tbw_image                 = var.tbw_image
   tls_vers                  = var.tls_vers
   trusted_proxies = concat(
     var.trusted_proxies,

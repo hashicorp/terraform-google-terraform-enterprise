@@ -83,7 +83,7 @@ locals {
     }
 
     tbw_image = {
-      value = var.tbw_image
+      value = var.custom_image_tag == null ? "default_image" : "custom_image"
     }
 
     tls_vers = {
