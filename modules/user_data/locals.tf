@@ -238,6 +238,7 @@ locals {
       airgap_pathname          = local.airgap_pathname
       airgap_url               = var.airgap_url
       ca_certificate_secret    = var.ca_certificate_secret
+      custom_image_tag         = var.custom_image_tag
       disk_device_name         = var.disk_device_name
       disk_path                = var.enable_disk ? var.disk_path : null
       docker_config            = filebase64("${path.module}/files/daemon.json")
