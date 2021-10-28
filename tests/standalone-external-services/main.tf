@@ -16,6 +16,17 @@ resource "google_secret_manager_secret_version" "license" {
   secret_data = filebase64(var.license_file)
 }
 
+resource "tls_private_key" "main" {
+  algorithm = "RSA"
+}
+
+resource "local_file" "private_key_pem" {
+  filename = "${path.module}/work/private-key.pem"
+
+  content         = tls_private_key.main.private_key_pem
+  file_permission = "0600"
+}
+
 module "tfe" {
   source = "../.."
 
@@ -43,6 +54,9 @@ module "tfe" {
   operational_mode     = "external"
   vm_disk_source_image = data.google_compute_image.ubuntu.self_link
   vm_machine_type      = "n1-standard-4"
+  vm_metadata = {
+    "ssh-keys" = "${local.ssh_user}:${tls_private_key.main.public_key_openssh} ${local.ssh_user}"
+  }
 }
 
 resource "google_artifact_registry_repository_iam_member" "main" {
@@ -52,4 +66,27 @@ resource "google_artifact_registry_repository_iam_member" "main" {
   member     = "serviceAccount:${module.tfe.service_account.email}"
   repository = local.repository_name
   role       = "roles/artifactregistry.reader"
+}
+
+resource "null_resource" "wait_for_instances" {
+  triggers = {
+    self_link = module.tfe.vm_mig.instance_group
+  }
+
+  provisioner "local-exec" {
+    command = "sleep 30"
+  }
+}
+
+resource "local_file" "ssh_config" {
+  filename = "${path.module}/work/ssh-config"
+
+  content = templatefile(
+    "${path.module}/templates/ssh-config.tpl",
+    {
+      instance      = data.null_data_source.instance.outputs
+      identity_file = local_file.private_key_pem.filename
+      user          = local.ssh_user
+    }
+  )
 }
