@@ -1,14 +1,14 @@
-# TEST: Standalone External Services Mode Terraform Enterprise
+# TEST: Standalone External Services Mode on RHEL 8 with Custom Worker Image
 
 ## About this test
 
 This test for Terraform Enterprise creates a TFE
-installation with the following traits.
+installation with the following traits:
 
 - Standalone
 - External Services mode
 - a small VM machine type (n1-standard-4)
-- Ubuntu 20.04 as the VM image
+- RHEL 8 as the VM image
 - a publicly accessible HTTP load balancer with TLS termination
 - a custom RHEL 7.9 worker image
 
@@ -23,4 +23,5 @@ This test assumes the following resources exist:
 
 ## How this test is used
 
-This test is leveraged by the integration tests in the `ptfe-replicated` repository.
+This test is leveraged by the integration tests in the
+`ptfe-replicated` repository.
