@@ -52,7 +52,7 @@ module "tfe" {
   }
   load_balancer        = "PUBLIC"
   operational_mode     = "external"
-  vm_disk_source_image = data.google_compute_image.ubuntu.self_link
+  vm_disk_source_image = data.google_compute_image.rhel.self_link
   vm_machine_type      = "n1-standard-4"
   vm_metadata = {
     "ssh-keys" = "${local.ssh_user}:${tls_private_key.main.public_key_openssh} ${local.ssh_user}"

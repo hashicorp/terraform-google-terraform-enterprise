@@ -2,10 +2,10 @@ data "google_dns_managed_zone" "main" {
   name = "public"
 }
 
-data "google_compute_image" "ubuntu" {
-  name = "ubuntu-2004-focal-v20210211"
+data "google_compute_image" "rhel" {
+  name = "rhel-8-v20211105"
 
-  project = "ubuntu-os-cloud"
+  project = "rhel-cloud"
 }
 
 data "google_compute_region_instance_group" "tfe" {
