@@ -1,9 +1,9 @@
-# TEST: Standalone External Services Mode Terraform Enterprise
+# TEST: Standalone External Services Mode on RHEL 8 with Custom Worker Image
 
 ## About this test
 
 This test for Terraform Enterprise creates a TFE
-installation with the following traits.
+installation with the following traits:
 
 - Standalone
 - External Services mode
