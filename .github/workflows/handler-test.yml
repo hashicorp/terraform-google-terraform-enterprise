@@ -101,10 +101,11 @@ jobs:
           TFE_WORKSPACE: ${{ secrets.TFE_WORKSPACE }}
         run: |
           ip_address=$( dig +short @resolver1.opendns.com myip.opendns.com )
+          echo "$GOOGLE_CREDENTIALS" > google-credentials.json
           cat <<EOF > github.auto.tfvars
           iact_subnet_list = ["$ip_address/32"]
           google = {
-            credentials = "$GOOGLE_CREDENTIALS"
+            credentials = "google-credentials.json"
             project     = "$GOOGLE_PROJECT"
             region      = "$GOOGLE_REGION"
             zone        = "$GOOGLE_ZONE"

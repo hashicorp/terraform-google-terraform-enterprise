@@ -74,9 +74,10 @@ jobs:
           TFE_TOKEN: ${{ secrets.TFE_TOKEN }}
           TFE_WORKSPACE: ${{ secrets.TFE_WORKSPACE }}
         run: |
+          echo "$GOOGLE_CREDENTIALS" > google-credentials.json
           cat <<EOF > github.auto.tfvars
           google = {
-            credentials = "$GOOGLE_CREDENTIALS"
+            credentials = "google-credentials.json"
             project     = "$GOOGLE_PROJECT"
             region      = "$GOOGLE_REGION"
             zone        = "$GOOGLE_ZONE"
