@@ -30,6 +30,13 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           persist-credentials: false
 
+      - name: Set Terraform Module Source
+        working-directory: ${{ env.WORK_DIR_PATH }}
+        env:
+          REPO_FULL_NAME: ${{ github.event.client_payload.pull_request.head.repo.full_name }}
+          REF: ${{ github.event.client_payload.pull_request.head.sha }}
+        run: sed --in-place='s/source = "..\/.."/source = "github.com\/$REPO_FULL_NAME?ref=$REF"/' main.tf
+
       # Checkout the hashicorp/tfe-load-test repository
       - name: Checkout TFE Load Test
         uses: actions/checkout@v2
@@ -84,22 +91,36 @@ jobs:
       - name: Write Terraform Variables
         working-directory: ${{ env.WORK_DIR_PATH }}
         env:
+          GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
+          GOOGLE_PROJECT: ${{ secrets.GOOGLE_PROJECT }}
+          GOOGLE_REGION: ${{ secrets.GOOGLE_REGION }}
+          GOOGLE_ZONE: ${{ secrets.GOOGLE_ZONE }}
+          TFE_HOSTNAME: ${{ secrets.TFE_HOSTNAME }}
           TFE_ORGANIZATION: ${{ secrets.TFE_ORGANIZATION }}
+          TFE_TOKEN: ${{ secrets.TFE_TOKEN }}
           TFE_WORKSPACE: ${{ secrets.TFE_WORKSPACE }}
         run: |
           ip_address=$( dig +short @resolver1.opendns.com myip.opendns.com )
+          echo "$GOOGLE_CREDENTIALS" > google-credentials.json
           cat <<EOF > github.auto.tfvars
           iact_subnet_list = ["$ip_address/32"]
-          tfe_organization = "$TFE_ORGANIZATION"
-          tfe_workspace = "$TFE_WORKSPACE"
+          google = {
+            credentials = "google-credentials.json"
+            project     = "$GOOGLE_PROJECT"
+            region      = "$GOOGLE_REGION"
+            zone        = "$GOOGLE_ZONE"
+          }
+          tfe = {
+            hostname     = "$TFE_HOSTNAME"
+            organization = "$TFE_ORGANIZATION"
+            token        = "$TFE_TOKEN"
+            workspace    = "$TFE_WORKSPACE"
+          }
           EOF
 
       - name: Terraform Apply
         id: apply
         working-directory: ${{ env.WORK_DIR_PATH }}
-        env:
-          TFE_HOSTNAME: ${{ secrets.TFE_HOSTNAME }}
-          TFE_TOKEN: ${{ secrets.TFE_TOKEN }}
         run: terraform apply -auto-approve -input=false -no-color
 
       - name: Retrieve Health Check URL
