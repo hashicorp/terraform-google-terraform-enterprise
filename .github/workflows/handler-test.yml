@@ -52,30 +52,54 @@ jobs:
         uses: hashicorp/setup-terraform@v1
         with:
           cli_config_credentials_hostname: 'app.terraform.io'
-          cli_config_credentials_token: ${{ secrets.PUBLIC_ACTIVE_ACTIVE_TFC_TOKEN }}
-          terraform_version: 0.14.8
+          cli_config_credentials_token: ${{ secrets.TFC_TOKEN }}
+          terraform_version: 1.0.11
           terraform_wrapper: true
 
       # Run Terraform commands between these comments vvv
 
+      - name: Configure Terraform Backend
+        id: backend-config
+        working-directory: ${{ env.WORK_DIR_PATH }}
+        env:
+          TFC_ORGANIZATION: ${{ secrets.TFC_ORGANIZATION }}
+        run: |
+          cat <<EOF > backend-config.hcl
+            organization = "$TFC_ORGANIZATION"
+            workspaces {
+              name = "google-public-active-active-${{ github.event.issue.number }}"
+            }
+          EOF
+
       - name: Terraform Init
         id: init
         working-directory: ${{ env.WORK_DIR_PATH }}
-        run: terraform init -input=false -no-color
+        run: terraform init -backend-config=backend-config.hcl -input=false -no-color
 
       - name: Terraform Validate
         id: validate
         working-directory: ${{ env.WORK_DIR_PATH }}
         run: terraform validate -no-color
 
-      - name: Write GitHub Actions runner CIDR to Terraform Variables
+      - name: Write Terraform Variables
         working-directory: ${{ env.WORK_DIR_PATH }}
+        env:
+          TFE_ORGANIZATION: ${{ secrets.TFE_ORGANIZATION }}
+          TFE_WORKSPACE: ${{ secrets.TFE_WORKSPACE }}
         run: |
-          echo "iact_subnet_list = [\"$( dig +short @resolver1.opendns.com myip.opendns.com )/32\"]" > github.auto.tfvars
+          ip_address=$( dig +short @resolver1.opendns.com myip.opendns.com )
+          cat <<EOF > github.auto.tfvars
+          iact_subnet_list = ["$ip_address/32"]
+          tfe_organization = "$TFE_ORGANIZATION"
+          tfe_workspace = "$TFE_WORKSPACE"
+          EOF
 
       - name: Terraform Apply
         id: apply
         working-directory: ${{ env.WORK_DIR_PATH }}
+        env:
+          TFE_HOSTNAME: ${{ secrets.TFE_HOSTNAME }}
+          TFE_TOKEN: ${{ secrets.TFE_TOKEN }}
         run: terraform apply -auto-approve -input=false -no-color
 
       - name: Retrieve Health Check URL
@@ -162,6 +186,9 @@ jobs:
         id: destroy
         if: ${{ always() && github.event.client_payload.slash_command.args.named.destroy != 'false' }}
         working-directory: ${{ env.WORK_DIR_PATH }}
+        env:
+          TFE_HOSTNAME: ${{ secrets.TFE_HOSTNAME }}
+          TFE_TOKEN: ${{ secrets.TFE_TOKEN
         run: terraform destroy -auto-approve -input=false -no-color
 
       # Run Terraform commands between these comments ^^^

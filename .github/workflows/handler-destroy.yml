@@ -33,18 +33,45 @@ jobs:
         uses: hashicorp/setup-terraform@v1
         with:
           cli_config_credentials_hostname: 'app.terraform.io'
-          cli_config_credentials_token: ${{ secrets.PUBLIC_ACTIVE_ACTIVE_TFC_TOKEN }}
-          terraform_version: 0.14.8
+          cli_config_credentials_token: ${{ secrets.TFC_TOKEN }}
+          terraform_version: 1.0.11
           terraform_wrapper: true
+
+      - name: Configure Terraform Backend
+        id: backend-config
+        working-directory: ${{ env.WORK_DIR_PATH }}
+        env:
+          TFC_ORGANIZATION: ${{ secrets.TFC_ORGANIZATION }}
+        run: |
+          cat <<EOF > backend-config.hcl
+            organization = "$TFC_ORGANIZATION"
+            workspaces {
+              name = "google-public-active-active-${{ github.event.issue.number }}"
+            }
+          EOF
 
       - name: Terraform Init
         id: init
         working-directory: ${{ env.WORK_DIR_PATH }}
-        run: terraform init -input=false -no-color
+        run: terraform init -backend-config=backend-config.hcl -input=false -no-color
+
+      - name: Write Terraform Variables
+        working-directory: ${{ env.WORK_DIR_PATH }}
+        env:
+          TFE_ORGANIZATION: ${{ secrets.TFE_ORGANIZATION }}
+          TFE_WORKSPACE: ${{ secrets.TFE_WORKSPACE }}
+        run: |
+          cat <<EOF > github.auto.tfvars
+          tfe_organization = "$TFE_ORGANIZATION"
+          tfe_workspace = "$TFE_WORKSPACE"
+          EOF
 
       - name: Terraform Destroy
         id: destroy
         working-directory: ${{ env.WORK_DIR_PATH }}
+        env:
+          TFE_HOSTNAME: ${{ secrets.TFE_HOSTNAME }}
+          TFE_TOKEN: ${{ secrets.TFE_TOKEN }}
         run: terraform destroy -auto-approve -input=false -no-color
 
       - name: Update comment
