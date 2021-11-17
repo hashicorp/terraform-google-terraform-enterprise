@@ -188,7 +188,7 @@ jobs:
         working-directory: ${{ env.WORK_DIR_PATH }}
         env:
           TFE_HOSTNAME: ${{ secrets.TFE_HOSTNAME }}
-          TFE_TOKEN: ${{ secrets.TFE_TOKEN
+          TFE_TOKEN: ${{ secrets.TFE_TOKEN }}
         run: terraform destroy -auto-approve -input=false -no-color
 
       # Run Terraform commands between these comments ^^^
