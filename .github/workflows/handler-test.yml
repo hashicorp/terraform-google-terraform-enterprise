@@ -53,7 +53,7 @@ jobs:
         with:
           cli_config_credentials_hostname: 'app.terraform.io'
           cli_config_credentials_token: ${{ secrets.PUBLIC_ACTIVE_ACTIVE_TFC_TOKEN }}
-          terraform_version: 1.0.11
+          terraform_version: 0.14.8
           terraform_wrapper: true
 
       # Run Terraform commands between these comments vvv
@@ -62,11 +62,6 @@ jobs:
         id: init
         working-directory: ${{ env.WORK_DIR_PATH }}
         run: terraform init -input=false -no-color
-
-      - name: Terraform Workspace Select
-        id: select
-        working-directory: ${{ env.WORK_DIR_PATH }}
-        run: terraform workspace select ${{ github.event.issue.number }}
 
       - name: Terraform Validate
         id: validate
@@ -184,8 +179,6 @@ jobs:
             ${{ format(':link: [Action Summary Page]({0})', steps.vars.outputs.run-url) }}
 
             ${{ format('- {0} Terraform Init', steps.init.outcome == 'success' && ':white_check_mark:' || ':x:') }}
-
-            ${{ format('- {0} Terraform Select Workspace', steps.select.outcome == 'success' && ':white_check_mark:' || ':x:') }}
 
             ${{ format('- {0} Terraform Validate', steps.validate.outcome == 'success' && ':white_check_mark:' || ':x:') }}
 
