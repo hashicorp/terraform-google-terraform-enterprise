@@ -91,22 +91,35 @@ jobs:
       - name: Write Terraform Variables
         working-directory: ${{ env.WORK_DIR_PATH }}
         env:
+          GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
+          GOOGLE_PROJECT: ${{ secrets.GOOGLE_PROJECT }}
+          GOOGLE_REGION: ${{ secrets.GOOGLE_REGION }}
+          GOOGLE_ZONE: ${{ secrets.GOOGLE_ZONE }}
+          TFE_HOSTNAME: ${{ secrets.TFE_HOSTNAME }}
           TFE_ORGANIZATION: ${{ secrets.TFE_ORGANIZATION }}
+          TFE_TOKEN: ${{ secrets.TFE_TOKEN }}
           TFE_WORKSPACE: ${{ secrets.TFE_WORKSPACE }}
         run: |
           ip_address=$( dig +short @resolver1.opendns.com myip.opendns.com )
           cat <<EOF > github.auto.tfvars
           iact_subnet_list = ["$ip_address/32"]
-          tfe_organization = "$TFE_ORGANIZATION"
-          tfe_workspace = "$TFE_WORKSPACE"
+          google = {
+            credentials = "$GOOGLE_CREDENTIALS"
+            project     = "$GOOGLE_PROJECT"
+            region      = "$GOOGLE_REGION"
+            zone        = "$GOOGLE_ZONE"
+          }
+          tfe = {
+            hostname     = "$TFE_HOSTNAME"
+            organization = "$TFE_ORGANIZATION"
+            token        = "$TFE_TOKEN"
+            workspace    = "$TFE_WORKSPACE"
+          }
           EOF
 
       - name: Terraform Apply
         id: apply
         working-directory: ${{ env.WORK_DIR_PATH }}
-        env:
-          TFE_HOSTNAME: ${{ secrets.TFE_HOSTNAME }}
-          TFE_TOKEN: ${{ secrets.TFE_TOKEN }}
         run: terraform apply -auto-approve -input=false -no-color
 
       - name: Retrieve Health Check URL
