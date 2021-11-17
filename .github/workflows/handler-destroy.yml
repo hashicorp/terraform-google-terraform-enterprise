@@ -55,6 +55,17 @@ jobs:
         working-directory: ${{ env.WORK_DIR_PATH }}
         run: terraform init -backend-config=backend-config.hcl -input=false -no-color
 
+      - name: Write Terraform Variables
+        working-directory: ${{ env.WORK_DIR_PATH }}
+        env:
+          TFE_ORGANIZATION: ${{ secrets.TFE_ORGANIZATION }}
+          TFE_WORKSPACE: ${{ secrets.TFE_WORKSPACE }}
+        run: |
+          cat <<EOF > github.auto.tfvars
+          tfe_organization = "$TFE_ORGANIZATION"
+          tfe_workspace = "$TFE_WORKSPACE"
+          EOF
+
       - name: Terraform Destroy
         id: destroy
         working-directory: ${{ env.WORK_DIR_PATH }}

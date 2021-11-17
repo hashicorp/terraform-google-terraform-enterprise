@@ -81,10 +81,18 @@ jobs:
         working-directory: ${{ env.WORK_DIR_PATH }}
         run: terraform validate -no-color
 
-      - name: Write GitHub Actions runner CIDR to Terraform Variables
+      - name: Write Terraform Variables
         working-directory: ${{ env.WORK_DIR_PATH }}
+        env:
+          TFE_ORGANIZATION: ${{ secrets.TFE_ORGANIZATION }}
+          TFE_WORKSPACE: ${{ secrets.TFE_WORKSPACE }}
         run: |
-          echo "iact_subnet_list = [\"$( dig +short @resolver1.opendns.com myip.opendns.com )/32\"]" > github.auto.tfvars
+          ip_address=$( dig +short @resolver1.opendns.com myip.opendns.com )
+          cat <<EOF > github.auto.tfvars
+          iact_subnet_list = ["$ip_address/32"]
+          tfe_organization = "$TFE_ORGANIZATION"
+          tfe_workspace = "$TFE_WORKSPACE"
+          EOF
 
       - name: Terraform Apply
         id: apply
