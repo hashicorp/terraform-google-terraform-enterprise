@@ -11,13 +11,18 @@ terraform {
       source  = "hashicorp/random"
       version = "~> 3.0"
     }
+
+    tfe = {
+      source  = "hashicorp/tfe"
+      version = "~> 0.26.1"
+    }
   }
 
   backend "remote" {
     organization = "terraform-enterprise-modules-test"
 
     workspaces {
-      name = "google-public-active-active"
+      prefix = "google-public-active-active-"
     }
   }
 }

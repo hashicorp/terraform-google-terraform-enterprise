@@ -1,8 +1,3 @@
-variable "dns_zone_name" {
-  description = "The name of the DNS zone in which a record will be created."
-  type        = string
-}
-
 variable "iact_subnet_list" {
   default     = []
   description = <<-EOD
@@ -12,17 +7,12 @@ variable "iact_subnet_list" {
   type        = list(string)
 }
 
-variable "license_secret" {
-  description = <<-EOD
-  The Secret Manager secret which comprises the Base64 encoded Replicated license file. The Terraform provider calls
-  this value the secret_id and the GCP UI calls it the name.
-  EOD
+variable "tfe_organization" {
+  description = "The name of the TFE organization which contains the base workspace."
   type        = string
 }
 
-variable "ssl_certificate_name" {
-  description = <<-EOD
-  The name of an existing SSL certificate which will be used to authenticate connections to the load balancer.
-  EOD
+variable "tfe_workspace" {
+  description = "The name of the TFE workspace which contains the base state."
   type        = string
 }
