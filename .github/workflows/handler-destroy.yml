@@ -53,7 +53,7 @@ jobs:
           cat <<EOF > backend-config.hcl
             organization = "$TFC_ORGANIZATION"
             workspaces {
-              name = "google-public-active-active-${{ github.event.issue.number }}"
+              name = "google-public-active-active-${{ github.event.client_payload.github.payload.issue.number }}"
             }
           EOF
 
