@@ -61,7 +61,15 @@ jobs:
       - name: Configure Terraform Backend
         id: backend-config
         working-directory: ${{ env.WORK_DIR_PATH }}
-        run: echo "workspaces { name = \"google-public-active-active-${{ github.event.issue.number }}\" }" > backend-config.hcl
+        env:
+          TFC_ORGANIZATION: ${{ secrets.TFC_ORGANIZATION }}
+        run: |
+          cat <<EOF > backend-config.hcl
+            organization = "$TFC_ORGANIZATION"
+            workspaces {
+              name = "google-public-active-active-${{ github.event.issue.number }}"
+            }
+          EOF
 
       - name: Terraform Init
         id: init
