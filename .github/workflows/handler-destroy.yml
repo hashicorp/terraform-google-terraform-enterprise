@@ -33,7 +33,7 @@ jobs:
         uses: hashicorp/setup-terraform@v1
         with:
           cli_config_credentials_hostname: 'app.terraform.io'
-          cli_config_credentials_token: ${{ secrets.PUBLIC_ACTIVE_ACTIVE_TFC_TOKEN }}
+          cli_config_credentials_token: ${{ secrets.TFC_TOKEN }}
           terraform_version: 1.0.11
           terraform_wrapper: true
 
