@@ -20,9 +20,5 @@ terraform {
 
   backend "remote" {
     organization = "terraform-enterprise-modules-test"
-
-    workspaces {
-      prefix = "google-public-active-active-"
-    }
   }
 }
