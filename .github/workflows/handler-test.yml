@@ -33,9 +33,10 @@ jobs:
       - name: Set Terraform Module Source
         working-directory: ${{ env.WORK_DIR_PATH }}
         env:
-          REPO_FULL_NAME: ${{ github.event.client_payload.pull_request.head.repo.full_name }}
-          REF: ${{ github.event.client_payload.pull_request.head.sha }}
-        run: sed --in-place='s/source = "..\/.."/source = "github.com\/$REPO_FULL_NAME?ref=$REF"/' main.tf
+          LOGIN: ${{ github.event.client_payload.pull_request.head.repo.owner.login }}
+          NAME: ${{ github.event.client_payload.pull_request.head.repo.name }}
+          SHA: ${{ github.event.client_payload.pull_request.head.sha }}
+        run: sed --in-place "s/source = \"..\/..\"/source = \"github.com\/$LOGIN\/$NAME?ref=$SHA\"/" main.tf
 
       # Checkout the hashicorp/tfe-load-test repository
       - name: Checkout TFE Load Test
