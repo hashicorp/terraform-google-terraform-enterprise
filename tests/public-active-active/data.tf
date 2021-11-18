@@ -8,3 +8,7 @@ data "google_compute_image" "ubuntu" {
 
   project = "ubuntu-os-cloud"
 }
+
+data "google_dns_managed_zone" "main" {
+  name = data.tfe_outputs.base.values.cloud_dns_name
+}
