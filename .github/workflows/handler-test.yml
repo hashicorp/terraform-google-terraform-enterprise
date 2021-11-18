@@ -21,8 +21,7 @@ jobs:
         id: vars
         run: echo ::set-output name=run-url::https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID
 
-      # Checkout the branch of the pull request being tested
-      - name: Checkout
+      - name: Checkout Pull Request Branch
         uses: actions/checkout@v2
         with:
           repository: ${{ github.event.client_payload.pull_request.head.repo.full_name }}
@@ -38,7 +37,6 @@ jobs:
           SHA: ${{ github.event.client_payload.pull_request.head.sha }}
         run: sed --in-place "s/source = \"..\/..\"/source = \"github.com\/$LOGIN\/$NAME?ref=$SHA\"/" main.tf
 
-      # Checkout the hashicorp/tfe-load-test repository
       - name: Checkout TFE Load Test
         uses: actions/checkout@v2
         with:
@@ -63,8 +61,6 @@ jobs:
           cli_config_credentials_token: ${{ secrets.TFC_TOKEN }}
           terraform_version: 1.0.11
           terraform_wrapper: true
-
-      # Run Terraform commands between these comments vvv
 
       - name: Configure Terraform Backend
         id: backend-config
@@ -214,8 +210,6 @@ jobs:
           TFE_TOKEN: ${{ secrets.TFE_TOKEN }}
         run: terraform destroy -auto-approve -input=false -no-color
 
-      # Run Terraform commands between these comments ^^^
-
       - name: Update comment
         if: ${{ always() }}
         uses: peter-evans/create-or-update-comment@v1
@@ -253,8 +247,7 @@ jobs:
         id: vars
         run: echo ::set-output name=run-url::https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID
 
-      # Checkout the branch of the pull request being tested
-      - name: Checkout
+      - name: Checkout Pull Request Branch
         uses: actions/checkout@v2
         with:
           repository: ${{ github.event.client_payload.pull_request.head.repo.full_name }}
@@ -262,7 +255,14 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           persist-credentials: false
 
-      # Checkout the hashicorp/tfe-load-test repository
+      - name: Set Terraform Module Source
+        working-directory: ${{ env.WORK_DIR_PATH }}
+        env:
+          LOGIN: ${{ github.event.client_payload.pull_request.head.repo.owner.login }}
+          NAME: ${{ github.event.client_payload.pull_request.head.repo.name }}
+          SHA: ${{ github.event.client_payload.pull_request.head.sha }}
+        run: sed --in-place "s/source = \"..\/..\"/source = \"github.com\/$LOGIN\/$NAME?ref=$SHA\"/" main.tf
+
       - name: Checkout TFE Load Test
         uses: actions/checkout@v2
         with:
@@ -284,21 +284,61 @@ jobs:
         uses: hashicorp/setup-terraform@v1
         with:
           cli_config_credentials_hostname: 'app.terraform.io'
-          cli_config_credentials_token: ${{ secrets.PRIVATE_ACTIVE_ACTIVE_TFC_TOKEN }}
-          terraform_version: 0.14.8
+          cli_config_credentials_token: ${{ secrets.TFC_TOKEN }}
+          terraform_version: 1.0.11
           terraform_wrapper: true
 
-      # Run Terraform commands between these comments vvv
+      - name: Configure Terraform Backend
+        id: backend-config
+        working-directory: ${{ env.WORK_DIR_PATH }}
+        env:
+          TFC_ORGANIZATION: ${{ secrets.TFC_ORGANIZATION }}
+        run: |
+          cat <<EOF > backend-config.hcl
+            organization = "$TFC_ORGANIZATION"
+            workspaces {
+              name = "google-private-active-active-${{ github.event.client_payload.github.payload.issue.number }}"
+            }
+          EOF
 
       - name: Terraform Init
         id: init
         working-directory: ${{ env.WORK_DIR_PATH }}
-        run: terraform init -input=false -no-color
+        run: terraform init -backend-config=backend-config.hcl -input=false -no-color
 
       - name: Terraform Validate
         id: validate
         working-directory: ${{ env.WORK_DIR_PATH }}
         run: terraform validate -no-color
+
+      - name: Write Terraform Variables
+        working-directory: ${{ env.WORK_DIR_PATH }}
+        env:
+          GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
+          GOOGLE_PROJECT: ${{ secrets.GOOGLE_PROJECT }}
+          GOOGLE_REGION: ${{ secrets.GOOGLE_REGION }}
+          GOOGLE_ZONE: ${{ secrets.GOOGLE_ZONE }}
+          TFE_HOSTNAME: ${{ secrets.TFE_HOSTNAME }}
+          TFE_ORGANIZATION: ${{ secrets.TFE_ORGANIZATION }}
+          TFE_TOKEN: ${{ secrets.TFE_TOKEN }}
+          TFE_WORKSPACE: ${{ secrets.TFE_WORKSPACE }}
+        run: |
+          cat <<EOF > github.auto.tfvars
+          google = {
+            credentials = <<-EOC
+            $GOOGLE_CREDENTIALS
+            EOC
+            project     = "$GOOGLE_PROJECT"
+            region      = "$GOOGLE_REGION"
+            zone        = "$GOOGLE_ZONE"
+          }
+          tfe = {
+            hostname     = "$TFE_HOSTNAME"
+            organization = "$TFE_ORGANIZATION"
+            token        = "$TFE_TOKEN"
+            workspace    = "$TFE_WORKSPACE"
+          }
+          EOF
 
       - name: Terraform Apply
         id: apply
@@ -326,7 +366,7 @@ jobs:
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v0.2.1
         with:
-          project_id: ${{ secrets.GCP_PROJECT_ID }}
+          project_id: ${{ secrets.GOOGLE_PROJECT }}
           service_account_key: ${{ secrets.GCP_SA_KEY }}
           export_default_credentials: true
 
@@ -429,8 +469,6 @@ jobs:
         working-directory: ${{ env.WORK_DIR_PATH }}
         run: terraform destroy -auto-approve -input=false -no-color
 
-      # Run Terraform commands between these comments ^^^
-
       - name: Update comment
         if: ${{ always() }}
         uses: peter-evans/create-or-update-comment@v1
@@ -468,8 +506,7 @@ jobs:
         id: vars
         run: echo ::set-output name=run-url::https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID
 
-      # Checkout the branch of the pull request being tested
-      - name: Checkout
+      - name: Checkout Pull Request Branch
         uses: actions/checkout@v2
         with:
           repository: ${{ github.event.client_payload.pull_request.head.repo.full_name }}
@@ -477,7 +514,14 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           persist-credentials: false
 
-      # Checkout the hashicorp/tfe-load-test repository
+      - name: Set Terraform Module Source
+        working-directory: ${{ env.WORK_DIR_PATH }}
+        env:
+          LOGIN: ${{ github.event.client_payload.pull_request.head.repo.owner.login }}
+          NAME: ${{ github.event.client_payload.pull_request.head.repo.name }}
+          SHA: ${{ github.event.client_payload.pull_request.head.sha }}
+        run: sed --in-place "s/source = \"..\/..\"/source = \"github.com\/$LOGIN\/$NAME?ref=$SHA\"/" main.tf
+
       - name: Checkout TFE Load Test
         uses: actions/checkout@v2
         with:
@@ -499,21 +543,61 @@ jobs:
         uses: hashicorp/setup-terraform@v1
         with:
           cli_config_credentials_hostname: 'app.terraform.io'
-          cli_config_credentials_token: ${{ secrets.PRIVATE_TCP_ACTIVE_ACTIVE_TFC_TOKEN }}
-          terraform_version: 0.14.8
+          cli_config_credentials_token: ${{ secrets.TFC_TOKEN }}
+          terraform_version: 1.0.11
           terraform_wrapper: true
 
-      # Run Terraform commands between these comments vvv
+      - name: Configure Terraform Backend
+        id: backend-config
+        working-directory: ${{ env.WORK_DIR_PATH }}
+        env:
+          TFC_ORGANIZATION: ${{ secrets.TFC_ORGANIZATION }}
+        run: |
+          cat <<EOF > backend-config.hcl
+            organization = "$TFC_ORGANIZATION"
+            workspaces {
+              name = "google-private-tcp-active-active-${{ github.event.client_payload.github.payload.issue.number }}"
+            }
+          EOF
 
       - name: Terraform Init
         id: init
         working-directory: ${{ env.WORK_DIR_PATH }}
-        run: terraform init -input=false -no-color
+        run: terraform init -backend-config=backend-config.hcl -input=false -no-color
 
       - name: Terraform Validate
         id: validate
         working-directory: ${{ env.WORK_DIR_PATH }}
         run: terraform validate -no-color
+
+      - name: Write Terraform Variables
+        working-directory: ${{ env.WORK_DIR_PATH }}
+        env:
+          GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
+          GOOGLE_PROJECT: ${{ secrets.GOOGLE_PROJECT }}
+          GOOGLE_REGION: ${{ secrets.GOOGLE_REGION }}
+          GOOGLE_ZONE: ${{ secrets.GOOGLE_ZONE }}
+          TFE_HOSTNAME: ${{ secrets.TFE_HOSTNAME }}
+          TFE_ORGANIZATION: ${{ secrets.TFE_ORGANIZATION }}
+          TFE_TOKEN: ${{ secrets.TFE_TOKEN }}
+          TFE_WORKSPACE: ${{ secrets.TFE_WORKSPACE }}
+        run: |
+          cat <<EOF > github.auto.tfvars
+          google = {
+            credentials = <<-EOC
+            $GOOGLE_CREDENTIALS
+            EOC
+            project     = "$GOOGLE_PROJECT"
+            region      = "$GOOGLE_REGION"
+            zone        = "$GOOGLE_ZONE"
+          }
+          tfe = {
+            hostname     = "$TFE_HOSTNAME"
+            organization = "$TFE_ORGANIZATION"
+            token        = "$TFE_TOKEN"
+            workspace    = "$TFE_WORKSPACE"
+          }
+          EOF
 
       - name: Terraform Apply
         id: apply
@@ -541,7 +625,7 @@ jobs:
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v0.2.1
         with:
-          project_id: ${{ secrets.GCP_PROJECT_ID }}
+          project_id: ${{ secrets.GOOGLE_PROJECT }}
           service_account_key: ${{ secrets.GCP_SA_KEY }}
           export_default_credentials: true
 
@@ -646,8 +730,6 @@ jobs:
         if: ${{ always() && github.event.client_payload.slash_command.args.named.destroy != 'false' }}
         working-directory: ${{ env.WORK_DIR_PATH }}
         run: terraform destroy -auto-approve -input=false -no-color
-
-      # Run Terraform commands between these comments ^^^
 
       - name: Update comment
         if: ${{ always() }}
