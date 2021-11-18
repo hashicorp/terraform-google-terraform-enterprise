@@ -4,10 +4,6 @@ resource "random_pet" "main" {
   separator = "-"
 }
 
-data "google_dns_managed_zone" "main" {
-  name = var.dns_zone_name
-}
-
 resource "google_service_account" "http_proxy" {
   account_id = local.name
 
@@ -56,12 +52,6 @@ resource "google_compute_firewall" "ssh" {
   }
 }
 
-data "google_compute_image" "rhel" {
-  name = "rhel-7-v20200403"
-
-  project = "gce-uefi-images"
-}
-
 resource "google_compute_instance" "http_proxy" {
   boot_disk {
     initialize_params {
@@ -97,12 +87,12 @@ resource "google_compute_instance" "http_proxy" {
 module "tfe" {
   source = "../.."
 
-  dns_zone_name        = var.dns_zone_name
-  fqdn                 = "private-active-active.${trimsuffix(data.google_dns_managed_zone.main.dns_name, ".")}"
+  dns_zone_name        = data.google_dns_managed_zone.main.name
+  fqdn                 = "private-active-active.${data.google_dns_managed_zone.main.dns_name}"
   namespace            = random_pet.main.id
   node_count           = 2
-  license_secret       = var.license_secret
-  ssl_certificate_name = var.ssl_certificate_name
+  license_secret       = data.tfe_outputs.base.values.license_secret_id
+  ssl_certificate_name = data.tfe_outputs.base.values.wildcard_region_ssl_certificate_name
   labels               = local.labels
 
   iact_subnet_list       = ["${google_compute_instance.http_proxy.network_interface[0].network_ip}/32"]
