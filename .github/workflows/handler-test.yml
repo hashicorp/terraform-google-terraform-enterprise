@@ -367,7 +367,7 @@ jobs:
         uses: google-github-actions/setup-gcloud@v0.2.1
         with:
           project_id: ${{ secrets.GOOGLE_PROJECT }}
-          service_account_key: ${{ secrets.GCP_SA_KEY }}
+          service_account_key: ${{ secrets.GOOGLE_CREDENTIALS }}
           export_default_credentials: true
 
       - name: Start SOCKS5 Proxy
@@ -626,7 +626,7 @@ jobs:
         uses: google-github-actions/setup-gcloud@v0.2.1
         with:
           project_id: ${{ secrets.GOOGLE_PROJECT }}
-          service_account_key: ${{ secrets.GCP_SA_KEY }}
+          service_account_key: ${{ secrets.GOOGLE_CREDENTIALS }}
           export_default_credentials: true
 
       - name: Start SOCKS5 Proxy
