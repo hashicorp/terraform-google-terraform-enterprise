@@ -9,6 +9,9 @@
 # .tfvars files
 *.tfvars
 
+# Generated backend configuration
+backend-config.hcl
+
 # Key files
 *.pem
 
