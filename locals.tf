@@ -25,9 +25,8 @@ locals {
   full_fqdn = "${local.common_fqdn}."
 
   private_load_balancing_enabled = length(google_compute_address.private) > 0
-  lb_address = (
-    local.private_load_balancing_enabled ? google_compute_address.private : google_compute_global_address.public
-  )[0].address
+  lb_address                     = local.private_load_balancing_enabled ? google_compute_address.private[0].address : google_compute_global_address.public[0].address
+
   trusted_proxies = local.private_load_balancing_enabled ? compact([
     "${local.lb_address}/32",
     # Include IP address range of the reserve subnetwork for private load balancing
