@@ -16,7 +16,7 @@ This is the same as the existing network example except it is provisioned into a
 
 ```hcl
 module "tfe_node" {
-  source               = "git@github.com:hashicorp/espd-tfe-gcp.git"
+  source               = "git@github.com:hashicorp/terraform-google-terraform-enterprise.git"
   namespace            = "<Namespace to uniquely identify resources>"
   node_count           = "<Number of TFE nodes to provision>"
   license_secret       = "<Secret Manager secret comprising license>
