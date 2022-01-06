@@ -1,5 +1,5 @@
 resource "google_secret_manager_secret" "ca_certificate" {
-  count = var.ca_certificate == null ? 0 : 1
+  count = local.ca_certificate_enabled ? 1 : 0
 
   secret_id = var.ca_certificate.id
 
@@ -18,7 +18,7 @@ resource "google_secret_manager_secret_version" "ca_certificate" {
 }
 
 resource "google_secret_manager_secret" "ca_private_key" {
-  count = var.ca_private_key == null ? 0 : 1
+  count = local.ca_private_key_enabled ? 1 : 0
 
   secret_id = var.ca_private_key.id
 
@@ -37,7 +37,7 @@ resource "google_secret_manager_secret_version" "ca_private_key" {
 }
 
 resource "google_secret_manager_secret" "license" {
-  count = var.license == null ? 0 : 1
+  count = local.license_enabled ? 1 : 0
 
   secret_id = var.license.id
 
@@ -56,7 +56,7 @@ resource "google_secret_manager_secret_version" "license" {
 }
 
 resource "google_secret_manager_secret" "ssl_certificate" {
-  count = var.ssl_certificate == null ? 0 : 1
+  count = local.ssl_certificate_enabled ? 1 : 0
 
   secret_id = var.ssl_certificate.id
 
@@ -75,7 +75,7 @@ resource "google_secret_manager_secret_version" "ssl_certificate" {
 }
 
 resource "google_secret_manager_secret" "ssl_private_key" {
-  count = var.ssl_private_key == null ? 0 : 1
+  count = local.ssl_private_key_enabled ? 1 : 0
 
   secret_id = var.ssl_private_key.id
 
