@@ -14,7 +14,7 @@ resource "google_secret_manager_secret_version" "ca_certificate" {
   count = length(google_secret_manager_secret.ca_certificate)
 
   secret_data = base64encode(var.ca_certificate.data)
-  secret      = google_secret_manager_secret.ca_certificate[count.index].secret_id
+  secret      = google_secret_manager_secret.ca_certificate[count.index].id
 }
 
 resource "google_secret_manager_secret" "ca_private_key" {
@@ -33,7 +33,7 @@ resource "google_secret_manager_secret_version" "ca_private_key" {
   count = length(google_secret_manager_secret.ca_private_key)
 
   secret_data = base64encode(var.ca_private_key.data)
-  secret      = google_secret_manager_secret.ca_private_key[count.index].secret_id
+  secret      = google_secret_manager_secret.ca_private_key[count.index].id
 }
 
 resource "google_secret_manager_secret" "license" {
@@ -52,7 +52,7 @@ resource "google_secret_manager_secret_version" "license" {
   count = length(google_secret_manager_secret.license)
 
   secret_data = filebase64(var.license.path)
-  secret      = google_secret_manager_secret.license[count.index].secret_id
+  secret      = google_secret_manager_secret.license[count.index].id
 }
 
 resource "google_secret_manager_secret" "ssl_certificate" {
@@ -71,7 +71,7 @@ resource "google_secret_manager_secret_version" "ssl_certificate" {
   count = length(google_secret_manager_secret.ssl_certificate)
 
   secret_data = base64encode(var.ssl_certificate.data)
-  secret      = google_secret_manager_secret.ssl_certificate[count.index].secret_id
+  secret      = google_secret_manager_secret.ssl_certificate[count.index].id
 }
 
 resource "google_secret_manager_secret" "ssl_private_key" {
@@ -90,5 +90,5 @@ resource "google_secret_manager_secret_version" "ssl_private_key" {
   count = length(google_secret_manager_secret.ssl_private_key)
 
   secret_data = base64encode(var.ssl_private_key.data)
-  secret      = google_secret_manager_secret.ssl_private_key[count.index].secret_id
+  secret      = google_secret_manager_secret.ssl_private_key[count.index].id
 }
