@@ -4,16 +4,13 @@ resource "random_pet" "main" {
   separator = "-"
 }
 
-resource "google_secret_manager_secret" "license" {
-  replication {
-    automatic = true
-  }
-  secret_id = random_pet.main.id
-}
+module "secrets" {
+  source = "../../fixtures/secrets"
 
-resource "google_secret_manager_secret_version" "license" {
-  secret      = google_secret_manager_secret.license.id
-  secret_data = filebase64(var.license_file)
+  license = {
+    id   = random_pet.main.id
+    path = var.license_file
+  }
 }
 
 resource "tls_private_key" "main" {
@@ -34,7 +31,7 @@ module "tfe" {
   fqdn                 = "${random_pet.main.id}.${trimsuffix(data.google_dns_managed_zone.main.dns_name, ".")}"
   namespace            = random_pet.main.id
   node_count           = 1
-  license_secret       = google_secret_manager_secret.license.secret_id
+  license_secret       = module.secrets.license_secret
   ssl_certificate_name = "wildcard"
 
   custom_image_tag       = "${local.repository_location}-docker.pkg.dev/ptfe-testing/${local.repository_name}/rhel-7.9:latest"
