@@ -28,6 +28,11 @@ module "secrets" {
     value = file("/path/to/ca-certificate.pem")
   }
 
+  ca_private_key = {
+    id  = "my-ca-private-key"
+    value = file("/path/to/ca-private-key.pem")
+  }
+
   # examples of when the value comes from the output of a resource
   ssl_certificate = {
     id  = "my-ssl-certificate"

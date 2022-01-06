@@ -7,6 +7,15 @@ variable "ca_certificate" {
   })
 }
 
+variable "ca_private_key" {
+  default     = null
+  description = "The secret identity and data of a PEM private key file for a Certificate Authority."
+  type = object({
+    id   = string
+    data = string
+  })
+}
+
 variable "labels" {
   default     = {}
   type        = map(string)

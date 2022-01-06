@@ -17,6 +17,25 @@ resource "google_secret_manager_secret_version" "ca_certificate" {
   secret      = google_secret_manager_secret.ca_certificate[count.index].secret_id
 }
 
+resource "google_secret_manager_secret" "ca_private_key" {
+  count = var.ca_private_key == null ? 0 : 1
+
+  secret_id = var.ca_private_key.id
+
+  replication {
+    automatic = true
+  }
+
+  labels = var.labels
+}
+
+resource "google_secret_manager_secret_version" "ca_private_key" {
+  count = length(google_secret_manager_secret.ca_private_key)
+
+  secret_data = base64encode(var.ca_private_key.data)
+  secret      = google_secret_manager_secret.ca_private_key[count.index].secret_id
+}
+
 resource "google_secret_manager_secret" "license" {
   count = var.license == null ? 0 : 1
 
