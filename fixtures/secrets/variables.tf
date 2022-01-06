@@ -1,6 +1,6 @@
 variable "ca_certificate" {
   default     = null
-  description = "The secret identity and data of a PEM certificate file for a Certificate Authority."
+  description = "The secret identifier and data of a PEM certificate file for a Certificate Authority."
   type = object({
     id   = string
     data = string
@@ -9,7 +9,7 @@ variable "ca_certificate" {
 
 variable "ca_private_key" {
   default     = null
-  description = "The secret identity and data of a PEM private key file for a Certificate Authority."
+  description = "The secret identifier and data of a PEM private key file for a Certificate Authority."
   type = object({
     id   = string
     data = string
@@ -24,7 +24,7 @@ variable "labels" {
 
 variable "license" {
   default     = null
-  description = "The secret identity and local path of a Replicated license file."
+  description = "The secret identifier and local path of a Replicated license file."
   type = object({
     id   = string
     path = string
@@ -33,7 +33,7 @@ variable "license" {
 
 variable "ssl_certificate" {
   default     = null
-  description = "The secret identity and data of a PEM certificate file."
+  description = "The secret identifier and data of a PEM certificate file."
   type = object({
     id   = string
     data = string
@@ -42,7 +42,7 @@ variable "ssl_certificate" {
 
 variable "ssl_private_key" {
   default     = null
-  description = "The secret identity and data of a PEM private key file."
+  description = "The secret identifier and data of a PEM private key file."
   type = object({
     id   = string
     data = string
