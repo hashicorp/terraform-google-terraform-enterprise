@@ -17,31 +17,25 @@ resource "tls_private_key" "ssl_certificate" {
 module "secrets" {
   source = "./fixtures/secrets"
 
-  key_vault_id = "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/my-tfe-rg/providers/Microsoft.KeyVault/vaults/my-tfe-kv"
-
-  tfe_license = {
-    name = "my-tfe-license"
+  license = {
+    id = "my-tfe-license"
     path = "/path/to/license.rli"
   }
 
   # examples of when the value is in a file
-  private_key_pem = {
-    name  = "my-private-key-pem"
-    value = file("/path/to/private-key.pem")
-  }
-  chained_certificate_pem = {
-    name  = "my-chained-cert-pem"
-    value = file("/path/to/chained-certificate.pem")
+  ca_certificate = {
+    id  = "my-ca-certificate"
+    value = file("/path/to/ca-certificate.pem")
   }
 
   # examples of when the value comes from the output of a resource
-  proxy_public_key = {
-    name  = "my-proxy-public-key"
-    value = tls_private_key.ssl_certificate.public_key_openssh
+  ssl_certificate = {
+    id  = "my-ssl-certificate"
+    value = tls_private_key.ssl_certificate.public_key_pem
   }
 
-  proxy_private_key = {
-    name  = "my-proxy-private-key"
+  ssl_private_key = {
+    id  = "my-ssl-private-key"
     value = tls_private_key.ssl_certificate.private_key_pem
   }
 }
