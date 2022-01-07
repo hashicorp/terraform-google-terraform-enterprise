@@ -232,44 +232,48 @@ locals {
 
   repl_configs = jsonencode(merge(local.replicated_base_config, local.is_airgap, local.is_pinned, local.tls))
 
-  user_data = templatefile(
-    "${path.module}/templates/tfe_vm.sh.tpl",
-    {
-      airgap_pathname          = local.airgap_pathname
-      airgap_url               = var.airgap_url
-      ca_certificate_secret    = var.ca_certificate_secret
-      custom_image_tag         = var.custom_image_tag
-      disk_device_name         = var.disk_device_name
-      disk_path                = var.enable_disk ? var.disk_path : null
-      docker_config            = filebase64("${path.module}/files/daemon.json")
-      bucket_name              = var.gcs_bucket
-      lib_directory            = local.lib_directory
-      license_file_location    = local.license_file_location
-      license_secret           = var.license_secret
-      monitoring_enabled       = var.monitoring_enabled
-      replicated               = base64encode(local.repl_configs)
-      settings                 = base64encode(local.settings)
-      enable_active_active     = var.enable_active_active
-      namespace                = var.namespace
-      proxy_ip                 = var.proxy_ip
-      settings_pathname        = local.settings_pathname
-      ssl_certificate_pathname = local.ssl_certificate_pathname
-      ssl_certificate_secret   = var.ssl_certificate_secret
-      ssl_private_key_pathname = local.ssl_private_key_pathname
-      ssl_private_key_secret   = var.ssl_private_key_secret
-      no_proxy = join(
-        ",",
-        concat(
-          [
-            "127.0.0.1",
-            "169.254.169.254",
-            ".googleapis.com",
-            ".google.internal",
-            ".googlecloud.com",
-          ],
-          var.no_proxy
+  user_data = replace(
+    templatefile(
+      "${path.module}/templates/tfe_vm.sh.tpl",
+      {
+        airgap_pathname          = local.airgap_pathname
+        airgap_url               = var.airgap_url
+        ca_certificate_secret    = var.ca_certificate_secret
+        custom_image_tag         = var.custom_image_tag
+        disk_device_name         = var.disk_device_name
+        disk_path                = var.enable_disk ? var.disk_path : null
+        docker_config            = filebase64("${path.module}/files/daemon.json")
+        bucket_name              = var.gcs_bucket
+        lib_directory            = local.lib_directory
+        license_file_location    = local.license_file_location
+        license_secret           = var.license_secret
+        monitoring_enabled       = var.monitoring_enabled
+        replicated               = base64encode(local.repl_configs)
+        settings                 = base64encode(local.settings)
+        enable_active_active     = var.enable_active_active
+        namespace                = var.namespace
+        proxy_ip                 = var.proxy_ip
+        settings_pathname        = local.settings_pathname
+        ssl_certificate_pathname = local.ssl_certificate_pathname
+        ssl_certificate_secret   = var.ssl_certificate_secret
+        ssl_private_key_pathname = local.ssl_private_key_pathname
+        ssl_private_key_secret   = var.ssl_private_key_secret
+        no_proxy = join(
+          ",",
+          concat(
+            [
+              "127.0.0.1",
+              "169.254.169.254",
+              ".googleapis.com",
+              ".google.internal",
+              ".googlecloud.com",
+            ],
+            var.no_proxy
+          )
         )
-      )
-    }
+      }
+    ),
+    "\r\n",
+    "\n"
   )
 }

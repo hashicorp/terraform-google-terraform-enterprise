@@ -81,12 +81,16 @@ resource "null_resource" "wait_for_instances" {
 resource "local_file" "ssh_config" {
   filename = "${path.module}/work/ssh-config"
 
-  content = templatefile(
-    "${path.module}/templates/ssh-config.tpl",
-    {
-      instance      = data.null_data_source.instance.outputs
-      identity_file = local_file.private_key_pem.filename
-      user          = local.ssh_user
-    }
+  content = replace(
+    templatefile(
+      "${path.module}/templates/ssh-config.tpl",
+      {
+        instance      = data.null_data_source.instance.outputs
+        identity_file = local_file.private_key_pem.filename
+        user          = local.ssh_user
+      }
+    ),
+    "\r\n",
+    "\n"
   )
 }

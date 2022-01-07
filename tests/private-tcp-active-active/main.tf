@@ -75,13 +75,17 @@ resource "google_compute_instance" "http_proxy" {
   name         = local.name
 
   description = "An HTTP proxy for TFE."
-  metadata_startup_script = templatefile(
-    "${path.module}/templates/startup.sh.tpl",
-    {
-      certificate_secret_id = data.tfe_outputs.base.values.ca_certificate_secret_id
-      http_proxy_port       = local.http_proxy_port
-      private_key_secret_id = data.tfe_outputs.base.values.ca_private_key_secret_id
-    }
+  metadata_startup_script = replace(
+    templatefile(
+      "${path.module}/templates/startup.sh.tpl",
+      {
+        certificate_secret_id = data.tfe_outputs.base.values.ca_certificate_secret_id
+        http_proxy_port       = local.http_proxy_port
+        private_key_secret_id = data.tfe_outputs.base.values.ca_private_key_secret_id
+      }
+    ),
+    "\r\n",
+    "\n"
   )
 
   network_interface {
