@@ -7,7 +7,7 @@ output "ca_certificate_secret" {
 }
 
 output "ca_private_key_secret" {
-  value = local.ca_private_key_enabled ? google_secret_manager_secret.ca_certificate[0].secret_id : null
+  value = local.ca_private_key_enabled ? google_secret_manager_secret.ca_private_key[0].secret_id : null
 
   description = <<-EOD
   The Secret Manager secret which comprises the Base64 encoded PEM private key file for a Certificate Authority.
