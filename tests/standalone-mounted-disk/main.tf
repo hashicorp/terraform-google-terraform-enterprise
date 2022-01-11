@@ -4,18 +4,13 @@ resource "random_pet" "main" {
   separator = "-"
 }
 
-resource "google_secret_manager_secret" "license" {
-  replication {
-    automatic = true
+module "secrets" {
+  source = "../../fixtures/secrets"
+
+  license = {
+    id   = random_pet.main.id
+    path = var.license_file
   }
-  secret_id = random_pet.main.id
-
-  labels = local.labels
-}
-
-resource "google_secret_manager_secret_version" "license" {
-  secret      = google_secret_manager_secret.license.id
-  secret_data = filebase64(var.license_file)
 }
 
 resource "tls_private_key" "main" {
@@ -36,7 +31,7 @@ module "tfe" {
   fqdn                 = "${random_pet.main.id}.${trimsuffix(data.google_dns_managed_zone.main.dns_name, ".")}"
   namespace            = random_pet.main.id
   node_count           = 1
-  license_secret       = google_secret_manager_secret.license.secret_id
+  license_secret       = module.secrets.license_secret
   ssl_certificate_name = "wildcard"
 
   iact_subnet_list       = ["0.0.0.0/0"]

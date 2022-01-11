@@ -134,7 +134,7 @@ echo "UUID=$(lsblk --noheadings --output uuid $device) ${disk_path} ext4 discard
 echo "[Terraform Enterprise] Creating Terraform Enterprise library directory at '${lib_directory}'" | tee -a $log_pathname
 mkdir -p ${lib_directory}
 
-echo "[Terraform Enterprise] Writing data of license secret '${license_secret}' to '${lib_directory}'" | tee -a $log_pathname
+echo "[Terraform Enterprise] Writing data of license secret '${license_secret}' to '${license_file_location}'" | tee -a $log_pathname
 http_proxy="" https_proxy="" gcloud secrets versions access latest --secret="${license_secret}" | \
   base64 --decode --ignore-garbage > ${license_file_location}
 
