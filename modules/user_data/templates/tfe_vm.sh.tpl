@@ -150,11 +150,6 @@ http_proxy="" https_proxy="" gcloud secrets versions access latest --secret="${s
   base64 --decode --ignore-garbage > ${ssl_private_key_pathname}
 
 %{ endif ~}
-%{ if airgap_url != null ~}
-echo "[Terraform Enterprise] Copying airgap storage object '${airgap_url}' to '${airgap_pathname}'" | tee -a $log_pathname
-http_proxy="" https_proxy="" gsutil cp ${airgap_url} ${airgap_pathname}
-
-%{ endif ~}
 %{ if monitoring_enabled ~}
 monitoring_agent_url="https://dl.google.com/cloudagents/add-monitoring-agent-repo.sh"
 monitoring_agent_pathname="/tmp/add-monitoring-agent-repo.sh"
@@ -182,12 +177,28 @@ service stackdriver-agent start
 echo "[Terraform Enterprise] Reading private IP address of compute instance from Metadata service" | tee -a $log_pathname
 private_ip=$(curl -H "Metadata-Flavor: Google" "http://169.254.169.254/computeMetadata/v1/instance/network-interfaces/0/ip")
 
-install_url="https://get.replicated.com/docker/terraformenterprise/active-active"
-install_pathname="/tmp/install.sh"
-echo "[Terraform Enterprise] Downloading Terraform Enterprise installation script from '$install_url' to '$install_pathname'" | tee -a $log_pathname
-curl -o $install_pathname $install_url
+replicated_directory="/tmp/replicated"
+install_pathname="$replicated_directory/install.sh"
+mkdir --parents $replicated_directory
 
-echo "[Terraform Enterprise] Executing Terraform Enterprise installation script at '$install_pathname'" | tee -a $log_pathname
+%{ if airgap_url != null ~}
+replicated_filename="replicated.tar.gz"
+replicated_url="https://s3.amazonaws.com/replicated-airgap-work/$replicated_filename"
+echo "[Terraform Enterprise] Downloading Replicated from '$replicated_url' to '$replicated_directory'" | tee -a $log_pathname
+curl --remote-name --output-dir $replicated_directory $replicated_url
+echo "[Terraform Enterprise] Extracting Replicated in '$replicated_directory'" | tee -a $log_pathname
+tar --directory $replicated_directory --extract --file $replicated_filename
+
+echo "[Terraform Enterprise] Copying airgap storage object '${airgap_url}' to '${airgap_pathname}'" | tee -a $log_pathname
+http_proxy="" https_proxy="" gsutil cp ${airgap_url} ${airgap_pathname}
+
+%{ else ~}
+install_url="https://get.replicated.com/docker/terraformenterprise/active-active"
+echo "[Terraform Enterprise] Downloading Replicated installation script from '$install_url' to '$install_pathname'" | tee -a $log_pathname
+curl --output $install_pathname $install_url
+
+%{ endif ~}
+echo "[Terraform Enterprise] Executing Replicated installation script at '$install_pathname'" | tee -a $log_pathname
 chmod +x $install_pathname
 $install_pathname \
   fast-timeouts \
@@ -201,6 +212,9 @@ $install_pathname \
   %{ endif ~}
   %{if enable_active_active ~}
   disable-replicated-ui \
+  %{ endif ~}
+  %{ if airgap_url != null ~}
+  airgap \
   %{ endif ~}
   | tee -a $log_pathname
 
