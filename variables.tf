@@ -204,6 +204,14 @@ variable "vm_metadata" {
   type        = map(string)
 }
 
+variable "vm_mounted_disk_size" {
+  default     = 40
+  description = <<-EOD
+  The size in gigabytes of the mounted disk to attach to the VM when the Operational Mode is Mounted Disk.
+  EOD
+  type        = number
+}
+
 # USER DATA / TFE
 # ---------------
 variable "release_sequence" {
