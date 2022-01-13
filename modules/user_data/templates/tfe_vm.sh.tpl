@@ -184,12 +184,12 @@ replicated_filename="replicated.tar.gz"
 replicated_url="https://s3.amazonaws.com/replicated-airgap-work/$replicated_filename"
 replicated_pathname="$replicated_directory/$replicated_filename"
 echo "[Terraform Enterprise] Downloading Replicated from '$replicated_url' to '$replicated_pathname'" | tee -a $log_pathname
-curl --create-dirs --output $replicated_pathname $replicated_url
+curl --create-dirs --output "$replicated_pathname" "$replicated_url"
 echo "[Terraform Enterprise] Extracting Replicated in '$replicated_directory'" | tee -a $log_pathname
-tar --directory $replicated_directory --extract --file $replicated_pathname
+tar --directory "$replicated_directory" --extract --file "$replicated_pathname"
 
-echo "[Terraform Enterprise] Copying airgap storage object '${airgap_url}' to '${airgap_pathname}'" | tee -a $log_pathname
-curl --create-dirs --output ${airgap_pathname} ${airgap_url}
+echo "[Terraform Enterprise] Copying airgap package '${airgap_url}' to '${airgap_pathname}'" | tee -a $log_pathname
+curl --create-dirs --output "${airgap_pathname}" "${airgap_url}"
 
 %{ else ~}
 install_url="https://get.replicated.com/docker/terraformenterprise/active-active"
