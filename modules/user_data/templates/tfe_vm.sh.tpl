@@ -179,13 +179,11 @@ private_ip=$(curl -H "Metadata-Flavor: Google" "http://169.254.169.254/computeMe
 
 replicated_directory="/tmp/replicated"
 install_pathname="$replicated_directory/install.sh"
-mkdir --parents $replicated_directory
-
 %{ if airgap_url != null ~}
 replicated_filename="replicated.tar.gz"
 replicated_url="https://s3.amazonaws.com/replicated-airgap-work/$replicated_filename"
 echo "[Terraform Enterprise] Downloading Replicated from '$replicated_url' to '$replicated_directory'" | tee -a $log_pathname
-curl --remote-name --output-dir $replicated_directory $replicated_url
+curl --create-dirs --output $replicated_directory/$replicated_filename $replicated_url
 echo "[Terraform Enterprise] Extracting Replicated in '$replicated_directory'" | tee -a $log_pathname
 tar --directory $replicated_directory --extract --file $replicated_filename
 
@@ -195,7 +193,7 @@ http_proxy="" https_proxy="" gsutil cp ${airgap_url} ${airgap_pathname}
 %{ else ~}
 install_url="https://get.replicated.com/docker/terraformenterprise/active-active"
 echo "[Terraform Enterprise] Downloading Replicated installation script from '$install_url' to '$install_pathname'" | tee -a $log_pathname
-curl --output $install_pathname $install_url
+curl --create-dirs --output $install_pathname $install_url
 
 %{ endif ~}
 echo "[Terraform Enterprise] Executing Replicated installation script at '$install_pathname'" | tee -a $log_pathname
