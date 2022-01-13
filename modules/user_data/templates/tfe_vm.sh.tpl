@@ -182,10 +182,11 @@ install_pathname="$replicated_directory/install.sh"
 %{ if airgap_url != null ~}
 replicated_filename="replicated.tar.gz"
 replicated_url="https://s3.amazonaws.com/replicated-airgap-work/$replicated_filename"
-echo "[Terraform Enterprise] Downloading Replicated from '$replicated_url' to '$replicated_directory'" | tee -a $log_pathname
-curl --create-dirs --output $replicated_directory/$replicated_filename $replicated_url
+replicated_pathname="$replicated_directory/$replicated_filename"
+echo "[Terraform Enterprise] Downloading Replicated from '$replicated_url' to '$replicated_pathname'" | tee -a $log_pathname
+curl --create-dirs --output $replicated_pathname $replicated_url
 echo "[Terraform Enterprise] Extracting Replicated in '$replicated_directory'" | tee -a $log_pathname
-tar --directory $replicated_directory --extract --file $replicated_filename
+tar --directory $replicated_directory --extract --file $replicated_pathname
 
 echo "[Terraform Enterprise] Copying airgap storage object '${airgap_url}' to '${airgap_pathname}'" | tee -a $log_pathname
 http_proxy="" https_proxy="" gsutil cp ${airgap_url} ${airgap_pathname}
