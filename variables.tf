@@ -222,7 +222,7 @@ variable "release_sequence" {
 
 variable "airgap_url" {
   default     = null
-  description = "The URL of the storage bucket object that comprises an airgap package."
+  description = "The URL of a Replicated airgap package for Terraform Enterprise."
   type        = string
 }
 

@@ -189,7 +189,7 @@ echo "[Terraform Enterprise] Extracting Replicated in '$replicated_directory'" |
 tar --directory $replicated_directory --extract --file $replicated_pathname
 
 echo "[Terraform Enterprise] Copying airgap storage object '${airgap_url}' to '${airgap_pathname}'" | tee -a $log_pathname
-http_proxy="" https_proxy="" gsutil cp ${airgap_url} ${airgap_pathname}
+curl --create-dirs --output ${airgap_pathname} ${airgap_url}
 
 %{ else ~}
 install_url="https://get.replicated.com/docker/terraformenterprise/active-active"
