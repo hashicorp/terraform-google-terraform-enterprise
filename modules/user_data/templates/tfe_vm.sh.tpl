@@ -225,6 +225,7 @@ curl --create-dirs --output $install_pathname $install_url
 %{ endif ~}
 echo "[Terraform Enterprise] Executing Replicated installation script at '$install_pathname'" | tee -a $log_pathname
 chmod +x $install_pathname
+cd $replicated_directory
 $install_pathname \
   fast-timeouts \
   private-address="$private_ip" \
