@@ -95,6 +95,7 @@ if [[ $distribution == "ubuntu" ]]
 then
   apt-get --assume-yes update
   apt-get --assume-yes install jq
+  apt-get --assume-yes autoremove
 elif [[ $distribution == "rhel" ]]
 then
   yum --assumeyes install jq
@@ -164,7 +165,8 @@ echo "[Terraform Enterprise] Installing Cloud Monitoring agent" | tee -a $log_pa
 if [[ $distribution == "ubuntu" ]]
 then
   apt-get --assume-yes update
-  apt-get --assume-pes install stackdriver-agent
+  apt-get --assume-yes install stackdriver-agent
+  apt-get --assume-yes autoremove
 elif [[ $distribution == "rhel" ]]
 then
   yum install --assumeyes stackdriver-agent
@@ -180,6 +182,30 @@ private_ip=$(curl -H "Metadata-Flavor: Google" "http://169.254.169.254/computeMe
 replicated_directory="/tmp/replicated"
 install_pathname="$replicated_directory/install.sh"
 %{ if airgap_url != null ~}
+echo "[Terraform Enterprise] Installing Docker Engine from Repository" | tee -a $log_pathname
+if [[ $distribution == "ubuntu" ]]
+then
+  apt-get --assume-yes update
+  apt-get --assume-yes install \
+    ca-certificates \
+    curl \
+    gnupg \
+    lsb-release
+  curl --fail --silent --show-error --location https://download.docker.com/linux/ubuntu/gpg \
+    | gpg --dearmor --output /usr/share/keyrings/docker-archive-keyring.gpg
+  echo \
+    "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] \
+    https://download.docker.com/linux/ubuntu $(lsb_release --codename --short) stable" \
+    | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+  apt-get --assume-yes update
+  apt-get --assume-yes install docker-ce docker-ce-cli containerd.io
+  apt-get --assume-yes autoremove
+elif [[ $distribution == "rhel" ]]
+then
+  yum install --assumeyes yum-utils
+  yum-config-manager --add-repo https://download.docker.com/linux/rhel/docker-ce.repo
+  yum install --assumeyes docker-ce docker-ce-cli containerd.io
+fi
 replicated_filename="replicated.tar.gz"
 replicated_url="https://s3.amazonaws.com/replicated-airgap-work/$replicated_filename"
 replicated_pathname="$replicated_directory/$replicated_filename"
