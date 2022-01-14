@@ -95,6 +95,7 @@ if [[ $distribution == "ubuntu" ]]
 then
   apt-get --assume-yes update
   apt-get --assume-yes install jq
+  apt-get --assume-yes autoremove
 elif [[ $distribution == "rhel" ]]
 then
   yum --assumeyes install jq
@@ -150,11 +151,6 @@ http_proxy="" https_proxy="" gcloud secrets versions access latest --secret="${s
   base64 --decode --ignore-garbage > ${ssl_private_key_pathname}
 
 %{ endif ~}
-%{ if airgap_url != null ~}
-echo "[Terraform Enterprise] Copying airgap storage object '${airgap_url}' to '${airgap_pathname}'" | tee -a $log_pathname
-http_proxy="" https_proxy="" gsutil cp ${airgap_url} ${airgap_pathname}
-
-%{ endif ~}
 %{ if monitoring_enabled ~}
 monitoring_agent_url="https://dl.google.com/cloudagents/add-monitoring-agent-repo.sh"
 monitoring_agent_pathname="/tmp/add-monitoring-agent-repo.sh"
@@ -169,7 +165,8 @@ echo "[Terraform Enterprise] Installing Cloud Monitoring agent" | tee -a $log_pa
 if [[ $distribution == "ubuntu" ]]
 then
   apt-get --assume-yes update
-  apt-get --assume-pes install stackdriver-agent
+  apt-get --assume-yes install stackdriver-agent
+  apt-get --assume-yes autoremove
 elif [[ $distribution == "rhel" ]]
 then
   yum install --assumeyes stackdriver-agent
@@ -182,13 +179,53 @@ service stackdriver-agent start
 echo "[Terraform Enterprise] Reading private IP address of compute instance from Metadata service" | tee -a $log_pathname
 private_ip=$(curl -H "Metadata-Flavor: Google" "http://169.254.169.254/computeMetadata/v1/instance/network-interfaces/0/ip")
 
-install_url="https://get.replicated.com/docker/terraformenterprise/active-active"
-install_pathname="/tmp/install.sh"
-echo "[Terraform Enterprise] Downloading Terraform Enterprise installation script from '$install_url' to '$install_pathname'" | tee -a $log_pathname
-curl -o $install_pathname $install_url
+replicated_directory="/tmp/replicated"
+install_pathname="$replicated_directory/install.sh"
+%{ if airgap_url != null ~}
+echo "[Terraform Enterprise] Installing Docker Engine from Repository" | tee -a $log_pathname
+if [[ $distribution == "ubuntu" ]]
+then
+  apt-get --assume-yes update
+  apt-get --assume-yes install \
+    ca-certificates \
+    curl \
+    gnupg \
+    lsb-release
+  curl --fail --silent --show-error --location https://download.docker.com/linux/ubuntu/gpg \
+    | gpg --dearmor --output /usr/share/keyrings/docker-archive-keyring.gpg
+  echo \
+    "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] \
+    https://download.docker.com/linux/ubuntu $(lsb_release --codename --short) stable" \
+    | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+  apt-get --assume-yes update
+  apt-get --assume-yes install docker-ce docker-ce-cli containerd.io
+  apt-get --assume-yes autoremove
+elif [[ $distribution == "rhel" ]]
+then
+  yum install --assumeyes yum-utils
+  yum-config-manager --add-repo https://download.docker.com/linux/rhel/docker-ce.repo
+  yum install --assumeyes docker-ce docker-ce-cli containerd.io
+fi
+replicated_filename="replicated.tar.gz"
+replicated_url="https://s3.amazonaws.com/replicated-airgap-work/$replicated_filename"
+replicated_pathname="$replicated_directory/$replicated_filename"
+echo "[Terraform Enterprise] Downloading Replicated from '$replicated_url' to '$replicated_pathname'" | tee -a $log_pathname
+curl --create-dirs --output "$replicated_pathname" "$replicated_url"
+echo "[Terraform Enterprise] Extracting Replicated in '$replicated_directory'" | tee -a $log_pathname
+tar --directory "$replicated_directory" --extract --file "$replicated_pathname"
 
-echo "[Terraform Enterprise] Executing Terraform Enterprise installation script at '$install_pathname'" | tee -a $log_pathname
+echo "[Terraform Enterprise] Copying airgap package '${airgap_url}' to '${airgap_pathname}'" | tee -a $log_pathname
+curl --create-dirs --output "${airgap_pathname}" "${airgap_url}"
+
+%{ else ~}
+install_url="https://get.replicated.com/docker/terraformenterprise/active-active"
+echo "[Terraform Enterprise] Downloading Replicated installation script from '$install_url' to '$install_pathname'" | tee -a $log_pathname
+curl --create-dirs --output $install_pathname $install_url
+
+%{ endif ~}
+echo "[Terraform Enterprise] Executing Replicated installation script at '$install_pathname'" | tee -a $log_pathname
 chmod +x $install_pathname
+cd $replicated_directory
 $install_pathname \
   fast-timeouts \
   private-address="$private_ip" \
@@ -201,6 +238,9 @@ $install_pathname \
   %{ endif ~}
   %{if enable_active_active ~}
   disable-replicated-ui \
+  %{ endif ~}
+  %{ if airgap_url != null ~}
+  airgap \
   %{ endif ~}
   | tee -a $log_pathname
 
