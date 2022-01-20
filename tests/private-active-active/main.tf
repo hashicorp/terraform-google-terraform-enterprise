@@ -67,7 +67,7 @@ resource "google_compute_instance" "http_proxy" {
   name         = local.name
 
   description             = "An HTTP proxy for TFE."
-  metadata_startup_script = module.test_proxy_init.squid.user_data_script_base64_encoded
+  metadata_startup_script = module.test_proxy_init.squid.user_data_script
 
   network_interface {
     subnetwork = module.tfe.subnetwork.self_link
