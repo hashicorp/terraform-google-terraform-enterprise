@@ -28,6 +28,13 @@ resource "google_secret_manager_secret_iam_member" "http_proxy_private_key" {
   secret_id = data.tfe_outputs.base.values.ca_private_key_secret_id
 }
 
+module "test_proxy_init" {
+  source = "github.com/hashicorp/terraform-random-tfe-utility//fixtures/test_proxy_init?ref=aaron-lane-fixture-test-proxy-init"
+
+  mitmproxy_ca_certificate_secret = data.tfe_outputs.base.values.ca_certificate_secret_id
+  mitmproxy_ca_private_key_secret = data.tfe_outputs.base.values.ca_private_key_secret_id
+}
+
 resource "google_compute_firewall" "http_proxy" {
   name    = local.name
   network = module.tfe.network.self_link
@@ -40,7 +47,7 @@ resource "google_compute_firewall" "http_proxy" {
   allow {
     protocol = "tcp"
 
-    ports = [local.http_proxy_port]
+    ports = [module.test_proxy_init.mitmproxy.http_port]
   }
 
   log_config {
@@ -74,15 +81,8 @@ resource "google_compute_instance" "http_proxy" {
   machine_type = "n1-standard-2"
   name         = local.name
 
-  description = "An HTTP proxy for TFE."
-  metadata_startup_script = templatefile(
-    "${path.module}/templates/startup.sh.tpl",
-    {
-      certificate_secret_id = data.tfe_outputs.base.values.ca_certificate_secret_id
-      http_proxy_port       = local.http_proxy_port
-      private_key_secret_id = data.tfe_outputs.base.values.ca_private_key_secret_id
-    }
-  )
+  description             = "An HTTP proxy for TFE."
+  metadata_startup_script = module.test_proxy_init.mitmproxy.user_data_script_base64_encoded
 
   network_interface {
     subnetwork = module.tfe.subnetwork.self_link
@@ -112,7 +112,7 @@ module "tfe" {
   iact_subnet_list       = ["${google_compute_instance.http_proxy.network_interface[0].network_ip}/32"]
   iact_subnet_time_limit = 1440
   load_balancer          = "PRIVATE_TCP"
-  proxy_ip               = "${google_compute_instance.http_proxy.network_interface[0].network_ip}:${local.http_proxy_port}"
+  proxy_ip               = "${google_compute_instance.http_proxy.network_interface[0].network_ip}:${module.test_proxy_init.mitmproxy.http_port}"
   redis_auth_enabled     = true
   ssl_certificate_secret = data.tfe_outputs.base.values.wildcard_ssl_certificate_secret_id
   ssl_private_key_secret = data.tfe_outputs.base.values.wildcard_ssl_private_key_secret_id

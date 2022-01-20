@@ -1,6 +1,5 @@
 locals {
   http_proxy_account = "serviceAccount:${google_service_account.http_proxy.email}"
-  http_proxy_port    = "3128"
   name               = "${random_pet.main.id}-proxy"
 
   labels = {

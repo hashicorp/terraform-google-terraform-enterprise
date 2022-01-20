@@ -16,6 +16,10 @@ resource "google_project_iam_member" "log_writer" {
   role   = "roles/logging.logWriter"
 }
 
+module "test_proxy_init" {
+  source = "github.com/hashicorp/terraform-random-tfe-utility//fixtures/test_proxy_init?ref=aaron-lane-fixture-test-proxy-init"
+}
+
 resource "google_compute_firewall" "http_proxy" {
   name    = local.name
   network = module.tfe.network.self_link
@@ -28,7 +32,7 @@ resource "google_compute_firewall" "http_proxy" {
   allow {
     protocol = "tcp"
 
-    ports = [local.http_proxy_port]
+    ports = [module.test_proxy_init.squid.http_port]
   }
 
   log_config {
@@ -55,20 +59,15 @@ resource "google_compute_firewall" "ssh" {
 resource "google_compute_instance" "http_proxy" {
   boot_disk {
     initialize_params {
-      image = data.google_compute_image.rhel.id
+      image = data.google_compute_image.ubuntu.id
     }
   }
 
   machine_type = "n1-standard-2"
   name         = local.name
 
-  description = "An HTTP proxy for TFE."
-  metadata_startup_script = templatefile(
-    "${path.module}/templates/startup.sh.tpl",
-    {
-      http_proxy_port = local.http_proxy_port
-    }
-  )
+  description             = "An HTTP proxy for TFE."
+  metadata_startup_script = module.test_proxy_init.squid.user_data_script_base64_encoded
 
   network_interface {
     subnetwork = module.tfe.subnetwork.self_link
@@ -98,7 +97,7 @@ module "tfe" {
   iact_subnet_list       = ["${google_compute_instance.http_proxy.network_interface[0].network_ip}/32"]
   iact_subnet_time_limit = 1440
   load_balancer          = "PRIVATE"
-  proxy_ip               = "${google_compute_instance.http_proxy.network_interface[0].network_ip}:${local.http_proxy_port}"
+  proxy_ip               = "${google_compute_instance.http_proxy.network_interface[0].network_ip}:${module.test_proxy_init.squid.http_port}"
   redis_auth_enabled     = true
   vm_disk_source_image   = data.google_compute_image.rhel.self_link
   vm_machine_type        = "n1-standard-16"
