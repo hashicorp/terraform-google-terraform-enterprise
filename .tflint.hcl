@@ -4,6 +4,10 @@ config {
   disabled_by_default = false
 }
 
+rule "terraform_module_pinned_source" {
+  enabled = false
+}
+
 rule "terraform_deprecated_index" {
   enabled = true
 }
