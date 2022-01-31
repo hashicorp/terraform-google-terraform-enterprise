@@ -251,7 +251,7 @@ locals {
       settings                 = base64encode(local.settings)
       enable_active_active     = var.enable_active_active
       namespace                = var.namespace
-      proxy_ip                 = var.proxy_ip
+      http_proxy_uri_authority = var.http_proxy_uri_authority
       settings_pathname        = local.settings_pathname
       ssl_certificate_pathname = local.ssl_certificate_pathname
       ssl_certificate_secret   = var.ssl_certificate_secret

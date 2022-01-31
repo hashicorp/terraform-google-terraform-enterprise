@@ -35,25 +35,25 @@ docker_daemon_pathname="$docker_directory/daemon.json"
 echo "[Terraform Enterprise] Writing Docker daemon to '$docker_daemon_pathname'" | tee -a $log_pathname
 echo "${docker_config}" | base64 --decode > $docker_daemon_pathname
 
-%{ if proxy_ip != null ~}
+%{ if http_proxy_uri_authority != null ~}
 environment_pathname="/etc/environment"
 echo "[Terraform Enterprise] Configuring environment proxy in '$environment_pathname'" | tee -a $log_pathname
 /bin/cat <<EOF >>$environment_pathname
-http_proxy="http://${proxy_ip}"
-https_proxy="https://${proxy_ip}"
+http_proxy="http://${http_proxy_uri_authority}"
+https_proxy="https://${http_proxy_uri_authority}"
 no_proxy="${no_proxy}"
 EOF
 
 profile_proxy_pathname="/etc/profile.d/proxy.sh"
 echo "[Terraform Enterprise] Configuring profile proxy in '$profile_proxy_pathname'" | tee -a $log_pathname
 /bin/cat <<EOF >$profile_proxy_pathname
-http_proxy="http://${proxy_ip}"
-https_proxy="https://${proxy_ip}"
+http_proxy="http://${http_proxy_uri_authority}"
+https_proxy="https://${http_proxy_uri_authority}"
 no_proxy="${no_proxy}"
 EOF
 
-export http_proxy="http://${proxy_ip}"
-export https_proxy="https://${proxy_ip}"
+export http_proxy="http://${http_proxy_uri_authority}"
+export https_proxy="https://${http_proxy_uri_authority}"
 export no_proxy="${no_proxy}"
 
 %{ endif ~}
@@ -230,8 +230,8 @@ $install_pathname \
   fast-timeouts \
   private-address="$private_ip" \
   public-address="$private_ip" \
-  %{ if proxy_ip != null ~}
-  http-proxy="${proxy_ip}" \
+  %{ if http_proxy_uri_authority != null ~}
+  http-proxy="${http_proxy_uri_authority}" \
   additional-no-proxy="${no_proxy}" \
   %{ else ~}
   no-proxy \

@@ -36,13 +36,16 @@ variable "ca_certificate_secret" {
   type        = string
 }
 
-variable "proxy_ip" {
-  description = "The IP address of a proxy server through which all traffic from the compute instances will be routed."
+variable "http_proxy_uri_authority" {
+  description = <<-EOD
+  The host and port subcomponents of an HTTP proxy URI authority, in the format host:port. This value will be used
+  to configure the HTTP and HTTPS proxy settings of the operating system and Terraform Enterprise.
+  EOD
   type        = string
 }
 
 variable "no_proxy" {
-  description = "Addresses which should not be accessed through the proxy server located at proxy_ip. This list will be combined with internal GCP addresses."
+  description = "Addresses which should not be accessed through the proxy server located at http_proxy_uri_authority. This list will be combined with internal GCP addresses."
   type        = list(string)
 }
 

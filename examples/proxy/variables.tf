@@ -30,8 +30,11 @@ variable "dns_zone_name" {
   type        = string
 }
 
-variable "proxy_ip" {
-  description = "The IP address of a proxy server through which all traffic from the compute instances will be routed."
+variable "http_proxy_uri_authority" {
+  description = <<-EOD
+  The host and port subcomponents of an HTTP proxy URI authority, in the format host:port. This value will be used
+  to configure the HTTP and HTTPS proxy settings of the operating system and Terraform Enterprise.
+  EOD
   type        = string
 }
 
