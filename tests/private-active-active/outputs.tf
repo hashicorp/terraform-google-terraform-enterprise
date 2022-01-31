@@ -17,13 +17,13 @@ output "initial_admin_user_url" {
 }
 
 output "proxy_instance_name" {
-  value = google_compute_instance.http_proxy.name
+  value = module.test_proxy.compute_instance.name
 
   description = "The name of the HTTP proxy compute instance."
 }
 
 output "proxy_instance_zone" {
-  value = google_compute_instance.http_proxy.zone
+  value = module.test_proxy.compute_instance.zone
 
   description = "The zone of the HTTP proxy compute instance."
 }
