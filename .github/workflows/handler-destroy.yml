@@ -36,7 +36,7 @@ jobs:
           SHA: ${{ github.event.client_payload.pull_request.head.sha }}
         run: |
           sed --in-place "s/source = \"..\/..\"/source = \"github.com\/$LOGIN\/$NAME?ref=$SHA\"/" main.tf
-          sed --in-place "s/source = \"..\/..\/fixtures/source = \"github.com\/$LOGIN\/$NAME?ref=$SHA//fixtures/" main.tf
+          sed --in-place "s/source = \"..\/..\/fixtures/source = \"github.com\/$LOGIN\/$NAME\/\/fixtures?ref=$SHA/" main.tf
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
@@ -144,7 +144,7 @@ jobs:
           SHA: ${{ github.event.client_payload.pull_request.head.sha }}
         run: |
           sed --in-place "s/source = \"..\/..\"/source = \"github.com\/$LOGIN\/$NAME?ref=$SHA\"/" main.tf
-          sed --in-place "s/source = \"..\/..\/fixtures/source = \"github.com\/$LOGIN\/$NAME?ref=$SHA//fixtures/" main.tf
+          sed --in-place "s/source = \"..\/..\/fixtures/source = \"github.com\/$LOGIN\/$NAME\/\/fixtures?ref=$SHA/" main.tf
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
@@ -253,7 +253,7 @@ jobs:
           SHA: ${{ github.event.client_payload.pull_request.head.sha }}
         run: |
           sed --in-place "s/source = \"..\/..\"/source = \"github.com\/$LOGIN\/$NAME?ref=$SHA\"/" main.tf
-          sed --in-place "s/source = \"..\/..\/fixtures/source = \"github.com\/$LOGIN\/$NAME?ref=$SHA//fixtures/" main.tf
+          sed --in-place "s/source = \"..\/..\/fixtures/source = \"github.com\/$LOGIN\/$NAME\/\/fixtures?ref=$SHA/" main.tf
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
