@@ -5,7 +5,7 @@ output "compute_instance" {
 }
 
 output "uri_authority" {
-  value = "${google_compute_instance.proxy.network_interface[0].network_ip}:${module.test_proxy_init.squid.http_port}"
+  value = "${google_compute_instance.proxy.network_interface[0].network_ip}:${local.http_port}"
 
   description = "The host and port of the proxy server."
 }
