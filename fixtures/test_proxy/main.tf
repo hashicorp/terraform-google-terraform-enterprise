@@ -63,8 +63,10 @@ resource "google_compute_instance" "proxy" {
   machine_type = "n1-standard-2"
   name         = var.name
 
-  description             = "A proxy for TFE."
-  metadata_startup_script = module.test_proxy_init.squid.user_data_script
+  description = "A proxy for TFE."
+  metadata_startup_script = local.mitmproxy_selected ? (
+    module.test_proxy_init.mitmproxy.user_data_script
+  ) : module.test_proxy_init.squid.user_data_script
 
   network_interface {
     subnetwork = var.subnetwork.self_link
