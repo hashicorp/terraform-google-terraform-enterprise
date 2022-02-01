@@ -131,7 +131,7 @@ module "user_data" {
   redis_use_tls             = var.redis_use_tls
   release_sequence          = var.release_sequence
   enable_active_active      = local.enable_active_active
-  proxy_ip                  = var.proxy_ip
+  http_proxy_uri_authority  = var.http_proxy_uri_authority
   namespace                 = var.namespace
   no_proxy                  = [local.common_fqdn, var.networking_subnet_range]
   iact_subnet_list          = var.iact_subnet_list

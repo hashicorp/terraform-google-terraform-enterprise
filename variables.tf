@@ -29,9 +29,12 @@ variable "node_count" {
   }
 }
 
-variable "proxy_ip" {
+variable "http_proxy_uri_authority" {
   default     = null
-  description = "IP Address of the proxy server"
+  description = <<-EOD
+  The host and port subcomponents of an HTTP proxy URI authority, in the format host:port. This value will be used
+  to configure the HTTP and HTTPS proxy settings of the operating system and Terraform Enterprise.
+  EOD
   type        = string
 }
 

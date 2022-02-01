@@ -66,14 +66,14 @@ resource "google_compute_region_ssl_certificate" "main" {
 module "tfe" {
   source = "../../"
 
-  namespace             = var.namespace
-  node_count            = 1
-  license_secret        = var.license_secret
-  fqdn                  = var.fqdn
-  ssl_certificate_name  = google_compute_region_ssl_certificate.main.name
-  proxy_ip              = var.proxy_ip
-  ca_certificate_secret = var.ca_certificate_secret
-  network               = var.network
-  subnetwork            = var.subnetwork
-  dns_zone_name         = var.dns_zone_name
+  namespace                = var.namespace
+  node_count               = 1
+  license_secret           = var.license_secret
+  fqdn                     = var.fqdn
+  ssl_certificate_name     = google_compute_region_ssl_certificate.main.name
+  http_proxy_uri_authority = var.http_proxy_uri_authority
+  ca_certificate_secret    = var.ca_certificate_secret
+  network                  = var.network
+  subnetwork               = var.subnetwork
+  dns_zone_name            = var.dns_zone_name
 }
