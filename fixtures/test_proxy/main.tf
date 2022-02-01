@@ -45,7 +45,7 @@ resource "google_compute_firewall" "internal" {
   allow {
     protocol = "tcp"
 
-    ports = [module.test_proxy_init.squid.http_port]
+    ports = [local.http_port]
   }
 
   log_config {
