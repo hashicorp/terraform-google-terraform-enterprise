@@ -6,8 +6,24 @@ resource "google_service_account" "proxy" {
 }
 
 resource "google_project_iam_member" "log_writer" {
-  member = "serviceAccount:${google_service_account.proxy.email}"
+  member = local.service_account_member
   role   = "roles/logging.logWriter"
+}
+
+resource "google_secret_manager_secret_iam_member" "http_proxy_certificate" {
+  count = local.mitmproxy_selected ? 1 : 0
+
+  member    = local.service_account_member
+  role      = "roles/secretmanager.secretAccessor"
+  secret_id = var.mitmproxy_ca_certificate_secret
+}
+
+resource "google_secret_manager_secret_iam_member" "http_proxy_private_key" {
+  count = local.mitmproxy_selected ? 1 : 0
+
+  member    = local.service_account_member
+  role      = "roles/secretmanager.secretAccessor"
+  secret_id = var.mitmproxy_ca_private_key_secret
 }
 
 module "test_proxy_init" {
