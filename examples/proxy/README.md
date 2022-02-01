@@ -18,17 +18,18 @@ To define addresses that can be reached without the proxy, configure the `no_pro
 
 ```hcl
 module "tfe_node" {
-  source               = "git@github.com:hashicorp/terraform-google-terraform-enterprise.git"
-  namespace            = "<Namespace to uniquely identify resources>"
-  node_count           = "<Number of TFE nodes to provision>"
-  license_secret       = "<Secret Manager secret comprising license>
-  fqdn                 = "<Fully qualified domain name>"
-  ssl_certificate_name = "<Name of the SSL certificate provisioned in GCP>"
-  dns_zone_name        = "<Name of the DNS zone in which a record set will be created>"
-  http_proxy_uri_authority             = "<host and port of the existing proxy>"
-  ca_certificate_secret = "<Secret Manager secret comprising CA certificate>
-  network              = "<The self link of the host project's network to use>"
-  subnetwork           = "<The self link of the host project's subnetwork to use>"
+  source = "git@github.com:hashicorp/terraform-google-terraform-enterprise.git"
+
+  namespace                = "<Namespace to uniquely identify resources>"
+  node_count               = "<Number of TFE nodes to provision>"
+  license_secret           = "<Secret Manager secret comprising license>
+  fqdn                     = "<Fully qualified domain name>"
+  ssl_certificate_name     = "<Name of the SSL certificate provisioned in GCP>"
+  dns_zone_name            = "<Name of the DNS zone in which a record set will be created>"
+  http_proxy_uri_authority = "<host and port of the existing proxy>"
+  ca_certificate_secret    = "<Secret Manager secret comprising CA certificate>
+  network                  = "<The self link of the host project's network to use>"
+  subnetwork               = "<The self link of the host project's subnetwork to use>"
 }
 ```
 
