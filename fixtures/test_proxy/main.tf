@@ -6,8 +6,24 @@ resource "google_service_account" "proxy" {
 }
 
 resource "google_project_iam_member" "log_writer" {
-  member = "serviceAccount:${google_service_account.proxy.email}"
+  member = local.service_account_member
   role   = "roles/logging.logWriter"
+}
+
+resource "google_secret_manager_secret_iam_member" "http_proxy_certificate" {
+  count = local.mitmproxy_selected ? 1 : 0
+
+  member    = local.service_account_member
+  role      = "roles/secretmanager.secretAccessor"
+  secret_id = var.mitmproxy_ca_certificate_secret
+}
+
+resource "google_secret_manager_secret_iam_member" "http_proxy_private_key" {
+  count = local.mitmproxy_selected ? 1 : 0
+
+  member    = local.service_account_member
+  role      = "roles/secretmanager.secretAccessor"
+  secret_id = var.mitmproxy_ca_private_key_secret
 }
 
 module "test_proxy_init" {
@@ -29,7 +45,7 @@ resource "google_compute_firewall" "internal" {
   allow {
     protocol = "tcp"
 
-    ports = [module.test_proxy_init.squid.http_port]
+    ports = [local.http_port]
   }
 
   log_config {
@@ -63,8 +79,10 @@ resource "google_compute_instance" "proxy" {
   machine_type = "n1-standard-2"
   name         = var.name
 
-  description             = "A proxy for TFE."
-  metadata_startup_script = module.test_proxy_init.squid.user_data_script
+  description = "A proxy for TFE."
+  metadata_startup_script = local.mitmproxy_selected ? (
+    module.test_proxy_init.mitmproxy.user_data_script
+  ) : module.test_proxy_init.squid.user_data_script
 
   network_interface {
     subnetwork = var.subnetwork.self_link
