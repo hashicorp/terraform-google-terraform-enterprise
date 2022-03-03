@@ -21,7 +21,7 @@ data "google_service_account" "main" {
 
 resource "google_service_account_key" "key" {
   count              = 1
-  service_account_id = var.override_service_account_id != null ? google_service_account.main[count.index].name : data.google_service_account.main[count.index].name
+  service_account_id = local.service_account.name
 }
 
 resource "google_project_iam_member" "log_writer" {
