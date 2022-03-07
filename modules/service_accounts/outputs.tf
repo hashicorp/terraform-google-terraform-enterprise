@@ -4,7 +4,7 @@ output "credentials" {
   description = "The private key of the service account."
 }
 output "service_account" {
-  value = var.override_service_account_id == null ? google_service_account.main[0] : data.google_service_account.main[0]
+  value = var.existing_service_account_id == null ? google_service_account.main[0] : data.google_service_account.main[0]
 
   description = "The service account."
 }

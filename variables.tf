@@ -53,10 +53,10 @@ variable "labels" {
   default     = {}
 }
 
-variable "override_service_account_id" {
+variable "existing_service_account_id" {
   description = <<-EOD
-  An ID of a service account to use for log management. Setting this value prevents terraform from creating a new user and
-  assigning  a logWriter IAM role.
+  An ID of an existing service account to use for log management. Setting this value prevents terraform from creating
+  a new user and assigning  a logWriter IAM role.
   EOD
   type        = string
   default     = null

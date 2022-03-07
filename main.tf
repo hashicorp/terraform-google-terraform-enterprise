@@ -34,7 +34,7 @@ module "service_accounts" {
   namespace                   = var.namespace
   ssl_certificate_secret      = var.ssl_certificate_secret
   ssl_private_key_secret      = var.ssl_private_key_secret
-  override_service_account_id = var.override_service_account_id
+  existing_service_account_id = var.existing_service_account_id
   depends_on = [
     module.project_factory_project_services
   ]
