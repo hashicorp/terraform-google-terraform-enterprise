@@ -20,7 +20,6 @@ data "google_service_account" "main" {
 }
 
 resource "google_service_account_key" "key" {
-  count              = 1
   service_account_id = local.service_account.name
 }
 
