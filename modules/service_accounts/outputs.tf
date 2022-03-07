@@ -1,5 +1,5 @@
 output "credentials" {
-  value = base64decode(google_service_account_key.key[0].private_key)
+  value = base64decode(google_service_account_key.key.private_key)
 
   description = "The private key of the service account."
 }
