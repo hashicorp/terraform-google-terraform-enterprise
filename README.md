@@ -21,6 +21,8 @@ This module is intended to run in a GCP project with minimal preparation, howeve
 1. Create a Cloud DNS zone for the DNS name you wish to use.
 2. Create a managed SSL Certificate in Network Services -> Load Balancing to serve as the certificate for the FQDN.
 
+Optionally a pre-existing service account may be specified with the `existing_service_account_id` variable to circumvent the need to manage IAM permissions within the module.
+
 ### Provisioning the SSL certificate
 
 The SSL certificate for the TFE load balancer is a pre-requisite for this module.
