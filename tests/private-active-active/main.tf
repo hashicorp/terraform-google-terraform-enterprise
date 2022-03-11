@@ -7,12 +7,12 @@ resource "random_pet" "main" {
 module "test_proxy" {
   source = "../../fixtures/test_proxy"
 
-  instance_image = data.google_compute_image.ubuntu.id
-  name           = local.name
-  network        = module.tfe.network
-  subnetwork     = module.tfe.subnetwork
+  instance_image              = data.google_compute_image.ubuntu.id
+  name                        = local.name
+  network                     = module.tfe.network
+  subnetwork                  = module.tfe.subnetwork
   existing_service_account_id = var.google.service_account
-  
+
   labels = local.labels
 }
 
