@@ -1,5 +1,5 @@
 resource "random_pet" "main" {
-  length    = 1
+  length = 1
 }
 
 module "secrets" {

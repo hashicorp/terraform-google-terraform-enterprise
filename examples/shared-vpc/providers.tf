@@ -1,3 +1,3 @@
 provider "google" {
-  project     = "ptfeacc-test"
+  project = "ptfeacc-test"
 }
