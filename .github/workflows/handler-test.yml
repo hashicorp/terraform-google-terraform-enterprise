@@ -94,6 +94,7 @@ jobs:
           GOOGLE_PROJECT: ${{ secrets.GOOGLE_PROJECT }}
           GOOGLE_REGION: ${{ secrets.GOOGLE_REGION }}
           GOOGLE_ZONE: ${{ secrets.GOOGLE_ZONE }}
+          GOOGLE_SERVICE_ACCOUNT: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
           TFE_HOSTNAME: ${{ secrets.TFE_HOSTNAME }}
           TFE_ORGANIZATION: ${{ secrets.TFE_ORGANIZATION }}
           TFE_TOKEN: ${{ secrets.TFE_TOKEN }}
@@ -103,12 +104,13 @@ jobs:
           cat <<EOF > github.auto.tfvars
           iact_subnet_list = ["$ip_address/32"]
           google = {
-            credentials = <<-EOC
+            credentials     = <<-EOC
             $GOOGLE_CREDENTIALS
             EOC
-            project     = "$GOOGLE_PROJECT"
-            region      = "$GOOGLE_REGION"
-            zone        = "$GOOGLE_ZONE"
+            project         = "$GOOGLE_PROJECT"
+            region          = "$GOOGLE_REGION"
+            zone            = "$GOOGLE_ZONE"
+            service_account = "$GOOGLE_SERVICE_ACCOUNT"
           }
           tfe = {
             hostname     = "$TFE_HOSTNAME"
@@ -322,6 +324,7 @@ jobs:
           GOOGLE_PROJECT: ${{ secrets.GOOGLE_PROJECT }}
           GOOGLE_REGION: ${{ secrets.GOOGLE_REGION }}
           GOOGLE_ZONE: ${{ secrets.GOOGLE_ZONE }}
+          GOOGLE_SERVICE_ACCOUNT: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
           TFE_HOSTNAME: ${{ secrets.TFE_HOSTNAME }}
           TFE_ORGANIZATION: ${{ secrets.TFE_ORGANIZATION }}
           TFE_TOKEN: ${{ secrets.TFE_TOKEN }}
@@ -329,12 +332,13 @@ jobs:
         run: |
           cat <<EOF > github.auto.tfvars
           google = {
-            credentials = <<-EOC
+            credentials     = <<-EOC
             $GOOGLE_CREDENTIALS
             EOC
-            project     = "$GOOGLE_PROJECT"
-            region      = "$GOOGLE_REGION"
-            zone        = "$GOOGLE_ZONE"
+            project         = "$GOOGLE_PROJECT"
+            region          = "$GOOGLE_REGION"
+            zone            = "$GOOGLE_ZONE"
+            service_account = "$GOOGLE_SERVICE_ACCOUNT"
           }
           tfe = {
             hostname     = "$TFE_HOSTNAME"
@@ -583,6 +587,7 @@ jobs:
           GOOGLE_PROJECT: ${{ secrets.GOOGLE_PROJECT }}
           GOOGLE_REGION: ${{ secrets.GOOGLE_REGION }}
           GOOGLE_ZONE: ${{ secrets.GOOGLE_ZONE }}
+          GOOGLE_SERVICE_ACCOUNT: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
           TFE_HOSTNAME: ${{ secrets.TFE_HOSTNAME }}
           TFE_ORGANIZATION: ${{ secrets.TFE_ORGANIZATION }}
           TFE_TOKEN: ${{ secrets.TFE_TOKEN }}
@@ -590,12 +595,13 @@ jobs:
         run: |
           cat <<EOF > github.auto.tfvars
           google = {
-            credentials = <<-EOC
+            credentials     = <<-EOC
             $GOOGLE_CREDENTIALS
             EOC
-            project     = "$GOOGLE_PROJECT"
-            region      = "$GOOGLE_REGION"
-            zone        = "$GOOGLE_ZONE"
+            project         = "$GOOGLE_PROJECT"
+            region          = "$GOOGLE_REGION"
+            zone            = "$GOOGLE_ZONE"
+            service_account = "$GOOGLE_SERVICE_ACCOUNT"
           }
           tfe = {
             hostname     = "$TFE_HOSTNAME"

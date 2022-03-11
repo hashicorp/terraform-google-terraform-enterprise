@@ -7,12 +7,13 @@ resource "random_pet" "main" {
 module "tfe" {
   source = "../.."
 
-  dns_zone_name        = data.google_dns_managed_zone.main.name
-  fqdn                 = "public-active-active.${data.google_dns_managed_zone.main.dns_name}"
-  namespace            = random_pet.main.id
-  node_count           = 2
-  license_secret       = data.tfe_outputs.base.values.license_secret_id
-  ssl_certificate_name = data.tfe_outputs.base.values.wildcard_ssl_certificate_name
+  dns_zone_name               = data.google_dns_managed_zone.main.name
+  fqdn                        = "public-active-active.${data.google_dns_managed_zone.main.dns_name}"
+  namespace                   = random_pet.main.id
+  existing_service_account_id = var.google.service_account
+  node_count                  = 2
+  license_secret              = data.tfe_outputs.base.values.license_secret_id
+  ssl_certificate_name        = data.tfe_outputs.base.values.wildcard_ssl_certificate_name
 
   iact_subnet_list       = var.iact_subnet_list
   iact_subnet_time_limit = 1440

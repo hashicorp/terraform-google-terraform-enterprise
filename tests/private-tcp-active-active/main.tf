@@ -20,12 +20,13 @@ module "test_proxy" {
 module "tfe" {
   source = "../.."
 
-  dns_zone_name  = data.google_dns_managed_zone.main.name
-  fqdn           = "private-tcp-active-active.${data.google_dns_managed_zone.main.dns_name}"
-  namespace      = random_pet.main.id
-  node_count     = 2
-  license_secret = data.tfe_outputs.base.values.license_secret_id
-  labels         = local.labels
+  dns_zone_name               = data.google_dns_managed_zone.main.name
+  fqdn                        = "private-tcp-active-active.${data.google_dns_managed_zone.main.dns_name}"
+  namespace                   = random_pet.main.id
+  existing_service_account_id = var.google.service_account
+  node_count                  = 2
+  license_secret              = data.tfe_outputs.base.values.license_secret_id
+  labels                      = local.labels
 
   ca_certificate_secret    = data.tfe_outputs.base.values.ca_certificate_secret_id
   iact_subnet_list         = ["${module.test_proxy.compute_instance.network_interface[0].network_ip}/32"]
