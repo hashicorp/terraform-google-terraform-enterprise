@@ -11,7 +11,8 @@ module "test_proxy" {
   name           = local.name
   network        = module.tfe.network
   subnetwork     = module.tfe.subnetwork
-
+  existing_service_account_id = var.google.service_account
+  
   labels = local.labels
 }
 
