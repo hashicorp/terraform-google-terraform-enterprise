@@ -81,7 +81,7 @@ module "tfe" {
 
   namespace            = var.namespace
   node_count           = 1
-  license_secret       = var.license_secret
+  license_secret       = module.secrets.license_secret
   fqdn                 = var.fqdn
   ssl_certificate_name = google_compute_region_ssl_certificate.main.name
   dns_create_record    = var.dns_create_record
