@@ -1,3 +1,16 @@
+resource "random_pet" "main" {
+  length    = 1
+}
+
+module "secrets" {
+  source = "../../fixtures/secrets"
+
+  license = {
+    id   = random_pet.main.id
+    path = var.license_file
+  }
+}
+
 resource "tls_locally_signed_cert" "main" {
   cert_request_pem      = tls_cert_request.main.cert_request_pem
   ca_key_algorithm      = tls_private_key.ca.algorithm

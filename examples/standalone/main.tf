@@ -1,9 +1,22 @@
+resource "random_pet" "main" {
+  length    = 1
+}
+
+module "secrets" {
+  source = "../../fixtures/secrets"
+
+  license = {
+    id   = random_pet.main.id
+    path = var.license_file
+  }
+}
+
 module "tfe" {
   source = "../../"
 
   namespace            = var.namespace
   node_count           = 1
-  license_secret       = var.license_secret
+  license_secret       = module.secrets.license_secret
   fqdn                 = var.fqdn
   ssl_certificate_name = var.ssl_certificate_name
   dns_zone_name        = var.dns_zone_name

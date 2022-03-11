@@ -28,21 +28,6 @@ output "url" {
   description = "Login URL to setup the TFE instance once it is initialized"
 }
 
-# output "network" {
-#   value       = module.tfe.network
-#   description = "The network to which TFE is attached."
-# }
-
-# output "service_account_email" {
-#   value       = module.tfe.service_account_email
-#   description = "The email address of the service account associated with the TFE instance."
-# }
-
-# output "subnetwork" {
-#   value       = module.tfe.subnetwork
-#   description = "The subnetwork to which TFE is attached."
-# }
-
 output "dns_configuration_notice" {
   value       = "If you are using external DNS, please make sure to create a DNS record using the lb_address output that has been provided"
   description = "A warning message."
