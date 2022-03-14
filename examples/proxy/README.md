@@ -21,10 +21,8 @@ module "tfe_node" {
   source = "git@github.com:hashicorp/terraform-google-terraform-enterprise.git"
 
   namespace                = "<Namespace to uniquely identify resources>"
-  node_count               = "<Number of TFE nodes to provision>"
-  license_secret           = "<Secret Manager secret comprising license>
+  license_secret           = "The local path to the Terraform Enterprise license"
   fqdn                     = "<Fully qualified domain name>"
-  ssl_certificate_name     = "<Name of the SSL certificate provisioned in GCP>"
   dns_zone_name            = "<Name of the DNS zone in which a record set will be created>"
   http_proxy_uri_authority = "<host and port of the existing proxy>"
   ca_certificate_secret    = "<Secret Manager secret comprising CA certificate>
@@ -39,15 +37,9 @@ module "tfe_node" {
 
 `namespace` - Namespace to uniquely identify resources. Used in name prefixes
 
-`license_secret` - The Secret Manager secret which comprises the
-Base64 encoded Replicated license file. The Terraform provider calls
-this value the secret_id and the GCP UI calls it the name.
+`license_file` - The local path to the Terraform Enterprise license
 
 `fqdn` - Fully qualified domain name
-
-`ssl_certificate_name` - Name of the SSL certificate provisioned in GCP. See below.
-
-`node_count` - Number of TFE nodes to provision. A number greater than 1 will enable Active/Active
 
 `ca_certificate_secret` - The Secret Manager secret which comprises the
 Base64 encoded certificate file of the Certificate Authority for the

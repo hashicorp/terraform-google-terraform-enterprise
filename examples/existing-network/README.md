@@ -39,13 +39,9 @@ module "tfe_node" {
 
 `namespace` - Namespace to uniquely identify resources. Used in name prefixes
 
-`license_secret` - The Secret Manager secret which comprises the
-Base64 encoded Replicated license file. The Terraform provider calls
-this value the secret_id and the GCP UI calls it the name.
+`license_file` - The local path to the Terraform Enterprise license
 
 `fqdn` - Fully qualified domain name
-
-`ssl_certificate_name` - Name of the SSL certificate provisioned in GCP. See below.
 
 `node_count` - Number of TFE nodes to provision. A number greater than 1 will enable Active/Active
 
