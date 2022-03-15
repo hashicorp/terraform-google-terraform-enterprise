@@ -91,6 +91,9 @@ then
 fi
 
 echo "[Terraform Enterprise] Installing jq" | tee -a $log_pathname
+# workaround for GCP RHEL 7 known issue 
+# https://cloud.google.com/compute/docs/troubleshooting/known-issues#keyexpired
+sudo sed -i 's/repo_gpgcheck=1/repo_gpgcheck=0/g' /etc/yum.repos.d/google-cloud.repo
 if [[ $distribution == "ubuntu" ]]
 then
   apt-get --assume-yes update
