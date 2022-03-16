@@ -14,7 +14,7 @@ module "tfe" {
   node_count                  = 2
   license_secret              = data.tfe_outputs.base.values.license_secret_id
   ssl_certificate_name        = data.tfe_outputs.base.values.wildcard_ssl_certificate_name
-
+  networking_reserve_subnet_range = "10.2.0.0/16"
   iact_subnet_list       = var.iact_subnet_list
   iact_subnet_time_limit = 1440
   load_balancer          = "PUBLIC"
