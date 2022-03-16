@@ -28,12 +28,7 @@ output "url" {
   description = "Login URL to setup the TFE instance once it is initialized"
 }
 
-output "network" {
-  value       = module.tfe.network
-  description = "The network to which TFE is attached."
-}
-
-output "subnetwork" {
-  value       = module.tfe.subnetwork
-  description = "The subnetwork to which TFE is attached."
+output "iact_notice" {
+  value       = "Once deployed, please follow this page to set the initial user up: https://www.terraform.io/docs/enterprise/install/automating-initial-user.html"
+  description = "Login advice message."
 }

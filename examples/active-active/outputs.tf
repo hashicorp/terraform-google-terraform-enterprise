@@ -23,3 +23,8 @@ output "initial_admin_user_url" {
   value       = module.tfe.initial_admin_user_url
   description = "Initial Admin user URL"
 }
+
+output "iact_notice" {
+  value       = "Once deployed, please follow this page to set the initial user up: https://www.terraform.io/docs/enterprise/install/automating-initial-user.html"
+  description = "Login advice message."
+}

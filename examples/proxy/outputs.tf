@@ -27,3 +27,8 @@ output "url" {
   value       = module.tfe.url
   description = "Login URL to setup the TFE instance once it is initialized"
 }
+
+output "iact_notice" {
+  value       = "Once deployed, please follow this page to set the initial user up: https://www.terraform.io/docs/enterprise/install/automating-initial-user.html"
+  description = "Login advice message."
+}
