@@ -27,13 +27,3 @@ output "url" {
   value       = module.tfe.url
   description = "Login URL to setup the TFE instance once it is initialized"
 }
-
-output "dns_configuration_notice" {
-  value       = "If you are using external DNS, please make sure to create a DNS record using the lb_address output that has been provided"
-  description = "A warning message."
-}
-
-output "iact_notice" {
-  value       = "Once deployed, please follow this page to set the initial user up: https://www.terraform.io/docs/enterprise/install/automating-initial-user.html"
-  description = "Login advice message."
-}

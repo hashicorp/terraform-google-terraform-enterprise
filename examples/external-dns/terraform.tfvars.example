@@ -1,4 +1,4 @@
-dns_create_record    = "true"
+dns_create_record    = true
 namespace            = "user-friendly-name"
 fqdn                 = "tfe.my.domain.com"
 dns_zone_name        = "my.domain.com"

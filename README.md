@@ -33,6 +33,20 @@ For more information on provisioning certificates in GCP, read the [documentatio
 
 Examples of creating a self-signed certificate for use with internal load balancers can be found within the examples.
 
+## Certificate Advice
+
+- If you are deploying an instance with a private load balancer, the certificate needs to be a *regional* certificate. If you have a working certificate, you can upload this to GCP using the gcloud CLI command using the example below.
+
+```bash
+gcloud compute ssl-certificates create my-cert --certificate=fullchain.pem --private-key=privkey.pem --region=us-central1
+```
+where `fullchain.pem` and `privkey.pem` are paths to local files containing the relevant certificate material. Specify the region where you intend to deploy Terraform Enterprise. Note that these certificates will not be listed in the GCP UI, but are visible if you run
+```bash
+gcloud compute ssl-certificates list
+```
+
+- If you are deploying a public instance of TFE, the certificate should be a global certificate.  Global certificates can be uploaded through the GCP UI (Network services > Load balancing > select advanced menu > Certificates > CREATE SSL CERTIFICATE) and will be visible both in the UI and also via the use of the above `gcloud` command.
+
 ### Project Service APIs
 
 The following sections list the APIs that will be enabled in general
