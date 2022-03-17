@@ -1,11 +1,17 @@
 resource "google_service_account" "proxy" {
-  account_id = var.name
-
+  count        = var.existing_service_account_id == null ? 1 : 0
+  account_id   = var.name
   description  = "The service account of the proxy for TFE."
   display_name = "TFE Proxy"
 }
 
+data "google_service_account" "proxy" {
+  count      = var.existing_service_account_id == null ? 0 : 1
+  account_id = var.existing_service_account_id
+}
+
 resource "google_project_iam_member" "log_writer" {
+  count  = var.existing_service_account_id == null ? 1 : 0
   member = local.service_account_member
   role   = "roles/logging.logWriter"
 }
@@ -41,7 +47,7 @@ resource "google_compute_firewall" "internal" {
   description             = "The firewall which allows internal access to the proxy."
   direction               = "INGRESS"
   source_ranges           = [var.subnetwork.ip_cidr_range]
-  target_service_accounts = [google_service_account.proxy.email]
+  target_service_accounts = [local.service_account.email]
 
   allow {
     protocol = "tcp"
@@ -61,7 +67,7 @@ resource "google_compute_firewall" "ssh" {
   description             = "The firewall which allows the ingress of Identity-Aware Proxy SSH traffic to the proxy."
   direction               = "INGRESS"
   source_ranges           = ["35.235.240.0/20"]
-  target_service_accounts = [google_service_account.proxy.email]
+  target_service_accounts = [local.service_account.email]
 
   allow {
     protocol = "tcp"
@@ -92,7 +98,7 @@ resource "google_compute_instance" "proxy" {
   service_account {
     scopes = ["cloud-platform"]
 
-    email = google_service_account.proxy.email
+    email = local.service_account.email
   }
 
   labels = var.labels
