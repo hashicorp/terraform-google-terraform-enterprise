@@ -1,7 +1,6 @@
 resource "google_service_account" "proxy" {
-  count      = var.existing_service_account_id == null ? 1 : 0
-  account_id = var.name
-
+  count        = var.existing_service_account_id == null ? 1 : 0
+  account_id   = var.name
   description  = "The service account of the proxy for TFE."
   display_name = "TFE Proxy"
 }
