@@ -26,7 +26,8 @@ then
   echo "[Terraform Enterprise] Patching GCP Yum repo configuration" | tee -a $log_pathname
   # workaround for GCP RHEL 7 known issue 
   # https://cloud.google.com/compute/docs/troubleshooting/known-issues#keyexpired
-  sudo sed -i 's/repo_gpgcheck=1/repo_gpgcheck=0/g' /etc/yum.repos.d/google-cloud.repo
+  sed -i 's/repo_gpgcheck=1/repo_gpgcheck=0/g' /etc/yum.repos.d/google-cloud.repo
+  yum makecache fast
 fi
 
 echo "[Terraform Enterprise] Writing Terraform Enterprise settings to '${settings_pathname}'" | tee -a $log_pathname
