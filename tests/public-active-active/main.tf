@@ -1,6 +1,6 @@
 resource "random_pet" "main" {
   length    = 1
-  prefix    = "paa"
+  prefix    = "paa-e4"
   separator = "-"
 }
 
