@@ -8,8 +8,7 @@ data "google_dns_managed_zone" "main" {
 }
 
 data "google_compute_image" "rhel" {
-  name = "rhel-7-v20200403"
-
+  name    = "rhel-7-v20200403"
   project = "gce-uefi-images"
 }
 
