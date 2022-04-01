@@ -21,7 +21,7 @@ module "tfe_node" {
   source = "git@github.com:hashicorp/terraform-google-terraform-enterprise.git"
 
   namespace                = "<Namespace to uniquely identify resources>"
-  license_secret           = "The local path to the Terraform Enterprise license"
+  license_secret           = "<The local path to the Terraform Enterprise license>"
   fqdn                     = "<Fully qualified domain name>"
   dns_zone_name            = "<Name of the DNS zone in which a record set will be created>"
   http_proxy_uri_authority = "<host and port of the existing proxy>"
