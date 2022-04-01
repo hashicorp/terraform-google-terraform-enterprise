@@ -1,0 +1,8 @@
+ca_certificate_secret    = "ca_certificate_secret_name"
+http_proxy_uri_authority = "<host>:<port>"
+network                  = "projects/<project_name>/global/networks/<network_name>"
+subnetwork               = "projects/<project_name>/regions/<region>/subnetworks/<subnetwork_name>"
+namespace                = "user-friendly-name"
+fqdn                     = "tfe.my.domain.com"
+dns_zone_name            = "my.domain.com"
+license_file             = "/files/license.rli"

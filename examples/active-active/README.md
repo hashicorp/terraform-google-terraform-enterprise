@@ -29,36 +29,6 @@ module "tfe_node" {
 
 - Run `terraform init` and `terraform apply`
 
-## Required Inputs
-
-`namespace` - Namespace to uniquely identify resources. Used in name prefixes
-
-`license_secret` - The Secret Manager secret which comprises the
-Base64 encoded Replicated license file. The Terraform provider calls
-this value the secret_id and the GCP UI calls it the name.
-
-`fqdn` - Fully qualified domain name
-
-`ssl_certificate_name` - Name of the SSL certificate provisioned in GCP. See below.
-
-`node_count` - Number of TFE nodes to provision. A number greater than 1 will enable Active/Active
-
-`dns_zone_name` - Name of the DNS zone in which a record set will be created
-
-## Certificate Advice
-
-- If you are deploying an instance with a private load balancer, the certificate needs to be a *regional* certificate. If you have a working certificate, you can upload this to GCP using the gcloud CLI command using the example below.
-
-```bash
-gcloud compute ssl-certificates create my-cert --certificate=fullchain.pem --private-key=privkey.pem --region=us-central1
-```
-where `fullchain.pem` and `privkey.pem` are paths to local files containing the relevant certificate material. Specify the region where you intend to deploy Terraform Enterprise. Note that these certificates will not be listed in the GCP UI, but are visible if you run
-```bash
-gcloud compute ssl-certificates list
-```
-
-- If you are deploying a public instance of TFE, the certificate should be a global certificate.  Global certificates can be uploaded through the GCP UI (Network services > Load balancing > select advanced menu > Certificates > CREATE SSL CERTIFICATE) and will be visible both in the UI and also via the use of the above `gcloud` command.
-
 ## Post-deployment Tasks
 
 - The build should take approximately 10-15 to deploy.  Once Terraform completes, give the platform another 10 minutes or so prior to attempting to interact with it in order for all containers to start up.

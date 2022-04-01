@@ -1,0 +1,8 @@
+node_count           = 2 # value must be either 1 or 2
+network              = "projects/<project_name>/global/networks/<network_name>"
+subnetwork           = "projects/<project_name>/regions/<region>/subnetworks/<subnetwork_name>"  #self link of the VPC subnetwork you wish to use
+namespace            = "user-friendly-name"
+fqdn                 = "tfe.my.domain.com"
+ssl_certificate_name = "certificate-name"
+dns_zone_name        = "my.domain.com"
+license_file         = "/files/license.rli"

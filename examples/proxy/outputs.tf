@@ -8,7 +8,27 @@ output "lb_address" {
   description = "Load Balancer Address"
 }
 
-output "login_url" {
-  value       = module.tfe.login_url
+output "health_check_url" {
+  value       = module.tfe.health_check_url
+  description = "The URL of the Terraform Enterprise health check endpoint."
+}
+
+output "iact_url" {
+  value       = module.tfe.iact_url
+  description = "IACT URL"
+}
+
+output "initial_admin_user_url" {
+  value       = module.tfe.initial_admin_user_url
+  description = "Initial Admin user URL"
+}
+
+output "url" {
+  value       = module.tfe.url
   description = "Login URL to setup the TFE instance once it is initialized"
+}
+
+output "iact_notice" {
+  value       = "Once deployed, please follow this page to set the initial user up: https://www.terraform.io/docs/enterprise/install/automating-initial-user.html"
+  description = "Login advice message."
 }

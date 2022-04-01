@@ -1,0 +1,7 @@
+node_count           = 2 # value must be either 1 or 2
+network              = "projects/<project_name>/global/networks/<network_name>"
+subnetwork           = "projects/<project_name>/regions/<region>/subnetworks/<subnetwork_name>"
+namespace            = "user-friendly-name"
+fqdn                 = "tfe.my.domain.com"
+dns_zone_name        = "my.domain.com"
+license_file         = "/files/license.rli"
