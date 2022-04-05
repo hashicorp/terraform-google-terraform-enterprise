@@ -29,7 +29,7 @@ module "object_storage" {
 module "service_accounts" {
   source = "./modules/service_accounts"
 
-  ca_certificate_secret       = var.ca_certificate_secret
+  ca_certificate_secret_id    = var.ca_certificate_secret_id
   tfe_license_secret_id       = var.tfe_license_secret_id
   namespace                   = var.namespace
   ssl_certificate_secret      = var.ssl_certificate_secret
@@ -108,7 +108,6 @@ module "settings" {
   disk_path                = var.disk_path
   iact_subnet_list         = var.iact_subnet_list
   iact_subnet_time_limit   = var.iact_subnet_time_limit
-  trusted_proxies          = local.trusted_proxies
   release_sequence         = var.release_sequence
   pg_extra_params          = "sslmode=require"
   tls_vers                 = var.tls_vers
@@ -117,11 +116,11 @@ module "settings" {
   capacity_concurrency     = var.capacity_concurrency
   capacity_memory          = var.capacity_memory
 
-  extra_no_proxy = concat([ # Validate
-    "127.0.0.1",
-    ".aws.ce.redhat.com",
-    var.fqdn,
-  ], var.no_proxy)
+  extra_no_proxy  = [local.common_fqdn, var.networking_subnet_range]
+  trusted_proxies = concat(
+    var.trusted_proxies,
+    local.trusted_proxies
+  )
 
   # Replicated Base Configuration
   hostname                                  = local.full_fqdn
@@ -161,7 +160,7 @@ module "settings" {
 }
 
 # -----------------------------------------------------------------------------
-# AWS user data / cloud init used to install and configure TFE on instance(s)
+# User data / cloud init used to install and configure TFE on instance(s)
 # -----------------------------------------------------------------------------
 module "tfe_init" {
   source = "git::https://github.com/hashicorp/terraform-random-tfe-utility//modules/tfe_init?ref=gcp_init_utilities"
@@ -175,7 +174,7 @@ module "tfe_init" {
   enable_monitoring        = var.enable_monitoring
 
   # Secrets
-  ca_certificate_secret_id = var.ca_certificate_secret == null ? null : var.ca_certificate_secret # TODO: Rename to ca_certificate_secret_id
+  ca_certificate_secret_id = var.ca_certificate_secret_id == null ? null : var.ca_certificate_secret_id
   certificate_secret_id    = var.vm_certificate_secret_id == null ? null : var.vm_certificate_secret_id
   key_secret_id            = var.vm_key_secret_id == null ? null : var.vm_key_secret_id
   tfe_license_secret_id    = var.tfe_license_secret_id

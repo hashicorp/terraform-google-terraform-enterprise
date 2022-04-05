@@ -85,7 +85,7 @@ module "tfe" {
   fqdn                     = var.fqdn
   ssl_certificate_name     = google_compute_region_ssl_certificate.main.name
   http_proxy_uri_authority = var.http_proxy_uri_authority
-  ca_certificate_secret    = var.ca_certificate_secret
+  ca_certificate_secret_id = var.ca_certificate_secret_id
   network                  = var.network
   subnetwork               = var.subnetwork
   dns_zone_name            = var.dns_zone_name

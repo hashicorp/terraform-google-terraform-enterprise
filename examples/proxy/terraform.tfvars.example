@@ -1,4 +1,4 @@
-ca_certificate_secret    = "ca_certificate_secret_name"
+ca_certificate_secret_id = "ca_certificate_secret_id"
 http_proxy_uri_authority = "<host>:<port>"
 network                  = "projects/<project_name>/global/networks/<network_name>"
 subnetwork               = "projects/<project_name>/regions/<region>/subnetworks/<subnetwork_name>"

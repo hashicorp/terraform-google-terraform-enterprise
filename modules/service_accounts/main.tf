@@ -36,11 +36,11 @@ resource "google_secret_manager_secret_iam_member" "license_secret" {
 }
 
 resource "google_secret_manager_secret_iam_member" "ca_certificate_secret" {
-  count = var.ca_certificate_secret == null ? 0 : 1
+  count = var.ca_certificate_secret_id == null ? 0 : 1
 
   member    = local.member
   role      = "roles/secretmanager.secretAccessor"
-  secret_id = var.ca_certificate_secret
+  secret_id = var.ca_certificate_secret_id
 }
 
 resource "google_secret_manager_secret_iam_member" "ssl_certificate_secret" {

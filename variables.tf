@@ -47,7 +47,7 @@ variable "proxy_port" {
   type        = string
 }
 
-variable "ca_certificate_secret" {
+variable "ca_certificate_secret_id" {
   default     = null
   description = <<-EOD
   The Secret Manager secret which comprises the Base64 encoded PEM certificate file for a Certificate Authority. The

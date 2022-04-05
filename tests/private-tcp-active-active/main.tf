@@ -29,7 +29,7 @@ module "tfe" {
   node_count                  = 2
   tfe_license_secret_id       = data.tfe_outputs.base.values.license_secret_id
   labels                      = local.labels
-  ca_certificate_secret       = data.tfe_outputs.base.values.ca_certificate_secret_id
+  ca_certificate_secret_id    = data.tfe_outputs.base.values.ca_certificate_secret_id
   iact_subnet_list            = ["${module.test_proxy.compute_instance.network_interface[0].network_ip}/32"]
   iact_subnet_time_limit      = 1440
   load_balancer               = "PRIVATE_TCP"

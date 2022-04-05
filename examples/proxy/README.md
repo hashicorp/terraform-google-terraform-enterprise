@@ -25,7 +25,7 @@ module "tfe_node" {
   fqdn                     = "<Fully qualified domain name>"
   dns_zone_name            = "<Name of the DNS zone in which a record set will be created>"
   http_proxy_uri_authority = "<host and port of the existing proxy>"
-  ca_certificate_secret    = "<Secret Manager secret comprising CA certificate>
+  ca_certificate_secret_id = "<Secret Manager secret comprising CA certificate>
   network                  = "<The self link of the host project's network to use>"
   subnetwork               = "<The self link of the host project's subnetwork to use>"
 }
