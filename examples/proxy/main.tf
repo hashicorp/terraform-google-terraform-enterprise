@@ -1,3 +1,16 @@
+resource "random_pet" "main" {
+  length = 1
+}
+
+module "secrets" {
+  source = "../../fixtures/secrets"
+
+  license = {
+    id   = random_pet.main.id
+    path = var.license_file
+  }
+}
+
 resource "tls_locally_signed_cert" "main" {
   cert_request_pem      = tls_cert_request.main.cert_request_pem
   ca_key_algorithm      = tls_private_key.ca.algorithm
@@ -68,7 +81,7 @@ module "tfe" {
 
   namespace                = var.namespace
   node_count               = 1
-  license_secret           = var.license_secret
+  license_secret           = module.secrets.license_secret
   fqdn                     = var.fqdn
   ssl_certificate_name     = google_compute_region_ssl_certificate.main.name
   http_proxy_uri_authority = var.http_proxy_uri_authority

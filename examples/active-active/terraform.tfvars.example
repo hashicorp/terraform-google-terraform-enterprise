@@ -1,0 +1,6 @@
+node_count           = 2
+namespace            = "user-friendly-name"
+fqdn                 = "tfe.my.domain.com"
+ssl_certificate_name = "certificate-name"
+dns_zone_name        = "my.domain.com"
+license_file         = "/files/license.rli"
