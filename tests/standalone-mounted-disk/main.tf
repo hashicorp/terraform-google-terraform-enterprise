@@ -25,14 +25,14 @@ resource "local_file" "private_key_pem" {
 }
 
 module "tfe" {
-  source               = "../.."
-  distribution         = "ubuntu"
-  dns_zone_name        = data.google_dns_managed_zone.main.name
-  fqdn                 = "${random_pet.main.id}.${trimsuffix(data.google_dns_managed_zone.main.dns_name, ".")}"
-  namespace            = random_pet.main.id
-  node_count           = 1
-  license_secret       = module.secrets.license_secret
-  ssl_certificate_name = "wildcard"
+  source                = "../.."
+  distribution          = "ubuntu"
+  dns_zone_name         = data.google_dns_managed_zone.main.name
+  fqdn                  = "${random_pet.main.id}.${trimsuffix(data.google_dns_managed_zone.main.dns_name, ".")}"
+  namespace             = random_pet.main.id
+  node_count            = 1
+  tfe_license_secret_id = module.secrets.license_secret
+  ssl_certificate_name  = "wildcard"
 
   iact_subnet_list       = ["0.0.0.0/0"]
   iact_subnet_time_limit = 60

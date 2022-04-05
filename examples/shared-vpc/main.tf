@@ -79,12 +79,12 @@ resource "google_compute_region_ssl_certificate" "main" {
 module "tfe" {
   source = "../../"
 
-  namespace            = var.namespace
-  node_count           = var.node_count
-  license_secret       = module.secrets.license_secret
-  fqdn                 = var.fqdn
-  ssl_certificate_name = google_compute_region_ssl_certificate.main.name
-  network              = var.network
-  subnetwork           = var.subnetwork
-  dns_zone_name        = var.dns_zone_name
+  namespace             = var.namespace
+  node_count            = var.node_count
+  tfe_license_secret_id = module.secrets.license_secret
+  fqdn                  = var.fqdn
+  ssl_certificate_name  = google_compute_region_ssl_certificate.main.name
+  network               = var.network
+  subnetwork            = var.subnetwork
+  dns_zone_name         = var.dns_zone_name
 }

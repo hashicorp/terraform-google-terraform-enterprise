@@ -86,13 +86,13 @@ Cloud APIs, the following roles are required:
 
 ```hcl
 module "tfe_node" {
-  source               = "git@github.com:hashicorp/terraform-google-terraform-enterprise.git"
-  namespace            = "<Namespace to uniquely identify resources>"
-  node_count           = "<Number of TFE nodes to provision>"
-  license_secret       = "<Secret Manager secret comprising license>
-  fqdn                 = "<Fully qualified domain name>"
-  ssl_certificate_name = "<Name of the SSL certificate provisioned in GCP>"
-  dns_zone_name        = "<Name of the DNS zone in which a record set will be created>"
+  source                = "git@github.com:hashicorp/terraform-google-terraform-enterprise.git"
+  namespace             = "<Namespace to uniquely identify resources>"
+  node_count            = "<Number of TFE nodes to provision>"
+  tfe_license_secret_id = "<Secret Manager secret comprising license>
+  fqdn                  = "<Fully qualified domain name>"
+  ssl_certificate_name  = "<Name of the SSL certificate provisioned in GCP>"
+  dns_zone_name         = "<Name of the DNS zone in which a record set will be created>"
 }
 ```
 
@@ -109,7 +109,7 @@ Notes:
 
 `namespace` - Namespace to uniquely identify resources. Used in name prefixes
 
-`license_secret` - The Secret Manager secret which comprises the
+`tfe_license_secret_id` - The Secret Manager secret which comprises the
 Base64 encoded Replicated license file. The Terraform provider calls
 this value the secret_id and the GCP UI calls it the name.
 

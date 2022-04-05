@@ -12,7 +12,7 @@ module "tfe" {
   namespace                   = random_pet.main.id
   existing_service_account_id = var.google.service_account
   node_count                  = 2
-  license_secret              = data.tfe_outputs.base.values.license_secret_id
+  tfe_license_secret_id       = data.tfe_outputs.base.values.license_secret_id
   ssl_certificate_name        = data.tfe_outputs.base.values.wildcard_ssl_certificate_name
   distribution                = "ubuntu"
   iact_subnet_list            = var.iact_subnet_list

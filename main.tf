@@ -30,7 +30,7 @@ module "service_accounts" {
   source = "./modules/service_accounts"
 
   ca_certificate_secret       = var.ca_certificate_secret
-  license_secret              = var.license_secret
+  tfe_license_secret_id       = var.tfe_license_secret_id
   namespace                   = var.namespace
   ssl_certificate_secret      = var.ssl_certificate_secret
   ssl_private_key_secret      = var.ssl_private_key_secret
@@ -125,13 +125,14 @@ module "settings" {
 
   # Replicated Base Configuration
   hostname                                  = local.full_fqdn
-  enable_active_active                      = local.enable_active_active # Potentially rename to local.active_active
+  enable_active_active                      = local.enable_active_active
   tfe_license_bootstrap_airgap_package_path = var.tfe_license_bootstrap_airgap_package_path
   tfe_license_file_location                 = var.tfe_license_file_location
   tls_bootstrap_cert_pathname               = var.tls_bootstrap_cert_pathname
   tls_bootstrap_key_pathname                = var.tls_bootstrap_key_pathname
   bypass_preflight_checks                   = var.bypass_preflight_checks
   hairpin_addressing                        = var.hairpin_addressing
+
   # Database
   pg_dbname   = local.database.dbname
   pg_netloc   = local.database.netloc
@@ -177,7 +178,7 @@ module "tfe_init" {
   ca_certificate_secret_id = var.ca_certificate_secret == null ? null : var.ca_certificate_secret # TODO: Rename to ca_certificate_secret_id
   certificate_secret_id    = var.vm_certificate_secret_id == null ? null : var.vm_certificate_secret_id
   key_secret_id            = var.vm_key_secret_id == null ? null : var.vm_key_secret_id
-  tfe_license_secret_id    = var.license_secret #TODO: Rename to tfe_license_secret_id for parity with other modules
+  tfe_license_secret_id    = var.tfe_license_secret_id
 
   # Proxy information
   proxy_ip   = var.proxy_ip
