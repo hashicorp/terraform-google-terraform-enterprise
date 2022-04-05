@@ -29,10 +29,19 @@ variable "node_count" {
   }
 }
 
-variable "http_proxy_uri_authority" {
+variable "proxy_ip" {
   default     = null
   description = <<-EOD
-  The host and port subcomponents of an HTTP proxy URI authority, in the format host:port. This value will be used
+  The host subcomponent of an HTTP proxy URI authority. This value will be used
+  to configure the HTTP and HTTPS proxy settings of the operating system and Terraform Enterprise.
+  EOD
+  type        = string
+}
+
+variable "proxy_port" {
+  default     = null
+  description = <<-EOD
+  The port subcomponent of an HTTP proxy URI authority. This value will be used
   to configure the HTTP and HTTPS proxy settings of the operating system and Terraform Enterprise.
   EOD
   type        = string
@@ -232,17 +241,18 @@ variable "release_sequence" {
   type        = number
 }
 
+variable "tfe_license_bootstrap_airgap_package_path" {
+  default     = null
+  type        = string
+  description = <<-EOD
+  (Required if air-gapped installation) The URL of a Replicated airgap package for Terraform
+  Enterprise. The suggested path is "/var/lib/ptfe/ptfe.airgap".
+  EOD
+}
+
 variable "airgap_url" {
   default     = null
   description = "The URL of a Replicated airgap package for Terraform Enterprise."
-  type        = string
-}
-
-variable "ca_certs" {
-  default     = null
-  description = <<-EOD
-  A custom Certificate Authority certificate bundle to be used for authenticating connections with Terraform Enterprise.
-  EOD
   type        = string
 }
 
@@ -253,23 +263,25 @@ variable "capacity_concurrency" {
 }
 
 variable "capacity_memory" {
-  default     = "512"
+  default     = null
+  type        = number
   description = <<-EOD
-  The maximum amount of memory that will be allocated to each Terraform run. The value must be expressed in megabytes.
+  The maximum amount of memory (in megabytes) that a Terraform plan or apply can use on the system;
+  defaults to 512.
   EOD
-  type        = string
 }
 
 variable "custom_image_tag" {
   default     = null
-  description = <<-EOD
-  The tag of the Docker image to be used as the custom Terraform Build Worker image. A null value will cause the
-  default image to be used.
-  EOD
   type        = string
+  description = <<-EOD
+  (Required if tbw_image is 'custom_image'.) The name and tag for your alternative Terraform
+  build worker image in the format <name>:<tag>. Default is 'hashicorp/build-worker:now'.
+  If this variable is used, the 'tbw_image' variable must be 'custom_image'.
+  EOD
 }
 
-variable "extra_no_proxy" {
+variable "no_proxy" {
   default     = []
   description = "A list of hosts for which Terraform Enterprise will not use a proxy to access."
   type        = list(string)
@@ -281,17 +293,14 @@ variable "disk_path" {
   type        = string
 }
 
-variable "enable_metrics_collection" {
-  default     = "1"
+variable "metrics_endpoint_enabled" {
+  default     = null
+  type        = bool
   description = <<-EOD
-  A toggle to control the collection of metrics from Terraform Enterprise. The value must be \"1\" for
-  true and \"0\" for false.
+  (Optional) Metrics are used to understand the behavior of Terraform Enterprise and to
+  troubleshoot and tune performance. Enable an endpoint to expose container metrics.
+  Defaults to false.
   EOD
-  type        = string
-  validation {
-    condition     = contains(["1", "0"], var.enable_metrics_collection)
-    error_message = "The enable_metrics_collection value must be \"1\" for true and \"0\" for false."
-  }
 }
 
 variable "hairpin_addressing" {
@@ -313,7 +322,7 @@ variable "license_secret" {
   type        = string
 }
 
-variable "monitoring_enabled" {
+variable "enable_monitoring" {
   default     = false
   description = "A toggle which controls the use of Stackdriver monitoring on the compute instances."
   type        = bool
@@ -342,6 +351,15 @@ variable "redis_use_tls" {
   type        = bool
 }
 
+# Userdata
+#  -------
+
+variable "bypass_preflight_checks" {
+  default     = false
+  type        = bool
+  description = "Allow the TFE application to start without preflight checks."
+}
+
 variable "operational_mode" {
   default     = "external"
   description = <<-EOD
@@ -354,6 +372,24 @@ variable "operational_mode" {
     condition     = contains(["external", "disk", "poc"], var.operational_mode)
     error_message = "The operational_mode value must be one of: \"external\"; \"disk\"; \"poc\"."
   }
+}
+
+variable "tfe_license_file_location" {
+  default     = "/etc/terraform-enterprise.rli"
+  type        = string
+  description = "The path on the TFE instance to put the TFE license."
+}
+
+variable "tls_bootstrap_cert_pathname" {
+  default     = null
+  type        = string
+  description = "The path on the TFE instance to put the certificate. ex. '/var/lib/terraform-enterprise/certificate.pem'"
+}
+
+variable "tls_bootstrap_key_pathname" {
+  default     = null
+  type        = string
+  description = "The path on the TFE instance to put the key. ex. '/var/lib/terraform-enterprise/key.pem'"
 }
 
 variable "ssl_certificate_name" {
@@ -400,4 +436,75 @@ variable "trusted_proxies" {
   those made to the IACT endpoint.
   EOD
   type        = list(string)
+}
+
+variable "vm_key_secret_id" {
+  default     = null
+  type        = string
+  description = <<-EOD
+  A Secrets Manager secret id which contains the Base64 encoded version of a PEM encoded private key for the Virtual Machine
+  Scale Set.
+  EOD
+}
+
+variable "vm_certificate_secret_id" {
+  default     = null
+  type        = string
+  description = <<-EOD
+  A Secrets Manager secret id which contains the Base64 encoded version of a PEM encoded public certificate for the Virtual
+  Machine Scale Set.
+  EOD
+}
+
+variable "distribution" {
+  type        = string
+  description = "(Required) What is the OS distribution of the instance on which Terraoform Enterprise will be deployed?"
+  validation {
+    condition     = contains(["rhel", "ubuntu"], var.distribution)
+    error_message = "Supported values for distribution are 'rhel' or 'ubuntu'."
+  }
+}
+
+# External Vault
+# --------------
+variable "extern_vault_enable" {
+  default     = false
+  type        = bool
+  description = "(Optional) Indicate if an external Vault cluster is being used. Set to 1 if so."
+}
+
+variable "extern_vault_addr" {
+  default     = null
+  type        = string
+  description = "(Required if var.extern_vault_enable = true) URL of external Vault cluster."
+}
+
+variable "extern_vault_role_id" {
+  default     = null
+  type        = string
+  description = "(Required if var.extern_vault_enable = true) AppRole RoleId to use to authenticate with the Vault cluster."
+}
+
+variable "extern_vault_secret_id" {
+  default     = null
+  type        = string
+  description = "(Required if var.extern_vault_enable = true) AppRole SecretId to use to authenticate with the Vault cluster."
+}
+
+variable "extern_vault_path" {
+  default     = "auth/approle"
+  type        = string
+  description = "(Optional if var.extern_vault_enable = true) Path on the Vault server for the AppRole auth. Defaults to auth/approle."
+}
+
+variable "extern_vault_token_renew" {
+  default     = 3600
+  type        = number
+  description = "(Optional if var.extern_vault_enable = true) How often (in seconds) to renew the Vault token."
+}
+
+variable "extern_vault_namespace" {
+  default     = null
+  type        = string
+  description = "(Optional if var.extern_vault_enable = true) The Vault namespace"
 }

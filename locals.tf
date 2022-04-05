@@ -15,7 +15,6 @@ locals {
     {
       host     = null
       password = null
-      port     = null
     }
   )
 
@@ -26,8 +25,7 @@ locals {
 
   private_load_balancing_enabled = length(google_compute_address.private) > 0
   lb_address                     = local.private_load_balancing_enabled ? google_compute_address.private[0].address : google_compute_global_address.public[0].address
-
-  trusted_proxies = local.private_load_balancing_enabled ? compact([
+  default_trusted_proxies = local.private_load_balancing_enabled ? compact([
     "${local.lb_address}/32",
     # Include IP address range of the reserve subnetwork for private load balancing
     try(module.networking[0].reserve_subnetwork.ip_cidr_range, null)
@@ -37,6 +35,10 @@ locals {
     "130.211.0.0/22",
     "35.191.0.0/16"
   ]
+  trusted_proxies = concat(
+    var.trusted_proxies,
+    local.default_trusted_proxies
+  )
 
   hostname               = var.dns_create_record ? local.common_fqdn : local.lb_address
   base_url               = "https://${local.hostname}/"

@@ -96,52 +96,92 @@ module "redis" {
   ]
 }
 
-module "user_data" {
-  source = "./modules/user_data"
+# -----------------------------------------------------------------------------
+# TFE and Replicated settings to pass to the tfe_init module
+# -----------------------------------------------------------------------------
+module "settings" {
+  source = "git::https://github.com/hashicorp/terraform-random-tfe-utility//modules/settings?ref=gcp_init_utilities"
 
-  airgap_url                = var.airgap_url
-  ca_certificate_secret     = var.ca_certificate_secret
-  ca_certs                  = var.ca_certs
-  capacity_concurrency      = var.capacity_concurrency
-  capacity_memory           = var.capacity_memory
-  custom_image_tag          = var.custom_image_tag
-  enable_disk               = local.enable_disk
-  disk_device_name          = local.disk_device_name
-  disk_path                 = var.disk_path
-  enable_metrics_collection = var.enable_metrics_collection
-  enable_external           = local.enable_external
-  extra_no_proxy            = var.extra_no_proxy
-  fqdn                      = local.common_fqdn
-  gcs_bucket                = local.object_storage.bucket
-  gcs_credentials           = module.service_accounts.credentials
-  gcs_project               = local.object_storage.project
-  hairpin_addressing        = var.hairpin_addressing
-  license_secret            = var.license_secret
-  monitoring_enabled        = var.monitoring_enabled
-  pg_netloc                 = local.database.netloc
-  pg_dbname                 = local.database.dbname
-  pg_user                   = local.database.user
-  pg_password               = local.database.password
-  pg_extra_params           = "sslmode=require"
-  redis_host                = local.redis.host
-  redis_pass                = local.redis.password
-  redis_port                = local.redis.port
-  redis_use_password_auth   = var.redis_auth_enabled
-  redis_use_tls             = var.redis_use_tls
-  release_sequence          = var.release_sequence
-  enable_active_active      = local.enable_active_active
-  http_proxy_uri_authority  = var.http_proxy_uri_authority
-  namespace                 = var.namespace
-  no_proxy                  = [local.common_fqdn, var.networking_subnet_range]
-  iact_subnet_list          = var.iact_subnet_list
-  iact_subnet_time_limit    = var.iact_subnet_time_limit
-  ssl_certificate_secret    = var.ssl_certificate_secret
-  ssl_private_key_secret    = var.ssl_private_key_secret
-  tls_vers                  = var.tls_vers
-  trusted_proxies = concat(
-    var.trusted_proxies,
-    local.trusted_proxies
-  )
+  # TFE Base Configuration
+  installation_type        = "production"
+  production_type          = var.operational_mode
+  disk_path                = var.disk_path
+  iact_subnet_list         = var.iact_subnet_list
+  iact_subnet_time_limit   = var.iact_subnet_time_limit
+  trusted_proxies          = local.trusted_proxies
+  release_sequence         = var.release_sequence
+  pg_extra_params          = "sslmode=require"
+  tls_vers                 = var.tls_vers
+  metrics_endpoint_enabled = var.metrics_endpoint_enabled
+  custom_image_tag         = var.custom_image_tag
+  capacity_concurrency     = var.capacity_concurrency
+  capacity_memory          = var.capacity_memory
+
+  extra_no_proxy = concat([ # Validate
+    "127.0.0.1",
+    ".aws.ce.redhat.com",
+    var.fqdn,
+  ], var.no_proxy)
+
+  # Replicated Base Configuration
+  hostname                                  = local.full_fqdn
+  enable_active_active                      = local.enable_active_active # Potentially rename to local.active_active
+  tfe_license_bootstrap_airgap_package_path = var.tfe_license_bootstrap_airgap_package_path
+  tfe_license_file_location                 = var.tfe_license_file_location
+  tls_bootstrap_cert_pathname               = var.tls_bootstrap_cert_pathname
+  tls_bootstrap_key_pathname                = var.tls_bootstrap_key_pathname
+  bypass_preflight_checks                   = var.bypass_preflight_checks
+  hairpin_addressing                        = var.hairpin_addressing
+  # Database
+  pg_dbname   = local.database.name
+  pg_netloc   = local.database.netloc
+  pg_user     = local.database.username
+  pg_password = local.database.password
+
+  # Redis
+  redis_host              = local.redis.host
+  redis_pass              = local.redis.password
+  redis_use_password_auth = var.redis_auth_enabled
+  redis_use_tls           = var.redis_use_tls
+
+  # Storage
+  gcs_bucket      = local.object_storage.bucket
+  gcs_credentials = module.service_accounts.credentials
+  gcs_project     = local.object_storage.project
+
+  # External Vault
+  extern_vault_enable      = var.extern_vault_enable
+  extern_vault_addr        = var.extern_vault_addr
+  extern_vault_role_id     = var.extern_vault_role_id
+  extern_vault_secret_id   = var.extern_vault_secret_id
+  extern_vault_path        = var.extern_vault_path
+  extern_vault_token_renew = var.extern_vault_token_renew
+  extern_vault_namespace   = var.extern_vault_namespace
+}
+
+# -----------------------------------------------------------------------------
+# AWS user data / cloud init used to install and configure TFE on instance(s)
+# -----------------------------------------------------------------------------
+module "tfe_init" {
+  source = "git::https://github.com/hashicorp/terraform-random-tfe-utility//modules/tfe_init?ref=gcp_init_utilities"
+
+  # TFE & Replicated Configuration data
+  cloud                    = "google"
+  distribution             = var.distribution
+  tfe_configuration        = module.settings.tfe_configuration
+  replicated_configuration = module.settings.replicated_configuration
+  airgap_url               = var.airgap_url
+  enable_monitoring        = var.enable_monitoring
+
+  # Secrets
+  ca_certificate_secret_id = var.ca_certificate_secret == null ? null : var.ca_certificate_secret # TODO: Rename to ca_certificate_secret_id
+  certificate_secret_id    = var.vm_certificate_secret_id == null ? null : var.vm_certificate_secret_id
+  key_secret_id            = var.vm_key_secret_id == null ? null : var.vm_key_secret_id
+  tfe_license_secret_id    = var.license_secret #TODO: Rename to tfe_license_secret_id for parity with other modules
+
+  # Proxy information
+  proxy_ip   = var.proxy_ip
+  proxy_port = var.proxy_port
 }
 
 module "vm_instance_template" {
@@ -176,7 +216,7 @@ module "vm_instance_template" {
     email = module.service_accounts.service_account.email
   }
   source_image   = var.vm_disk_source_image
-  startup_script = module.user_data.script
+  startup_script = base64decode(module.tfe_init.tfe_userdata_base64_encoded)
   subnetwork     = local.subnetwork.self_link
 }
 

@@ -32,7 +32,8 @@ module "tfe" {
   iact_subnet_list            = ["${module.test_proxy.compute_instance.network_interface[0].network_ip}/32"]
   iact_subnet_time_limit      = 1440
   load_balancer               = "PRIVATE_TCP"
-  http_proxy_uri_authority    = module.test_proxy.uri_authority
+  proxy_ip                    = module.test_proxy.proxy_ip
+  proxy_port                  = module.test_proxy.proxy_port
   redis_auth_enabled          = true
   ssl_certificate_secret      = data.tfe_outputs.base.values.wildcard_ssl_certificate_secret_id
   ssl_private_key_secret      = data.tfe_outputs.base.values.wildcard_ssl_private_key_secret_id

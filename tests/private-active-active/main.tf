@@ -30,7 +30,8 @@ module "tfe" {
   iact_subnet_list            = ["${module.test_proxy.compute_instance.network_interface[0].network_ip}/32"]
   iact_subnet_time_limit      = 1440
   load_balancer               = "PRIVATE"
-  http_proxy_uri_authority    = module.test_proxy.uri_authority
+  proxy_ip                    = module.test_proxy.proxy_ip
+  proxy_port                  = module.test_proxy.proxy_port
   redis_auth_enabled          = true
   vm_disk_source_image        = data.google_compute_image.rhel.self_link
   vm_machine_type             = "n1-standard-16"

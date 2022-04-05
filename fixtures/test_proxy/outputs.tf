@@ -4,8 +4,10 @@ output "compute_instance" {
   description = "The proxy Compute instance."
 }
 
-output "uri_authority" {
-  value = "${google_compute_instance.proxy.network_interface[0].network_ip}:${local.http_port}"
+output "proxy_ip" {
+  value = google_compute_instance.proxy.network_interface[0].network_ip
+}
 
-  description = "The host and port of the proxy server."
+output "proxy_port" {
+  value = local.http_port
 }
