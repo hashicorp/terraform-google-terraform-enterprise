@@ -116,7 +116,7 @@ module "settings" {
   capacity_concurrency     = var.capacity_concurrency
   capacity_memory          = var.capacity_memory
 
-  extra_no_proxy  = [local.common_fqdn, var.networking_subnet_range]
+  extra_no_proxy = [local.common_fqdn, var.networking_subnet_range]
   trusted_proxies = concat(
     var.trusted_proxies,
     local.trusted_proxies

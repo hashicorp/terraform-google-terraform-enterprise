@@ -281,12 +281,6 @@ variable "custom_image_tag" {
   EOD
 }
 
-variable "no_proxy" {
-  default     = []
-  description = "A list of hosts for which Terraform Enterprise will not use a proxy to access."
-  type        = list(string)
-}
-
 variable "disk_path" {
   default     = "/opt/hashicorp/data"
   description = "The pathname of the directory in which Terraform Enterprise will store data on the compute instances."
