@@ -5,7 +5,7 @@
 This example provisions a Standalone TFE instance behind an existing VPC and proxy.
 The VPC and proxy are up to the user to configure appropriately for the TFE deployment.
 
-To define addresses that can be reached without the proxy, configure the `no_proxy` variable to include each address in the [User Data Locals](../../modules/user_data/main.tf#L277).
+To define addresses that can be reached without the proxy, configure the `no_proxy` variable.
 
 ## How to Use This Module
 

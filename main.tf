@@ -133,9 +133,9 @@ module "settings" {
   bypass_preflight_checks                   = var.bypass_preflight_checks
   hairpin_addressing                        = var.hairpin_addressing
   # Database
-  pg_dbname   = local.database.name
+  pg_dbname   = local.database.dbname
   pg_netloc   = local.database.netloc
-  pg_user     = local.database.username
+  pg_user     = local.database.user
   pg_password = local.database.password
 
   # Redis

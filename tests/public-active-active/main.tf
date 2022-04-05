@@ -14,13 +14,13 @@ module "tfe" {
   node_count                  = 2
   license_secret              = data.tfe_outputs.base.values.license_secret_id
   ssl_certificate_name        = data.tfe_outputs.base.values.wildcard_ssl_certificate_name
-
-  iact_subnet_list       = var.iact_subnet_list
-  iact_subnet_time_limit = 1440
-  load_balancer          = "PUBLIC"
-  redis_auth_enabled     = false
-  vm_disk_source_image   = data.google_compute_image.ubuntu.self_link
-  vm_machine_type        = "n1-standard-4"
+  distribution                = "ubuntu"
+  iact_subnet_list            = var.iact_subnet_list
+  iact_subnet_time_limit      = 1440
+  load_balancer               = "PUBLIC"
+  redis_auth_enabled          = false
+  vm_disk_source_image        = data.google_compute_image.ubuntu.self_link
+  vm_machine_type             = "n1-standard-4"
 
   labels = {
     oktodelete  = "true"

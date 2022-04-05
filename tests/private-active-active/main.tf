@@ -19,6 +19,7 @@ module "test_proxy" {
 module "tfe" {
   source = "../.."
 
+  distribution                = "rhel"
   dns_zone_name               = data.google_dns_managed_zone.main.name
   fqdn                        = "private-active-active.${data.google_dns_managed_zone.main.dns_name}"
   namespace                   = random_pet.main.id
