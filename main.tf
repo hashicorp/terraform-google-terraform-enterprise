@@ -175,8 +175,8 @@ module "tfe_init" {
 
   # Secrets
   ca_certificate_secret_id = var.ca_certificate_secret_id == null ? null : var.ca_certificate_secret_id
-  certificate_secret_id    = var.vm_certificate_secret_id == null ? null : var.ssl_certificate_secret
-  key_secret_id            = var.vm_key_secret_id == null ? null : var.ssl_private_key_secret
+  certificate_secret_id    = var.ssl_certificate_secret == null ? null : var.ssl_certificate_secret
+  key_secret_id            = var.ssl_private_key_secret == null ? null : var.ssl_private_key_secret
   tfe_license_secret_id    = var.tfe_license_secret_id
 
   # Proxy information
