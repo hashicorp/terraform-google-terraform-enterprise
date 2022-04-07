@@ -432,24 +432,6 @@ variable "trusted_proxies" {
   type        = list(string)
 }
 
-variable "vm_key_secret_id" {
-  default     = null
-  type        = string
-  description = <<-EOD
-  A Secrets Manager secret id which contains the Base64 encoded version of a PEM encoded private key for the Virtual Machine
-  Scale Set.
-  EOD
-}
-
-variable "vm_certificate_secret_id" {
-  default     = null
-  type        = string
-  description = <<-EOD
-  A Secrets Manager secret id which contains the Base64 encoded version of a PEM encoded public certificate for the Virtual
-  Machine Scale Set.
-  EOD
-}
-
 variable "distribution" {
   type        = string
   description = "(Required) What is the OS distribution of the instance on which Terraoform Enterprise will be deployed?"
