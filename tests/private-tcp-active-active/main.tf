@@ -38,6 +38,8 @@ module "tfe" {
   redis_auth_enabled          = true
   ssl_certificate_secret      = data.tfe_outputs.base.values.wildcard_ssl_certificate_secret_id
   ssl_private_key_secret      = data.tfe_outputs.base.values.wildcard_ssl_private_key_secret_id
+  tls_bootstrap_cert_pathname = "/var/lib/terraform-enterprise/certificate.pem"
+  tls_bootstrap_key_pathname  = "/var/lib/terraform-enterprise/key.pem"
   vm_disk_source_image        = data.google_compute_image.rhel.self_link
   vm_machine_type             = "n1-standard-32"
   # enable_monitoring           = true
