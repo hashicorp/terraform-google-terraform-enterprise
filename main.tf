@@ -106,7 +106,7 @@ module "settings" {
   installation_type        = "production"
   production_type          = var.operational_mode
   disk_path                = var.disk_path
-  iact_subnet_list         = ["0.0.0.0/0"] # CHANGE THIS BACK
+  iact_subnet_list         = var.iact_subnet_list
   iact_subnet_time_limit   = var.iact_subnet_time_limit
   release_sequence         = var.release_sequence
   pg_extra_params          = "sslmode=require"
