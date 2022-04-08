@@ -43,7 +43,8 @@ locals {
   rhel_no_proxy = [
     ".subscription.rhn.redhat.com",
     ".cdn.redhat.com",
-    ".akamaiedge.net"
+    ".akamaiedge.net",
+    ".rhel.updates.googlecloud.com"
   ]
 
   hostname               = var.dns_create_record ? local.common_fqdn : local.lb_address
