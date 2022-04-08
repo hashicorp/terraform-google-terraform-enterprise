@@ -173,7 +173,7 @@ module "tfe_init" {
   # TFE & Replicated Configuration data
   cloud                    = "google"
   distribution             = var.distribution
-  production_type          = var.operational_mode
+  disk_path                = var.disk_path
   tfe_configuration        = module.settings.tfe_configuration
   replicated_configuration = module.settings.replicated_configuration
   airgap_url               = var.airgap_url
