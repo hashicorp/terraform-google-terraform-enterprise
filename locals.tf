@@ -40,6 +40,12 @@ locals {
     local.default_trusted_proxies
   )
 
+  rhel_no_proxy = [
+    ".subscription.rhn.redhat.com",
+    ".cdn.redhat.com",
+    ".akamaiedge.net"
+  ]
+
   hostname               = var.dns_create_record ? local.common_fqdn : local.lb_address
   base_url               = "https://${local.hostname}/"
   replicated_console_url = "https://${local.hostname}:8800/"
