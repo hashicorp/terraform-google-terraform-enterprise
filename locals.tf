@@ -1,5 +1,4 @@
 locals {
-  disk_device_name              = "sdb"
   enable_active_active          = var.node_count >= 2
   enable_external               = var.operational_mode == "external" || local.enable_active_active
   enable_database_module        = local.enable_external

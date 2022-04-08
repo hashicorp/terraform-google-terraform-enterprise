@@ -174,6 +174,7 @@ module "tfe_init" {
   cloud                    = "google"
   distribution             = var.distribution
   disk_path                = var.disk_path
+  disk_device_name         = local.enable_disk ? "sdb" : null
   tfe_configuration        = module.settings.tfe_configuration
   replicated_configuration = module.settings.replicated_configuration
   airgap_url               = var.airgap_url
