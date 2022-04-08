@@ -128,7 +128,7 @@ module "settings" {
   )
 
   # Replicated Base Configuration
-  hostname                                  = local.full_fqdn
+  hostname                                  = local.common_fqdn
   enable_active_active                      = local.enable_active_active
   tfe_license_bootstrap_airgap_package_path = var.tfe_license_bootstrap_airgap_package_path
   tfe_license_file_location                 = var.tfe_license_file_location
