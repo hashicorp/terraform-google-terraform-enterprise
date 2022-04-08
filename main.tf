@@ -118,9 +118,9 @@ module "settings" {
 
   extra_no_proxy = concat([
     local.common_fqdn,
-    var.networking_subnet_range,
+    var.networking_subnet_range],
     local.rhel_no_proxy
-  ])
+  )
 
   trusted_proxies = concat(
     var.trusted_proxies,
