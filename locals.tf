@@ -39,12 +39,12 @@ locals {
     local.default_trusted_proxies
   )
 
-  rhel_no_proxy = [
+  extra_no_proxy = var.distribution == "rhel" ? [
     ".subscription.rhn.redhat.com",
     ".cdn.redhat.com",
     ".akamaiedge.net",
     ".rhel.updates.googlecloud.com"
-  ]
+  ] : []
 
   hostname               = var.dns_create_record ? local.common_fqdn : local.lb_address
   base_url               = "https://${local.hostname}/"
