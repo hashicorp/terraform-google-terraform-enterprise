@@ -353,7 +353,7 @@ variable "redis_use_tls" {
 }
 
 variable "release_sequence" {
-  default     = 0
+  default     = null
   description = "Release sequence of Terraform Enterprise to install."
   type        = number
 }
