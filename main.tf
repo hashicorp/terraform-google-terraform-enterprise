@@ -114,6 +114,7 @@ module "settings" {
   custom_image_tag         = var.custom_image_tag
   capacity_concurrency     = var.capacity_concurrency
   capacity_memory          = var.capacity_memory
+  tbw_image                = var.tbw_image
 
   extra_no_proxy = concat([
     local.common_fqdn,
