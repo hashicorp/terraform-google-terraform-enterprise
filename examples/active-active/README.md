@@ -16,14 +16,14 @@
 
 ```hcl
 module "tfe_node" {
-  source               = "git@github.com:hashicorp/terraform-google-terraform-enterprise.git"
-  namespace            = "<Namespace to uniquely identify resources>"
-  node_count           = "<Number of TFE nodes to provision>"
-  license_secret       = "<Secret Manager secret comprising license>
-  fqdn                 = "<Fully qualified domain name>"
-  ssl_certificate_name = "<Name of the SSL certificate provisioned in GCP>"
-  dns_zone_name        = "<Name of the DNS zone in which a record set will be created>"
-  load_balancer        = "PUBLIC"  // for a publically accessible instance.  Omit this line for a private instance, or explicitly set it to "PRIVATE"
+  source                = "git@github.com:hashicorp/terraform-google-terraform-enterprise.git"
+  namespace             = "<Namespace to uniquely identify resources>"
+  node_count            = "<Number of TFE nodes to provision>"
+  tfe_license_secret_id = "<Secret Manager secret comprising license>
+  fqdn                  = "<Fully qualified domain name>"
+  ssl_certificate_name  = "<Name of the SSL certificate provisioned in GCP>"
+  dns_zone_name         = "<Name of the DNS zone in which a record set will be created>"
+  load_balancer         = "PUBLIC"  // for a publically accessible instance.  Omit this line for a private instance, or explicitly set it to "PRIVATE"
 }
 ```
 

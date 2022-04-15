@@ -27,12 +27,13 @@ resource "local_file" "private_key_pem" {
 module "tfe" {
   source = "../.."
 
-  dns_zone_name        = data.google_dns_managed_zone.main.name
-  fqdn                 = "${random_pet.main.id}.${trimsuffix(data.google_dns_managed_zone.main.dns_name, ".")}"
-  namespace            = random_pet.main.id
-  node_count           = 1
-  license_secret       = module.secrets.license_secret
-  ssl_certificate_name = "wildcard"
+  distribution          = "rhel"
+  dns_zone_name         = data.google_dns_managed_zone.main.name
+  fqdn                  = "${random_pet.main.id}.${trimsuffix(data.google_dns_managed_zone.main.dns_name, ".")}"
+  namespace             = random_pet.main.id
+  node_count            = 1
+  tfe_license_secret_id = module.secrets.license_secret
+  ssl_certificate_name  = "wildcard"
 
   custom_image_tag       = "${local.repository_location}-docker.pkg.dev/ptfe-testing/${local.repository_name}/rhel-7.9:latest"
   iact_subnet_list       = ["0.0.0.0/0"]

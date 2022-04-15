@@ -79,10 +79,11 @@ resource "google_compute_region_ssl_certificate" "main" {
 module "tfe" {
   source = "../../"
 
-  namespace      = var.namespace
-  node_count     = var.node_count
-  license_secret = module.secrets.license_secret
-  fqdn           = var.fqdn
+  namespace             = var.namespace
+  node_count            = var.node_count
+  tfe_license_secret_id = module.secrets.license_secret
+  fqdn                  = var.fqdn
+
   # For self-signed certs use
   # ssl_certificate_name = google_compute_region_ssl_certificate.main.name
   ssl_certificate_name = var.ssl_certificate_name

@@ -5,7 +5,7 @@
 This example provisions a Standalone TFE instance behind an existing VPC and proxy.
 The VPC and proxy are up to the user to configure appropriately for the TFE deployment.
 
-To define addresses that can be reached without the proxy, configure the `no_proxy` variable to include each address in the [User Data Locals](../../modules/user_data/main.tf#L277).
+To define addresses that can be reached without the proxy, configure the `no_proxy` variable.
 
 ## How to Use This Module
 
@@ -21,11 +21,11 @@ module "tfe_node" {
   source = "git@github.com:hashicorp/terraform-google-terraform-enterprise.git"
 
   namespace                = "<Namespace to uniquely identify resources>"
-  license_secret           = "<The local path to the Terraform Enterprise license>"
+  tfe_license_secret_id    = "<The local path to the Terraform Enterprise license>"
   fqdn                     = "<Fully qualified domain name>"
   dns_zone_name            = "<Name of the DNS zone in which a record set will be created>"
   http_proxy_uri_authority = "<host and port of the existing proxy>"
-  ca_certificate_secret    = "<Secret Manager secret comprising CA certificate>
+  ca_certificate_secret_id = "<Secret Manager secret comprising CA certificate>
   network                  = "<The self link of the host project's network to use>"
   subnetwork               = "<The self link of the host project's subnetwork to use>"
 }

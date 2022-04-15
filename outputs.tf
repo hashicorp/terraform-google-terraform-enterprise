@@ -1,5 +1,5 @@
 output "replicated_console_password" {
-  value       = module.user_data.replicated_dashboard_password
+  value       = module.settings.replicated_configuration.DaemonAuthenticationPassword
   description = "Generated password for replicated dashboard"
 }
 
