@@ -30,6 +30,7 @@ module "service_accounts" {
   source = "./modules/service_accounts"
 
   ca_certificate_secret_id    = var.ca_certificate_secret_id
+  enable_airgap               = local.enable_airgap
   tfe_license_secret_id       = var.tfe_license_secret_id
   namespace                   = var.namespace
   ssl_certificate_secret      = var.ssl_certificate_secret

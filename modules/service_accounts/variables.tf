@@ -6,6 +6,14 @@ variable "ca_certificate_secret_id" {
   type        = string
 }
 
+variable "enable_airgap" {
+  type        = bool
+  description = <<-EOD
+  If this is an airgapped installation, then the virtual machine will not need to have a role policy that allows it
+  to access the secrets manager.
+  EOD
+}
+
 variable "tfe_license_secret_id" {
   description = <<-EOD
   The Secret Manager secret which comprises the Base64 encoded Replicated license file. The Terraform provider calls

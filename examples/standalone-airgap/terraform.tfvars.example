@@ -1,0 +1,12 @@
+namespace            = "user-friendly-name"
+fqdn                 = "tfe.my.domain.com"
+ssl_certificate_name = "certificate-name-xxxxxxxxxxxxxxxxxxxxx"
+dns_zone_name        = "my.domain.com"
+vm_disk_source_image = "projects/my-project/global/images/my-airgap-image"
+
+labels = {
+  department  = "engineering"
+  description = "standalone-airgap"
+  repository  = "hashicorp-terraform-google-terraform-enterprise"
+  team        = "my-team-name"
+}
