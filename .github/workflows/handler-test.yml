@@ -42,6 +42,7 @@ jobs:
       - name: Checkout TFE Load Test
         uses: actions/checkout@v2
         with:
+          ref: 'main'
           path: ${{ env.K6_WORK_DIR_PATH }}
           repository: hashicorp/tfe-load-test
           token: ${{ secrets.GH_TFE_LOAD_TEST_TOKEN }}
@@ -271,6 +272,7 @@ jobs:
       - name: Checkout TFE Load Test
         uses: actions/checkout@v2
         with:
+          ref: 'main'
           path: ${{ env.K6_WORK_DIR_PATH }}
           repository: hashicorp/tfe-load-test
           token: ${{ secrets.GH_TFE_LOAD_TEST_TOKEN }}
@@ -533,6 +535,7 @@ jobs:
       - name: Checkout TFE Load Test
         uses: actions/checkout@v2
         with:
+          ref: 'main'
           path: ${{ env.K6_WORK_DIR_PATH }}
           repository: hashicorp/tfe-load-test
           token: ${{ secrets.GH_TFE_LOAD_TEST_TOKEN }}
