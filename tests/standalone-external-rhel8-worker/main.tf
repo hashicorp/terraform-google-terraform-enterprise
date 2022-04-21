@@ -27,17 +27,17 @@ resource "local_file" "private_key_pem" {
 module "tfe" {
   source = "../.."
 
-  distribution          = "rhel"
-  dns_zone_name         = data.google_dns_managed_zone.main.name
-  fqdn                  = "${random_pet.main.id}.${trimsuffix(data.google_dns_managed_zone.main.dns_name, ".")}"
-  namespace             = random_pet.main.id
-  node_count            = 1
-  tfe_license_secret_id = module.secrets.license_secret
-  ssl_certificate_name  = "wildcard"
-
-  custom_image_tag       = "${local.repository_location}-docker.pkg.dev/ptfe-testing/${local.repository_name}/rhel-7.9:latest"
-  iact_subnet_list       = ["0.0.0.0/0"]
-  iact_subnet_time_limit = 60
+  distribution                = "rhel"
+  dns_zone_name               = data.google_dns_managed_zone.main.name
+  fqdn                        = "${random_pet.main.id}.${trimsuffix(data.google_dns_managed_zone.main.dns_name, ".")}"
+  namespace                   = random_pet.main.id
+  node_count                  = 1
+  tfe_license_secret_id       = module.secrets.license_secret
+  ssl_certificate_name        = data.tfe_outputs.base.values.wildcard_ssl_certificate_name
+  existing_service_account_id = var.existing_service_account_id
+  custom_image_tag            = "${local.repository_location}-docker.pkg.dev/ptfe-testing/${local.repository_name}/rhel-7.9:latest"
+  iact_subnet_list            = ["0.0.0.0/0"]
+  iact_subnet_time_limit      = 60
   labels = {
     department  = "engineering"
     description = "standalone-external-services-scenario-deployed-from-circleci"
@@ -58,8 +58,8 @@ module "tfe" {
 }
 
 resource "google_artifact_registry_repository_iam_member" "main" {
-  provider = google-beta
-
+  provider   = google-beta
+  count      = var.existing_service_account_id == null ? 1 : 0
   location   = local.repository_location
   member     = "serviceAccount:${module.tfe.service_account.email}"
   repository = local.repository_name
