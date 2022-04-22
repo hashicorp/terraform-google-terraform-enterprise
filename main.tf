@@ -101,7 +101,7 @@ module "redis" {
 # TFE and Replicated settings to pass to the tfe_init module
 # -----------------------------------------------------------------------------
 module "settings" {
-  source = "git::https://github.com/hashicorp/terraform-random-tfe-utility//modules/settings?ref=tf-440"
+  source = "git::https://github.com/hashicorp/terraform-random-tfe-utility//modules/settings?ref=main
 
   # TFE Base Configuration
   production_type          = var.operational_mode
