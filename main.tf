@@ -91,6 +91,7 @@ module "redis" {
   memory_size                   = var.redis_memory_size
   service_networking_connection = local.service_networking_connection
   labels                        = var.labels
+  transit_encryption_mode       = var.redis_use_tls ? "SERVER_AUTHENTICATION" : "DISABLED"
 
   depends_on = [
     module.project_factory_project_services
@@ -101,7 +102,7 @@ module "redis" {
 # TFE and Replicated settings to pass to the tfe_init module
 # -----------------------------------------------------------------------------
 module "settings" {
-  source = "git::https://github.com/hashicorp/terraform-random-tfe-utility//modules/settings?ref=main"
+  source = "git::https://github.com/hashicorp/terraform-random-tfe-utility//modules/settings?ref=sudomateo/redis"
 
   # TFE Base Configuration
   production_type          = var.operational_mode
@@ -147,6 +148,7 @@ module "settings" {
   # Redis
   redis_host              = local.redis.host
   redis_pass              = local.redis.password
+  redis_port              = local.redis.port
   redis_use_password_auth = var.redis_auth_enabled
   redis_use_tls           = var.redis_use_tls
 

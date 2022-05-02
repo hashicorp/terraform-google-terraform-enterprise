@@ -11,8 +11,9 @@ resource "google_redis_instance" "redis" {
   authorized_network = var.service_networking_connection.network
   connect_mode       = "PRIVATE_SERVICE_ACCESS"
 
-  redis_version = "REDIS_5_0"
-  display_name  = "${var.namespace} TFE Instance"
+  redis_version           = "REDIS_6_X"
+  display_name            = "${var.namespace} TFE Instance"
+  transit_encryption_mode = var.transit_encryption_mode
 
   labels = var.labels
 }

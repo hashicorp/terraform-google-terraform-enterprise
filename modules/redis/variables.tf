@@ -22,6 +22,16 @@ variable "auth_enabled" {
   type        = bool
 }
 
+variable "transit_encryption_mode" {
+  description = "The TLS mode of the Redis instance."
+  type        = string
+  default     = "DISABLED"
+  validation {
+    condition     = contains(["SERVER_AUTHENTICATION", "DISABLED"], var.transit_encryption_mode)
+    error_message = "Supported values are 'SERVER_AUTHENTICATION' or 'DISABLED'."
+  }
+}
+
 variable "labels" {
   type        = map(string)
   description = "Labels to apply to resources"

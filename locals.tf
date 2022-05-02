@@ -16,6 +16,7 @@ locals {
     {
       host     = null
       password = null
+      port     = null
     }
   )
 
