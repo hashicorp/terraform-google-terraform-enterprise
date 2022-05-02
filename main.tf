@@ -117,7 +117,7 @@ module "settings" {
   capacity_memory          = var.capacity_memory
   tbw_image                = var.tbw_image
 
-  ca_certs = join("\n", local.redis.server_ca_certs[0].cert, local.redis.server_ca_certs[0].cert)
+  ca_certs = join("\n", [local.redis.server_ca_certs[0].cert, local.redis.server_ca_certs[0].cert])
 
   extra_no_proxy = concat([
     local.common_fqdn,
