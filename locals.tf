@@ -14,9 +14,10 @@ locals {
   redis = try(
     module.redis[0],
     {
-      host     = null
-      password = null
-      port     = null
+      host            = null
+      password        = null
+      port            = null
+      server_ca_certs = null
     }
   )
 

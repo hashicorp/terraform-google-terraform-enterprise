@@ -15,3 +15,9 @@ output "password" {
 
   description = "The password to the Redis instance."
 }
+
+output "server_ca_certs" {
+  value = google_redis_instance.redis.server_ca_certs
+
+  description = "The CA certificates for the Redis instance."
+}

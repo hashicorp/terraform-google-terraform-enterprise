@@ -117,6 +117,8 @@ module "settings" {
   capacity_memory          = var.capacity_memory
   tbw_image                = var.tbw_image
 
+  ca_certs = join("\n", local.redis.server_ca_certs)
+
   extra_no_proxy = concat([
     local.common_fqdn,
     var.networking_subnet_range],
@@ -171,7 +173,7 @@ module "settings" {
 # User data / cloud init used to install and configure TFE on instance(s)
 # -----------------------------------------------------------------------------
 module "tfe_init" {
-  source = "git::https://github.com/hashicorp/terraform-random-tfe-utility//modules/tfe_init?ref=main"
+  source = "git::https://github.com/hashicorp/terraform-random-tfe-utility//modules/tfe_init?ref=sudomateo/redis"
 
   # TFE & Replicated Configuration data
   cloud                    = "google"
