@@ -1,16 +1,11 @@
-variable "node_count" {
-  description = "The number of compute instances to create."
-  type        = number
+variable "ca_certificate_secret_id" {
+  type        = string
+  description = "The secrets manager secret name of the Base64 encoded CA certificate for mitm"
 }
 
-variable "license_file" {
+variable "ca_private_key_secret_id" {
   type        = string
-  description = "The local path to the Terraform Enterprise license."
-}
-
-variable "fqdn" {
-  description = "The fully qualified domain name which will be assigned to the DNS record."
-  type        = string
+  description = "The secrets manager secret name of the Base64 encoded CA private key for mitm"
 }
 
 variable "dns_zone_name" {
@@ -18,9 +13,9 @@ variable "dns_zone_name" {
   type        = string
 }
 
-variable "labels" {
-  type        = map(string)
-  description = "Labels to apply to resources"
+variable "fqdn" {
+  description = "The fully qualified domain name which will be assigned to the DNS record."
+  type        = string
 }
 
 variable "google" {
@@ -34,14 +29,19 @@ variable "google" {
   })
 }
 
-variable "ca_certificate_secret_id" {
-  type        = string
-  description = "The secrets manager secret name of the Base64 encoded CA certificate for mitm"
+variable "node_count" {
+  description = "The number of compute instances to create."
+  type        = number
 }
 
-variable "ca_private_key_secret_id" {
+variable "labels" {
+  type        = map(string)
+  description = "Labels to apply to resources"
+}
+
+variable "license_file" {
   type        = string
-  description = "The secrets manager secret name of the Base64 encoded CA private key for mitm"
+  description = "The local path to the Terraform Enterprise license."
 }
 
 variable "ssl_certificate_secret" {
