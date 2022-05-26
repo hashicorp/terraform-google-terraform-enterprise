@@ -36,4 +36,5 @@ module "tfe" {
   redis_auth_enabled          = true
   vm_disk_source_image        = data.google_compute_image.rhel.self_link
   vm_machine_type             = "n1-standard-16"
+  database_version            = "POSTGRES_13"
 }
