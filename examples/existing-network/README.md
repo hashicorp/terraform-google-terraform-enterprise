@@ -1,41 +1,54 @@
-# EXAMPLE: Deploying Terraform Enterprise behind an existing VPC
+# EXAMPLE: Active-Active, External Services Installation of Terraform Enterprise into an Existing Network
 
 ## About This Example
 
-This is the same as the Active/Active example except it is provisioned into an existing VPC.
+This example for Terraform Enterprise creates a TFE installation with the following traits:
 
+- [Active/Active](https://www.terraform.io/enterprise/install/automated/active-active)
+- External Services production type
+- n1-standard-32 virtual machine type
+- Ubuntu 20.04
+- A publicly accessible HTTPS load balancer with TLS pass-through
+
+## Prerequisites
+
+This example assumes that the following resources exist:
+
+- TFE license is on a file path defined by `var.license_file` 
+- A DNS zone
+- Valid managed SSL certificate to use with load balancer:
+  - Create/Import a managed SSL Certificate in Network Services -> Load Balancing to serve as the certificate for the DNS A Record.
+- Existing Virtual Network
+  
 ## How to Use This Module
 
-- Read the entire README.md for the [main module](https://github.com/hashicorp/terraform-google-terraform-enterprise).
-- Ensure your Google credentials are set correctly
-- Add Google Terraform provider blocks for both the `google` and `google-beta` providers as detailed [here](https://registry.terraform.io/providers/hashicorp/google/latest/docs/guides/provider_reference) to a file in this directory ending with `.tf`.
-- Create a local `terraform.auto.tfvars` file and instantiate the required inputs as listed in the next section.
-- The existing VPC is up to the user to configure appropriately for the TFE deployment:
-  - [Network Submodule](../../modules/networking) for reference.
-  - The [Firewall](../../modules/networking/main.tf#L34) needs to be configured to allow the load balancer to connect to the instances.
-  - The [Service Networking Connection](../../modules/networking/main.tf#L72) needs to be configured to allow postgres and redis to allocate IPs.
-  - The VPC must have a reserved subnet for the internal HTTPS load balancer.
+### Deployment
 
-Create a Terraform configuration that pulls in this module and specifies values of the required variables:
+1. Read the entire [README.md](../../README.md) of the root module.
+2. Ensure account meets module prerequisites from above.
+3. Clone repository.
+4. Change directory into desired example folder.
+5. Create a local `terraform.auto.tfvars` file and instantiate the required inputs in the respective `./examples/existing-network/variables.tf` including the path to the license under the `license_file` variable value.
+6. Authenticate against the Google provider. See [instructions](https://registry.terraform.io/providers/hashicorp/google/latest/docs/guides/provider_reference#authentication).
+7. Initialize terraform and apply the module configurations using the commands below:
 
-```hcl
-module "tfe_node" {
-  source                = "git@github.com:hashicorp/terraform-google-terraform-enterprise.git"
-  namespace             = "<Namespace to uniquely identify resources>"
-  node_count            = "<Number of TFE nodes to provision>"
-  tfe_license_secret_id = "<Secret Manager secret comprising license>
-  fqdn                  = "<Fully qualified domain name>"
-  ssl_certificate_name  = "<Name of the SSL certificate provisioned in GCP>"
-  dns_zone_name         = "<Name of the DNS zone in which a record set will be created>"
-  network               = "<The self link of the host project's network to use>"
-  subnetwork            = "<The self link of the host project's subnetwork to use>"
-  load_balancer         = "PUBLIC"  // for a publically accessible instance.  Omit this line for a private instance, or explicitly set it to "PRIVATE"
-}
-```
+    NOTE: `terraform plan` will print out the execution plan which describes the actions Terraform will take in order to build your infrastructure to match the module configuration. If anything in the plan seems incorrect or dangerous, it is safe to abort here and not proceed to `terraform apply`.
 
-- Run `terraform init` and `terraform apply`
+    ```
+    terraform init
+    terraform plan
+    terraform apply
+    ```
 
 ## Post-deployment Tasks
 
-- The build should take approximately 10-15 to deploy.  Once Terraform completes, give the platform another 10 minutes or so prior to attempting to interact with it in order for all containers to start up.
-- Unless amended, this example will not create an initial admin user using the IACT, but does output the URL for convenience. Follow the advice in [this document](https://www.terraform.io/docs/enterprise/install/automating-initial-user.html) in order to create the initial admin user, and login to the system using this user in order to configure it for use.
+The build should take approximately 10-15 minutes to deploy. Once the module has completed, give the platform another 10 minutes or so prior to attempting to interact with it in order for all containers to start up.
+
+Unless amended, this example will not create an initial admin user using the IACT, but it does output the URL for your convenience. Follow the advice in this document to create the initial admin user, and log into the system using this user in order to configure it for use.
+
+### Connecting to the TFE Application
+
+1. Navigate to the URL supplied via the `login_url` Terraform output. (It may take several minutes for this to be available after initial deployment. You may monitor the progress of cloud init if desired on one of the instances.)
+2. Enter a `username`, `email`, and `password` for the initial user.
+3. Click `Create an account`.
+4. After the initial user is created you may access the TFE Application normally using the URL supplied via `login_url` Terraform output.
