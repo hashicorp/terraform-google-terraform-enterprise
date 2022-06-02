@@ -33,13 +33,7 @@ module "tfe" {
   existing_service_account_id = var.google.service_account
   iact_subnet_list            = ["0.0.0.0/0"]
   iact_subnet_time_limit      = 60
-  labels = {
-    department  = "engineering"
-    description = "standalone-airgap-external-services-scenario"
-    environment = random_pet.main.id
-    oktodelete  = "true"
-    product     = "terraform-enterprise"
-  }
+  labels           = var.labels
   load_balancer    = "PUBLIC"
   operational_mode = "external"
   vm_machine_type  = "n1-standard-4"
