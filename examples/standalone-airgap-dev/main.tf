@@ -33,8 +33,8 @@ module "tfe" {
   existing_service_account_id = var.google.service_account
   iact_subnet_list            = ["0.0.0.0/0"]
   iact_subnet_time_limit      = 60
-  labels           = var.labels
-  load_balancer    = "PUBLIC"
-  operational_mode = "external"
-  vm_machine_type  = "n1-standard-4"
+  labels                      = var.labels
+  load_balancer               = "PUBLIC"
+  operational_mode            = "external"
+  vm_machine_type             = "n1-standard-4"
 }
