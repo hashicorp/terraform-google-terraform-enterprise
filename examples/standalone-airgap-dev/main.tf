@@ -1,7 +1,11 @@
+# Random String for unique names
+# ------------------------------
 resource "random_pet" "main" {
   length = 1
 }
 
+# Store TFE License as secret
+# ---------------------------
 module "secrets" {
   source = "../../fixtures/secrets"
 
@@ -11,23 +15,32 @@ module "secrets" {
   }
 }
 
+# Standalone Airgapped - DEV (bootstrap prerequisites)
+# ----------------------------------------------------
 module "tfe" {
-  source = "../../"
+  source = "../.."
 
-  # Bootstrapping Air-gap prerequisites
   airgap_url                                = var.airgap_url
   tfe_license_bootstrap_airgap_package_path = "/var/lib/ptfe/ptfe.airgap"
-  tfe_license_secret_id                     = module.secrets.license_secret
 
-  # Standalone scenario  
-  distribution         = "ubuntu"
-  namespace            = var.namespace
-  node_count           = 1
-  fqdn                 = var.fqdn
-  ssl_certificate_name = var.ssl_certificate_name
-  dns_zone_name        = var.dns_zone_name
-  load_balancer        = "PUBLIC"
-
-  labels = var.labels
-
+  distribution                = "ubuntu"
+  dns_zone_name               = var.dns_zone_name
+  fqdn                        = "${random_pet.main.id}.${trimsuffix(data.google_dns_managed_zone.main.dns_name, ".")}"
+  namespace                   = random_pet.main.id
+  node_count                  = 1
+  tfe_license_secret_id       = module.secrets.license_secret
+  ssl_certificate_name        = var.ssl_certificate_name
+  existing_service_account_id = var.google.service_account
+  iact_subnet_list            = ["0.0.0.0/0"]
+  iact_subnet_time_limit      = 60
+  labels = {
+    department  = "engineering"
+    description = "standalone-airgap-external-services-scenario"
+    environment = random_pet.main.id
+    oktodelete  = "true"
+    product     = "terraform-enterprise"
+  }
+  load_balancer    = "PUBLIC"
+  operational_mode = "external"
+  vm_machine_type  = "n1-standard-4"
 }
