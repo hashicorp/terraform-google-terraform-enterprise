@@ -19,25 +19,14 @@ variable "google" {
   })
 }
 
-variable "labels" {
-  type        = map(string)
-  description = "Labels to apply to resources"
-  default     = {}
-}
-
-variable "namespace" {
-  description = "A prefix which will be applied to all resource names."
+variable "license_file" {
   type        = string
+  description = "The local path to the Terraform Enterprise license."
 }
 
 variable "ssl_certificate_name" {
   description = <<-EOD
   The name of an existing SSL certificate which will be used to authenticate connections to the load balancer.
   EOD
-  type        = string
-}
-
-variable "vm_disk_source_image" {
-  description = "VM Disk source image selflink. This will be the image which you have prepared with the necessary prerequisites outlined in the README."
   type        = string
 }
