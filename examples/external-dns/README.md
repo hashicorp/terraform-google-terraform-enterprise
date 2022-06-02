@@ -1,4 +1,4 @@
-# EXAMPLE: Active-Active, External Services Installation of Terraform Enterprise into an Existing Network
+# EXAMPLE: Active-Active, External Services Installation of Terraform Enterprise
 
 ## About This Example
 
