@@ -212,6 +212,15 @@ jobs:
           TFE_HOSTNAME: ${{ secrets.TFE_HOSTNAME }}
           TFE_TOKEN: ${{ secrets.TFE_TOKEN }}
         run: terraform destroy -auto-approve -input=false -no-color
+      
+      - name: Terraform Delete Workspace
+        id: destroy
+        if: ${{ always() && github.event.client_payload.slash_command.args.named.destroy != 'false' }}
+        working-directory: ${{ env.WORK_DIR_PATH }}
+        env:
+          TFE_HOSTNAME: ${{ secrets.TFE_HOSTNAME }}
+          TFE_TOKEN: ${{ secrets.TFE_TOKEN }}
+        run: terraform workspace delete google-public-active-active-${{ github.event.client_payload.github.payload.issue.number }} -no-color
 
       - name: Update comment
         if: ${{ always() }}
