@@ -80,12 +80,7 @@ jobs:
         id: init
         working-directory: ${{ env.WORK_DIR_PATH }}
         run: terraform init -backend-config=backend-config.hcl -input=false -no-color
-
-      - name: Terraform Validate
-        id: validate
-        working-directory: ${{ env.WORK_DIR_PATH }}
-        run: terraform validate -no-color
-
+      
       - name: Write Terraform Variables
         working-directory: ${{ env.WORK_DIR_PATH }}
         env:
@@ -118,6 +113,11 @@ jobs:
             workspace    = "$TFE_WORKSPACE"
           }
           EOF
+
+      - name: Terraform Validate
+        id: validate
+        working-directory: ${{ env.WORK_DIR_PATH }}
+        run: terraform validate -no-color
 
       - name: Terraform Apply
         id: apply
@@ -309,12 +309,7 @@ jobs:
         id: init
         working-directory: ${{ env.WORK_DIR_PATH }}
         run: terraform init -backend-config=backend-config.hcl -input=false -no-color
-
-      - name: Terraform Validate
-        id: validate
-        working-directory: ${{ env.WORK_DIR_PATH }}
-        run: terraform validate -no-color
-
+      
       - name: Write Terraform Variables
         working-directory: ${{ env.WORK_DIR_PATH }}
         env:
@@ -345,6 +340,11 @@ jobs:
             workspace    = "$TFE_WORKSPACE"
           }
           EOF
+
+      - name: Terraform Validate
+        id: validate
+        working-directory: ${{ env.WORK_DIR_PATH }}
+        run: terraform validate -no-color
 
       - name: Terraform Apply
         id: apply
@@ -572,11 +572,6 @@ jobs:
         working-directory: ${{ env.WORK_DIR_PATH }}
         run: terraform init -backend-config=backend-config.hcl -input=false -no-color
 
-      - name: Terraform Validate
-        id: validate
-        working-directory: ${{ env.WORK_DIR_PATH }}
-        run: terraform validate -no-color
-
       - name: Write Terraform Variables
         working-directory: ${{ env.WORK_DIR_PATH }}
         env:
@@ -607,6 +602,11 @@ jobs:
             workspace    = "$TFE_WORKSPACE"
           }
           EOF
+
+      - name: Terraform Validate
+        id: validate
+        working-directory: ${{ env.WORK_DIR_PATH }}
+        run: terraform validate -no-color
 
       - name: Terraform Apply
         id: apply
