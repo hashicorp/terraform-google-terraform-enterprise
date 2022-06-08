@@ -213,15 +213,6 @@ jobs:
           TFE_TOKEN: ${{ secrets.TFE_TOKEN }}
         run: terraform destroy -auto-approve -input=false -no-color
 
-      - name: Terraform Delete Workspace
-        id: destroy-workspace
-        if: ${{ always() && github.event.client_payload.slash_command.args.named.destroy != 'false' }}
-        working-directory: ${{ env.WORK_DIR_PATH }}
-        env:
-          TFE_HOSTNAME: ${{ secrets.TFE_HOSTNAME }}
-          TFE_TOKEN: ${{ secrets.TFE_TOKEN }}
-        run: terraform workspace delete google-public-active-active-${{ github.event.client_payload.github.payload.issue.number }} -no-color
-
       - name: Update comment
         if: ${{ always() }}
         uses: peter-evans/create-or-update-comment@v1
@@ -243,8 +234,6 @@ jobs:
             ${{ format('- {0} Run k6 Smoke Test', steps.run-smoke-test.outcome == 'success' && ':white_check_mark:' || ':x:') }}
 
             ${{ github.event.client_payload.slash_command.args.named.destroy != 'false' && format('- {0} Terraform Destroy', steps.destroy.outcome == 'success' && ':white_check_mark:' || ':x:') || '' }}
-
-            ${{ github.event.client_payload.slash_command.args.named.destroy != 'false' && format('- {0} Terraform Destroy Workspace', steps.destroy-workspace.outcome == 'success' && ':white_check_mark:' || ':x:') || '' }}
 
   private_active_active:
     name: Run tf-test on Private Active/Active
@@ -486,15 +475,6 @@ jobs:
         working-directory: ${{ env.WORK_DIR_PATH }}
         run: terraform destroy -auto-approve -input=false -no-color
 
-      - name: Terraform Delete Workspace
-        id: destroy-workspace
-        if: ${{ always() && github.event.client_payload.slash_command.args.named.destroy != 'false' }}
-        working-directory: ${{ env.WORK_DIR_PATH }}
-        env:
-          TFE_HOSTNAME: ${{ secrets.TFE_HOSTNAME }}
-          TFE_TOKEN: ${{ secrets.TFE_TOKEN }}
-        run: terraform workspace delete google-private-active-active-${{ github.event.client_payload.github.payload.issue.number }} -no-color
-
       - name: Update comment
         if: ${{ always() }}
         uses: peter-evans/create-or-update-comment@v1
@@ -516,8 +496,6 @@ jobs:
             ${{ format('- {0} Run k6 Smoke Test', steps.run-smoke-test.outcome == 'success' && ':white_check_mark:' || ':x:') }}
 
             ${{ github.event.client_payload.slash_command.args.named.destroy != 'false' && format('- {0} Terraform Destroy', steps.destroy.outcome == 'success' && ':white_check_mark:' || ':x:') || '' }}
-
-            ${{ github.event.client_payload.slash_command.args.named.destroy != 'false' && format('- {0} Terraform Destroy Workspace', steps.destroy-workspace.outcome == 'success' && ':white_check_mark:' || ':x:') || '' }}
 
   private_tcp_active_active:
     name: Run tf-test on Private TCP Active/Active
@@ -757,19 +735,10 @@ jobs:
           make smoke-test
 
       - name: Terraform Destroy
-        id: destroy-workspace
+        id: destroy
         if: ${{ always() && github.event.client_payload.slash_command.args.named.destroy != 'false' }}
         working-directory: ${{ env.WORK_DIR_PATH }}
         run: terraform destroy -auto-approve -input=false -no-color
-
-      - name: Terraform Delete Workspace
-        id: destroy-workspace
-        if: ${{ always() && github.event.client_payload.slash_command.args.named.destroy != 'false' }}
-        working-directory: ${{ env.WORK_DIR_PATH }}
-        env:
-          TFE_HOSTNAME: ${{ secrets.TFE_HOSTNAME }}
-          TFE_TOKEN: ${{ secrets.TFE_TOKEN }}
-        run: terraform workspace delete google-private-tcp-active-active-${{ github.event.client_payload.github.payload.issue.number }} -no-color
 
       - name: Update comment
         if: ${{ always() }}
@@ -792,7 +761,3 @@ jobs:
             ${{ format('- {0} Run k6 Smoke Test', steps.run-smoke-test.outcome == 'success' && ':white_check_mark:' || ':x:') }}
 
             ${{ github.event.client_payload.slash_command.args.named.destroy != 'false' && format('- {0} Terraform Destroy', steps.destroy.outcome == 'success' && ':white_check_mark:' || ':x:') || '' }}
-
-            ${{ github.event.client_payload.slash_command.args.named.destroy != 'false' && format('- {0} Terraform Destroy Workspace', steps.destroy-workspace.outcome == 'success' && ':white_check_mark:' || ':x:') || '' }}
-
-            
