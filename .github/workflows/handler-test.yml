@@ -126,6 +126,7 @@ jobs:
           TFE_ORGANIZATION: ${{ secrets.TFE_ORGANIZATION }}
           TFE_TOKEN: ${{ secrets.TFE_TOKEN }}
           TFE_WORKSPACE: ${{ secrets.TFE_WORKSPACE }}
+        working-directory: ${{ env.WORK_DIR_PATH }}
         run: terraform validate -no-color
 
       - name: Terraform Apply
@@ -362,6 +363,7 @@ jobs:
           TFE_ORGANIZATION: ${{ secrets.TFE_ORGANIZATION }}
           TFE_TOKEN: ${{ secrets.TFE_TOKEN }}
           TFE_WORKSPACE: ${{ secrets.TFE_WORKSPACE }}
+        working-directory: ${{ env.WORK_DIR_PATH }}
         run: terraform validate -no-color
 
       - name: Terraform Apply
