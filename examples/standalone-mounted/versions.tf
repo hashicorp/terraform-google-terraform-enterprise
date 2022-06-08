@@ -7,9 +7,9 @@ terraform {
       version = "~> 3.54"
     }
 
-    tls = {
-      source  = "hashicorp/tls"
-      version = "~> 3.0"
+    google-beta = {
+      source  = "hashicorp/google-beta"
+      version = "~> 3.54"
     }
 
     random = {

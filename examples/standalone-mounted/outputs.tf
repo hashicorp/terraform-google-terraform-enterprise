@@ -23,12 +23,12 @@ output "lb_address" {
   description = "Load Balancer Address"
 }
 
-output "login_url" {
-  value       = module.tfe.url
-  description = "Login URL to setup the TFE instance once it is initialized"
-}
-
 output "replicated_console_password" {
   value       = module.tfe.replicated_console_password
   description = "Generated password for replicated dashboard"
+}
+
+output "url" {
+  value       = module.tfe.url
+  description = "Login URL to setup the TFE instance once it is initialized"
 }

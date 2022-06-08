@@ -1,4 +1,4 @@
-# EXAMPLE: Active-Active, External Services Installation of Terraform Enterprise with externally managed DNS
+# EXAMPLE: Active-Active, External Services Installation of Terraform Enterprise
 
 ## About This Example
 
@@ -7,8 +7,9 @@ This example for Terraform Enterprise creates a TFE installation with the follow
 - [Active/Active](https://www.terraform.io/enterprise/install/automated/active-active)
 - External Services production type
 - n1-standard-32 virtual machine type
-- Ubuntu 20.04
-- A publicly accessible HTTPS load balancer with TLS pass-through
+- RHEL 7.9
+- A privately accessible TCP load balancer with TLS pass-through
+- An ubuntu based mitm proxy server with TLS termination 
 
 ## Prerequisites
 
@@ -18,7 +19,7 @@ This example assumes that the following resources exist:
 - A DNS zone
 - Valid managed SSL certificate to use with load balancer:
   - Create/Import a managed SSL Certificate in Network Services -> Load Balancing to serve as the certificate for the DNS A Record.
-- An External DNS A record resolving to the load balancer IP address. If `dns_create_record` is true a DNS record will be created and if false, no record will be created and IP of load balancer will instead be output"
+- A valid CA certificate and private key for the MITM proxy that are both stored in the Secrets Manager as secrets. These should be Base64 encoded versions of a PEM encoded certificate and private key.
   
 ## How to Use This Module
 
@@ -28,7 +29,7 @@ This example assumes that the following resources exist:
 2. Ensure account meets module prerequisites from above.
 3. Clone repository.
 4. Change directory into desired example folder.
-5. Create a local `terraform.auto.tfvars` file and instantiate the required inputs in the respective `./examples/external-dns/variables.tf` including the path to the license under the `license_file` variable value.
+5. Create a local `terraform.auto.tfvars` file and instantiate the required inputs in the respective `./examples/active-active-proxy/variables.tf` including the path to the license under the `license_file` variable value.
 6. Authenticate against the Google provider. See [instructions](https://registry.terraform.io/providers/hashicorp/google/latest/docs/guides/provider_reference#authentication).
 7. Initialize terraform and apply the module configurations using the commands below:
 
@@ -45,6 +46,20 @@ This example assumes that the following resources exist:
 The build should take approximately 10-15 minutes to deploy. Once the module has completed, give the platform another 10 minutes or so prior to attempting to interact with it in order for all containers to start up.
 
 Unless amended, this example will not create an initial admin user using the IACT, but it does output the URL for your convenience. Follow the advice in this document to create the initial admin user, and log into the system using this user in order to configure it for use.
+
+### Connecting to proxy server
+
+1. To create a tunnel for Chrome:
+   By default, Chrome uses your macOS or Windows proxy. To change your proxy settings from within Chrome, take the following steps: 
+   - Open the Chrome toolbar and select "Settings".
+   - Scroll down to the bottom of the display. Click on "Show advanced settings".
+   - Scroll down to “System” and choose "Open your computer’s proxy settings".
+   - Set Chrome proxy server settings.
+2. Next, follow the instructions for your operating system to set up your proxy server settings:
+   - [macOS](https://support.apple.com/en-ca/guide/mac-help/mchlp2591/mac)
+   - [Windows](https://www.dummies.com/article/technology/computers/operating-systems/windows/windows-10/how-to-set-up-a-proxy-in-windows-10-140262/#tab2)
+3. SSH to proxy via: `$ ssh -N -p 22 -D localhost:5000 <proxyuser>@<proxyserver> -i ../path/to/id_rsa`
+4. The TFE URL is now aacessible via proxy.
 
 ### Connecting to the TFE Application
 

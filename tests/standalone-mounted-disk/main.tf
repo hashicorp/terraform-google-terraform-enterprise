@@ -25,23 +25,23 @@ resource "local_file" "private_key_pem" {
 }
 
 module "tfe" {
-  source                = "../.."
-  disk_path             = "/opt/hashicorp/data"
-  distribution          = "ubuntu"
-  dns_zone_name         = data.google_dns_managed_zone.main.name
-  fqdn                  = "${random_pet.main.id}.${trimsuffix(data.google_dns_managed_zone.main.dns_name, ".")}"
-  namespace             = random_pet.main.id
-  node_count            = 1
-  tfe_license_secret_id = module.secrets.license_secret
-  ssl_certificate_name  = "wildcard"
-
-  iact_subnet_list       = ["0.0.0.0/0"]
-  iact_subnet_time_limit = 60
-  labels                 = local.labels
-  load_balancer          = "PUBLIC"
-  operational_mode       = "disk"
-  vm_disk_source_image   = data.google_compute_image.ubuntu.self_link
-  vm_machine_type        = "n1-standard-4"
+  source                      = "../.."
+  disk_path                   = "/opt/hashicorp/data"
+  distribution                = "ubuntu"
+  dns_zone_name               = data.google_dns_managed_zone.main.name
+  fqdn                        = "${random_pet.main.id}.${trimsuffix(data.google_dns_managed_zone.main.dns_name, ".")}"
+  namespace                   = random_pet.main.id
+  node_count                  = 1
+  tfe_license_secret_id       = module.secrets.license_secret
+  ssl_certificate_name        = data.tfe_outputs.base.values.wildcard_ssl_certificate_name
+  existing_service_account_id = var.existing_service_account_id
+  iact_subnet_list            = ["0.0.0.0/0"]
+  iact_subnet_time_limit      = 60
+  labels                      = local.labels
+  load_balancer               = "PUBLIC"
+  operational_mode            = "disk"
+  vm_disk_source_image        = data.google_compute_image.ubuntu.self_link
+  vm_machine_type             = "n1-standard-4"
   vm_metadata = {
     "ssh-keys" = "${local.ssh_user}:${tls_private_key.main.public_key_openssh} ${local.ssh_user}"
   }

@@ -1,3 +1,5 @@
+# Random String for unique names
+# ------------------------------
 resource "random_pet" "main" {
   length = 1
 }
@@ -13,22 +15,19 @@ module "secrets" {
   }
 }
 
-# TFE installation into an existing network
-# -----------------------------------------
-module "existing_network" {
+# Standalone, mounted disk
+# ------------------------
+module "tfe" {
   source = "../../"
 
   distribution                = "ubuntu"
   dns_zone_name               = var.dns_zone_name
   existing_service_account_id = var.google.service_account
+  namespace                   = random_pet.main.id
+  node_count                  = 1
   fqdn                        = var.fqdn
-  labels                      = var.labels
   load_balancer               = "PUBLIC"
-  namespace                   = var.namespace
-  network                     = var.network
-  node_count                  = var.node_count
   ssl_certificate_name        = var.ssl_certificate_name
-  subnetwork                  = var.subnetwork
   tfe_license_secret_id       = module.secrets.license_secret
-  vm_machine_type             = "n1-standard-32"
+  vm_machine_type             = "n1-standard-4"
 }

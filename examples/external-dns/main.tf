@@ -1,7 +1,11 @@
+# Random String for unique names
+# ------------------------------
 resource "random_pet" "main" {
   length = 1
 }
 
+# Store TFE License as secret
+# ---------------------------
 module "secrets" {
   source = "../../fixtures/secrets"
 
@@ -11,79 +15,20 @@ module "secrets" {
   }
 }
 
-resource "tls_locally_signed_cert" "main" {
-  cert_request_pem      = tls_cert_request.main.cert_request_pem
-  ca_key_algorithm      = tls_private_key.ca.algorithm
-  ca_private_key_pem    = tls_private_key.ca.private_key_pem
-  ca_cert_pem           = tls_self_signed_cert.ca.cert_pem
-  validity_period_hours = 24 * 30 * 6
-
-  allowed_uses = [
-    "key_encipherment",
-    "digital_signature",
-  ]
-}
-
-resource "tls_cert_request" "main" {
-  key_algorithm   = tls_private_key.main.algorithm
-  private_key_pem = tls_private_key.main.private_key_pem
-
-  subject {
-    common_name  = var.fqdn
-    organization = "Terraform Enterprise Private Certificate"
-  }
-
-  dns_names = [var.fqdn]
-}
-
-resource "tls_private_key" "ca" {
-  algorithm = "RSA"
-}
-
-resource "tls_self_signed_cert" "ca" {
-  key_algorithm         = tls_private_key.ca.algorithm
-  private_key_pem       = tls_private_key.ca.private_key_pem
-  validity_period_hours = 24 * 30 * 6
-
-  subject {
-    organization = "HashiCorp (NonTrusted)"
-    common_name  = "HashiCorp (NonTrusted) Private Certificate Authority"
-    country      = "US"
-  }
-
-  is_ca_certificate = true
-
-  allowed_uses = [
-    "cert_signing",
-    "key_encipherment",
-    "digital_signature"
-  ]
-}
-
-resource "tls_private_key" "main" {
-  algorithm = "RSA"
-}
-
-resource "google_compute_region_ssl_certificate" "main" {
-  certificate = "${tls_locally_signed_cert.main.cert_pem}\n${tls_self_signed_cert.ca.cert_pem}"
-  private_key = tls_private_key.main.private_key_pem
-
-  description = "The regional SSL certificate of the private load balancer for TFE."
-  name_prefix = "ptfe-"
-
-  lifecycle {
-    create_before_destroy = true
-  }
-}
-
+# TFE installation
+# ----------------
 module "tfe" {
   source = "../../"
 
-  namespace             = var.namespace
-  node_count            = 1
-  tfe_license_secret_id = module.secrets.license_secret
-  fqdn                  = var.fqdn
-  ssl_certificate_name  = google_compute_region_ssl_certificate.main.name
-  dns_create_record     = var.dns_create_record
-  dns_zone_name         = var.dns_zone_name
+  distribution                = "ubuntu"
+  dns_create_record           = var.dns_create_record
+  dns_zone_name               = var.dns_zone_name
+  existing_service_account_id = var.google.service_account
+  fqdn                        = var.fqdn
+  load_balancer               = "PUBLIC"
+  namespace                   = var.namespace
+  node_count                  = 2
+  ssl_certificate_name        = var.ssl_certificate_name
+  tfe_license_secret_id       = module.secrets.license_secret
+  vm_machine_type             = "n1-standard-32"
 }
