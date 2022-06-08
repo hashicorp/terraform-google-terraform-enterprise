@@ -116,8 +116,18 @@ jobs:
 
       - name: Terraform Validate
         id: validate
+        env:
+          GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
+          GOOGLE_PROJECT: ${{ secrets.GOOGLE_PROJECT }}
+          GOOGLE_REGION: ${{ secrets.GOOGLE_REGION }}
+          GOOGLE_ZONE: ${{ secrets.GOOGLE_ZONE }}
+          GOOGLE_SERVICE_ACCOUNT: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
+          TFE_HOSTNAME: ${{ secrets.TFE_HOSTNAME }}
+          TFE_ORGANIZATION: ${{ secrets.TFE_ORGANIZATION }}
+          TFE_TOKEN: ${{ secrets.TFE_TOKEN }}
+          TFE_WORKSPACE: ${{ secrets.TFE_WORKSPACE }}
         working-directory: ${{ env.WORK_DIR_PATH }}
-        run: terraform validate -no-color -var-file=github.auto.tfvars
+        run: terraform validate -no-color
 
       - name: Terraform Apply
         id: apply
@@ -343,8 +353,18 @@ jobs:
 
       - name: Terraform Validate
         id: validate
+        env:
+          GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
+          GOOGLE_PROJECT: ${{ secrets.GOOGLE_PROJECT }}
+          GOOGLE_REGION: ${{ secrets.GOOGLE_REGION }}
+          GOOGLE_ZONE: ${{ secrets.GOOGLE_ZONE }}
+          GOOGLE_SERVICE_ACCOUNT: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
+          TFE_HOSTNAME: ${{ secrets.TFE_HOSTNAME }}
+          TFE_ORGANIZATION: ${{ secrets.TFE_ORGANIZATION }}
+          TFE_TOKEN: ${{ secrets.TFE_TOKEN }}
+          TFE_WORKSPACE: ${{ secrets.TFE_WORKSPACE }}
         working-directory: ${{ env.WORK_DIR_PATH }}
-        run: terraform validate -no-color -var-file=github.auto.tfvars
+        run: terraform validate -no-color
 
       - name: Terraform Apply
         id: apply
@@ -605,8 +625,18 @@ jobs:
 
       - name: Terraform Validate
         id: validate
+        env:
+          GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
+          GOOGLE_PROJECT: ${{ secrets.GOOGLE_PROJECT }}
+          GOOGLE_REGION: ${{ secrets.GOOGLE_REGION }}
+          GOOGLE_ZONE: ${{ secrets.GOOGLE_ZONE }}
+          GOOGLE_SERVICE_ACCOUNT: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
+          TFE_HOSTNAME: ${{ secrets.TFE_HOSTNAME }}
+          TFE_ORGANIZATION: ${{ secrets.TFE_ORGANIZATION }}
+          TFE_TOKEN: ${{ secrets.TFE_TOKEN }}
+          TFE_WORKSPACE: ${{ secrets.TFE_WORKSPACE }}
         working-directory: ${{ env.WORK_DIR_PATH }}
-        run: terraform validate -no-color -var-file=github.auto.tfvars
+        run: terraform validate -no-color
 
       - name: Terraform Apply
         id: apply
