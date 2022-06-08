@@ -116,6 +116,7 @@ jobs:
 
       - name: Terraform Validate
         id: validate
+        working-directory: ${{ env.WORK_DIR_PATH }}
         run: terraform validate -no-color -var-file=github.auto.tfvars
 
       - name: Terraform Apply
@@ -342,6 +343,7 @@ jobs:
 
       - name: Terraform Validate
         id: validate
+        working-directory: ${{ env.WORK_DIR_PATH }}
         run: terraform validate -no-color -var-file=github.auto.tfvars
 
       - name: Terraform Apply
