@@ -1,0 +1,107 @@
+name: Close Pull Request
+# only trigger on pull request closed events
+on:
+  pull_request:
+    types: [ closed ]
+jobs:
+  merge_job:
+    # this job will only run if the PR has been merged
+     name: Destroy resources from Private TCP Active/Active and Delete Terraform Workspace for merged PR
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    env:
+      WORK_DIR_PATH: ./tests/private-tcp-active-active
+    steps:
+    # this step will get the workspace created for google-private-tcp-active-active for this PR
+      - name: Get workspace for google-private-tcp-active-active
+        id: get-workspaces-google-private-tcp-active-active
+        working-directory: ${{ env.WORK_DIR_PATH }}
+        run: >-
+          echo "::set-output name=WORSPACE_TCP_AA::$(terraform workspace list -input=false -no-color | grep google-private-tcp-active-active-${{ github.event.client_payload.github.payload.issue.number }})"
+
+          echo "::set-output name=WORSPACE_TCP_AA_EXISTS::$(terraform workspace list -input=false -no-color | grep -cx google-private-tcp-active-active-${{ github.event.client_payload.github.payload.issue.number }})"
+    # this step will delete resources if workspace exists for this PR
+      - name: Terraform Destroy
+        id: destroy
+        if: github.event.pull_request.merged == true && steps.get-workspaces-google-private-tcp-active-active.outputs.WORSPACE_TCP_AA_EXISTS == "1"
+        working-directory: ${{ env.WORK_DIR_PATH }}
+        run: terraform destroy -auto-approve -input=false -no-color
+    # this step will delete workspace for this PR
+      - name: Terraform Delete Workspace
+        id: destroy-workspace
+        if: github.event.pull_request.merged == true && steps.get-workspaces-google-private-tcp-active-active.outputs.WORSPACE_TCP_AA_EXISTS == "1" && steps.destroy.outcome == 'success'
+        working-directory: ${{ env.WORK_DIR_PATH }}
+        env:
+          TFE_HOSTNAME: ${{ secrets.TFE_HOSTNAME }}
+          TFE_TOKEN: ${{ secrets.TFE_TOKEN }}
+        run: terraform workspace delete "${{ steps.get-workspaces-google-private-tcp-active-active.outputs.WORSPACE_TCP_AA }}" -no-color
+     # this step will delete workspace for this PR
+      - name: Update comment
+        if: ${{ always() }}
+        uses: peter-evans/create-or-update-comment@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          repository: ${{ github.event.client_payload.github.payload.repository.full_name }}
+          comment-id: ${{ github.event.client_payload.github.payload.comment.id }}
+          body: |
+            ${{ format('### {0} Terraform Private TCP Active/Active Destruction Report', job.status == 'success' && ':white_check_mark:' || ':x:') }}
+
+            ${{ format(':link: [Action Summary Page]({0})') }}
+
+            ${{ format('- {0} Terraform Destroy', steps.destroy.outcome == 'success' && ':white_check_mark:' || ':x:') }}
+
+            ${{ format('- {0} Terraform Delete Workspace ${{ steps.get-workspaces-google-private-tcp-active-active.outputs.WORSPACE_TCP_AA }}', steps.destroy-workspace.outcome == 'success' && ':white_check_mark:' || ':x:') || '' }}
+
+  close_job:
+    # this job will only run if the PR has been closed without being merged
+    name: Destroy resources from Private TCP Active/Active and Delete Terraform Workspace for closed PR
+    if: github.event.pull_request.merged == false
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    env:
+      WORK_DIR_PATH: ./tests/private-tcp-active-active
+    steps:
+    # this step will get the workspace created for google-private-tcp-active-active for this PR
+      - name: Get workspace for google-private-tcp-active-active
+        id: get-workspaces-google-private-tcp-active-active
+        working-directory: ${{ env.WORK_DIR_PATH }}
+        run: >-
+          echo "::set-output name=WORSPACE_TCP_AA::$(terraform workspace list -input=false -no-color | grep google-private-tcp-active-active-${{ github.event.client_payload.github.payload.issue.number }})"
+
+          echo "::set-output name=WORSPACE_TCP_AA_EXISTS::$(terraform workspace list -input=false -no-color | grep -cx google-private-tcp-active-active-${{ github.event.client_payload.github.payload.issue.number }})"
+    # this step will delete resources if workspace exists for this PR
+      - name: Terraform Destroy
+        id: destroy
+        if: github.event.pull_request.merged == true && steps.get-workspaces-google-private-tcp-active-active.outputs.WORSPACE_TCP_AA_EXISTS == "1"
+        working-directory: ${{ env.WORK_DIR_PATH }}
+        run: terraform destroy -auto-approve -input=false -no-color
+    # this step will delete workspace for this PR
+      - name: Terraform Delete Workspace
+        id: destroy-workspace
+        if: github.event.pull_request.merged == true && steps.get-workspaces-google-private-tcp-active-active.outputs.WORSPACE_TCP_AA_EXISTS == "1" && steps.destroy.outcome == 'success'
+        working-directory: ${{ env.WORK_DIR_PATH }}
+        env:
+          TFE_HOSTNAME: ${{ secrets.TFE_HOSTNAME }}
+          TFE_TOKEN: ${{ secrets.TFE_TOKEN }}
+        run: terraform workspace delete "${{ steps.get-workspaces-google-private-tcp-active-active.outputs.WORSPACE_TCP_AA }}" -no-color
+     # this step will delete workspace for this PR
+      - name: Update comment
+        if: ${{ always() }}
+        uses: peter-evans/create-or-update-comment@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          repository: ${{ github.event.client_payload.github.payload.repository.full_name }}
+          comment-id: ${{ github.event.client_payload.github.payload.comment.id }}
+          body: |
+            ${{ format('### {0} Terraform Private TCP Active/Active Destruction Report', job.status == 'success' && ':white_check_mark:' || ':x:') }}
+
+            ${{ format(':link: [Action Summary Page]({0})') }}
+
+            ${{ format('- {0} Terraform Destroy', steps.destroy.outcome == 'success' && ':white_check_mark:' || ':x:') }}
+
+            ${{ format('- {0} Terraform Delete Workspace ${{ steps.get-workspaces-google-private-tcp-active-active.outputs.WORSPACE_TCP_AA }}', steps.destroy-workspace.outcome == 'success' && ':white_check_mark:' || ':x:') || '' }}
