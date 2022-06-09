@@ -116,19 +116,4 @@ jobs:
           TFE_HOSTNAME: ${{ secrets.TFE_HOSTNAME }}
           TFE_TOKEN: ${{ secrets.TFE_TOKEN }}
         run: terraform workspace delete "${{ steps.get-workspaces-google-private-tcp-active-active.outputs.WORSPACE_TCP_AA }}" -no-color
-     # this step will delete workspace for this PR
-      - name: Update comment
-        if: ${{ always() }}
-        uses: peter-evans/create-or-update-comment@v1
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          repository: ${{ github.event.client_payload.github.payload.repository.full_name }}
-          comment-id: ${{ github.event.client_payload.github.payload.comment.id }}
-          body: |
-            ${{ format('### {0} Terraform Private TCP Active/Active Destruction Report', job.status == 'success' && ':white_check_mark:' || ':x:') }}
-
-            ${{ format(':link: [Action Summary Page]({0})') }}
-
-            ${{ format('- {0} Terraform Destroy', steps.destroy.outcome == 'success' && ':white_check_mark:' || ':x:') }}
-
-            ${{ format('- {0} Terraform Delete Workspace ${{ steps.get-workspaces-google-private-tcp-active-active.outputs.WORSPACE_TCP_AA }}', steps.destroy-workspace.outcome == 'success' && ':white_check_mark:' || ':x:') || '' }}
+   
