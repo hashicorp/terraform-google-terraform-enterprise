@@ -22,20 +22,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
         with:
-          repository: ${{ github.event.client_payload.pull_request.head.repo.full_name }}
-          ref: ${{ github.event.client_payload.pull_request.head.sha }}
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          ref: ${{ github.event.pull_request.head.sha }}
           token: ${{ secrets.GITHUB_TOKEN }}
           persist-credentials: false
-    # Set the source of module
-      - name: Set Terraform Module Source
-        working-directory: ${{ env.WORK_DIR_PATH }}
-        env:
-          LOGIN: ${{ github.event.client_payload.pull_request.head.repo.owner.login }}
-          NAME: ${{ github.event.client_payload.pull_request.head.repo.name }}
-          SHA: ${{ github.event.client_payload.pull_request.head.sha }}
-        run: |
-          sed --in-place "s/source = \"..\/..\"/source = \"github.com\/$LOGIN\/$NAME?ref=$SHA\"/" main.tf
-          sed --in-place "s/source = \"..\/..\/fixtures\/test_proxy\"/source = \"github.com\/$LOGIN\/$NAME\/\/fixtures\/test_proxy?ref=$SHA\"/" main.tf
     # Set the terraform env
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
@@ -54,7 +44,7 @@ jobs:
           cat <<EOF > backend-config.hcl
             organization = "$TFC_ORGANIZATION"
             workspaces {
-              name = "google-private-tcp-active-active-${{ github.event.client_payload.github.payload.issue.number }}"
+              name = "google-private-tcp-active-active-${{ github.event.pull_request.number }}"
             }
           EOF
     # Initialize terraform
@@ -98,19 +88,19 @@ jobs:
         id: get-workspaces-google-private-tcp-active-active
         working-directory: ${{ env.WORK_DIR_PATH }}
         run: >-
-          echo "::set-output name=WORSPACE_TCP_AA::$(terraform workspace list -input=false -no-color | grep google-private-tcp-active-active-${{ github.event.client_payload.github.payload.issue.number }})"
+          echo "::set-output name=WORSPACE_TCP_AA::$(terraform workspace list -input=false -no-color | grep google-private-tcp-active-active-${{ github.event.pull_request.number }})"
 
-          echo "::set-output name=WORSPACE_TCP_AA_EXISTS::$(terraform workspace list -input=false -no-color | grep -cx google-private-tcp-active-active-${{ github.event.client_payload.github.payload.issue.number }})"
+          echo "::set-output name=WORSPACE_TCP_AA_EXISTS::$(terraform workspace list -input=false -no-color | grep -cx google-private-tcp-active-active-${{ github.event.pull_request.number }})"
     # this step will delete resources if workspace exists for this PR
       - name: Terraform Destroy
         id: destroy
-        if: github.event.pull_request.merged == true && steps.get-workspaces-google-private-tcp-active-active.outputs.WORSPACE_TCP_AA_EXISTS == "1"
+        if: steps.get-workspaces-google-private-tcp-active-active.outputs.WORSPACE_TCP_AA_EXISTS == '1'
         working-directory: ${{ env.WORK_DIR_PATH }}
         run: terraform destroy -auto-approve -input=false -no-color
     # this step will delete workspace for this PR
       - name: Terraform Delete Workspace
         id: destroy-workspace
-        if: github.event.pull_request.merged == true && steps.get-workspaces-google-private-tcp-active-active.outputs.WORSPACE_TCP_AA_EXISTS == "1" && steps.destroy.outcome == 'success'
+        if: steps.get-workspaces-google-private-tcp-active-active.outputs.WORSPACE_TCP_AA_EXISTS == '1' && steps.destroy.outcome == 'success'
         working-directory: ${{ env.WORK_DIR_PATH }}
         env:
           TFE_HOSTNAME: ${{ secrets.TFE_HOSTNAME }}
