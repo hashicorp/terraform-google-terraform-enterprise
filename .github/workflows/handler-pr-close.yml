@@ -104,13 +104,13 @@ jobs:
     # this step will delete resources if workspace exists for this PR
       - name: Terraform Destroy
         id: destroy
-        if: github.event.pull_request.merged == true && steps.get-workspaces-google-private-tcp-active-active.outputs.WORSPACE_TCP_AA_EXISTS == "1"
+        if: steps.get-workspaces-google-private-tcp-active-active.outputs.WORSPACE_TCP_AA_EXISTS == '1'
         working-directory: ${{ env.WORK_DIR_PATH }}
         run: terraform destroy -auto-approve -input=false -no-color
     # this step will delete workspace for this PR
       - name: Terraform Delete Workspace
         id: destroy-workspace
-        if: github.event.pull_request.merged == true && steps.get-workspaces-google-private-tcp-active-active.outputs.WORSPACE_TCP_AA_EXISTS == "1" && steps.destroy.outcome == 'success'
+        if: steps.get-workspaces-google-private-tcp-active-active.outputs.WORSPACE_TCP_AA_EXISTS == '1' && steps.destroy.outcome == 'success'
         working-directory: ${{ env.WORK_DIR_PATH }}
         env:
           TFE_HOSTNAME: ${{ secrets.TFE_HOSTNAME }}
