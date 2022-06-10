@@ -18,6 +18,7 @@ jobs:
       - name: Create URL to the run output
         id: vars
         run: echo ::set-output name=run-url::https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID
+
     # Checkout the branch of the pull request being tested
       - name: Checkout
         uses: actions/checkout@v2
@@ -26,6 +27,7 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha }}
           token: ${{ secrets.GITHUB_TOKEN }}
           persist-credentials: false
+
     # Set the terraform env
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
@@ -34,6 +36,7 @@ jobs:
           cli_config_credentials_token: ${{ secrets.TFC_TOKEN }}
           terraform_version: 1.0.11
           terraform_wrapper: true
+
     # Configure backend 
       - name: Configure Terraform Backend
         id: backend-config
@@ -47,11 +50,13 @@ jobs:
               name = "google-private-tcp-active-active-${{ github.event.pull_request.number }}"
             }
           EOF
+
     # Initialize terraform
       - name: Terraform Init
         id: init
         working-directory: ${{ env.WORK_DIR_PATH }}
         run: terraform init -backend-config=backend-config.hcl -input=false -no-color
+        
     # Write tfvars
       - name: Write Terraform Variables
         working-directory: ${{ env.WORK_DIR_PATH }}
@@ -83,27 +88,33 @@ jobs:
             workspace    = "$TFE_WORKSPACE"
           }
           EOF
-    # this step will get the workspace created for google-private-tcp-active-active for this PR
-      - name: Get workspace for google-private-tcp-active-active
-        id: get-workspaces-google-private-tcp-active-active
+
+    # this step will check if workspace is created for google-private-tcp-active-active for this PR
+      - name: Check if workspace for google-private-tcp-active-active exists
+        id: check-workspaces-google-private-tcp-active-active
         working-directory: ${{ env.WORK_DIR_PATH }}
         run: >-
-          echo "::set-output name=WORSPACE_TCP_AA::$(terraform workspace list -input=false -no-color | grep google-private-tcp-active-active-${{ github.event.pull_request.number }})"
+          echo "::set-output name=WORSPACE_TCP_AA_EXISTS::$(curl -s \  --header "Authorization: Bearer $TFE_TOKEN" \  --header "Content-Type: application/vnd.api+json" \  https://app.terraform.io/api/v2/organizations/$TFE_ORGANIZATION/workspaces | jq -r '.data[] | .attributes | .name' | grep -cx google-private-tcp-active-active-${{ github.event.pull_request.number }})"
+        env:
+          TFE_ORGANIZATION: ${{ secrets.TFE_ORGANIZATION }}
+          TFE_TOKEN: ${{ secrets.TFE_TOKEN }}
 
-          echo "::set-output name=WORSPACE_TCP_AA_EXISTS::$(terraform workspace list -input=false -no-color | grep -cx google-private-tcp-active-active-${{ github.event.pull_request.number }})"
-    # this step will delete resources if workspace exists for this PR
+    # this step will delete workspace-resources if exists for this PR
       - name: Terraform Destroy
         id: destroy
         if: steps.get-workspaces-google-private-tcp-active-active.outputs.WORSPACE_TCP_AA_EXISTS == '1'
         working-directory: ${{ env.WORK_DIR_PATH }}
         run: terraform destroy -auto-approve -input=false -no-color
+
     # this step will delete workspace for this PR
       - name: Terraform Delete Workspace
         id: destroy-workspace
         if: steps.get-workspaces-google-private-tcp-active-active.outputs.WORSPACE_TCP_AA_EXISTS == '1' && steps.destroy.outcome == 'success'
         working-directory: ${{ env.WORK_DIR_PATH }}
         env:
-          TFE_HOSTNAME: ${{ secrets.TFE_HOSTNAME }}
+          TFE_ORGANIZATION: ${{ secrets.$TFE_ORGANIZATION }}
           TFE_TOKEN: ${{ secrets.TFE_TOKEN }}
-        run: terraform workspace delete "${{ steps.get-workspaces-google-private-tcp-active-active.outputs.WORSPACE_TCP_AA }}" -no-color
+        run: curl \ --header "Authorization: Bearer $TFE_TOKEN" \ --header "Content-Type: application/vnd.api+json" \ --request DELETE \  https://app.terraform.io/api/v2/organizations/$TFE_ORGANIZATION/workspaces/{{ steps.get-workspaces-google-private-tcp-active-active.outputs.WORSPACE_TCP_AA }}
    
+ 
+ 
