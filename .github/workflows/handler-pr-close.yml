@@ -4,8 +4,8 @@ on:
   pull_request:
     types: [ closed ]
 jobs:
-  merge_job:
-    # this job will only run if the PR has been merged
+  close_job:
+    # this job will run if PR is closed
     name: Destroy resources from Private TCP Active/Active and Delete Terraform Workspace for merged PR
     if: github.event.pull_request.merged == true || github.event.pull_request.merged == false
     runs-on: ubuntu-latest
@@ -14,6 +14,7 @@ jobs:
       pull-requests: write
     env:
       WORK_DIR_PATH: ./tests/private-tcp-active-active
+      PR_NUMBER: ${{ github.event.pull_request.number }}
     steps:
       - name: Create URL to the run output
         id: vars
@@ -47,7 +48,7 @@ jobs:
           cat <<EOF > backend-config.hcl
             organization = "$TFC_ORGANIZATION"
             workspaces {
-              name = "google-private-tcp-active-active-${{ github.event.pull_request.number }}"
+              name = "google-private-tcp-active-active-${{ env.PR_NUMBER }}"
             }
           EOF
 
@@ -94,7 +95,7 @@ jobs:
         id: check-workspaces-google-private-tcp-active-active
         working-directory: ${{ env.WORK_DIR_PATH }}
         run: >-
-          echo "::set-output name=WORSPACE_TCP_AA_EXISTS::$(curl -s \  --header "Authorization: Bearer $TFE_TOKEN" \  --header "Content-Type: application/vnd.api+json" \  https://app.terraform.io/api/v2/organizations/$TFE_ORGANIZATION/workspaces | jq -r '.data[] | .attributes | .name' | grep -cx google-private-tcp-active-active-${{ github.event.pull_request.number }})"
+          echo "::set-output name=WORSPACE_TCP_AA_EXISTS::$(curl -s --header "Authorization: Bearer $TFE_TOKEN" --header "Content-Type: application/vnd.api+json"  https://app.terraform.io/api/v2/organizations/$TFE_ORGANIZATION/workspaces/google-private-tcp-active-active-${{ env.PR_NUMBER }} | jq -r '.data | .attributes | .name')"
         env:
           TFE_ORGANIZATION: ${{ secrets.TFE_ORGANIZATION }}
           TFE_TOKEN: ${{ secrets.TFE_TOKEN }}
@@ -102,27 +103,27 @@ jobs:
     # this step will delete workspace-resources if exists for this PR
       - name: Terraform Destroy
         id: destroy
-        if: steps.get-workspaces-google-private-tcp-active-active.outputs.WORSPACE_TCP_AA_EXISTS == '1'
+        if: steps.get-workspaces-google-private-tcp-active-active.outputs.WORSPACE_TCP_AA_EXISTS != null
         working-directory: ${{ env.WORK_DIR_PATH }}
         run: terraform destroy -auto-approve -input=false -no-color
 
     # this step will delete workspace for this PR
       - name: Terraform Delete Workspace
         id: destroy-workspace
-        if: steps.get-workspaces-google-private-tcp-active-active.outputs.WORSPACE_TCP_AA_EXISTS == '1' && steps.destroy.outcome == 'success'
+        if: steps.get-workspaces-google-private-tcp-active-active.outputs.WORSPACE_TCP_AA_EXISTS != null && steps.destroy.outcome == 'success'
         working-directory: ${{ env.WORK_DIR_PATH }}
         env:
           TFE_ORGANIZATION: ${{ secrets.$TFE_ORGANIZATION }}
           TFE_TOKEN: ${{ secrets.TFE_TOKEN }}
         run: >-
-          curl \ --header "Authorization: Bearer $TFE_TOKEN" \ --header "Content-Type: application/vnd.api+json" \ --request DELETE \  https://app.terraform.io/api/v2/organizations/$TFE_ORGANIZATION/workspaces/google-private-tcp-active-active-${{ github.event.pull_request.number }}
+          curl --header "Authorization: Bearer $TFE_TOKEN" --header "Content-Type: application/vnd.api+json" --request DELETE https://app.terraform.io/api/v2/organizations/$TFE_ORGANIZATION/workspaces/google-private-tcp-active-active-${{ env.PR_NUMBER }}
 
     # this step will check if workspace is created for google-private-active-active for this PR
       - name: Check if workspace for google-private-active-active exists
         id: check-workspaces-google-private-active-active
         working-directory: ${{ env.WORK_DIR_PATH }}
         run: >-
-          echo "::set-output name=WORSPACE_PRI_P_AA_EXISTS::$(curl -s \  --header "Authorization: Bearer $TFE_TOKEN" \  --header "Content-Type: application/vnd.api+json" \  https://app.terraform.io/api/v2/organizations/$TFE_ORGANIZATION/workspaces | jq -r '.data[] | .attributes | .name' | grep -cx google-private-active-active-${{ github.event.pull_request.number }})"
+          echo "::set-output name=WORSPACE_PRI_P_AA_EXISTS::$(curl -s --header "Authorization: Bearer $TFE_TOKEN" --header "Content-Type: application/vnd.api+json"  https://app.terraform.io/api/v2/organizations/$TFE_ORGANIZATION/workspaces/google-private-active-active-${{ env.PR_NUMBER }} | jq -r '.data | .attributes | .name')"
         env:
           TFE_ORGANIZATION: ${{ secrets.TFE_ORGANIZATION }}
           TFE_TOKEN: ${{ secrets.TFE_TOKEN }}
@@ -130,27 +131,27 @@ jobs:
     # this step will delete workspace-resources if exists for this PR
       - name: Terraform Destroy
         id: destroy
-        if: steps.get-workspaces-google-private-active-active.outputs.WORSPACE_PRI_AA_EXISTS == '1'
+        if: steps.get-workspaces-google-private-active-active.outputs.WORSPACE_PRI_AA_EXISTS != null
         working-directory: ${{ env.WORK_DIR_PATH }}
         run: terraform destroy -auto-approve -input=false -no-color
 
     # this step will delete workspace for this PR
       - name: Terraform Delete Workspace
         id: destroy-workspace
-        if: steps.get-workspaces-google-private-active-active.outputs.WORSPACE_PRI_AA_EXISTS == '1' && steps.destroy.outcome == 'success'
+        if: steps.get-workspaces-google-private-active-active.outputs.WORSPACE_PRI_AA_EXISTS != null && steps.destroy.outcome == 'success'
         working-directory: ${{ env.WORK_DIR_PATH }}
         env:
           TFE_ORGANIZATION: ${{ secrets.$TFE_ORGANIZATION }}
           TFE_TOKEN: ${{ secrets.TFE_TOKEN }}
         run: >-
-          curl \ --header "Authorization: Bearer $TFE_TOKEN" \ --header "Content-Type: application/vnd.api+json" \ --request DELETE \  https://app.terraform.io/api/v2/organizations/$TFE_ORGANIZATION/workspaces/google-private-active-active-${{ github.event.pull_request.number }}
+          curl --header "Authorization: Bearer $TFE_TOKEN" --header "Content-Type: application/vnd.api+json" --request DELETE https://app.terraform.io/api/v2/organizations/$TFE_ORGANIZATION/workspaces/google-private-active-active-${{ env.PR_NUMBER }}
     
     # this step will check if workspace is created for google-public-active-active for this PR
       - name: Check if workspace for google-public-active-active exists
         id: check-workspaces-google-public-active-active
         working-directory: ${{ env.WORK_DIR_PATH }}
         run: >-
-          echo "::set-output name=WORSPACE_PUB_AA_EXISTS::$(curl -s \  --header "Authorization: Bearer $TFE_TOKEN" \  --header "Content-Type: application/vnd.api+json" \  https://app.terraform.io/api/v2/organizations/$TFE_ORGANIZATION/workspaces | jq -r '.data[] | .attributes | .name' | grep -cx google-public-active-active-${{ github.event.pull_request.number }})"
+          echo "::set-output name=WORSPACE_PUB_AA_EXISTS::$(curl -s --header "Authorization: Bearer $TFE_TOKEN" --header "Content-Type: application/vnd.api+json"  https://app.terraform.io/api/v2/organizations/$TFE_ORGANIZATION/workspaces/google-public-active-active-${{ env.PR_NUMBER }} | jq -r '.data | .attributes | .name')"
         env:
           TFE_ORGANIZATION: ${{ secrets.TFE_ORGANIZATION }}
           TFE_TOKEN: ${{ secrets.TFE_TOKEN }}
@@ -158,18 +159,18 @@ jobs:
     # this step will delete workspace-resources if exists for this PR
       - name: Terraform Destroy
         id: destroy
-        if: steps.get-workspaces-google-public-active-active.outputs.WORSPACE_PUB_AA_EXISTS == '1'
+        if: steps.get-workspaces-google-public-active-active.outputs.WORSPACE_PUB_AA_EXISTS != null
         working-directory: ${{ env.WORK_DIR_PATH }}
         run: terraform destroy -auto-approve -input=false -no-color
 
     # this step will delete workspace for this PR
       - name: Terraform Delete Workspace
         id: destroy-workspace
-        if: steps.get-workspaces-google-public-active-active.outputs.WORSPACE_PUB_AA_EXISTS == '1' && steps.destroy.outcome == 'success'
+        if: steps.get-workspaces-google-public-active-active.outputs.WORSPACE_PUB_AA_EXISTS != null && steps.destroy.outcome == 'success'
         working-directory: ${{ env.WORK_DIR_PATH }}
         env:
           TFE_ORGANIZATION: ${{ secrets.$TFE_ORGANIZATION }}
           TFE_TOKEN: ${{ secrets.TFE_TOKEN }}
         run: >-
-          curl \ --header "Authorization: Bearer $TFE_TOKEN" \ --header "Content-Type: application/vnd.api+json" \ --request DELETE \  https://app.terraform.io/api/v2/organizations/$TFE_ORGANIZATION/workspaces/google-public-active-active-${{ github.event.pull_request.number }}
+          curl --header "Authorization: Bearer $TFE_TOKEN" --header "Content-Type: application/vnd.api+json" --request DELETE https://app.terraform.io/api/v2/organizations/$TFE_ORGANIZATION/workspaces/google-public-active-active-${{ env.PR_NUMBER }}
  
