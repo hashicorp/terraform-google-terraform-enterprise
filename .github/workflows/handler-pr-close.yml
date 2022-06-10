@@ -114,7 +114,8 @@ jobs:
         env:
           TFE_ORGANIZATION: ${{ secrets.$TFE_ORGANIZATION }}
           TFE_TOKEN: ${{ secrets.TFE_TOKEN }}
-        run: curl \ --header "Authorization: Bearer $TFE_TOKEN" \ --header "Content-Type: application/vnd.api+json" \ --request DELETE \  https://app.terraform.io/api/v2/organizations/$TFE_ORGANIZATION/workspaces/{{ steps.get-workspaces-google-private-tcp-active-active.outputs.WORSPACE_TCP_AA }}
+        run: >-
+          curl \ --header "Authorization: Bearer $TFE_TOKEN" \ --header "Content-Type: application/vnd.api+json" \ --request DELETE \  https://app.terraform.io/api/v2/organizations/$TFE_ORGANIZATION/workspaces/{{ steps.get-workspaces-google-private-tcp-active-active.outputs.WORSPACE_TCP_AA }}
    
  
  
