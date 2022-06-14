@@ -169,7 +169,7 @@ jobs:
         if: steps.get-workspaces-google-public-active-active.outputs.WORSPACE_PUB_AA_EXISTS != null && steps.destroy.outcome == 'success'
         working-directory: ${{ env.WORK_DIR_PATH }}
         env:
-          TFE_ORGANIZATION: ${{ secrets.$TFE_ORGANIZATION }}
+          TFE_ORGANIZATION: ${{ secrets.TFE_ORGANIZATION }}
           TFE_TOKEN: ${{ secrets.TFE_TOKEN }}
         run: >-
           curl --header "Authorization: Bearer ${{env.TFE_TOKEN}}" --header "Content-Type: application/vnd.api+json" --request DELETE https://app.terraform.io/api/v2/organizations/${{env.TFE_ORGANIZATION}}/workspaces/google-public-active-active-${{ env.PR_NUMBER }}
