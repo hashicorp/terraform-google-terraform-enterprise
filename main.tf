@@ -101,7 +101,7 @@ module "redis" {
 # TFE and Replicated settings to pass to the tfe_init module
 # -----------------------------------------------------------------------------
 module "settings" {
-  source = "git::https://github.com/hashicorp/terraform-random-tfe-utility//modules/settings?ref=main"
+  source = "git::https://github.com/hashicorp/terraform-random-tfe-utility//modules/settings?ref=ah-gcp-iam"
 
   # TFE Base Configuration
   production_type          = var.operational_mode
@@ -151,9 +151,10 @@ module "settings" {
   redis_use_tls           = var.redis_use_tls
 
   # Storage
-  gcs_bucket      = local.object_storage.bucket
-  gcs_credentials = module.service_accounts.credentials
-  gcs_project     = local.object_storage.project
+  gcs_bucket          = local.object_storage.bucket
+  # gcs_credentials = module.service_accounts.credentials
+  gcs_project         = local.object_storage.project
+  gcs_use_instance_sa = true
 
   # External Vault
   extern_vault_enable      = var.extern_vault_enable
