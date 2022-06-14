@@ -95,7 +95,7 @@ jobs:
         id: check-workspaces-google-private-tcp-active-active
         working-directory: ${{ env.WORK_DIR_PATH }}
         run: >-
-          echo "::set-output name=WORSPACE_TCP_AA_EXISTS::$(curl -s --header "Authorization: Bearer $TFE_TOKEN" --header "Content-Type: application/vnd.api+json"  https://app.terraform.io/api/v2/organizations/$TFE_ORGANIZATION/workspaces/google-private-tcp-active-active-${{ env.PR_NUMBER }} | jq -r '.data | .attributes | .name')"
+          echo "::set-output name=WORSPACE_TCP_AA_EXISTS::$(curl -s --header "Authorization: Bearer ${{env.TFE_TOKEN}}" --header "Content-Type: application/vnd.api+json"  https://app.terraform.io/api/v2/organizations/${{env.TFE_ORGANIZATION}}/workspaces/google-private-tcp-active-active-${{ env.PR_NUMBER }} | jq -r '.data | .attributes | .name')"
         env:
           TFE_ORGANIZATION: ${{ secrets.TFE_ORGANIZATION }}
           TFE_TOKEN: ${{ secrets.TFE_TOKEN }}
@@ -116,14 +116,14 @@ jobs:
           TFE_ORGANIZATION: ${{ secrets.$TFE_ORGANIZATION }}
           TFE_TOKEN: ${{ secrets.TFE_TOKEN }}
         run: >-
-          curl --header "Authorization: Bearer $TFE_TOKEN" --header "Content-Type: application/vnd.api+json" --request DELETE https://app.terraform.io/api/v2/organizations/$TFE_ORGANIZATION/workspaces/google-private-tcp-active-active-${{ env.PR_NUMBER }}
+          curl --header "Authorization: Bearer ${{env.TFE_TOKEN}}" --header "Content-Type: application/vnd.api+json" --request DELETE https://app.terraform.io/api/v2/organizations/${{env.TFE_ORGANIZATION}}/workspaces/google-private-tcp-active-active-${{ env.PR_NUMBER }}
 
     # this step will check if workspace is created for google-private-active-active for this PR
       - name: Check if workspace for google-private-active-active exists
         id: check-workspaces-google-private-active-active
         working-directory: ${{ env.WORK_DIR_PATH }}
         run: >-
-          echo "::set-output name=WORSPACE_PRI_P_AA_EXISTS::$(curl -s --header "Authorization: Bearer $TFE_TOKEN" --header "Content-Type: application/vnd.api+json"  https://app.terraform.io/api/v2/organizations/$TFE_ORGANIZATION/workspaces/google-private-active-active-${{ env.PR_NUMBER }} | jq -r '.data | .attributes | .name')"
+          echo "::set-output name=WORSPACE_PRI_P_AA_EXISTS::$(curl -s --header "Authorization: Bearer ${{env.TFE_TOKEN}}" --header "Content-Type: application/vnd.api+json"  https://app.terraform.io/api/v2/organizations/${{env.TFE_ORGANIZATION}}/workspaces/google-private-active-active-${{ env.PR_NUMBER }} | jq -r '.data | .attributes | .name')"
         env:
           TFE_ORGANIZATION: ${{ secrets.TFE_ORGANIZATION }}
           TFE_TOKEN: ${{ secrets.TFE_TOKEN }}
@@ -144,14 +144,14 @@ jobs:
           TFE_ORGANIZATION: ${{ secrets.$TFE_ORGANIZATION }}
           TFE_TOKEN: ${{ secrets.TFE_TOKEN }}
         run: >-
-          curl --header "Authorization: Bearer $TFE_TOKEN" --header "Content-Type: application/vnd.api+json" --request DELETE https://app.terraform.io/api/v2/organizations/$TFE_ORGANIZATION/workspaces/google-private-active-active-${{ env.PR_NUMBER }}
+          curl --header "Authorization: Bearer ${{env.TFE_TOKEN}}" --header "Content-Type: application/vnd.api+json" --request DELETE https://app.terraform.io/api/v2/organizations/${{env.TFE_ORGANIZATION}}/workspaces/google-private-active-active-${{ env.PR_NUMBER }}
     
     # this step will check if workspace is created for google-public-active-active for this PR
       - name: Check if workspace for google-public-active-active exists
         id: check-workspaces-google-public-active-active
         working-directory: ${{ env.WORK_DIR_PATH }}
         run: >-
-          echo "::set-output name=WORSPACE_PUB_AA_EXISTS::$(curl -s --header "Authorization: Bearer $TFE_TOKEN" --header "Content-Type: application/vnd.api+json"  https://app.terraform.io/api/v2/organizations/$TFE_ORGANIZATION/workspaces/google-public-active-active-${{ env.PR_NUMBER }} | jq -r '.data | .attributes | .name')"
+          echo "::set-output name=WORSPACE_PUB_AA_EXISTS::$(curl -s --header "Authorization: Bearer ${{env.TFE_TOKEN}}" --header "Content-Type: application/vnd.api+json"  https://app.terraform.io/api/v2/organizations/${{env.TFE_ORGANIZATION}}/workspaces/google-public-active-active-${{ env.PR_NUMBER }} | jq -r '.data | .attributes | .name')"
         env:
           TFE_ORGANIZATION: ${{ secrets.TFE_ORGANIZATION }}
           TFE_TOKEN: ${{ secrets.TFE_TOKEN }}
@@ -172,5 +172,5 @@ jobs:
           TFE_ORGANIZATION: ${{ secrets.$TFE_ORGANIZATION }}
           TFE_TOKEN: ${{ secrets.TFE_TOKEN }}
         run: >-
-          curl --header "Authorization: Bearer $TFE_TOKEN" --header "Content-Type: application/vnd.api+json" --request DELETE https://app.terraform.io/api/v2/organizations/$TFE_ORGANIZATION/workspaces/google-public-active-active-${{ env.PR_NUMBER }}
+          curl --header "Authorization: Bearer ${{env.TFE_TOKEN}}" --header "Content-Type: application/vnd.api+json" --request DELETE https://app.terraform.io/api/v2/organizations/${{env.TFE_ORGANIZATION}}/workspaces/google-public-active-active-${{ env.PR_NUMBER }}
  
