@@ -151,9 +151,9 @@ module "settings" {
   redis_use_tls           = var.redis_use_tls
 
   # Storage
-  gcs_bucket          = local.object_storage.bucket
+  gcs_bucket      = local.object_storage.bucket
   # gcs_credentials = module.service_accounts.credentials
-  gcs_project         = local.object_storage.project
+  gcs_project     = local.object_storage.project
 
   # External Vault
   extern_vault_enable      = var.extern_vault_enable
