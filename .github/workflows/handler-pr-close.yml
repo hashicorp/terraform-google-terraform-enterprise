@@ -113,7 +113,7 @@ jobs:
         if: steps.get-workspaces-google-private-tcp-active-active.outputs.WORSPACE_TCP_AA_EXISTS != null && steps.destroy.outcome == 'success'
         working-directory: ${{ env.WORK_DIR_PATH }}
         env:
-          TFE_ORGANIZATION: ${{ secrets.$TFE_ORGANIZATION }}
+          TFE_ORGANIZATION: ${{ secrets.TFE_ORGANIZATION }}
           TFE_TOKEN: ${{ secrets.TFE_TOKEN }}
         run: >-
           curl --header "Authorization: Bearer ${{env.TFE_TOKEN}}" --header "Content-Type: application/vnd.api+json" --request DELETE https://app.terraform.io/api/v2/organizations/${{env.TFE_ORGANIZATION}}/workspaces/google-private-tcp-active-active-${{ env.PR_NUMBER }}
@@ -141,7 +141,7 @@ jobs:
         if: steps.get-workspaces-google-private-active-active.outputs.WORSPACE_PRI_AA_EXISTS != null && steps.destroy.outcome == 'success'
         working-directory: ${{ env.WORK_DIR_PATH }}
         env:
-          TFE_ORGANIZATION: ${{ secrets.$TFE_ORGANIZATION }}
+          TFE_ORGANIZATION: ${{ secrets.TFE_ORGANIZATION }}
           TFE_TOKEN: ${{ secrets.TFE_TOKEN }}
         run: >-
           curl --header "Authorization: Bearer ${{env.TFE_TOKEN}}" --header "Content-Type: application/vnd.api+json" --request DELETE https://app.terraform.io/api/v2/organizations/${{env.TFE_ORGANIZATION}}/workspaces/google-private-active-active-${{ env.PR_NUMBER }}
