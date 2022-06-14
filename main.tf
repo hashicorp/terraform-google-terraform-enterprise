@@ -218,7 +218,7 @@ module "vm_instance_template" {
   labels         = var.labels
   machine_type   = var.vm_machine_type
   metadata       = var.vm_metadata
-  service_account = {}
+  service_account = null
   #   scopes = ["cloud-platform"]
 
   #   email = module.service_accounts.service_account.email
