@@ -102,14 +102,14 @@ jobs:
 
     # this step will delete workspace-resources if exists for this PR
       - name: Terraform Destroy
-        id: destroy
+        id: destroy-ptaa
         if: steps.get-workspaces-google-private-tcp-active-active.outputs.WORSPACE_TCP_AA_EXISTS != null
         working-directory: ${{ env.WORK_DIR_PATH }}
         run: terraform destroy -auto-approve -input=false -no-color
 
     # this step will delete workspace for this PR
       - name: Terraform Delete Workspace
-        id: destroy-workspace
+        id: destroy-workspace-ptaa
         if: steps.get-workspaces-google-private-tcp-active-active.outputs.WORSPACE_TCP_AA_EXISTS != null && steps.destroy.outcome == 'success'
         working-directory: ${{ env.WORK_DIR_PATH }}
         env:
@@ -130,14 +130,14 @@ jobs:
 
     # this step will delete workspace-resources if exists for this PR
       - name: Terraform Destroy
-        id: destroy
+        id: destroy-paa
         if: steps.get-workspaces-google-private-active-active.outputs.WORSPACE_PRI_AA_EXISTS != null
         working-directory: ${{ env.WORK_DIR_PATH }}
         run: terraform destroy -auto-approve -input=false -no-color
 
     # this step will delete workspace for this PR
       - name: Terraform Delete Workspace
-        id: destroy-workspace
+        id: destroy-workspace-paa
         if: steps.get-workspaces-google-private-active-active.outputs.WORSPACE_PRI_AA_EXISTS != null && steps.destroy.outcome == 'success'
         working-directory: ${{ env.WORK_DIR_PATH }}
         env:
@@ -158,14 +158,14 @@ jobs:
 
     # this step will delete workspace-resources if exists for this PR
       - name: Terraform Destroy
-        id: destroy
+        id: destroy-pub-aa
         if: steps.get-workspaces-google-public-active-active.outputs.WORSPACE_PUB_AA_EXISTS != null
         working-directory: ${{ env.WORK_DIR_PATH }}
         run: terraform destroy -auto-approve -input=false -no-color
 
     # this step will delete workspace for this PR
       - name: Terraform Delete Workspace
-        id: destroy-workspace
+        id: destroy-workspace-pub-aa
         if: steps.get-workspaces-google-public-active-active.outputs.WORSPACE_PUB_AA_EXISTS != null && steps.destroy.outcome == 'success'
         working-directory: ${{ env.WORK_DIR_PATH }}
         env:
@@ -173,4 +173,3 @@ jobs:
           TFE_TOKEN: ${{ secrets.TFE_TOKEN }}
         run: >-
           curl --header "Authorization: Bearer ${{env.TFE_TOKEN}}" --header "Content-Type: application/vnd.api+json" --request DELETE https://app.terraform.io/api/v2/organizations/${{env.TFE_ORGANIZATION}}/workspaces/google-public-active-active-${{ env.PR_NUMBER }}
- 
