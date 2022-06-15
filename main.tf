@@ -218,11 +218,11 @@ module "vm_instance_template" {
   labels         = var.labels
   machine_type   = var.vm_machine_type
   metadata       = var.vm_metadata
-  service_account = {
-    scopes = ["cloud-platform"]
+  # service_account = {
+  #   scopes = ["cloud-platform"]
 
-    email = module.service_accounts.service_account.email
-  }
+  #   email = module.service_accounts.service_account.email
+  # }
   source_image   = var.vm_disk_source_image
   startup_script = base64decode(module.tfe_init.tfe_userdata_base64_encoded)
   subnetwork     = local.subnetwork.self_link
