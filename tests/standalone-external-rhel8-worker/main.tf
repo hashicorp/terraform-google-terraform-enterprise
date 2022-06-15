@@ -34,7 +34,7 @@ module "tfe" {
   node_count                  = 1
   tfe_license_secret_id       = module.secrets.license_secret
   ssl_certificate_name        = data.tfe_outputs.base.values.wildcard_ssl_certificate_name
-  existing_service_account_id = "no-permissions-test"
+  existing_service_account_id = var.existing_service_account_id
   custom_image_tag            = "${local.repository_location}-docker.pkg.dev/ptfe-testing/${local.repository_name}/rhel-7.9:latest"
   iact_subnet_list            = ["0.0.0.0/0"]
   iact_subnet_time_limit      = 60
