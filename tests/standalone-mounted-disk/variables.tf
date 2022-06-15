@@ -1,8 +1,3 @@
-variable "license_file" {
-  type        = string
-  description = "The local path to the Terraform Enterprise license to be provided by CI."
-}
-
 variable "existing_service_account_id" {
   type        = string
   description = "The id of the logging service account to use for compute resources deployed."

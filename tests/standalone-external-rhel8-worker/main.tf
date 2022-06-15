@@ -4,15 +4,6 @@ resource "random_pet" "main" {
   separator = "-"
 }
 
-module "secrets" {
-  source = "../../fixtures/secrets"
-
-  license = {
-    id   = random_pet.main.id
-    path = var.license_file
-  }
-}
-
 resource "tls_private_key" "main" {
   algorithm = "RSA"
 }
@@ -32,7 +23,7 @@ module "tfe" {
   fqdn                        = "${random_pet.main.id}.${trimsuffix(data.google_dns_managed_zone.main.dns_name, ".")}"
   namespace                   = random_pet.main.id
   node_count                  = 1
-  tfe_license_secret_id       = module.secrets.license_secret
+  tfe_license_secret_id       = data.tfe_outputs.base.values.license_secret_id
   ssl_certificate_name        = data.tfe_outputs.base.values.wildcard_ssl_certificate_name
   existing_service_account_id = var.existing_service_account_id
   custom_image_tag            = "${local.repository_location}-docker.pkg.dev/ptfe-testing/${local.repository_name}/rhel-7.9:latest"
