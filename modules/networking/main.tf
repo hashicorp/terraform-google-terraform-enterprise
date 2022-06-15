@@ -77,7 +77,7 @@ resource "google_compute_firewall" "ssh" {
 
   description             = "The firewall which allows the ingress of SSH traffic to the TFE deployment."
   direction               = "INGRESS"
-  source_ranges           = var.ssh_source_ranges
+  # source_ranges           = var.ssh_source_ranges
   target_service_accounts = [var.service_account.email]
 
   allow {
