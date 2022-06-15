@@ -193,8 +193,7 @@ module "tfe_init" {
 }
 
 module "vm_instance_template" {
-  source  = "terraform-google-modules/vm/google//modules/instance_template"
-  version = "~> 7.1"
+  source  = "./modules/instance_template"
 
   name_prefix = "${var.namespace}-tfe-template-"
 
