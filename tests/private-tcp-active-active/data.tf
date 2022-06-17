@@ -1,6 +1,6 @@
 data "tfe_outputs" "base" {
-  organization = var.tfe.organization
-  workspace    = var.tfe.workspace
+  organization = local.tfe.organization
+  workspace    = local.tfe.workspace
 }
 
 data "google_dns_managed_zone" "main" {

@@ -1,18 +1,18 @@
 provider "google" {
-  credentials = var.google.credentials
-  project     = var.google.project
-  region      = var.google.region
-  zone        = var.google.zone
+  credentials = local.google.credentials
+  project     = local.google.project
+  region      = local.google.region
+  zone        = local.google.zone
 }
 
 provider "google-beta" {
-  credentials = var.google.credentials
-  project     = var.google.project
-  region      = var.google.region
-  zone        = var.google.zone
+  credentials = local.google.credentials
+  project     = local.google.project
+  region      = local.google.region
+  zone        = local.google.zone
 }
 
 provider "tfe" {
-  hostname = var.tfe.hostname
-  token    = var.tfe.token
+  hostname = local.tfe.hostname
+  token    = local.tfe.token
 }
