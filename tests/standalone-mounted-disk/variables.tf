@@ -54,3 +54,13 @@ variable "tfe_workspace" {
   description = "Workspace of the Terraform Enterprise instance which manages the base infrastructure."
   type        = string
 }
+
+variable "tfe" {
+  description = "Attributes of the Terraform Enterprise instance which manages the base infrastructure."
+  type = object({
+    hostname     = string
+    organization = string
+    token        = string
+    workspace    = string
+  })
+}
