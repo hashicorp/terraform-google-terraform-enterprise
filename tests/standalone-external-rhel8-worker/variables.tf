@@ -25,11 +25,6 @@ variable "google_region" {
   type        = string
 }
 
-variable "google_service_account" {
-  description = "Workspace of the Terraform Enterprise instance which manages the base infrastructure."
-  type        = string
-}
-
 variable "google_zone" {
   description = "Workspace of the Terraform Enterprise instance which manages the base infrastructure."
   type        = string

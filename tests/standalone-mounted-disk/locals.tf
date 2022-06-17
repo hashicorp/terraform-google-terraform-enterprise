@@ -14,7 +14,7 @@ locals {
     hostname     = var.tfe_hostname
     organization = var.tfe_organization
     token        = var.tfe_token
-    workspace    = var.workspace
+    workspace    = var.tfe_workspace
   }
 
   google = {
