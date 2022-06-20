@@ -7,6 +7,11 @@ terraform {
       version = "~> 3.54"
     }
 
+    google-beta = {
+      source  = "hashicorp/google-beta"
+      version = "~> 3.54"
+    }
+
     local = {
       source  = "hashicorp/local"
       version = "~> 2.1"
