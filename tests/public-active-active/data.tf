@@ -1,6 +1,6 @@
 data "tfe_outputs" "base" {
-  organization = try(var.tfe.organization, local.tfe.organization)
-  workspace    = try(var.tfe.workspace, local.tfe.workspace)
+  organization = try(var.tfe.organization, var.tfe_organization)
+  workspace    = try(var.tfe.workspace, var.tfe_workspace)
 }
 
 data "google_compute_image" "ubuntu" {
