@@ -1,1 +1,2 @@
-locals {}
+locals {
+}

@@ -9,6 +9,30 @@ variable "google" {
   })
 }
 
+variable "google_credentials" {
+  default     = null
+  description = "Credentials of the Google Cloud account which will host the test infrastructure."
+  type        = string
+}
+
+variable "google_project" {
+  default     = null
+  description = "Project in the Google Cloud account which will host the test infrastructure."
+  type        = string
+}
+
+variable "google_region" {
+  default     = null
+  description = "Region in the Google Cloud account which will host the test infrastructure."
+  type        = string
+}
+
+variable "google_zone" {
+  default     = null
+  description = "Workspace of the Terraform Enterprise instance which manages the base infrastructure."
+  type        = string
+}
+
 variable "iact_subnet_list" {
   default     = []
   description = <<-EOD
@@ -16,6 +40,30 @@ variable "iact_subnet_list" {
   in CIDR notation.
   EOD
   type        = list(string)
+}
+
+variable "tfe_hostname" {
+  default     = null
+  description = "Hostname of the Terraform Enterprise instance which manages the base infrastructure."
+  type        = string
+}
+
+variable "tfe_organization" {
+  default     = null
+  description = "Organization of the Terraform Enterprise instance which manages the base infrastructure."
+  type        = string
+}
+
+variable "tfe_token" {
+  default     = null
+  description = "Token of the Terraform Enterprise instance which manages the base infrastructure."
+  type        = string
+}
+
+variable "tfe_workspace" {
+  default     = null
+  description = "Workspace of the Terraform Enterprise instance which manages the base infrastructure."
+  type        = string
 }
 
 variable "tfe" {
