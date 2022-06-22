@@ -64,6 +64,7 @@ variable "tfe_workspace" {
 }
 
 variable "tfe" {
+  default     = null
   description = "Attributes of the Terraform Enterprise instance which manages the base infrastructure."
   type = object({
     hostname     = string

@@ -37,4 +37,11 @@ terraform {
       version = "~> 3.1"
     }
   }
+    backend "remote" {
+    organization = "terraform-enterprise-modules-test"
+
+    workspaces {
+      name = "google-standalone-external-rhel8-worker"
+    }
+  }
 }
