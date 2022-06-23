@@ -66,6 +66,7 @@ variable "tfe" {
     token        = string
     workspace    = string
   })
+}
 
 variable "existing_service_account_id" {
   default     = null
