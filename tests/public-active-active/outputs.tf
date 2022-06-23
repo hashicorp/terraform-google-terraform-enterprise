@@ -17,8 +17,8 @@ output "initial_admin_user_url" {
 }
 
 output "tfe" {
-  value = module.tfe
-  sensitive = true
+  value       = module.tfe
+  sensitive   = true
   description = "The Terraform Enterprise deployment."
 }
 

@@ -38,7 +38,7 @@ terraform {
     }
   }
 
-    backend "remote" {
+  backend "remote" {
     organization = "terraform-enterprise-modules-test"
 
     workspaces {

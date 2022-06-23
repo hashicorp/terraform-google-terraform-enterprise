@@ -10,7 +10,7 @@ module "tfe" {
   dns_zone_name               = data.google_dns_managed_zone.main.name
   fqdn                        = "public-active-active.${data.google_dns_managed_zone.main.dns_name}"
   namespace                   = random_pet.main.id
-  existing_service_account_id = var.google.service_account
+  existing_service_account_id = local.existing_service_account_id
   node_count                  = 2
   tfe_license_secret_id       = data.tfe_outputs.base.values.license_secret_id
   ssl_certificate_name        = data.tfe_outputs.base.values.wildcard_ssl_certificate_name
