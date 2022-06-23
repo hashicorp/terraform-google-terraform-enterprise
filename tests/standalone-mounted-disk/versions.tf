@@ -37,13 +37,5 @@ terraform {
       version = "~> 3.1"
     }
   }
-
-  backend "remote" {
-    organization = "terraform-enterprise-modules-test"
-
-    workspaces {
-      name = "google-standalone-mounted-disk"
-    }
-  }
 }
 
