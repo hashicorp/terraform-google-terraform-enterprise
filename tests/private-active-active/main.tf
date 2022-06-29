@@ -11,7 +11,7 @@ module "test_proxy" {
   name                        = local.name
   network                     = module.tfe.network
   subnetwork                  = module.tfe.subnetwork
-  existing_service_account_id = var.google.service_account
+  existing_service_account_id = local.existing_service_account_id
 
   labels = local.labels
 }
@@ -23,7 +23,7 @@ module "tfe" {
   dns_zone_name               = data.google_dns_managed_zone.main.name
   fqdn                        = "private-active-active.${data.google_dns_managed_zone.main.dns_name}"
   namespace                   = random_pet.main.id
-  existing_service_account_id = var.google.service_account
+  existing_service_account_id = local.existing_service_account_id
   node_count                  = 2
   tfe_license_secret_id       = data.tfe_outputs.base.values.license_secret_id
   ssl_certificate_name        = data.tfe_outputs.base.values.wildcard_region_ssl_certificate_name

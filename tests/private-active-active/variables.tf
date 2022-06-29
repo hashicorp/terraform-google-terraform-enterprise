@@ -1,4 +1,5 @@
 variable "google" {
+  default     = null
   description = "Attributes of the Google Cloud account which will host the test infrastructure."
   type = object({
     credentials     = string
@@ -58,6 +59,7 @@ variable "tfe_workspace" {
 }
 
 variable "tfe" {
+  default     = null
   description = "Attributes of the Terraform Enterprise instance which manages the base infrastructure."
   type = object({
     hostname     = string
@@ -65,4 +67,10 @@ variable "tfe" {
     token        = string
     workspace    = string
   })
+}
+
+variable "existing_service_account_id" {
+  default     = null
+  type        = string
+  description = "The id of the logging service account to use for compute resources deployed."
 }

@@ -29,8 +29,8 @@ output "proxy_instance_zone" {
 }
 
 output "tfe" {
-  value = module.tfe
-
+  value       = module.tfe
+  sensitive   = true
   description = "The Terraform Enterprise deployment."
 }
 
