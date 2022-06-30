@@ -114,6 +114,8 @@ if [[ -z "$skip_init" ]]; then
           export TFE_EMAIL=tf-onprem-team@hashicorp.com
           export http_proxy=socks5://localhost:5000/
           export https_proxy=socks5://localhost:5000/" > .env.sh
+    echo "Sleeping for 3 minutes to ensure that both instances are ready."
+    sleep 180
 fi
 
 source .env.sh
