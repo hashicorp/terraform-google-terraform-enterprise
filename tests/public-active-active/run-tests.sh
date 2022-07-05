@@ -93,17 +93,15 @@ if [[ -z "$skip_init" ]]; then
                 --request POST \
                 "$admin_url"?token="$iact_token")
 
-    echo "$response"
     tfe_token=$(echo "$response" | jq --raw-output '.token')
     rm -f payload.json
 
     echo "export K6_PATHNAME=$k6_path
           export TFE_URL=$tfe_url
           export TFE_API_TOKEN=$tfe_token
-          export TFE_EMAIL=tf-onprem-team@hashicorp.com
-          export http_proxy=socks5://localhost:5000/
-          export https_proxy=socks5://localhost:5000/" > .env.sh
+          export TFE_EMAIL=tf-onprem-team@hashicorp.com" > .env.sh
     echo "Sleeping for 3 minutes to ensure that both instances are ready."
+
     sleep 180
 fi
 

@@ -104,7 +104,6 @@ if [[ -z "$skip_init" ]]; then
                 --proxy socks5://localhost:5000 \
                 "$admin_url"?token="$iact_token")
 
-    echo "$response"
     tfe_token=$(echo "$response" | jq --raw-output '.token')
     rm -f payload.json
 
