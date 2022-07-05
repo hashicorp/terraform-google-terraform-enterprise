@@ -4,7 +4,6 @@ k6_path=""
 k6_tests_dir=""
 bastion_key_file=""
 skip_init=""
-bind_to_localhost=""
 
 Help()
 {
@@ -17,7 +16,6 @@ Help()
    echo "k     (required) The path to the k6 binary."
    echo "t     (required) The path to the tfe-load-test repository."
    echo "s     (optional) Skip the admin user initialization and tfe token retrieval (This is useful for secondary / repeated test runs)."
-   echo "l     (optional) Bind the test proxy to localhost instead of the detected ip address (This is useful when testing from within a docker container)."
    echo
 }
 
@@ -34,8 +32,6 @@ while getopts ":hk:t:b:sl" option; do
          k6_tests_dir=$OPTARG;;
       s) # Skip the admin user boostrapping process?
          skip_init=1;;
-      l) # Bind test proxy to localhost
-         bind_to_localhost=1;;   
      \?) # Invalid option
          echo "Error: Invalid option"
          exit;;
@@ -59,7 +55,6 @@ Executing tests with the following configuration:
     k6_path=$k6_path
     k6_tests_dir=$k6_tests_dir
     skip_init=$skip_init
-    bind_to_localhost=$bind_to_localhost
 "
 
 SCRIPT_DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]:-$0}"; )" &> /dev/null && pwd 2> /dev/null; )";
