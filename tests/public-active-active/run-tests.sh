@@ -100,10 +100,9 @@ if [[ -z "$skip_init" ]]; then
     echo "export K6_PATHNAME=$k6_path
           export TFE_URL=$tfe_url
           export TFE_API_TOKEN=$tfe_token
-          export TFE_EMAIL=tf-onprem-team@hashicorp.com
-          export http_proxy=socks5://localhost:5000/
-          export https_proxy=socks5://localhost:5000/" > .env.sh
+          export TFE_EMAIL=tf-onprem-team@hashicorp.com" > .env.sh
     echo "Sleeping for 3 minutes to ensure that both instances are ready."
+
     sleep 180
 fi
 
