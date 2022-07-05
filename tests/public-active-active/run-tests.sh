@@ -93,7 +93,6 @@ if [[ -z "$skip_init" ]]; then
                 --request POST \
                 "$admin_url"?token="$iact_token")
 
-    echo "$response"
     tfe_token=$(echo "$response" | jq --raw-output '.token')
     rm -f payload.json
 
