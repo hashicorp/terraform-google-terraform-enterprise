@@ -73,7 +73,16 @@ INSTANCE_NAME=`terraform output -no-color -raw proxy_instance_name`
 #Retrieve Instance Zone
 INSTANCE_ZONE=`terraform output -no-color -raw proxy_instance_zone`
 #Initiate SSH tunnel to proxy server
-gcloud compute ssh --quiet --ssh-key-expire-after="1440m" --tunnel-through-iap --zone="$INSTANCE_ZONE" "$INSTANCE_NAME" -- -f -N -p 22 -D localhost:5000
+gcloud compute ssh \
+          --quiet \
+          --ssh-key-expire-after="1440m" \
+          --tunnel-through-iap \
+          --zone="$INSTANCE_ZONE" \
+          "$INSTANCE_NAME" \
+          -- \
+          -o 'ServerAliveInterval 5' \
+          -o 'ServerAliveCountMax 3' \
+          -f -N -p 22 -D localhost:5000
 
 if [[ -z "$skip_init" ]]; then
     while ! curl \

@@ -131,14 +131,14 @@ jobs:
     # this step will delete workspace-resources if exists for this PR
       - name: Terraform Destroy
         id: destroy-paa
-        if: steps.get-workspaces-google-private-active-active.outputs.WORSPACE_PRI_AA_EXISTS != null
+        if: ${{ steps.get-workspaces-google-private-active-active.outputs.WORSPACE_PRI_AA_EXISTS }}
         working-directory: ${{ env.WORK_DIR_PATH }}
         run: terraform destroy -auto-approve -input=false -no-color
 
     # this step will delete workspace for this PR
       - name: Terraform Delete Workspace
         id: destroy-workspace-paa
-        if: steps.get-workspaces-google-private-active-active.outputs.WORSPACE_PRI_AA_EXISTS != null && steps.destroy.outcome == 'success'
+        if: ${{ steps.get-workspaces-google-private-active-active.outputs.WORSPACE_PRI_AA_EXISTS && steps.destroy.outcome == 'success' }}
         working-directory: ${{ env.WORK_DIR_PATH }}
         env:
           TFE_ORGANIZATION: ${{ secrets.TFE_ORGANIZATION }}
@@ -159,14 +159,14 @@ jobs:
     # this step will delete workspace-resources if exists for this PR
       - name: Terraform Destroy
         id: destroy-pub-aa
-        if: ${{ steps.get-workspaces-google-public-active-active.outputs.WORSPACE_PUB_AA_EXISTS != null }}
+        if: ${{ steps.get-workspaces-google-public-active-active.outputs.WORSPACE_PUB_AA_EXISTS }}
         working-directory: ${{ env.WORK_DIR_PATH }}
         run: terraform destroy -auto-approve -input=false -no-color
 
     # this step will delete workspace for this PR
       - name: Terraform Delete Workspace
         id: destroy-workspace-pub-aa
-        if: ${{ steps.get-workspaces-google-public-active-active.outputs.WORSPACE_PUB_AA_EXISTS != null && steps.destroy.outcome == 'success' }}
+        if: ${{ steps.get-workspaces-google-public-active-active.outputs.WORSPACE_PUB_AA_EXISTS && steps.destroy.outcome == 'success' }}
         working-directory: ${{ env.WORK_DIR_PATH }}
         env:
           TFE_ORGANIZATION: ${{ secrets.TFE_ORGANIZATION }}
