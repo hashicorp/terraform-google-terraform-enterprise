@@ -4,7 +4,6 @@ k6_path=""
 k6_tests_dir=""
 bastion_key_file=""
 skip_init=""
-bind_to_localhost=""
 
 Help()
 {
@@ -17,7 +16,6 @@ Help()
    echo "k     (required) The path to the k6 binary."
    echo "t     (required) The path to the tfe-load-test repository."
    echo "s     (optional) Skip the admin user initialization and tfe token retrieval (This is useful for secondary / repeated test runs)."
-   echo "l     (optional) Bind the test proxy to localhost instead of the detected ip address (This is useful when testing from within a docker container)."
    echo
 }
 
@@ -34,8 +32,6 @@ while getopts ":hk:t:b:sl" option; do
          k6_tests_dir=$OPTARG;;
       s) # Skip the admin user boostrapping process?
          skip_init=1;;
-      l) # Bind test proxy to localhost
-         bind_to_localhost=1;;   
      \?) # Invalid option
          echo "Error: Invalid option"
          exit;;
@@ -59,7 +55,6 @@ Executing tests with the following configuration:
     k6_path=$k6_path
     k6_tests_dir=$k6_tests_dir
     skip_init=$skip_init
-    bind_to_localhost=$bind_to_localhost
 "
 
 SCRIPT_DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]:-$0}"; )" &> /dev/null && pwd 2> /dev/null; )";
@@ -104,7 +99,6 @@ if [[ -z "$skip_init" ]]; then
                 --proxy socks5://localhost:5000 \
                 "$admin_url"?token="$iact_token")
 
-    echo "$response"
     tfe_token=$(echo "$response" | jq --raw-output '.token')
     rm -f payload.json
 
@@ -114,6 +108,8 @@ if [[ -z "$skip_init" ]]; then
           export TFE_EMAIL=tf-onprem-team@hashicorp.com
           export http_proxy=socks5://localhost:5000/
           export https_proxy=socks5://localhost:5000/" > .env.sh
+    echo "Sleeping for 3 minutes to ensure that both instances are ready."
+    sleep 180
 fi
 
 source .env.sh
