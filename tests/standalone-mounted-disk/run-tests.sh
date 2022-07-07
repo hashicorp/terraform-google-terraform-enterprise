@@ -60,7 +60,7 @@ Executing tests with the following configuration:
 SCRIPT_DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]:-$0}"; )" &> /dev/null && pwd 2> /dev/null; )";
 
 cd $SCRIPT_DIR
-health_check_url=$(terraform output -no-color -raw health_check_url)
+health_check_url=$(terraform output -no-color -raw ptfe_health_check)
 echo "health check url: $health_check_url"
 
 if [[ -z "$skip_init" ]]; then
@@ -70,13 +70,13 @@ if [[ -z "$skip_init" ]]; then
             do sleep 5; done
     echo " : TFE is healthy and listening."
 
-    tfe_url=$(terraform output -no-color -raw tfe_url)
+    tfe_url=$(terraform output -no-color -raw ptfe_endpoint)
     echo "tfe url: $tfe_url"
-    iact_url=$(terraform output -no-color -raw iact_url)
+    iact_url=$(echo "$tfe_url"admin/retrieve-iact)
     echo "iact url: $iact_url"
     echo "Fetching iact token.."
     iact_token=$(curl --fail --retry 5 "$iact_url")
-    admin_url=`terraform output -no-color -raw initial_admin_user_url`
+    admin_url=$(echo "$tfe_url"/admin/initial-admin-user)
     echo "admin url: $admin_url"
 
     TFE_USERNAME="test$(date +%s)"
