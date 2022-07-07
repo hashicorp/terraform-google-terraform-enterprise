@@ -760,7 +760,7 @@ jobs:
 
             ${{ format('- {0} Run k6 Smoke Test', steps.run-smoke-test.outcome == 'success' && ':white_check_mark:' || ':x:') }}
 
-            ${{ github.event.client_payload.slash_command.args.named.destroy != 'false' && format('- {0} Terraform Destroy', steps.destroy.outcome == 'success' && ':white_check_mark:' || ':x:') || '' }
+            ${{ github.event.client_payload.slash_command.args.named.destroy != 'false' && format('- {0} Terraform Destroy', steps.destroy.outcome == 'success' && ':white_check_mark:' || ':x:') || '' }}
 
   standalone_external_rhel8_worker:
     name: Run tf-test on Standalone External Rhel8 Worker
