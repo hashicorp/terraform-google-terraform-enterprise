@@ -825,17 +825,21 @@ jobs:
         env:
           TFC_ORGANIZATION: ${{ secrets.TFC_ORGANIZATION }}
         run: |
-          cat <<EOF > backend-config.hcl
-            organization = "$TFC_ORGANIZATION"
-            workspaces {
-              name = "google-standalone-external-rhel8-worker-${{ github.event.client_payload.github.payload.issue.number }}"
-            }
+          cat <<EOF > backend.tf
+            terraform {
+              backend "remote" {
+                organization = "$TFC_ORGANIZATION"
+                  workspaces {
+                    name = "google-standalone-external-rhel8-worker-${{ github.event.client_payload.github.payload.issue.number }}"
+                             }
+                             }
+                             }
           EOF
 
       - name: Terraform Init
         id: init
         working-directory: ${{ env.WORK_DIR_PATH }}
-        run: terraform init -backend-config=backend-config.hcl -input=false -no-color
+        run: terraform init -input=false -no-color
       
       - name: Write Terraform Variables
         working-directory: ${{ env.WORK_DIR_PATH }}
@@ -850,18 +854,14 @@ jobs:
           TFE_TOKEN: ${{ secrets.TFE_TOKEN }}
           TFE_WORKSPACE: ${{ secrets.TFE_WORKSPACE }}
         run: |
-          ip_address=$( dig +short @resolver1.opendns.com myip.opendns.com )
           cat <<EOF > github.auto.tfvars
-          iact_subnet_list = ["$ip_address/32"]
-          google = {
-            credentials     = <<-EOC
+          google_credentials     = <<-EOC
             $GOOGLE_CREDENTIALS
             EOC
-            project         = "$GOOGLE_PROJECT"
-            region          = "$GOOGLE_REGION"
-            zone            = "$GOOGLE_ZONE"
-            service_account = "$GOOGLE_SERVICE_ACCOUNT"
-          }
+          google_project         = "$GOOGLE_PROJECT"
+          google_region          = "$GOOGLE_REGION"
+          google_zone            = "$GOOGLE_ZONE"
+          existing_service_account_id = "$GOOGLE_SERVICE_ACCOUNT"
           tfe = {
             hostname     = "$TFE_HOSTNAME"
             organization = "$TFE_ORGANIZATION"
@@ -1054,17 +1054,21 @@ jobs:
         env:
           TFC_ORGANIZATION: ${{ secrets.TFC_ORGANIZATION }}
         run: |
-          cat <<EOF > backend-config.hcl
-            organization = "$TFC_ORGANIZATION"
-            workspaces {
+          cat <<EOF > backend.tf
+            terraform {
+              backend "remote" {
+                organization = "$TFC_ORGANIZATION"
+                  workspaces {
               name = "google-standalone-mounted-disk-${{ github.event.client_payload.github.payload.issue.number }}"
-            }
+                             }
+                             }
+                             }
           EOF
 
       - name: Terraform Init
         id: init
         working-directory: ${{ env.WORK_DIR_PATH }}
-        run: terraform init -backend-config=backend-config.hcl -input=false -no-color
+        run: terraform init -input=false -no-color
       
       - name: Write Terraform Variables
         working-directory: ${{ env.WORK_DIR_PATH }}
@@ -1079,18 +1083,14 @@ jobs:
           TFE_TOKEN: ${{ secrets.TFE_TOKEN }}
           TFE_WORKSPACE: ${{ secrets.TFE_WORKSPACE }}
         run: |
-          ip_address=$( dig +short @resolver1.opendns.com myip.opendns.com )
           cat <<EOF > github.auto.tfvars
-          iact_subnet_list = ["$ip_address/32"]
-          google = {
-            credentials     = <<-EOC
+          google_credentials     = <<-EOC
             $GOOGLE_CREDENTIALS
             EOC
-            project         = "$GOOGLE_PROJECT"
-            region          = "$GOOGLE_REGION"
-            zone            = "$GOOGLE_ZONE"
-            service_account = "$GOOGLE_SERVICE_ACCOUNT"
-          }
+          google_project         = "$GOOGLE_PROJECT"
+          google_region          = "$GOOGLE_REGION"
+          google_zone            = "$GOOGLE_ZONE"
+          existing_service_account_id = "$GOOGLE_SERVICE_ACCOUNT"
           tfe = {
             hostname     = "$TFE_HOSTNAME"
             organization = "$TFE_ORGANIZATION"
