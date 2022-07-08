@@ -854,7 +854,6 @@ jobs:
           google_credentials     = <<-EOC
             $GOOGLE_CREDENTIALS
             EOC
-          tfe_license_secret_id  = null
           google_project         = "$GOOGLE_PROJECT"
           google_region          = "$GOOGLE_REGION"
           google_zone            = "$GOOGLE_ZONE"
@@ -1008,7 +1007,6 @@ jobs:
           google_credentials     = <<-EOC
             $GOOGLE_CREDENTIALS
             EOC
-          tfe_license_secret_id  = null
           google_project         = "$GOOGLE_PROJECT"
           google_region          = "$GOOGLE_REGION"
           google_zone            = "$GOOGLE_ZONE"
