@@ -30,5 +30,7 @@ jobs:
             * private-active-active
             * private-tcp-active-active
             * public-active-active
+            * standalone-mounted-disk
+            * standalone-external-rhel8-worker
 
           reaction-type: confused
