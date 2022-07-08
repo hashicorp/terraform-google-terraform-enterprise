@@ -2,4 +2,5 @@ locals {
   repository_location = "us-west1"
   repository_name     = "terraform-build-worker"
   ssh_user            = "ubuntu"
+  utility_module_test = var.license_file == null
 }
