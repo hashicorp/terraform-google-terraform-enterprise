@@ -75,7 +75,7 @@ resource "null_resource" "wait_for_instances" {
   }
 
   provisioner "local-exec" {
-    command = "sleep 30"
+    command = "sleep 90"
   }
 }
 
