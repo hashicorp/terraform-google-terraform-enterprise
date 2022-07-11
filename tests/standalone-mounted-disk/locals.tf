@@ -9,5 +9,5 @@ locals {
     team        = "terraform-enterprise-on-prem"
     terraform   = "true"
   }
-  ssh_user            = "ubuntu"
+  ssh_user = "ubuntu"
 }
