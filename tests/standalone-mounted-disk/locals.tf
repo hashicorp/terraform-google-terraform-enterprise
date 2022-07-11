@@ -10,4 +10,5 @@ locals {
     terraform   = "true"
   }
   ssh_user = "ubuntu"
+  utility_module_test = var.license_file == null
 }

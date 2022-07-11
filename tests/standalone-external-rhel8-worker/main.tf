@@ -7,7 +7,7 @@ resource "random_pet" "main" {
 # Store TFE License as secret
 # ---------------------------
 module "secrets" {
-  count  = length(var.license_file) > 0 ? 1 : 0
+  utility_module_test = var.license_file == null
   source = "../../fixtures/secrets"
 
   license = {
