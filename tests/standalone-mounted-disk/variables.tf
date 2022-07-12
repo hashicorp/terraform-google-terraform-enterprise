@@ -40,12 +40,6 @@ variable "tfe_hostname" {
   type        = string
 }
 
-variable "tfe_license_secret_id" {
-  default     = null
-  type        = string
-  description = "The Secrets Manager secret ARN under which the Base64 encoded Terraform Enterprise license is stored."
-}
-
 variable "tfe_organization" {
   default     = null
   description = "Organization of the Terraform Enterprise instance which manages the base infrastructure."
