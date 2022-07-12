@@ -12,12 +12,8 @@ data "google_compute_image" "ubuntu" {
   project = "ubuntu-os-cloud"
 }
 
-data "google_compute_region_instance_group" "tfe" {
-  self_link = module.tfe.vm_mig.instance_group
-}
-
 data "google_compute_instance" "tfe" {
-  self_link = data.google_compute_region_instance_group.tfe.instances[0].instance
+  name = "${random_pet.main.id}-tfe"
 }
 
 # This null_data_source is used to prevent Terraform from trying to render local_file.ssh_config file before data.
