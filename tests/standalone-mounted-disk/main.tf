@@ -50,16 +50,6 @@ module "tfe" {
   }
 }
 
-resource "null_resource" "wait_for_instances" {
-  triggers = {
-    self_link = module.tfe.vm_mig.instance_group
-  }
-
-  provisioner "local-exec" {
-    command = "sleep 30"
-  }
-}
-
 resource "local_file" "ssh_config" {
   filename = "${path.module}/work/ssh-config"
 
