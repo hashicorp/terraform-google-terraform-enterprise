@@ -851,6 +851,7 @@ jobs:
           TFE_WORKSPACE: ${{ secrets.TFE_WORKSPACE }}
         run: |
           cat <<EOF > github.auto.tfvars
+          license_file = ""
           google_credentials     = <<-EOC
             $GOOGLE_CREDENTIALS
             EOC
@@ -1004,6 +1005,7 @@ jobs:
           TFE_WORKSPACE: ${{ secrets.TFE_WORKSPACE }}
         run: |
           cat <<EOF > github.auto.tfvars
+          license_file = ""
           google_credentials     = <<-EOC
             $GOOGLE_CREDENTIALS
             EOC
