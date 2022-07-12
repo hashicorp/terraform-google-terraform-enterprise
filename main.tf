@@ -263,7 +263,13 @@ module "vm_mig" {
       }]
     )
   )
-  target_size = var.node_count
+  target_size        = var.node_count
+  wait_for_instances = true
+  mig_timeouts = {
+    create = "15m"
+    update = "15m"
+    delete = "15m"
+  }
 }
 
 resource "google_compute_address" "private" {
