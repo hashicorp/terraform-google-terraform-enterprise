@@ -263,7 +263,7 @@ module "vm_mig" {
       }]
     )
   )
-  target_size        = var.node_count
+  target_size = var.node_count
 }
 
 resource "google_compute_address" "private" {
