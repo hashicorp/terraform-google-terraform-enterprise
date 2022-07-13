@@ -13,7 +13,7 @@ data "google_compute_image" "rhel" {
 }
 
 data "google_compute_region_instance_group" "tfe" {
-  self_link = module.tfe.vm_mig.instance_group
+  self_link = null_resource.wait_for_instances.triggers.self_link
 }
 
 data "google_compute_instance" "tfe" {
