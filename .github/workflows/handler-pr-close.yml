@@ -36,7 +36,7 @@ jobs:
           cli_config_credentials_hostname: 'app.terraform.io'
           cli_config_credentials_token: ${{ secrets.TFC_TOKEN }}
           terraform_version: 1.0.11
-          terraform_wrapper: false
+          terraform_wrapper: true
 
     # this step will check if workspace is created for google-private-tcp-active-active for this PR
       - name: Check if workspace for google-private-tcp-active-active exists
