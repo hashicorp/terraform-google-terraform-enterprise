@@ -42,3 +42,8 @@ output "initial_admin_user_url" {
 
   description = "The URL of the Terraform Enterprise initial admin user."
 }
+
+output "ptfe_health_check" {
+  value       = module.tfe.health_check_url
+  description = "Terraform Enterprise Health Check URL"
+}
