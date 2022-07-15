@@ -62,7 +62,7 @@ jobs:
               name = "google-private-tcp-active-active-${{ env.PR_NUMBER }}"
             }
           EOF
-
+          
     # Initialize terraform
       - name: Terraform Init
         if: ${{ steps.get-workspaces-google-private-tcp-active-active.outputs.WORSPACE_TCP_AA_EXISTS }}
@@ -120,3 +120,5 @@ jobs:
           TFE_TOKEN: ${{ secrets.TFE_TOKEN }}
         run: >-
           curl --header "Authorization: Bearer ${{env.TFE_TOKEN}}" --header "Content-Type: application/vnd.api+json" --request DELETE https://app.terraform.io/api/v2/organizations/${{env.TFE_ORGANIZATION}}/workspaces/google-private-tcp-active-active-${{ env.PR_NUMBER }}
+          
+
