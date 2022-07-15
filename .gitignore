@@ -11,6 +11,7 @@
 
 # Generated backend configuration
 backend-config.hcl
+*backend.tf
 
 # Key files
 *.pem
@@ -19,6 +20,7 @@ backend-config.hcl
 
 # Environment files
 *.env
+*.env.sh
 
 # Visual Studio Code
 .vscode
