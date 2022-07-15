@@ -19,7 +19,8 @@ backend-config.hcl
 .DS_Store
 
 # Environment files
-*.env*
+*.env
+*.env.sh
 
 # Visual Studio Code
 .vscode
