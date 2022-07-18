@@ -47,3 +47,9 @@ output "ptfe_health_check" {
   value       = module.tfe.health_check_url
   description = "Terraform Enterprise Health Check URL"
 }
+
+output "tfe_url" {
+  value       = module.tfe.url
+  description = "Terraform Enterprise Application URL"
+}
+
