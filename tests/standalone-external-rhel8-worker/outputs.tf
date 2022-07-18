@@ -14,7 +14,7 @@ output "ptfe_endpoint" {
   description = "Terraform Enterprise Application URL"
 }
 
-output "ptfe_health_check" {
+output "health_check_url" {
   value       = module.tfe.health_check_url
   description = "Terraform Enterprise Health Check URL"
 }
@@ -30,3 +30,26 @@ output "ssh_private_key" {
 
   description = "The pathname of the private SSH key."
 }
+
+output "iact_url" {
+  value = module.tfe.iact_url
+
+  description = "The URL of the Terraform Enterprise IACT."
+}
+
+output "initial_admin_user_url" {
+  value = module.tfe.initial_admin_user_url
+
+  description = "The URL of the Terraform Enterprise initial admin user."
+}
+
+output "ptfe_health_check" {
+  value       = module.tfe.health_check_url
+  description = "Terraform Enterprise Health Check URL"
+}
+
+output "tfe_url" {
+  value       = module.tfe.url
+  description = "Terraform Enterprise Application URL"
+}
+

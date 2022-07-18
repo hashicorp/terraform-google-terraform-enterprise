@@ -877,13 +877,85 @@ jobs:
         working-directory: ${{ env.WORK_DIR_PATH }}
         run: terraform apply -auto-approve -input=false -no-color
 
-      - name: Run k6 Smoke Test
-        id: run-smoke-test
+      - name: Retrieve Health Check URL
+        id: retrieve-health-check-url
         working-directory: ${{ env.WORK_DIR_PATH }}
         run: |
-          command="bash ./run-tests.sh -k ./k6 -t ../../${{ env.K6_WORK_DIR_PATH }}"
-          echo $command
-          eval $command
+          terraform output -no-color -raw health_check_url
+
+      - name: Wait For TFE
+        id: wait-for-tfe
+        timeout-minutes: 25
+        env:
+          HEALTH_CHECK_URL: ${{ steps.retrieve-health-check-url.outputs.stdout }}
+        run: |
+          echo "Curling \`health_check_url\` for a return status of 200..."
+          while ! curl -sfS --max-time 5 "$HEALTH_CHECK_URL"; do sleep 5; done
+
+      - name: Retrieve TFE URL
+        id: retrieve-tfe-url
+        working-directory: ${{ env.WORK_DIR_PATH }}
+        run: |
+          terraform output -no-color -raw tfe_url
+
+      - name: Retrieve IACT URL
+        id: retrieve-iact-url
+        working-directory: ${{ env.WORK_DIR_PATH }}
+        run: |
+          terraform output -no-color -raw iact_url
+
+      - name: Retrieve IACT
+        id: retrieve-iact
+        env:
+          IACT_URL: ${{ steps.retrieve-iact-url.outputs.stdout }}
+        run: |
+          token=$(curl --fail --retry 5 --verbose "$IACT_URL")
+          echo "::set-output name=token::$token"
+
+      - name: Retrieve Initial Admin User URL
+        id: retrieve-initial-admin-user-url
+        working-directory: ${{ env.WORK_DIR_PATH }}
+        run: |
+          terraform output -no-color -raw initial_admin_user_url
+
+      - name: Create Admin in TFE
+        id: create-admin
+        env:
+          TFE_PASSWORD: ${{ secrets.TFE_PASSWORD }}
+          IAU_URL: ${{ steps.retrieve-initial-admin-user-url.outputs.stdout }}
+          IACT: ${{ steps.retrieve-iact.outputs.token }}
+        run: |
+          echo \
+            '{"username": "test", "email": "tf-onprem-team@hashicorp.com", "password": "$TFE_PASSWORD"}' \
+            > ./payload.json
+          response=$( \
+            curl \
+            --fail \
+            --retry 5 \
+            --verbose \
+            --header 'Content-Type: application/json' \
+            --data @./payload.json \
+            "$IAU_URL"?token="$IACT")
+          echo "::set-output name=response::$response"
+
+      - name: Retrieve Admin Token
+        id: retrieve-admin-token
+        env:
+          RESPONSE: ${{ steps.create-admin.outputs.response }}
+        run: |
+          token=$(echo "$RESPONSE" | jq --raw-output '.token')
+          echo "::set-output name=token::$token"
+
+      - name: Run k6 Smoke Test
+        id: run-smoke-test
+        working-directory: ${{ env.K6_WORK_DIR_PATH }}
+        env:
+          K6_PATHNAME: "./k6"
+          TFE_URL: "${{ steps.retrieve-tfe-url.outputs.stdout }}"
+          TFE_API_TOKEN: "${{ steps.retrieve-admin-token.outputs.token }}"
+          TFE_EMAIL: tf-onprem-team@hashicorp.com
+        run: |
+          make smoke-test
 
       - name: Terraform Destroy
         id: destroy
@@ -1031,13 +1103,85 @@ jobs:
         working-directory: ${{ env.WORK_DIR_PATH }}
         run: terraform apply -auto-approve -input=false -no-color
 
-      - name: Run k6 Smoke Test
-        id: run-smoke-test
+      - name: Retrieve Health Check URL
+        id: retrieve-health-check-url
         working-directory: ${{ env.WORK_DIR_PATH }}
         run: |
-          command="bash ./run-tests.sh -k ./k6 -t ../../${{ env.K6_WORK_DIR_PATH }}"
-          echo $command
-          eval $command
+          terraform output -no-color -raw health_check_url
+
+      - name: Wait For TFE
+        id: wait-for-tfe
+        timeout-minutes: 25
+        env:
+          HEALTH_CHECK_URL: ${{ steps.retrieve-health-check-url.outputs.stdout }}
+        run: |
+          echo "Curling \`health_check_url\` for a return status of 200..."
+          while ! curl -sfS --max-time 5 "$HEALTH_CHECK_URL"; do sleep 5; done
+
+      - name: Retrieve TFE URL
+        id: retrieve-tfe-url
+        working-directory: ${{ env.WORK_DIR_PATH }}
+        run: |
+          terraform output -no-color -raw tfe_url
+
+      - name: Retrieve IACT URL
+        id: retrieve-iact-url
+        working-directory: ${{ env.WORK_DIR_PATH }}
+        run: |
+          terraform output -no-color -raw iact_url
+
+      - name: Retrieve IACT
+        id: retrieve-iact
+        env:
+          IACT_URL: ${{ steps.retrieve-iact-url.outputs.stdout }}
+        run: |
+          token=$(curl --fail --retry 5 --verbose "$IACT_URL")
+          echo "::set-output name=token::$token"
+
+      - name: Retrieve Initial Admin User URL
+        id: retrieve-initial-admin-user-url
+        working-directory: ${{ env.WORK_DIR_PATH }}
+        run: |
+          terraform output -no-color -raw initial_admin_user_url
+
+      - name: Create Admin in TFE
+        id: create-admin
+        env:
+          TFE_PASSWORD: ${{ secrets.TFE_PASSWORD }}
+          IAU_URL: ${{ steps.retrieve-initial-admin-user-url.outputs.stdout }}
+          IACT: ${{ steps.retrieve-iact.outputs.token }}
+        run: |
+          echo \
+            '{"username": "test", "email": "tf-onprem-team@hashicorp.com", "password": "$TFE_PASSWORD"}' \
+            > ./payload.json
+          response=$( \
+            curl \
+            --fail \
+            --retry 5 \
+            --verbose \
+            --header 'Content-Type: application/json' \
+            --data @./payload.json \
+            "$IAU_URL"?token="$IACT")
+          echo "::set-output name=response::$response"
+
+      - name: Retrieve Admin Token
+        id: retrieve-admin-token
+        env:
+          RESPONSE: ${{ steps.create-admin.outputs.response }}
+        run: |
+          token=$(echo "$RESPONSE" | jq --raw-output '.token')
+          echo "::set-output name=token::$token"
+
+      - name: Run k6 Smoke Test
+        id: run-smoke-test
+        working-directory: ${{ env.K6_WORK_DIR_PATH }}
+        env:
+          K6_PATHNAME: "./k6"
+          TFE_URL: "${{ steps.retrieve-tfe-url.outputs.stdout }}"
+          TFE_API_TOKEN: "${{ steps.retrieve-admin-token.outputs.token }}"
+          TFE_EMAIL: tf-onprem-team@hashicorp.com
+        run: |
+          make smoke-test
 
       - name: Terraform Destroy
         id: destroy
@@ -1069,4 +1213,3 @@ jobs:
             ${{ format('- {0} Run k6 Smoke Test', steps.run-smoke-test.outcome == 'success' && ':white_check_mark:' || ':x:') }}
 
             ${{ github.event.client_payload.slash_command.args.named.destroy != 'false' && format('- {0} Terraform Destroy', steps.destroy.outcome == 'success' && ':white_check_mark:' || ':x:') || '' }}
-
