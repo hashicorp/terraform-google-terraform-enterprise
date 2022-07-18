@@ -69,7 +69,6 @@ if [[ -z "$skip_init" ]]; then
             $health_check_url; \
             do sleep 5; done
     echo " : TFE is healthy and listening."
-
     tfe_url=$(terraform output -raw -no-color ptfe_endpoint)
     echo "tfe url: $tfe_url"
     iact_url=$(echo "$tfe_url"admin/retrieve-iact)
