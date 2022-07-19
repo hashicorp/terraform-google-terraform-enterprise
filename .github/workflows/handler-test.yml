@@ -56,11 +56,11 @@ jobs:
           curl -L $K6_URL | tar -xz --strip-components=1
 
       - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v1
+        uses: hashicorp/setup-terraform@v2
         with:
           cli_config_credentials_hostname: 'app.terraform.io'
           cli_config_credentials_token: ${{ secrets.TFC_TOKEN }}
-          terraform_version: 1.0.11
+          terraform_version: 1.1.7
           terraform_wrapper: true
 
       - name: Configure Terraform Backend
@@ -285,11 +285,11 @@ jobs:
           curl -L $K6_URL | tar -xz --strip-components=1
 
       - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v1
+        uses: hashicorp/setup-terraform@v2
         with:
           cli_config_credentials_hostname: 'app.terraform.io'
           cli_config_credentials_token: ${{ secrets.TFC_TOKEN }}
-          terraform_version: 1.0.11
+          terraform_version: 1.1.7
           terraform_wrapper: true
 
       - name: Configure Terraform Backend
@@ -547,11 +547,11 @@ jobs:
           curl -L $K6_URL | tar -xz --strip-components=1
 
       - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v1
+        uses: hashicorp/setup-terraform@v2
         with:
           cli_config_credentials_hostname: 'app.terraform.io'
           cli_config_credentials_token: ${{ secrets.TFC_TOKEN }}
-          terraform_version: 1.0.11
+          terraform_version: 1.1.7
           terraform_wrapper: true
 
       - name: Configure Terraform Backend
@@ -812,11 +812,11 @@ jobs:
           curl -L $K6_URL | tar -xz --strip-components=1
 
       - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v1
+        uses: hashicorp/setup-terraform@v2
         with:
           cli_config_credentials_hostname: 'app.terraform.io'
           cli_config_credentials_token: ${{ secrets.TFC_TOKEN }}
-          terraform_version: 1.0.11
+          terraform_version: 1.1.7
           terraform_wrapper: true
 
       - name: Configure Terraform Backend
@@ -850,7 +850,9 @@ jobs:
           TFE_TOKEN: ${{ secrets.TFE_TOKEN }}
           TFE_WORKSPACE: ${{ secrets.TFE_WORKSPACE }}
         run: |
+          ip_address=$( dig +short @resolver1.opendns.com myip.opendns.com )
           cat <<EOF > github.auto.tfvars
+          iact_subnet_list = ["$ip_address/32"]
           license_file = ""
           google_credentials     = <<-EOC
             $GOOGLE_CREDENTIALS
@@ -1038,11 +1040,11 @@ jobs:
           curl -L $K6_URL | tar -xz --strip-components=1
 
       - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v1
+        uses: hashicorp/setup-terraform@v2
         with:
           cli_config_credentials_hostname: 'app.terraform.io'
           cli_config_credentials_token: ${{ secrets.TFC_TOKEN }}
-          terraform_version: 1.0.11
+          terraform_version: 1.1.7
           terraform_wrapper: true
 
       - name: Configure Terraform Backend
@@ -1076,7 +1078,9 @@ jobs:
           TFE_TOKEN: ${{ secrets.TFE_TOKEN }}
           TFE_WORKSPACE: ${{ secrets.TFE_WORKSPACE }}
         run: |
+          ip_address=$( dig +short @resolver1.opendns.com myip.opendns.com )
           cat <<EOF > github.auto.tfvars
+          iact_subnet_list = ["$ip_address/32"]
           license_file = ""
           google_credentials     = <<-EOC
             $GOOGLE_CREDENTIALS
