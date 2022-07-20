@@ -20,7 +20,7 @@ output "health_check_url" {
 }
 
 output "ssh_config_file" {
-  value = local_file.ssh_config.filename
+  value = local_file.ssh_config[0].filename
 
   description = "The pathname of the SSH configuration file that grants access to the compute instance."
 }

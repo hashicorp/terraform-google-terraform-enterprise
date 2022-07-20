@@ -87,7 +87,7 @@ resource "local_file" "ssh_config" {
   content = templatefile(
     "${path.module}/templates/ssh-config.tpl",
     {
-      instance      = data.null_data_source.instance.outputs
+      instance      = data.null_data_source.instance[0].outputs
       identity_file = local_file.private_key_pem.filename
       user          = local.ssh_user
     }
