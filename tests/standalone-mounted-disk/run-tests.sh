@@ -60,24 +60,16 @@ Executing tests with the following configuration:
 SCRIPT_DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]:-$0}"; )" &> /dev/null && pwd 2> /dev/null; )";
 
 cd $SCRIPT_DIR
-health_check_url=$(terraform output -raw -no-color ptfe_health_check)
-echo "health check url: $health_check_url"
 
 if [[ -z "$skip_init" ]]; then
     while ! curl \
             -sfS --max-time 5 \
-            $health_check_url; \
+            $HEALTHCHECK_URL; \
             do sleep 5; done
     echo " : TFE is healthy and listening."
 
-    tfe_url=$(terraform output -raw -no-color ptfe_endpoint)
-    echo "tfe url: $tfe_url"
-    iact_url=$(echo "$tfe_url"admin/retrieve-iact)
-    echo "iact url: $iact_url"
     echo "Fetching iact token.."
-    iact_token=$(curl --fail --retry 5 "$iact_url")
-    admin_url=$(echo "$tfe_url"/admin/initial-admin-user)
-    echo "admin url: $admin_url"
+    iact_token=$(curl --fail --retry 5 "$IACT_URL")
 
     TFE_USERNAME="test$(date +%s)"
     TFE_PASSWORD=`openssl rand -base64 32`
@@ -89,13 +81,13 @@ if [[ -z "$skip_init" ]]; then
                 --header 'Content-Type: application/json' \
                 --data @./payload.json \
                 --request POST \
-                "$admin_url"?token="$iact_token")
+                "$IAU_URL"?token="$iact_token")
 
     tfe_token=$(echo "$response" | jq --raw-output '.token')
     rm -f payload.json
 
     echo "export K6_PATHNAME=$k6_path
-          export TFE_URL=$tfe_url
+          export TFE_URL=$TFE_URL
           export TFE_API_TOKEN=$tfe_token
           export TFE_EMAIL=tf-onprem-team@hashicorp.com" > .env.sh
     echo "Sleeping for 3 minutes to ensure that both instances are ready."
