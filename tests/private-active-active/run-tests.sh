@@ -60,31 +60,19 @@ Executing tests with the following configuration:
 SCRIPT_DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]:-$0}"; )" &> /dev/null && pwd 2> /dev/null; )";
 
 cd $SCRIPT_DIR
-health_check_url=$(terraform output -no-color -raw health_check_url)
-echo "health check url: $health_check_url"
 
-#Retrieve Proxy Instance Name
-INSTANCE_NAME=`terraform output -no-color -raw proxy_instance_name`
-#Retrieve Instance Zone
-INSTANCE_ZONE=`terraform output -no-color -raw proxy_instance_zone`
-#Initiate SSH tunnel to proxy server
-gcloud compute ssh --quiet --ssh-key-expire-after="1440m" --tunnel-through-iap --zone="$INSTANCE_ZONE" "$INSTANCE_NAME" -- -f -N -p 22 -D localhost:5000
+gcloud compute ssh --quiet --ssh-key-expire-after="1440m" --tunnel-through-iap --zone="$PROXY_ZONE" "$PROXY_INSTANCE" -- -f -N -p 22 -D localhost:5000
 
 if [[ -z "$skip_init" ]]; then
     while ! curl \
             -sfS --max-time 5 --proxy socks5://localhost:5000 \
-            $health_check_url; \
+            $HEALTHCHECK_URL; \
             do sleep 5; done
     echo " : TFE is healthy and listening."
 
-    tfe_url=$(terraform output -no-color -raw tfe_url)
-    echo "tfe url: $tfe_url"
-    iact_url=$(terraform output -no-color -raw iact_url)
-    echo "iact url: $iact_url"
     echo "Fetching iact token.."
-    iact_token=$(curl --fail --retry 5 --proxy socks5://localhost:5000 "$iact_url")
-    admin_url=`terraform output -no-color -raw initial_admin_user_url`
-    echo "admin url: $admin_url"
+    iact_token=$(curl --fail --retry 5 --proxy socks5://localhost:5000 "$IACT_URL")
+
 
     TFE_USERNAME="test$(date +%s)"
     TFE_PASSWORD=`openssl rand -base64 32`
@@ -97,13 +85,13 @@ if [[ -z "$skip_init" ]]; then
                 --data @./payload.json \
                 --request POST \
                 --proxy socks5://localhost:5000 \
-                "$admin_url"?token="$iact_token")
+                "$IAU_URL"?token="$iact_token")
 
     tfe_token=$(echo "$response" | jq --raw-output '.token')
     rm -f payload.json
 
     echo "export K6_PATHNAME=$k6_path
-          export TFE_URL=$tfe_url
+          export TFE_URL=$TFE_URL
           export TFE_API_TOKEN=$tfe_token
           export TFE_EMAIL=tf-onprem-team@hashicorp.com
           export http_proxy=socks5://localhost:5000/
