@@ -13,12 +13,12 @@ data "google_compute_image" "rhel" {
 }
 
 data "google_compute_region_instance_group" "tfe" {
-  count  = local.enable_ssh_config
+  count     = local.enable_ssh_config
   self_link = null_resource.wait_for_instances.triggers.self_link
 }
 
 data "google_compute_instance" "tfe" {
-  count  = local.enable_ssh_config
+  count     = local.enable_ssh_config
   self_link = data.google_compute_region_instance_group.tfe.instances[0].instance
 }
 
@@ -26,7 +26,7 @@ data "google_compute_instance" "tfe" {
 # google_compute_instance.tfe is available.
 # See https://github.com/hashicorp/terraform-provider-local/issues/57
 data "null_data_source" "instance" {
-  count  = local.enable_ssh_config
+  count = local.enable_ssh_config
   inputs = {
     name       = data.google_compute_instance.tfe.name
     network_ip = data.google_compute_instance.tfe.network_interface[0].network_ip

@@ -51,7 +51,7 @@ module "tfe" {
 }
 
 resource "null_resource" "wait_for_instances" {
-  count  = local.enable_ssh_config
+  count = local.enable_ssh_config
   triggers = {
     self_link = module.tfe.vm_mig.instance_group
   }
@@ -62,7 +62,7 @@ resource "null_resource" "wait_for_instances" {
 }
 
 resource "local_file" "ssh_config" {
-  count  = local.enable_ssh_config
+  count    = local.enable_ssh_config
   filename = "${path.module}/work/ssh-config"
 
   content = templatefile(
