@@ -20,13 +20,13 @@ output "health_check_url" {
 }
 
 output "ssh_config_file" {
-  value = local_file.ssh_config.filename
+  value = local.enable_ssh_config != 1 ? "To connect to your instance, use the SSH button in the console" : local_file.ssh_config[0].filename
 
   description = "The pathname of the SSH configuration file that grants access to the compute instance."
 }
 
 output "ssh_private_key" {
-  value = local_file.private_key_pem.filename
+  value = local.enable_ssh_config != 1 ? "To connect to your instance, use the SSH button in the console" : local_file.private_key_pem.filename
 
   description = "The pathname of the private SSH key."
 }
