@@ -376,8 +376,8 @@ jobs:
           service_account_key: ${{ secrets.GCP_SA_KEY }}
           export_default_credentials: true
 
-      - name: increasing_the_tcp_upload_bandwidth
-        id: increasing_the_tcp_upload_bandwidth
+      - name: Increasing the TCP Upload Bandwidth
+        id: increasing-the-tcp-upload-bandwidth-paa
         working-directory: ${{ env.WORK_DIR_PATH }}
         run: |
           $(gcloud info --format="value(basic.python_location)") -m pip install numpy
@@ -645,8 +645,8 @@ jobs:
           service_account_key: ${{ secrets.GCP_SA_KEY }}
           export_default_credentials: true
 
-      - name: increasing_the_tcp_upload_bandwidth
-        id: increasing_the_tcp_upload_bandwidth_ptaa
+      - name: Increasing the TCP Upload Bandwidth
+        id: increasing-the-tcp-upload-bandwidth-ptaa
         working-directory: ${{ env.WORK_DIR_PATH }}
         run: |
           $(gcloud info --format="value(basic.python_location)") -m pip install numpy
