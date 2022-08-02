@@ -21,7 +21,7 @@ module "test_proxy" {
 # Store TFE License as secret
 # ---------------------------
 module "secrets" {
-  count  = length(var.license_file) > 0 ? 1 : 0
+  count  = var.license_file != null ? 1 : 0
   source = "../../fixtures/secrets"
 
   license = {
