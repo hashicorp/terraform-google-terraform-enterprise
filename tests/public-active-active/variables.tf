@@ -1,3 +1,9 @@
+variable "existing_service_account_id" {
+  default     = null
+  type        = string
+  description = "The id of the logging service account to use for compute resources deployed."
+}
+
 variable "google" {
   default     = null
   description = "Attributes of the Google Cloud account which will host the test infrastructure."
@@ -43,6 +49,12 @@ variable "iact_subnet_list" {
   type        = list(string)
 }
 
+variable "license_file" {
+  default     = null
+  type        = string
+  description = "The local path to the Terraform Enterprise license to be provided by CI."
+}
+
 variable "tfe_hostname" {
   default     = null
   description = "Hostname of the Terraform Enterprise instance which manages the base infrastructure."
@@ -78,8 +90,3 @@ variable "tfe" {
   })
 }
 
-variable "existing_service_account_id" {
-  default     = null
-  type        = string
-  description = "The id of the logging service account to use for compute resources deployed."
-}
