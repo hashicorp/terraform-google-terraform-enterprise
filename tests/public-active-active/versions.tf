@@ -22,12 +22,4 @@ terraform {
       version = "~> 0.26"
     }
   }
-
-  backend "remote" {
-    organization = "terraform-enterprise-modules-test"
-
-    workspaces {
-      name = "google-public-active-active"
-    }
-  }
 }

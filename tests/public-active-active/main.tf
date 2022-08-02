@@ -8,7 +8,7 @@ resource "random_pet" "main" {
 # ---------------------------
 module "secrets" {
   count  = length(var.license_file) > 0 ? 1 : 0
-  source = "${path.root}/fixtures/secrets"
+  source = "../../fixtures/secrets"
 
   license = {
     id   = random_pet.main.id
