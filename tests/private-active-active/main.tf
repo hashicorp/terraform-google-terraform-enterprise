@@ -16,6 +16,18 @@ module "test_proxy" {
   labels = local.labels
 }
 
+# Store TFE License as secret
+# ---------------------------
+module "secrets" {
+  count  = var.license_file != null ? 1 : 0
+  source = "../../fixtures/secrets"
+
+  license = {
+    id   = random_pet.main.id
+    path = var.license_file
+  }
+}
+
 module "tfe" {
   source = "../.."
 
@@ -25,7 +37,7 @@ module "tfe" {
   namespace                   = random_pet.main.id
   existing_service_account_id = local.existing_service_account_id
   node_count                  = 2
-  tfe_license_secret_id       = data.tfe_outputs.base.values.license_secret_id
+  tfe_license_secret_id       = try(module.secrets[0].license_secret, data.tfe_outputs.base.values.license_secret_id)
   ssl_certificate_name        = data.tfe_outputs.base.values.wildcard_region_ssl_certificate_name
   labels                      = local.labels
   iact_subnet_list            = ["${module.test_proxy.compute_instance.network_interface[0].network_ip}/32"]

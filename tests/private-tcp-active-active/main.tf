@@ -18,6 +18,18 @@ module "test_proxy" {
   mitmproxy_ca_private_key_secret = data.tfe_outputs.base.values.ca_private_key_secret_id
 }
 
+# Store TFE License as secret
+# ---------------------------
+module "secrets" {
+  count  = var.license_file != null ? 1 : 0
+  source = "../../fixtures/secrets"
+
+  license = {
+    id   = random_pet.main.id
+    path = var.license_file
+  }
+}
+
 module "tfe" {
   source = "../.."
 
@@ -27,7 +39,7 @@ module "tfe" {
   namespace                   = random_pet.main.id
   existing_service_account_id = local.existing_service_account_id
   node_count                  = 2
-  tfe_license_secret_id       = data.tfe_outputs.base.values.license_secret_id
+  tfe_license_secret_id       = try(module.secrets[0].license_secret, data.tfe_outputs.base.values.license_secret_id)
   labels                      = local.labels
   ca_certificate_secret_id    = data.tfe_outputs.base.values.ca_certificate_secret_id
   iact_subnet_list            = ["${module.test_proxy.compute_instance.network_interface[0].network_ip}/32"]

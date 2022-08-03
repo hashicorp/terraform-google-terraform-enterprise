@@ -4,6 +4,18 @@ resource "random_pet" "main" {
   separator = "-"
 }
 
+# Store TFE License as secret
+# ---------------------------
+module "secrets" {
+  count  = var.license_file != null ? 1 : 0
+  source = "../../fixtures/secrets"
+
+  license = {
+    id   = random_pet.main.id
+    path = var.license_file
+  }
+}
+
 module "tfe" {
   source = "../.."
 
@@ -12,7 +24,7 @@ module "tfe" {
   namespace                   = random_pet.main.id
   existing_service_account_id = local.existing_service_account_id
   node_count                  = 2
-  tfe_license_secret_id       = data.tfe_outputs.base.values.license_secret_id
+  tfe_license_secret_id       = try(module.secrets[0].license_secret, data.tfe_outputs.base.values.license_secret_id)
   ssl_certificate_name        = data.tfe_outputs.base.values.wildcard_ssl_certificate_name
   distribution                = "ubuntu"
   iact_subnet_list            = var.iact_subnet_list
