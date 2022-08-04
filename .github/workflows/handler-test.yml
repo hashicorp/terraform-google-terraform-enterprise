@@ -5,6 +5,12 @@ on:
     types:
       - test-command
 
+env:
+  GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
+  GOOGLE_PROJECT: ${{ secrets.GOOGLE_PROJECT }}
+  GOOGLE_REGION: ${{ secrets.GOOGLE_REGION }}
+  GOOGLE_ZONE: ${{ secrets.GOOGLE_ZONE }}
+  
 jobs:
   public_active_active:
     name: Run tf-test on Public Active/Active
@@ -84,10 +90,6 @@ jobs:
       - name: Write Terraform Variables
         working-directory: ${{ env.WORK_DIR_PATH }}
         env:
-          GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
-          GOOGLE_PROJECT: ${{ secrets.GOOGLE_PROJECT }}
-          GOOGLE_REGION: ${{ secrets.GOOGLE_REGION }}
-          GOOGLE_ZONE: ${{ secrets.GOOGLE_ZONE }}
           GOOGLE_SERVICE_ACCOUNT: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
           TFE_HOSTNAME: ${{ secrets.TFE_HOSTNAME }}
           TFE_ORGANIZATION: ${{ secrets.TFE_ORGANIZATION }}
@@ -97,15 +99,7 @@ jobs:
           ip_address=$( dig +short @resolver1.opendns.com myip.opendns.com )
           cat <<EOF > github.auto.tfvars
           iact_subnet_list = ["$ip_address/32"]
-          google = {
-            credentials     = <<-EOC
-            $GOOGLE_CREDENTIALS
-            EOC
-            project         = "$GOOGLE_PROJECT"
-            region          = "$GOOGLE_REGION"
-            zone            = "$GOOGLE_ZONE"
-            service_account = "$GOOGLE_SERVICE_ACCOUNT"
-          }
+existing_service_account_id = "$GOOGLE_SERVICE_ACCOUNT"
           tfe = {
             hostname     = "$TFE_HOSTNAME"
             organization = "$TFE_ORGANIZATION"
@@ -313,10 +307,6 @@ jobs:
       - name: Write Terraform Variables
         working-directory: ${{ env.WORK_DIR_PATH }}
         env:
-          GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
-          GOOGLE_PROJECT: ${{ secrets.GOOGLE_PROJECT }}
-          GOOGLE_REGION: ${{ secrets.GOOGLE_REGION }}
-          GOOGLE_ZONE: ${{ secrets.GOOGLE_ZONE }}
           GOOGLE_SERVICE_ACCOUNT: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
           TFE_HOSTNAME: ${{ secrets.TFE_HOSTNAME }}
           TFE_ORGANIZATION: ${{ secrets.TFE_ORGANIZATION }}
@@ -324,15 +314,7 @@ jobs:
           TFE_WORKSPACE: ${{ secrets.TFE_WORKSPACE }}
         run: |
           cat <<EOF > github.auto.tfvars
-          google = {
-            credentials     = <<-EOC
-            $GOOGLE_CREDENTIALS
-            EOC
-            project         = "$GOOGLE_PROJECT"
-            region          = "$GOOGLE_REGION"
-            zone            = "$GOOGLE_ZONE"
-            service_account = "$GOOGLE_SERVICE_ACCOUNT"
-          }
+existing_service_account_id = "$GOOGLE_SERVICE_ACCOUNT"
           tfe = {
             hostname     = "$TFE_HOSTNAME"
             organization = "$TFE_ORGANIZATION"
@@ -582,10 +564,6 @@ jobs:
       - name: Write Terraform Variables
         working-directory: ${{ env.WORK_DIR_PATH }}
         env:
-          GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
-          GOOGLE_PROJECT: ${{ secrets.GOOGLE_PROJECT }}
-          GOOGLE_REGION: ${{ secrets.GOOGLE_REGION }}
-          GOOGLE_ZONE: ${{ secrets.GOOGLE_ZONE }}
           GOOGLE_SERVICE_ACCOUNT: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
           TFE_HOSTNAME: ${{ secrets.TFE_HOSTNAME }}
           TFE_ORGANIZATION: ${{ secrets.TFE_ORGANIZATION }}
@@ -593,15 +571,7 @@ jobs:
           TFE_WORKSPACE: ${{ secrets.TFE_WORKSPACE }}
         run: |
           cat <<EOF > github.auto.tfvars
-          google = {
-            credentials     = <<-EOC
-            $GOOGLE_CREDENTIALS
-            EOC
-            project         = "$GOOGLE_PROJECT"
-            region          = "$GOOGLE_REGION"
-            zone            = "$GOOGLE_ZONE"
-            service_account = "$GOOGLE_SERVICE_ACCOUNT"
-          }
+          existing_service_account_id = "$GOOGLE_SERVICE_ACCOUNT"
           tfe = {
             hostname     = "$TFE_HOSTNAME"
             organization = "$TFE_ORGANIZATION"
@@ -854,10 +824,6 @@ jobs:
       - name: Write Terraform Variables
         working-directory: ${{ env.WORK_DIR_PATH }}
         env:
-          GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
-          GOOGLE_PROJECT: ${{ secrets.GOOGLE_PROJECT }}
-          GOOGLE_REGION: ${{ secrets.GOOGLE_REGION }}
-          GOOGLE_ZONE: ${{ secrets.GOOGLE_ZONE }}
           GOOGLE_SERVICE_ACCOUNT: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
           TFE_HOSTNAME: ${{ secrets.TFE_HOSTNAME }}
           TFE_ORGANIZATION: ${{ secrets.TFE_ORGANIZATION }}
@@ -868,12 +834,6 @@ jobs:
           cat <<EOF > github.auto.tfvars
           iact_subnet_list = ["$ip_address/32"]
           license_file = ""
-          google_credentials     = <<-EOC
-            $GOOGLE_CREDENTIALS
-            EOC
-          google_project         = "$GOOGLE_PROJECT"
-          google_region          = "$GOOGLE_REGION"
-          google_zone            = "$GOOGLE_ZONE"
           existing_service_account_id = "$GOOGLE_SERVICE_ACCOUNT"
           tfe = {
             hostname     = "$TFE_HOSTNAME"
@@ -1082,10 +1042,6 @@ jobs:
       - name: Write Terraform Variables
         working-directory: ${{ env.WORK_DIR_PATH }}
         env:
-          GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
-          GOOGLE_PROJECT: ${{ secrets.GOOGLE_PROJECT }}
-          GOOGLE_REGION: ${{ secrets.GOOGLE_REGION }}
-          GOOGLE_ZONE: ${{ secrets.GOOGLE_ZONE }}
           GOOGLE_SERVICE_ACCOUNT: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
           TFE_HOSTNAME: ${{ secrets.TFE_HOSTNAME }}
           TFE_ORGANIZATION: ${{ secrets.TFE_ORGANIZATION }}
@@ -1096,12 +1052,6 @@ jobs:
           cat <<EOF > github.auto.tfvars
           iact_subnet_list = ["$ip_address/32"]
           license_file = ""
-          google_credentials     = <<-EOC
-            $GOOGLE_CREDENTIALS
-            EOC
-          google_project         = "$GOOGLE_PROJECT"
-          google_region          = "$GOOGLE_REGION"
-          google_zone            = "$GOOGLE_ZONE"
           existing_service_account_id = "$GOOGLE_SERVICE_ACCOUNT"
           tfe = {
             hostname     = "$TFE_HOSTNAME"

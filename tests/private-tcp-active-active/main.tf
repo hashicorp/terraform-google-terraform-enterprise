@@ -11,7 +11,7 @@ module "test_proxy" {
   name                        = local.name
   network                     = module.tfe.network
   subnetwork                  = module.tfe.subnetwork
-  existing_service_account_id = local.existing_service_account_id
+  existing_service_account_id = var.existing_service_account_id
 
   labels                          = local.labels
   mitmproxy_ca_certificate_secret = data.tfe_outputs.base.values.ca_certificate_secret_id
@@ -37,7 +37,7 @@ module "tfe" {
   dns_zone_name               = data.google_dns_managed_zone.main.name
   fqdn                        = "${random_pet.main.id}.${data.google_dns_managed_zone.main.dns_name}"
   namespace                   = random_pet.main.id
-  existing_service_account_id = local.existing_service_account_id
+  existing_service_account_id = var.existing_service_account_id
   node_count                  = 2
   tfe_license_secret_id       = try(module.secrets[0].license_secret, data.tfe_outputs.base.values.license_secret_id)
   labels                      = local.labels

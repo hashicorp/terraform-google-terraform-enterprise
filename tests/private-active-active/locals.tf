@@ -1,6 +1,5 @@
 locals {
   name                        = "${random_pet.main.id}-proxy"
-  existing_service_account_id = try(var.google.service_account, var.existing_service_account_id)
   labels = {
     oktodelete  = "true"
     terraform   = "true"
