@@ -99,7 +99,7 @@ jobs:
           ip_address=$( dig +short @resolver1.opendns.com myip.opendns.com )
           cat <<EOF > github.auto.tfvars
           iact_subnet_list = ["$ip_address/32"]
-existing_service_account_id = "$GOOGLE_SERVICE_ACCOUNT"
+          existing_service_account_id = "$GOOGLE_SERVICE_ACCOUNT"
           tfe = {
             hostname     = "$TFE_HOSTNAME"
             organization = "$TFE_ORGANIZATION"
@@ -314,7 +314,7 @@ existing_service_account_id = "$GOOGLE_SERVICE_ACCOUNT"
           TFE_WORKSPACE: ${{ secrets.TFE_WORKSPACE }}
         run: |
           cat <<EOF > github.auto.tfvars
-existing_service_account_id = "$GOOGLE_SERVICE_ACCOUNT"
+          existing_service_account_id = "$GOOGLE_SERVICE_ACCOUNT"
           tfe = {
             hostname     = "$TFE_HOSTNAME"
             organization = "$TFE_ORGANIZATION"
