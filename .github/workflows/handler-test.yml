@@ -69,6 +69,13 @@ jobs:
           terraform_version: 1.1.7
           terraform_wrapper: true
 
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v0
+        with:
+          project_id: ${{ secrets.GOOGLE_PROJECT }}
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+          export_default_credentials: true
+
       - name: Configure Terraform Backend
         id: backend-config
         working-directory: ${{ env.WORK_DIR_PATH }}
@@ -286,6 +293,13 @@ jobs:
           terraform_version: 1.1.7
           terraform_wrapper: true
 
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v0
+        with:
+          project_id: ${{ secrets.GOOGLE_PROJECT }}
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+          export_default_credentials: true
+
       - name: Configure Terraform Backend
         id: backend-config
         working-directory: ${{ env.WORK_DIR_PATH }}
@@ -351,12 +365,6 @@ jobs:
         run: |
           terraform output -no-color -raw proxy_instance_zone
 
-      - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v0
-        with:
-          project_id: ${{ secrets.GOOGLE_PROJECT }}
-          service_account_key: ${{ secrets.GCP_SA_KEY }}
-          export_default_credentials: true
 
       - name: Increasing the TCP Upload Bandwidth
         id: increasing-the-tcp-upload-bandwidth-paa
@@ -543,6 +551,13 @@ jobs:
           terraform_version: 1.1.7
           terraform_wrapper: true
 
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v0
+        with:
+          project_id: ${{ secrets.GOOGLE_PROJECT }}
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+          export_default_credentials: true
+
       - name: Configure Terraform Backend
         id: backend-config
         working-directory: ${{ env.WORK_DIR_PATH }}
@@ -608,12 +623,6 @@ jobs:
         run: |
           terraform output -no-color -raw proxy_instance_zone
 
-      - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v0
-        with:
-          project_id: ${{ secrets.GOOGLE_PROJECT }}
-          service_account_key: ${{ secrets.GCP_SA_KEY }}
-          export_default_credentials: true
 
       - name: Increasing the TCP Upload Bandwidth
         id: increasing-the-tcp-upload-bandwidth-ptaa
@@ -802,6 +811,13 @@ jobs:
           cli_config_credentials_token: ${{ secrets.TFC_TOKEN }}
           terraform_version: 1.1.7
           terraform_wrapper: true
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v0
+        with:
+          project_id: ${{ secrets.GOOGLE_PROJECT }}
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+          export_default_credentials: true
 
       - name: Configure Terraform Backend
         id: backend-config
@@ -1020,6 +1036,13 @@ jobs:
           cli_config_credentials_token: ${{ secrets.TFC_TOKEN }}
           terraform_version: 1.1.7
           terraform_wrapper: true
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v0
+        with:
+          project_id: ${{ secrets.GOOGLE_PROJECT }}
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+          export_default_credentials: true
 
       - name: Configure Terraform Backend
         id: backend-config
