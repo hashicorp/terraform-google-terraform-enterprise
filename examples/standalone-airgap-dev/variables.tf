@@ -15,17 +15,6 @@ variable "labels" {
   description = "Labels to apply to resources"
 }
 
-variable "google" {
-  description = "Attributes of the Google Cloud account which will host the test infrastructure."
-  type = object({
-    credentials     = string
-    project         = string
-    region          = string
-    zone            = string
-    service_account = string
-  })
-}
-
 variable "dns_zone_name" {
   description = "The name of the DNS zone in which a record will be created."
   type        = string

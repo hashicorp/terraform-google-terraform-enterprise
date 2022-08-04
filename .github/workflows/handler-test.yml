@@ -5,6 +5,12 @@ on:
     types:
       - test-command
 
+env:
+  GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
+  GOOGLE_PROJECT: ${{ secrets.GOOGLE_PROJECT }}
+  GOOGLE_REGION: ${{ secrets.GOOGLE_REGION }}
+  GOOGLE_ZONE: ${{ secrets.GOOGLE_ZONE }}
+  
 jobs:
   public_active_active:
     name: Run tf-test on Public Active/Active
@@ -63,6 +69,13 @@ jobs:
           terraform_version: 1.1.7
           terraform_wrapper: true
 
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v0
+        with:
+          project_id: ${{ secrets.GOOGLE_PROJECT }}
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+          export_default_credentials: true
+
       - name: Configure Terraform Backend
         id: backend-config
         working-directory: ${{ env.WORK_DIR_PATH }}
@@ -84,10 +97,6 @@ jobs:
       - name: Write Terraform Variables
         working-directory: ${{ env.WORK_DIR_PATH }}
         env:
-          GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
-          GOOGLE_PROJECT: ${{ secrets.GOOGLE_PROJECT }}
-          GOOGLE_REGION: ${{ secrets.GOOGLE_REGION }}
-          GOOGLE_ZONE: ${{ secrets.GOOGLE_ZONE }}
           GOOGLE_SERVICE_ACCOUNT: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
           TFE_HOSTNAME: ${{ secrets.TFE_HOSTNAME }}
           TFE_ORGANIZATION: ${{ secrets.TFE_ORGANIZATION }}
@@ -97,15 +106,7 @@ jobs:
           ip_address=$( dig +short @resolver1.opendns.com myip.opendns.com )
           cat <<EOF > github.auto.tfvars
           iact_subnet_list = ["$ip_address/32"]
-          google = {
-            credentials     = <<-EOC
-            $GOOGLE_CREDENTIALS
-            EOC
-            project         = "$GOOGLE_PROJECT"
-            region          = "$GOOGLE_REGION"
-            zone            = "$GOOGLE_ZONE"
-            service_account = "$GOOGLE_SERVICE_ACCOUNT"
-          }
+          existing_service_account_id = "$GOOGLE_SERVICE_ACCOUNT"
           tfe = {
             hostname     = "$TFE_HOSTNAME"
             organization = "$TFE_ORGANIZATION"
@@ -292,6 +293,13 @@ jobs:
           terraform_version: 1.1.7
           terraform_wrapper: true
 
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v0
+        with:
+          project_id: ${{ secrets.GOOGLE_PROJECT }}
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+          export_default_credentials: true
+
       - name: Configure Terraform Backend
         id: backend-config
         working-directory: ${{ env.WORK_DIR_PATH }}
@@ -313,10 +321,6 @@ jobs:
       - name: Write Terraform Variables
         working-directory: ${{ env.WORK_DIR_PATH }}
         env:
-          GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
-          GOOGLE_PROJECT: ${{ secrets.GOOGLE_PROJECT }}
-          GOOGLE_REGION: ${{ secrets.GOOGLE_REGION }}
-          GOOGLE_ZONE: ${{ secrets.GOOGLE_ZONE }}
           GOOGLE_SERVICE_ACCOUNT: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
           TFE_HOSTNAME: ${{ secrets.TFE_HOSTNAME }}
           TFE_ORGANIZATION: ${{ secrets.TFE_ORGANIZATION }}
@@ -324,15 +328,7 @@ jobs:
           TFE_WORKSPACE: ${{ secrets.TFE_WORKSPACE }}
         run: |
           cat <<EOF > github.auto.tfvars
-          google = {
-            credentials     = <<-EOC
-            $GOOGLE_CREDENTIALS
-            EOC
-            project         = "$GOOGLE_PROJECT"
-            region          = "$GOOGLE_REGION"
-            zone            = "$GOOGLE_ZONE"
-            service_account = "$GOOGLE_SERVICE_ACCOUNT"
-          }
+          existing_service_account_id = "$GOOGLE_SERVICE_ACCOUNT"
           tfe = {
             hostname     = "$TFE_HOSTNAME"
             organization = "$TFE_ORGANIZATION"
@@ -369,12 +365,6 @@ jobs:
         run: |
           terraform output -no-color -raw proxy_instance_zone
 
-      - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v0
-        with:
-          project_id: ${{ secrets.GOOGLE_PROJECT }}
-          service_account_key: ${{ secrets.GCP_SA_KEY }}
-          export_default_credentials: true
 
       - name: Increasing the TCP Upload Bandwidth
         id: increasing-the-tcp-upload-bandwidth-paa
@@ -561,6 +551,13 @@ jobs:
           terraform_version: 1.1.7
           terraform_wrapper: true
 
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v0
+        with:
+          project_id: ${{ secrets.GOOGLE_PROJECT }}
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+          export_default_credentials: true
+
       - name: Configure Terraform Backend
         id: backend-config
         working-directory: ${{ env.WORK_DIR_PATH }}
@@ -582,10 +579,6 @@ jobs:
       - name: Write Terraform Variables
         working-directory: ${{ env.WORK_DIR_PATH }}
         env:
-          GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
-          GOOGLE_PROJECT: ${{ secrets.GOOGLE_PROJECT }}
-          GOOGLE_REGION: ${{ secrets.GOOGLE_REGION }}
-          GOOGLE_ZONE: ${{ secrets.GOOGLE_ZONE }}
           GOOGLE_SERVICE_ACCOUNT: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
           TFE_HOSTNAME: ${{ secrets.TFE_HOSTNAME }}
           TFE_ORGANIZATION: ${{ secrets.TFE_ORGANIZATION }}
@@ -593,15 +586,7 @@ jobs:
           TFE_WORKSPACE: ${{ secrets.TFE_WORKSPACE }}
         run: |
           cat <<EOF > github.auto.tfvars
-          google = {
-            credentials     = <<-EOC
-            $GOOGLE_CREDENTIALS
-            EOC
-            project         = "$GOOGLE_PROJECT"
-            region          = "$GOOGLE_REGION"
-            zone            = "$GOOGLE_ZONE"
-            service_account = "$GOOGLE_SERVICE_ACCOUNT"
-          }
+          existing_service_account_id = "$GOOGLE_SERVICE_ACCOUNT"
           tfe = {
             hostname     = "$TFE_HOSTNAME"
             organization = "$TFE_ORGANIZATION"
@@ -638,12 +623,6 @@ jobs:
         run: |
           terraform output -no-color -raw proxy_instance_zone
 
-      - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v0
-        with:
-          project_id: ${{ secrets.GOOGLE_PROJECT }}
-          service_account_key: ${{ secrets.GCP_SA_KEY }}
-          export_default_credentials: true
 
       - name: Increasing the TCP Upload Bandwidth
         id: increasing-the-tcp-upload-bandwidth-ptaa
@@ -833,6 +812,13 @@ jobs:
           terraform_version: 1.1.7
           terraform_wrapper: true
 
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v0
+        with:
+          project_id: ${{ secrets.GOOGLE_PROJECT }}
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+          export_default_credentials: true
+
       - name: Configure Terraform Backend
         id: backend-config
         working-directory: ${{ env.WORK_DIR_PATH }}
@@ -854,10 +840,6 @@ jobs:
       - name: Write Terraform Variables
         working-directory: ${{ env.WORK_DIR_PATH }}
         env:
-          GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
-          GOOGLE_PROJECT: ${{ secrets.GOOGLE_PROJECT }}
-          GOOGLE_REGION: ${{ secrets.GOOGLE_REGION }}
-          GOOGLE_ZONE: ${{ secrets.GOOGLE_ZONE }}
           GOOGLE_SERVICE_ACCOUNT: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
           TFE_HOSTNAME: ${{ secrets.TFE_HOSTNAME }}
           TFE_ORGANIZATION: ${{ secrets.TFE_ORGANIZATION }}
@@ -868,12 +850,6 @@ jobs:
           cat <<EOF > github.auto.tfvars
           iact_subnet_list = ["$ip_address/32"]
           license_file = ""
-          google_credentials     = <<-EOC
-            $GOOGLE_CREDENTIALS
-            EOC
-          google_project         = "$GOOGLE_PROJECT"
-          google_region          = "$GOOGLE_REGION"
-          google_zone            = "$GOOGLE_ZONE"
           existing_service_account_id = "$GOOGLE_SERVICE_ACCOUNT"
           tfe = {
             hostname     = "$TFE_HOSTNAME"
@@ -1061,6 +1037,13 @@ jobs:
           terraform_version: 1.1.7
           terraform_wrapper: true
 
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v0
+        with:
+          project_id: ${{ secrets.GOOGLE_PROJECT }}
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+          export_default_credentials: true
+
       - name: Configure Terraform Backend
         id: backend-config
         working-directory: ${{ env.WORK_DIR_PATH }}
@@ -1082,10 +1065,6 @@ jobs:
       - name: Write Terraform Variables
         working-directory: ${{ env.WORK_DIR_PATH }}
         env:
-          GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
-          GOOGLE_PROJECT: ${{ secrets.GOOGLE_PROJECT }}
-          GOOGLE_REGION: ${{ secrets.GOOGLE_REGION }}
-          GOOGLE_ZONE: ${{ secrets.GOOGLE_ZONE }}
           GOOGLE_SERVICE_ACCOUNT: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
           TFE_HOSTNAME: ${{ secrets.TFE_HOSTNAME }}
           TFE_ORGANIZATION: ${{ secrets.TFE_ORGANIZATION }}
@@ -1096,12 +1075,6 @@ jobs:
           cat <<EOF > github.auto.tfvars
           iact_subnet_list = ["$ip_address/32"]
           license_file = ""
-          google_credentials     = <<-EOC
-            $GOOGLE_CREDENTIALS
-            EOC
-          google_project         = "$GOOGLE_PROJECT"
-          google_region          = "$GOOGLE_REGION"
-          google_zone            = "$GOOGLE_ZONE"
           existing_service_account_id = "$GOOGLE_SERVICE_ACCOUNT"
           tfe = {
             hostname     = "$TFE_HOSTNAME"
