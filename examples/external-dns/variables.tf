@@ -8,6 +8,12 @@ variable "dns_create_record" {
   type        = bool
 }
 
+variable "existing_service_account_id" {
+  default     = null
+  type        = string
+  description = "The ID of the logging service account to use for compute resources deployed."
+}
+
 variable "fqdn" {
   description = "The fully qualified domain name which will be assigned to the DNS record."
   type        = string
