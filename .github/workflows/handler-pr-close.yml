@@ -50,7 +50,7 @@ jobs:
 
     # Configure backend 
       - name: Configure Terraform Backend
-        if: ${{ steps.get-workspaces-google-private-tcp-active-active.outputs.WORSPACE_TCP_AA_EXISTS }}
+        if: ${{ steps.check-workspaces-google-private-tcp-active-active.outputs.WORSPACE_TCP_AA_EXISTS }}
         id: backend-config
         working-directory: ${{ env.WORK_DIR_PATH }}
         env:
@@ -65,14 +65,14 @@ jobs:
           
     # Initialize terraform
       - name: Terraform Init
-        if: ${{ steps.get-workspaces-google-private-tcp-active-active.outputs.WORSPACE_TCP_AA_EXISTS }}
+        if: ${{ steps.check-workspaces-google-private-tcp-active-active.outputs.WORSPACE_TCP_AA_EXISTS }}
         id: init
         working-directory: ${{ env.WORK_DIR_PATH }}
         run: terraform init -backend-config=backend-config.hcl -input=false -no-color
         
     # Write tfvars
       - name: Write Terraform Variables
-        if: ${{ steps.get-workspaces-google-private-tcp-active-active.outputs.WORSPACE_TCP_AA_EXISTS }}
+        if: ${{ steps.check-workspaces-google-private-tcp-active-active.outputs.WORSPACE_TCP_AA_EXISTS }}
         working-directory: ${{ env.WORK_DIR_PATH }}
         env:
           GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
@@ -106,14 +106,14 @@ jobs:
     # this step will delete workspace-resources if exists for this PR
       - name: Terraform Destroy
         id: destroy-ptaa
-        if: ${{ steps.get-workspaces-google-private-tcp-active-active.outputs.WORSPACE_TCP_AA_EXISTS }}
+        if: ${{ steps.check-workspaces-google-private-tcp-active-active.outputs.WORSPACE_TCP_AA_EXISTS }}
         working-directory: ${{ env.WORK_DIR_PATH }}
         run: terraform destroy -auto-approve -input=false -no-color
 
     # this step will delete workspace for this PR
       - name: Terraform Delete Workspace
         id: destroy-workspace-ptaa
-        if: ${{ steps.get-workspaces-google-private-tcp-active-active.outputs.WORSPACE_TCP_AA_EXISTS }} && ${{ steps.destroy.outcome == 'success' }}
+        if: ${{ steps.check-workspaces-google-private-tcp-active-active.outputs.WORSPACE_TCP_AA_EXISTS }} && ${{ steps.destroy.outcome == 'success' }}
         working-directory: ${{ env.WORK_DIR_PATH }}
         env:
           TFE_ORGANIZATION: ${{ secrets.TFE_ORGANIZATION }}
