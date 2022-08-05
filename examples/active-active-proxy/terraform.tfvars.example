@@ -23,8 +23,3 @@ license_file                = "/full/path/to/my/tfe/license.rli"
 node_count                  = 2
 ssl_certificate_secret      = "ssl-certificate-secret-name"
 ssl_private_key_secret      = "ssl-private-key-secret-name"
-
-
-
-
-
