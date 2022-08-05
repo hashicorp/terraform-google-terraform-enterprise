@@ -3,6 +3,13 @@ name: Close Pull Request
 on:
   pull_request:
     types: [ closed ]
+
+env:
+  GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
+  GOOGLE_PROJECT: ${{ secrets.GOOGLE_PROJECT }}
+  GOOGLE_REGION: ${{ secrets.GOOGLE_REGION }}
+  GOOGLE_ZONE: ${{ secrets.GOOGLE_ZONE }}
+
 jobs:
   close_job:
     # this job will run if PR is closed
@@ -37,6 +44,13 @@ jobs:
           cli_config_credentials_token: ${{ secrets.TFC_TOKEN }}
           terraform_version: 1.0.11
           terraform_wrapper: true
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v0
+        with:
+          project_id: ${{ secrets.GOOGLE_PROJECT }}
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+          export_default_credentials: true
 
     # this step will check if workspace is created for google-private-tcp-active-active for this PR
       - name: Check if workspace for google-private-tcp-active-active exists
@@ -75,10 +89,6 @@ jobs:
         if: ${{ steps.check-workspaces-google-private-tcp-active-active.outputs.WORSPACE_TCP_AA_EXISTS }}
         working-directory: ${{ env.WORK_DIR_PATH }}
         env:
-          GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
-          GOOGLE_PROJECT: ${{ secrets.GOOGLE_PROJECT }}
-          GOOGLE_REGION: ${{ secrets.GOOGLE_REGION }}
-          GOOGLE_ZONE: ${{ secrets.GOOGLE_ZONE }}
           GOOGLE_SERVICE_ACCOUNT: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
           TFE_HOSTNAME: ${{ secrets.TFE_HOSTNAME }}
           TFE_ORGANIZATION: ${{ secrets.TFE_ORGANIZATION }}
@@ -86,15 +96,7 @@ jobs:
           TFE_WORKSPACE: ${{ secrets.TFE_WORKSPACE }}
         run: |
           cat <<EOF > github.auto.tfvars
-          google = {
-            credentials     = <<-EOC
-            $GOOGLE_CREDENTIALS
-            EOC
-            project         = "$GOOGLE_PROJECT"
-            region          = "$GOOGLE_REGION"
-            zone            = "$GOOGLE_ZONE"
-            service_account = "$GOOGLE_SERVICE_ACCOUNT"
-          }
+          existing_service_account_id = "$GOOGLE_SERVICE_ACCOUNT"
           tfe = {
             hostname     = "$TFE_HOSTNAME"
             organization = "$TFE_ORGANIZATION"
