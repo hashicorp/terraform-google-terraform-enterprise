@@ -30,7 +30,7 @@ module "tfe" {
   node_count                  = 1
   tfe_license_secret_id       = module.secrets.license_secret
   ssl_certificate_name        = var.ssl_certificate_name
-  existing_service_account_id = var.google.service_account
+  existing_service_account_id = var.existing_service_account_id
   iact_subnet_list            = ["0.0.0.0/0"]
   iact_subnet_time_limit      = 60
   labels                      = var.labels
