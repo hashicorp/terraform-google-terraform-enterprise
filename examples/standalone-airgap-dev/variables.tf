@@ -30,7 +30,3 @@ variable "ssl_certificate_name" {
   EOD
   type        = string
 }
-
-
-
-
