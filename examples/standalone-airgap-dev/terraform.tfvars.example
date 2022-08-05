@@ -1,19 +1,20 @@
-airgap_url           = "https://airgap-url/"
-dns_zone_name        = "my.domain.com"
-fqdn                 = "tfe.my.domain.com"
-google               = {
-                        service_account = "google-service-account"
-                        credentials     = "1a2s3d4f1a2s1q2w4r5t61a2s3d4f1a2s3d4f5g"
-                        project         = "google-project-name"
-                        region          = "us-east1"
-                        zone            = "us-east1-b"
-                       }
-labels               = {
-                        department  = "engineering"
-                        description = "standalone-airgap"
-                        repository  = "hashicorp-terraform-google-terraform-enterprise"
-                        team        = "my-team-name"
-                       }
-license_file         = "/full/path/to/my/tfe/license.rli"
-namespace            = "user-friendly-name"
-ssl_certificate_name = "certificate-name-xxxxxxxxxxxxxxxxxxxxx"
+airgap_url                  = "https://airgap-url/"
+dns_zone_name               = "my.domain.com"
+existing_service_account_id = "service-account-name"
+fqdn                        = "tfe.my.domain.com"
+google                      = {
+                               service_account = "google-service-account"
+                               credentials     = "1a2s3d4f1a2s1q2w4r5t61a2s3d4f1a2s3d4f5g"
+                               project         = "google-project-name"
+                               region          = "us-east1"
+                               zone            = "us-east1-b"
+                              }
+labels                      = {
+                               department  = "engineering"
+                               description = "standalone-airgap"
+                               repository  = "hashicorp-terraform-google-terraform-enterprise"
+                               team        = "my-team-name"
+                              }
+license_file                = "/full/path/to/my/tfe/license.rli"
+namespace                   = "user-friendly-name"
+ssl_certificate_name        = "certificate-name-xxxxxxxxxxxxxxxxxxxxx"

@@ -16,7 +16,7 @@ variable "dns_zone_name" {
 variable "existing_service_account_id" {
   default     = null
   type        = string
-  description = "The id of the logging service account to use for compute resources deployed."
+  description = "The ID of the logging service account to use for compute resources deployed."
 }
 
 variable "fqdn" {

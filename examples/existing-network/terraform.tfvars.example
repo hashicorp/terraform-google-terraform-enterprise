@@ -1,24 +1,25 @@
-namespace            = "user-friendly-name"
-network              = "projects/<project_name>/global/networks/<network_name>"
-node_count           = 2 # value must be either 1 or 2
-dns_zone_name        = "my.domain.com"
-fqdn                 = "tfe.my.domain.com"
-google               = {
-                       service_account = "google-service-account"
-                       credentials     = "1a2s3d4f1a2s1q2w4r5t61a2s3d4f1a2s3d4f5g"
-                       project         = "google-project-name"
-                       region          = "us-east1"
-                       zone            = "us-east1-b"
-                       }
-labels               = {
-                       oktodelete  = "true"
-                       terraform   = "true"
-                       department  = "engineering"
-                       product     = "terraform-enterprise"
-                       repository  = "terraform-google-terraform-enterprise"
-                       description = "active-active-proxy"
-                       environment = "test"
-                       }
-license_file         = "/files/license.rli"
-ssl_certificate_name = "certificate-name"
-subnetwork           = "projects/<project_name>/regions/<region>/subnetworks/<subnetwork_name>"
+namespace                   = "user-friendly-name"
+network                     = "projects/<project_name>/global/networks/<network_name>"
+node_count                  = 2 # value must be either 1 or 2
+dns_zone_name               = "my.domain.com"
+existing_service_account_id = "service-account-name"
+fqdn                        = "tfe.my.domain.com"
+google                      = {
+                              service_account = "google-service-account"
+                              credentials     = "1a2s3d4f1a2s1q2w4r5t61a2s3d4f1a2s3d4f5g"
+                              project         = "google-project-name"
+                              region          = "us-east1"
+                              zone            = "us-east1-b"
+                              }
+labels                      = {
+                              oktodelete  = "true"
+                              terraform   = "true"
+                              department  = "engineering"
+                              product     = "terraform-enterprise"
+                              repository  = "terraform-google-terraform-enterprise"
+                              description = "active-active-proxy"
+                              environment = "test"
+                              }
+license_file                = "/files/license.rli"
+ssl_certificate_name        = "certificate-name"
+subnetwork                  = "projects/<project_name>/regions/<region>/subnetworks/<subnetwork_name>"
