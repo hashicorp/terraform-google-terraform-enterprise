@@ -23,7 +23,7 @@ module "tfe" {
   distribution                = "ubuntu"
   dns_create_record           = var.dns_create_record
   dns_zone_name               = var.dns_zone_name
-  existing_service_account_id = var.google.service_account
+  existing_service_account_id = var.existing_service_account_id
   fqdn                        = var.fqdn
   load_balancer               = "PUBLIC"
   namespace                   = var.namespace

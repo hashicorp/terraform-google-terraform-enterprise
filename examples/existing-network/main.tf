@@ -20,7 +20,7 @@ module "existing_network" {
 
   distribution                = "ubuntu"
   dns_zone_name               = var.dns_zone_name
-  existing_service_account_id = var.google.service_account
+  existing_service_account_id = var.existing_service_account_id
   fqdn                        = var.fqdn
   labels                      = var.labels
   load_balancer               = "PUBLIC"
