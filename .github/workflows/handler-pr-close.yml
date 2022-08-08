@@ -3,6 +3,13 @@ name: Close Pull Request
 on:
   pull_request:
     types: [ closed ]
+
+env:
+  GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
+  GOOGLE_PROJECT: ${{ secrets.GOOGLE_PROJECT }}
+  GOOGLE_REGION: ${{ secrets.GOOGLE_REGION }}
+  GOOGLE_ZONE: ${{ secrets.GOOGLE_ZONE }}
+
 jobs:
   close_job:
     # this job will run if PR is closed
@@ -38,6 +45,13 @@ jobs:
           terraform_version: 1.0.11
           terraform_wrapper: true
 
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v0
+        with:
+          project_id: ${{ secrets.GOOGLE_PROJECT }}
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+          export_default_credentials: true
+
     # this step will check if workspace is created for google-private-tcp-active-active for this PR
       - name: Check if workspace for google-private-tcp-active-active exists
         id: check-workspaces-google-private-tcp-active-active
@@ -50,7 +64,7 @@ jobs:
 
     # Configure backend 
       - name: Configure Terraform Backend
-        if: ${{ steps.get-workspaces-google-private-tcp-active-active.outputs.WORSPACE_TCP_AA_EXISTS }}
+        if: ${{ steps.check-workspaces-google-private-tcp-active-active.outputs.WORSPACE_TCP_AA_EXISTS }}
         id: backend-config
         working-directory: ${{ env.WORK_DIR_PATH }}
         env:
@@ -65,20 +79,16 @@ jobs:
           
     # Initialize terraform
       - name: Terraform Init
-        if: ${{ steps.get-workspaces-google-private-tcp-active-active.outputs.WORSPACE_TCP_AA_EXISTS }}
+        if: ${{ steps.check-workspaces-google-private-tcp-active-active.outputs.WORSPACE_TCP_AA_EXISTS }}
         id: init
         working-directory: ${{ env.WORK_DIR_PATH }}
         run: terraform init -backend-config=backend-config.hcl -input=false -no-color
         
     # Write tfvars
       - name: Write Terraform Variables
-        if: ${{ steps.get-workspaces-google-private-tcp-active-active.outputs.WORSPACE_TCP_AA_EXISTS }}
+        if: ${{ steps.check-workspaces-google-private-tcp-active-active.outputs.WORSPACE_TCP_AA_EXISTS }}
         working-directory: ${{ env.WORK_DIR_PATH }}
         env:
-          GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
-          GOOGLE_PROJECT: ${{ secrets.GOOGLE_PROJECT }}
-          GOOGLE_REGION: ${{ secrets.GOOGLE_REGION }}
-          GOOGLE_ZONE: ${{ secrets.GOOGLE_ZONE }}
           GOOGLE_SERVICE_ACCOUNT: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
           TFE_HOSTNAME: ${{ secrets.TFE_HOSTNAME }}
           TFE_ORGANIZATION: ${{ secrets.TFE_ORGANIZATION }}
@@ -86,15 +96,7 @@ jobs:
           TFE_WORKSPACE: ${{ secrets.TFE_WORKSPACE }}
         run: |
           cat <<EOF > github.auto.tfvars
-          google = {
-            credentials     = <<-EOC
-            $GOOGLE_CREDENTIALS
-            EOC
-            project         = "$GOOGLE_PROJECT"
-            region          = "$GOOGLE_REGION"
-            zone            = "$GOOGLE_ZONE"
-            service_account = "$GOOGLE_SERVICE_ACCOUNT"
-          }
+          existing_service_account_id = "$GOOGLE_SERVICE_ACCOUNT"
           tfe = {
             hostname     = "$TFE_HOSTNAME"
             organization = "$TFE_ORGANIZATION"
@@ -106,14 +108,14 @@ jobs:
     # this step will delete workspace-resources if exists for this PR
       - name: Terraform Destroy
         id: destroy-ptaa
-        if: ${{ steps.get-workspaces-google-private-tcp-active-active.outputs.WORSPACE_TCP_AA_EXISTS }}
+        if: ${{ steps.check-workspaces-google-private-tcp-active-active.outputs.WORSPACE_TCP_AA_EXISTS }}
         working-directory: ${{ env.WORK_DIR_PATH }}
         run: terraform destroy -auto-approve -input=false -no-color
 
     # this step will delete workspace for this PR
       - name: Terraform Delete Workspace
         id: destroy-workspace-ptaa
-        if: ${{ steps.get-workspaces-google-private-tcp-active-active.outputs.WORSPACE_TCP_AA_EXISTS }} && ${{ steps.destroy.outcome == 'success' }}
+        if: ${{ steps.check-workspaces-google-private-tcp-active-active.outputs.WORSPACE_TCP_AA_EXISTS }} && ${{ steps.destroy.outcome == 'success' }}
         working-directory: ${{ env.WORK_DIR_PATH }}
         env:
           TFE_ORGANIZATION: ${{ secrets.TFE_ORGANIZATION }}
