@@ -57,10 +57,10 @@ jobs:
         id: check-workspaces-google-private-tcp-active-active
         working-directory: ${{ env.WORK_DIR_PATH }}
         run: >-
-          echo "::set-output name=WORSPACE_TCP_AA_EXISTS::$(curl -s --header "Authorization: Bearer ${{env.TFE_TOKEN}}" --header "Content-Type: application/vnd.api+json"  https://app.terraform.io/api/v2/organizations/${{env.TFE_ORGANIZATION}}/workspaces/google-private-tcp-active-active-${{ env.PR_NUMBER }} | jq -r '.data | .attributes | .name')"
+          echo "::set-output name=WORSPACE_TCP_AA_EXISTS::$(curl -s --header "Authorization: Bearer ${{env.TFC_TOKEN}}" --header "Content-Type: application/vnd.api+json"  https://app.terraform.io/api/v2/organizations/${{env.TFC_ORGANIZATION}}/workspaces/google-private-tcp-active-active-${{ env.PR_NUMBER }} | jq -r '.data | .attributes | .name')"
         env:
-          TFE_ORGANIZATION: ${{ secrets.TFE_ORGANIZATION }}
-          TFE_TOKEN: ${{ secrets.TFE_TOKEN }}
+          TFC_ORGANIZATION: ${{ secrets.TFC_ORGANIZATION }}
+          TFC_TOKEN: ${{ secrets.TFC_TOKEN }}
 
     # Configure backend 
       - name: Configure Terraform Backend
@@ -118,9 +118,9 @@ jobs:
         if: ${{ steps.check-workspaces-google-private-tcp-active-active.outputs.WORSPACE_TCP_AA_EXISTS }} && ${{ steps.destroy.outcome == 'success' }}
         working-directory: ${{ env.WORK_DIR_PATH }}
         env:
-          TFE_ORGANIZATION: ${{ secrets.TFE_ORGANIZATION }}
-          TFE_TOKEN: ${{ secrets.TFE_TOKEN }}
+          TFC_ORGANIZATION: ${{ secrets.TFC_ORGANIZATION }}
+          TFC_TOKEN: ${{ secrets.TFC_TOKEN }}
         run: >-
-          curl --header "Authorization: Bearer ${{env.TFE_TOKEN}}" --header "Content-Type: application/vnd.api+json" --request DELETE https://app.terraform.io/api/v2/organizations/${{env.TFE_ORGANIZATION}}/workspaces/google-private-tcp-active-active-${{ env.PR_NUMBER }}
+          curl --header "Authorization: Bearer ${{env.TFC_TOKEN}}" --header "Content-Type: application/vnd.api+json" --request DELETE https://app.terraform.io/api/v2/organizations/${{env.TFC_ORGANIZATION}}/workspaces/google-private-tcp-active-active-${{ env.PR_NUMBER }}
           
 
