@@ -8,20 +8,15 @@ variable "dns_create_record" {
   type        = bool
 }
 
+variable "existing_service_account_id" {
+  default     = null
+  type        = string
+  description = "The ID of the logging service account to use for compute resources deployed."
+}
+
 variable "fqdn" {
   description = "The fully qualified domain name which will be assigned to the DNS record."
   type        = string
-}
-
-variable "google" {
-  description = "Attributes of the Google Cloud account which will host the test infrastructure."
-  type = object({
-    credentials     = string
-    project         = string
-    region          = string
-    zone            = string
-    service_account = string
-  })
 }
 
 variable "license_file" {

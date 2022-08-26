@@ -4,7 +4,7 @@ module "tfe" {
   source = "../../"
 
   # Air-gap
-  existing_service_account_id               = var.google.service_account
+  existing_service_account_id               = var.existing_service_account_id
   tfe_license_bootstrap_airgap_package_path = "/var/lib/ptfe/ptfe.airgap"
   tfe_license_secret_id                     = null
 

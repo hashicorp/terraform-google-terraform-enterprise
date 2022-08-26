@@ -1,12 +1,13 @@
-dns_create_record    = true
-dns_zone_name        = "my.domain.com"
-namespace            = "user-friendly-name"
-fqdn                 = "tfe.my.domain.com"
-google               = {
-                       service_account = "google-service-account"
-                       credentials     = "1a2s3d4f1a2s1q2w4r5t61a2s3d4f1a2s3d4f5g"
-                       project         = "google-project-name"
-                       region          = "us-east1"
-                       zone            = "us-east1-b"
-                       }
-license_file         = "/files/license.rli"
+dns_create_record           = true
+dns_zone_name               = "my.domain.com"
+existing_service_account_id = "service-account-name"
+namespace                   = "user-friendly-name"
+fqdn                        = "tfe.my.domain.com"
+google                      = {
+                              service_account = "google-service-account"
+                              credentials     = "1a2s3d4f1a2s1q2w4r5t61a2s3d4f1a2s3d4f5g"
+                              project         = "google-project-name"
+                              region          = "us-east1"
+                              zone            = "us-east1-b"
+                              }
+license_file                = "/files/license.rli"

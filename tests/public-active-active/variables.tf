@@ -1,37 +1,7 @@
-variable "google" {
+variable "existing_service_account_id" {
   default     = null
-  description = "Attributes of the Google Cloud account which will host the test infrastructure."
-  type = object({
-    credentials     = string
-    project         = string
-    region          = string
-    zone            = string
-    service_account = string
-  })
-}
-
-variable "google_credentials" {
-  default     = null
-  description = "Credentials of the Google Cloud account which will host the test infrastructure."
   type        = string
-}
-
-variable "google_project" {
-  default     = null
-  description = "Project in the Google Cloud account which will host the test infrastructure."
-  type        = string
-}
-
-variable "google_region" {
-  default     = null
-  description = "Region in the Google Cloud account which will host the test infrastructure."
-  type        = string
-}
-
-variable "google_zone" {
-  default     = null
-  description = "Workspace of the Terraform Enterprise instance which manages the base infrastructure."
-  type        = string
+  description = "The id of the logging service account to use for compute resources deployed."
 }
 
 variable "iact_subnet_list" {
@@ -41,6 +11,12 @@ variable "iact_subnet_list" {
   in CIDR notation.
   EOD
   type        = list(string)
+}
+
+variable "license_file" {
+  default     = null
+  type        = string
+  description = "The local path to the Terraform Enterprise license to be provided by CI."
 }
 
 variable "tfe_hostname" {
@@ -78,8 +54,3 @@ variable "tfe" {
   })
 }
 
-variable "existing_service_account_id" {
-  default     = null
-  type        = string
-  description = "The id of the logging service account to use for compute resources deployed."
-}

@@ -17,7 +17,7 @@ module "secrets" {
 module "test_proxy" {
   source = "../../fixtures/test_proxy"
 
-  existing_service_account_id     = var.google.service_account
+  existing_service_account_id     = var.existing_service_account_id
   instance_image                  = data.google_compute_image.ubuntu.id
   labels                          = var.labels
   mitmproxy_ca_certificate_secret = var.ca_certificate_secret_id
@@ -35,7 +35,7 @@ module "active_active_proxy" {
   ca_certificate_secret_id    = var.ca_certificate_secret_id
   distribution                = "rhel"
   dns_zone_name               = var.dns_zone_name
-  existing_service_account_id = var.google.service_account
+  existing_service_account_id = var.existing_service_account_id
   fqdn                        = var.fqdn
   iact_subnet_list            = ["${module.test_proxy.compute_instance.network_interface[0].network_ip}/32"]
   iact_subnet_time_limit      = 1440
