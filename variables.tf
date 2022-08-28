@@ -332,6 +332,26 @@ variable "metrics_endpoint_enabled" {
   EOD
 }
 
+variable "metrics_endpoint_port_http" {
+  default     = null
+  type        = number
+  description = <<-EOD
+  (Optional when metrics_endpoint_enabled is true.) Defines the TCP port on which HTTP metrics
+  requests will be handled.
+  Defaults to 9090.
+  EOD
+}
+
+variable "metrics_endpoint_port_https" {
+  default     = null
+  type        = string
+  description = <<-EOD
+  (Optional when metrics_endpoint_enabled is true.) Defines the TCP port on which HTTPS metrics
+  requests will be handled.
+  Defaults to 9091.
+  EOD
+}
+
 variable "operational_mode" {
   default     = "external"
   description = <<-EOD
