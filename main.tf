@@ -7,6 +7,7 @@ module "project_factory_project_services" {
   activate_apis = compact([
     "iam.googleapis.com",
     "logging.googleapis.com",
+    "compute.googleapis.com",
     (local.enable_database_module ? "sqladmin.googleapis.com" : null),
     (local.enable_networking_module ? "networkmanagement.googleapis.com" : null),
     (local.enable_networking_module ? "servicenetworking.googleapis.com" : null),
