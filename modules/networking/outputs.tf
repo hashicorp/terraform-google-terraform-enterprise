@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 output "reserve_subnetwork" {
   value = google_compute_subnetwork.reserve
 

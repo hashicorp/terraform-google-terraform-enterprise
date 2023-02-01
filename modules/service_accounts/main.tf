@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 resource "random_id" "account" {
   count = var.existing_service_account_id == null ? 1 : 0
   # 30 bytes ensures that enough characters are generated to satisfy the service account ID requirements, regardless of

@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 variable "dbname" {
   description = "The name of the PostgreSQL database to be created."
   type        = string

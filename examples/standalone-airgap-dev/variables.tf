@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 variable "airgap_url" {
   description = "The URL of the storage bucket object that comprises an airgap package."
   type        = string

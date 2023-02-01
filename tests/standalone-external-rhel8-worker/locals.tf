@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 locals {
   repository_location = "us-west1"
   repository_name     = "terraform-build-worker"

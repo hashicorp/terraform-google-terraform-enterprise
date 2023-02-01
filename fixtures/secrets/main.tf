@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 resource "google_secret_manager_secret" "ca_certificate" {
   count = local.ca_certificate_enabled ? 1 : 0
 

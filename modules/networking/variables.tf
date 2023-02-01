@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 variable "enable_active_active" {
   description = "A toggle which controls support for deploying Terraform Enterprise in Active/Active mode."
   type        = bool

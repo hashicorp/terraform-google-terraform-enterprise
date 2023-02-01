@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 output "credentials" {
   value = base64decode(google_service_account_key.key.private_key)
 
