@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 variable "instance_image" {
   description = "The identifier of the image which will be used to initialize the boot disk."
   type        = string

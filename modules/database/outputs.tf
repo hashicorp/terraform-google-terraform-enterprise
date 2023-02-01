@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 output "netloc" {
   value = google_sql_database_instance.tfe.private_ip_address
 

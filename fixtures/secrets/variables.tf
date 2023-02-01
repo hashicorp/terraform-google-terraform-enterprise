@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 variable "ca_certificate" {
   default     = null
   description = "The secret identifier and data of a PEM certificate file for a Certificate Authority."

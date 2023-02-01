@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 output "ca_certificate_secret" {
   value = local.ca_certificate_enabled ? google_secret_manager_secret.ca_certificate[0].secret_id : null
 

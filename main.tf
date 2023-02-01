@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 module "project_factory_project_services" {
   source  = "terraform-google-modules/project-factory/google//modules/project_services"
   version = "~> 11.2"

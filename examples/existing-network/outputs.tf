@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 output "health_check_url" {
   value       = module.existing_network.health_check_url
   description = "The URL of the Terraform Enterprise health check endpoint."

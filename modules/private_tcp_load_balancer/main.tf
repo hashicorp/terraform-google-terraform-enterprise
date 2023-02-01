@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 resource "google_dns_record_set" "main" {
   count = var.dns_create_record ? 1 : 0
 

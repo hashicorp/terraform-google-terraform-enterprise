@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 locals {
   disk_device_name              = "sdb"
   enable_active_active          = var.node_count >= 2

@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 resource "google_service_account" "proxy" {
   count        = var.existing_service_account_id == null ? 1 : 0
   account_id   = var.name

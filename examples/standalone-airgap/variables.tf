@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 variable "dns_zone_name" {
   description = "The name of the DNS zone in which a record will be created."
   type        = string
