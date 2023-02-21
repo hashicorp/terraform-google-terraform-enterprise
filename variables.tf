@@ -267,6 +267,7 @@ variable "capacity_memory" {
 }
 
 variable "custom_agent_image_tag" {
+  default     = null
   type        = string
   description = <<-EOD
   Configure the docker image for handling job execution within TFE. This can either be the
