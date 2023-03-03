@@ -41,7 +41,7 @@ module "tfe" {
   tfe_license_secret_id       = try(module.secrets[0].license_secret, data.tfe_outputs.base.values.license_secret_id)
   ssl_certificate_name        = data.tfe_outputs.base.values.wildcard_ssl_certificate_name
   existing_service_account_id = var.existing_service_account_id
-  custom_image_tag            = "${local.repository_location}-docker.pkg.dev/ptfe-testing/${local.repository_name}/rhel-7.9:latest"
+  custom_image_tag            = "${local.repository_location}-docker.pkg.dev/ptfe-replicated-ci/${local.repository_name}/rhel-7.9:latest"
   iact_subnet_list            = ["0.0.0.0/0"]
   iact_subnet_time_limit      = 60
   labels = {
