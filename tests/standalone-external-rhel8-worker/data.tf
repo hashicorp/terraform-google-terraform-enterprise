@@ -6,6 +6,8 @@ data "tfe_outputs" "base" {
   workspace    = try(var.tfe.workspace, var.tfe_workspace)
 }
 
+data "google_project" "project" {}
+
 data "google_dns_managed_zone" "main" {
   name = data.tfe_outputs.base.values.cloud_dns_name
 }
