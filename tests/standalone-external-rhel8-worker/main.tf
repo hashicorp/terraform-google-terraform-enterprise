@@ -48,13 +48,12 @@ module "tfe" {
   iact_subnet_time_limit      = 60
   labels = {
     department  = "engineering"
-    description = "standalone-external-services-scenario-deployed-from-circleci"
+    description = "standalone-external-services-scenario-deployed-from-gha"
     environment = random_pet.main.id
     oktodelete  = "true"
     product     = "terraform-enterprise"
     repository  = "hashicorp-terraform-google-terraform-enterprise"
     team        = "terraform-enterprise-on-prem"
-    terraform   = "true"
   }
   load_balancer        = "PUBLIC"
   operational_mode     = "external"
