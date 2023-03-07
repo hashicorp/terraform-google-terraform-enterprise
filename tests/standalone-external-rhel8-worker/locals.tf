@@ -10,5 +10,5 @@ locals {
     "hc-50fbe27799384c96925f18084d7" = "us-west1"
     "tfe-modules-ci-001"             = "us-east4"
   }
-  repository_location = project_regions[data.google_project.project.project_id]
+  repository_location = local.project_regions[data.google_project.project.project_id]
 }
