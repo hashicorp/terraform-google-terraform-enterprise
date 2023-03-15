@@ -108,6 +108,7 @@ module "settings" {
   source = "git::https://github.com/hashicorp/terraform-random-tfe-utility//modules/settings?ref=main"
 
   # TFE Base Configuration
+  consolidated_services       = var.consolidated_services
   production_type             = var.operational_mode
   disk_path                   = var.disk_path
   iact_subnet_list            = var.iact_subnet_list
