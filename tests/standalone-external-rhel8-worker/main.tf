@@ -44,6 +44,7 @@ module "tfe" {
   custom_image_tag            = "${local.repository_location}-docker.pkg.dev/${data.google_project.project.project_id}/${local.repository_name}/rhel-7.9:latest"
   iact_subnet_list            = ["0.0.0.0/0"]
   iact_subnet_time_limit      = 60
+  consolidated_services       = var.consolidated_services
   labels = {
     department  = "engineering"
     description = "standalone-external-services-scenario-deployed-from-gha"
