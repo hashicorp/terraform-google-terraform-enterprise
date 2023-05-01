@@ -294,7 +294,7 @@ jobs:
           terraform_wrapper: true
 
       - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@62d4898025f6041e16b1068643bfc5a696863587 # v1.1.0
+        uses: google-github-actions/setup-gcloud@v0 # bug present in v1 that prevents gcloud ssh
         with:
           project_id: ${{ secrets.GOOGLE_PROJECT }}
           service_account_key: ${{ secrets.GCP_SA_KEY }}
@@ -552,7 +552,7 @@ jobs:
           terraform_wrapper: true
 
       - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@62d4898025f6041e16b1068643bfc5a696863587 # v1.1.0
+        uses: google-github-actions/setup-gcloud@v0 # bug present in v1 that prevents gcloud ssh
         with:
           project_id: ${{ secrets.GOOGLE_PROJECT }}
           service_account_key: ${{ secrets.GCP_SA_KEY }}
