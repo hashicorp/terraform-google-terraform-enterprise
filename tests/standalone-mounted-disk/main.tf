@@ -32,6 +32,7 @@ resource "local_file" "private_key_pem" {
 
 module "tfe" {
   source                      = "../.."
+  consolidated_services       = var.consolidated_services
   disk_path                   = "/opt/hashicorp/data"
   distribution                = "ubuntu"
   dns_zone_name               = data.google_dns_managed_zone.main.name
@@ -46,7 +47,6 @@ module "tfe" {
   labels                      = local.labels
   load_balancer               = "PUBLIC"
   operational_mode            = "disk"
-  consolidated_services       = var.consolidated_services
   vm_disk_source_image        = data.google_compute_image.ubuntu.self_link
   vm_machine_type             = "n1-standard-4"
   vm_metadata = {
