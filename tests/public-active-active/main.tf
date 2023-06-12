@@ -22,6 +22,7 @@ module "secrets" {
 module "tfe" {
   source = "../.."
 
+  release_sequence            = 706
   consolidated_services       = var.consolidated_services
   dns_zone_name               = data.google_dns_managed_zone.main.name
   fqdn                        = "${random_pet.main.id}.${data.google_dns_managed_zone.main.dns_name}"
