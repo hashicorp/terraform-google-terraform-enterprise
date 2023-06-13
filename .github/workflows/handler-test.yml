@@ -1,23 +1,6 @@
 name: Pull Request Test Handler
 
 on:
-  workflow_dispatch:
-    inputs:
-      destroy:
-        description: "Whether to destroy the TFE instance after K6 tests run"
-        default: true
-        type: boolean
-        required: false
-      on_demand_scenario:
-        description: The test scenario(s) to run
-        required: true
-        default: public-active-active
-        type: choice
-        options:
-        - all
-        - public-active-active
-        - private-active-active
-        - private-tcp-active-active
   repository_dispatch:
     types:
       - test-command
