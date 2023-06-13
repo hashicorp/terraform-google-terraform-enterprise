@@ -64,14 +64,14 @@ jobs:
         id: check-workspace-exists
         working-directory: ${{ env.WORK_DIR_PATH }}
         run: >-
-          echo "::set-output name=WORKSPACE_EXISTS::$(curl -s --header "Authorization: Bearer ${{env.TFC_TOKEN}}" --header "Content-Type: application/vnd.api+json"  https://app.terraform.io/api/v2/organizations/${{env.TFC_ORGANIZATION}}/workspaces/google-${{ matrix.scenario }}-${{ env.PR_NUMBER }} | jq -r '.data | .attributes | .name')"
+          echo "::set-output name=WORKSPACE_NAME::$(curl -s --header "Authorization: Bearer ${{env.TFC_TOKEN}}" --header "Content-Type: application/vnd.api+json"  https://app.terraform.io/api/v2/organizations/${{env.TFC_ORGANIZATION}}/workspaces/google-${{ matrix.scenario }}-${{ env.PR_NUMBER }} | jq -r '.data | .attributes | .name')"
         env:
           TFC_ORGANIZATION: ${{ secrets.TFC_ORGANIZATION }}
           TFC_TOKEN: ${{ secrets.TFC_TOKEN }}
 
     # Configure backend 
       - name: Configure Terraform Backend
-        if: ${{ steps.check-workspace-exists.outputs.WORKSPACE_EXISTS == "google-${{ matrix.scenario }}-${{ env.PR_NUMBER }}" }}
+        if: ${{ steps.check-workspace-exists.outputs.WORKSPACE_NAME == "google-${{ matrix.scenario }}-${{ env.PR_NUMBER }}" }}
         id: backend-config
         working-directory: ${{ env.WORK_DIR_PATH }}
         run: |
@@ -84,14 +84,14 @@ jobs:
           
     # Initialize terraform
       - name: Terraform Init
-        if: ${{ steps.check-workspace-exists.outputs.WORKSPACE_EXISTS == "google-${{ matrix.scenario }}-${{ env.PR_NUMBER }}" }}
+        if: ${{ steps.check-workspace-exists.outputs.WORKSPACE_NAME == "google-${{ matrix.scenario }}-${{ env.PR_NUMBER }}" }}
         id: init
         working-directory: ${{ env.WORK_DIR_PATH }}
         run: terraform init -backend-config=backend-config.hcl -input=false -no-color
         
     # Write tfvars
       - name: Write Terraform Variables
-        if: ${{ steps.check-workspace-exists.outputs.WORKSPACE_EXISTS == "google-${{ matrix.scenario }}-${{ env.PR_NUMBER }}" }}
+        if: ${{ steps.check-workspace-exists.outputs.WORKSPACE_NAME == "google-${{ matrix.scenario }}-${{ env.PR_NUMBER }}" }}
         working-directory: ${{ env.WORK_DIR_PATH }}
         run: |
           cat <<EOF > github.auto.tfvars
@@ -107,14 +107,14 @@ jobs:
     # this step will delete workspace-resources if exists for this PR
       - name: Terraform Destroy
         id: destroy
-        if: ${{ steps.check-workspace-exists.outputs.WORKSPACE_EXISTS == "google-${{ matrix.scenario }}-${{ env.PR_NUMBER }}" }}
+        if: ${{ steps.check-workspace-exists.outputs.WORKSPACE_NAME == "google-${{ matrix.scenario }}-${{ env.PR_NUMBER }}" }}
         working-directory: ${{ env.WORK_DIR_PATH }}
         run: terraform destroy -auto-approve -input=false -no-color
 
     # this step will delete workspace for this PR
       - name: Terraform Delete Workspace
         id: destroy-workspace
-        if: ${{ steps.check-workspace-exists.outputs.WORKSPACE_EXISTS == "google-${{ matrix.scenario }}-${{ env.PR_NUMBER }}" }} && ${{ steps.destroy.outcome == 'success' }}
+        if: ${{ steps.check-workspace-exists.outputs.WORKSPACE_NAME == "google-${{ matrix.scenario }}-${{ env.PR_NUMBER }}" }} && ${{ steps.destroy.outcome == 'success' }}
         working-directory: ${{ env.WORK_DIR_PATH }}
         run: >-
           curl --header "Authorization: Bearer ${{ secrets.TFC_TOKEN }}" --header "Content-Type: application/vnd.api+json" --request DELETE https://app.terraform.io/api/v2/organizations/${{ secrets.TFC_ORGANIZATION }}/workspaces/google-${{ matrix.scenario }}-${{ env.PR_NUMBER }}
