@@ -12,6 +12,13 @@ env:
 
 jobs:
   close_job:
+    strategy:
+      fail-fast: false
+      matrix:
+        scenario:
+          - public-active-active
+          - private-active-active
+          - private-tcp-active-active
     # this job will run if PR is closed
     name: Destroy resources from Private TCP Active/Active and Delete Terraform Workspace for merged PR
     if: github.event.pull_request.merged == true || github.event.pull_request.merged == false
@@ -20,7 +27,7 @@ jobs:
       contents: read
       pull-requests: write
     env:
-      WORK_DIR_PATH: ./tests/private-tcp-active-active
+      WORK_DIR_PATH: ./tests/${{ matrix.scenario }}
       PR_NUMBER: ${{ github.event.pull_request.number }}
     steps:
       - name: Create URL to the run output
@@ -52,75 +59,64 @@ jobs:
           service_account_key: ${{ secrets.GCP_SA_KEY }}
           export_default_credentials: true
 
-    # this step will check if workspace is created for google-private-tcp-active-active for this PR
-      - name: Check if workspace for google-private-tcp-active-active exists
-        id: check-workspaces-google-private-tcp-active-active
+    # this step will check if workspace is created for this PR
+      - name: Check if workspace exists
+        id: check-workspace-exists
         working-directory: ${{ env.WORK_DIR_PATH }}
         run: >-
-          echo "::set-output name=WORSPACE_TCP_AA_EXISTS::$(curl -s --header "Authorization: Bearer ${{env.TFC_TOKEN}}" --header "Content-Type: application/vnd.api+json"  https://app.terraform.io/api/v2/organizations/${{env.TFC_ORGANIZATION}}/workspaces/google-private-tcp-active-active-${{ env.PR_NUMBER }} | jq -r '.data | .attributes | .name')"
+          echo "::set-output name=WORKSPACE_EXISTS::$(curl -s --header "Authorization: Bearer ${{env.TFC_TOKEN}}" --header "Content-Type: application/vnd.api+json"  https://app.terraform.io/api/v2/organizations/${{env.TFC_ORGANIZATION}}/workspaces/google-${{ matrix.scenario }}-${{ env.PR_NUMBER }} | jq -r '.data | .attributes | .name')"
         env:
           TFC_ORGANIZATION: ${{ secrets.TFC_ORGANIZATION }}
           TFC_TOKEN: ${{ secrets.TFC_TOKEN }}
 
     # Configure backend 
       - name: Configure Terraform Backend
-        if: ${{ steps.check-workspaces-google-private-tcp-active-active.outputs.WORSPACE_TCP_AA_EXISTS }}
+        if: ${{ steps.check-workspace-exists.outputs.WORKSPACE_EXISTS }}
         id: backend-config
         working-directory: ${{ env.WORK_DIR_PATH }}
-        env:
-          TFC_ORGANIZATION: ${{ secrets.TFC_ORGANIZATION }}
         run: |
           cat <<EOF > backend-config.hcl
-            organization = "$TFC_ORGANIZATION"
+            organization = "${{ secrets.TFC_ORGANIZATION }}"
             workspaces {
-              name = "google-private-tcp-active-active-${{ env.PR_NUMBER }}"
+              name = "google-${{ matrix.scenario }}-${{ env.PR_NUMBER }}"
             }
           EOF
           
     # Initialize terraform
       - name: Terraform Init
-        if: ${{ steps.check-workspaces-google-private-tcp-active-active.outputs.WORSPACE_TCP_AA_EXISTS }}
+        if: ${{ steps.check-workspace-exists.outputs.WORKSPACE_EXISTS }}
         id: init
         working-directory: ${{ env.WORK_DIR_PATH }}
         run: terraform init -backend-config=backend-config.hcl -input=false -no-color
         
     # Write tfvars
       - name: Write Terraform Variables
-        if: ${{ steps.check-workspaces-google-private-tcp-active-active.outputs.WORSPACE_TCP_AA_EXISTS }}
+        if: ${{ steps.check-workspace-exists.outputs.WORKSPACE_EXISTS }}
         working-directory: ${{ env.WORK_DIR_PATH }}
-        env:
-          GOOGLE_SERVICE_ACCOUNT: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
-          TFE_HOSTNAME: ${{ secrets.TFE_HOSTNAME }}
-          TFE_ORGANIZATION: ${{ secrets.TFE_ORGANIZATION }}
-          TFE_TOKEN: ${{ secrets.TFE_TOKEN }}
-          TFE_WORKSPACE: ${{ secrets.TFE_WORKSPACE }}
         run: |
           cat <<EOF > github.auto.tfvars
-          existing_service_account_id = "$GOOGLE_SERVICE_ACCOUNT"
+          existing_service_account_id = "${{ secrets.GOOGLE_SERVICE_ACCOUNT }}"
           tfe = {
-            hostname     = "$TFE_HOSTNAME"
-            organization = "$TFE_ORGANIZATION"
-            token        = "$TFE_TOKEN"
-            workspace    = "$TFE_WORKSPACE"
+            hostname     = "${{ secrets.TFE_HOSTNAME }}"
+            organization = "${{ secrets.TFE_ORGANIZATION }}"
+            token        = "${{ secrets.TFE_TOKEN }}"
+            workspace    = "${{ secrets.TFE_WORKSPACE }}"
           }
           EOF
 
     # this step will delete workspace-resources if exists for this PR
       - name: Terraform Destroy
-        id: destroy-ptaa
-        if: ${{ steps.check-workspaces-google-private-tcp-active-active.outputs.WORSPACE_TCP_AA_EXISTS }}
+        id: destroy
+        if: ${{ steps.check-workspace-exists.outputs.WORKSPACE_EXISTS }}
         working-directory: ${{ env.WORK_DIR_PATH }}
         run: terraform destroy -auto-approve -input=false -no-color
 
     # this step will delete workspace for this PR
       - name: Terraform Delete Workspace
-        id: destroy-workspace-ptaa
-        if: ${{ steps.check-workspaces-google-private-tcp-active-active.outputs.WORSPACE_TCP_AA_EXISTS }} && ${{ steps.destroy.outcome == 'success' }}
+        id: destroy-workspace
+        if: ${{ steps.check-workspace-exists.outputs.WORKSPACE_EXISTS }} && ${{ steps.destroy.outcome == 'success' }}
         working-directory: ${{ env.WORK_DIR_PATH }}
-        env:
-          TFC_ORGANIZATION: ${{ secrets.TFC_ORGANIZATION }}
-          TFC_TOKEN: ${{ secrets.TFC_TOKEN }}
         run: >-
-          curl --header "Authorization: Bearer ${{env.TFC_TOKEN}}" --header "Content-Type: application/vnd.api+json" --request DELETE https://app.terraform.io/api/v2/organizations/${{env.TFC_ORGANIZATION}}/workspaces/google-private-tcp-active-active-${{ env.PR_NUMBER }}
+          curl --header "Authorization: Bearer ${{ secrets.TFC_TOKEN }}" --header "Content-Type: application/vnd.api+json" --request DELETE https://app.terraform.io/api/v2/organizations/${{ secrets.TFC_ORGANIZATION }}/workspaces/google-${{ matrix.scenario }}-${{ env.PR_NUMBER }}
           
 
