@@ -14,7 +14,7 @@ env:
 jobs:
   public_active_active:
     name: Run tf-test on Public Active/Active
-    if: ${{ contains(github.event.client_payload.slash_command.args.unnamed.all, 'all') || contains(github.event.client_payload.slash_command.args.unnamed.all, 'public-active-active') }}
+    if: ${{ contains(github.event.client_payload.slash_command.args.unnamed.all, 'all') || contains(github.event.client_payload.slash_command.args.unnamed.all, 'public-active-active') || contains(fromJSON('["all", "public-active-active"]'), inputs.on_demand_scenario) }}
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -79,11 +79,9 @@ jobs:
       - name: Configure Terraform Backend
         id: backend-config
         working-directory: ${{ env.WORK_DIR_PATH }}
-        env:
-          TFC_ORGANIZATION: ${{ secrets.TFC_ORGANIZATION }}
         run: |
           cat <<EOF > backend-config.hcl
-            organization = "$TFC_ORGANIZATION"
+            organization = "${{ secrets.TFC_ORGANIZATION }}"
             workspaces {
               name = "google-public-active-active-${{ github.event.client_payload.github.payload.issue.number }}"
             }
@@ -96,22 +94,16 @@ jobs:
       
       - name: Write Terraform Variables
         working-directory: ${{ env.WORK_DIR_PATH }}
-        env:
-          GOOGLE_SERVICE_ACCOUNT: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
-          TFE_HOSTNAME: ${{ secrets.TFE_HOSTNAME }}
-          TFE_ORGANIZATION: ${{ secrets.TFE_ORGANIZATION }}
-          TFE_TOKEN: ${{ secrets.TFE_TOKEN }}
-          TFE_WORKSPACE: ${{ secrets.TFE_WORKSPACE }}
         run: |
           ip_address=$( dig +short @resolver1.opendns.com myip.opendns.com )
           cat <<EOF > github.auto.tfvars
           iact_subnet_list = ["$ip_address/32"]
-          existing_service_account_id = "$GOOGLE_SERVICE_ACCOUNT"
+          existing_service_account_id = "${{ secrets.GOOGLE_SERVICE_ACCOUNT }}"
           tfe = {
-            hostname     = "$TFE_HOSTNAME"
-            organization = "$TFE_ORGANIZATION"
-            token        = "$TFE_TOKEN"
-            workspace    = "$TFE_WORKSPACE"
+            hostname     = "${{ secrets.TFE_HOSTNAME }}"
+            organization = "${{ secrets.TFE_ORGANIZATION }}"
+            token        = "${{ secrets.TFE_TOKEN }}"
+            workspace    = "${{ secrets.TFE_WORKSPACE }}"
           }
           EOF
 
@@ -238,7 +230,7 @@ jobs:
 
   private_active_active:
     name: Run tf-test on Private Active/Active
-    if: ${{ contains(github.event.client_payload.slash_command.args.unnamed.all, 'all') || contains(github.event.client_payload.slash_command.args.unnamed.all, 'private-active-active') }}
+    if: ${{ contains(github.event.client_payload.slash_command.args.unnamed.all, 'all') || contains(github.event.client_payload.slash_command.args.unnamed.all, 'private-active-active')  || contains(fromJSON('["all", "private-active-active"]'), inputs.on_demand_scenario) }}
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -303,11 +295,9 @@ jobs:
       - name: Configure Terraform Backend
         id: backend-config
         working-directory: ${{ env.WORK_DIR_PATH }}
-        env:
-          TFC_ORGANIZATION: ${{ secrets.TFC_ORGANIZATION }}
         run: |
           cat <<EOF > backend-config.hcl
-            organization = "$TFC_ORGANIZATION"
+            organization = "${{ secrets.TFC_ORGANIZATION }}"
             workspaces {
               name = "google-private-active-active-${{ github.event.client_payload.github.payload.issue.number }}"
             }
@@ -320,20 +310,14 @@ jobs:
       
       - name: Write Terraform Variables
         working-directory: ${{ env.WORK_DIR_PATH }}
-        env:
-          GOOGLE_SERVICE_ACCOUNT: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
-          TFE_HOSTNAME: ${{ secrets.TFE_HOSTNAME }}
-          TFE_ORGANIZATION: ${{ secrets.TFE_ORGANIZATION }}
-          TFE_TOKEN: ${{ secrets.TFE_TOKEN }}
-          TFE_WORKSPACE: ${{ secrets.TFE_WORKSPACE }}
         run: |
           cat <<EOF > github.auto.tfvars
-          existing_service_account_id = "$GOOGLE_SERVICE_ACCOUNT"
+          existing_service_account_id = "${{ secrets.GOOGLE_SERVICE_ACCOUNT }}"
           tfe = {
-            hostname     = "$TFE_HOSTNAME"
-            organization = "$TFE_ORGANIZATION"
-            token        = "$TFE_TOKEN"
-            workspace    = "$TFE_WORKSPACE"
+            hostname     = "${{ secrets.TFE_HOSTNAME }}"
+            organization = "${{ secrets.TFE_ORGANIZATION }}"
+            token        = "${{ secrets.TFE_TOKEN }}"
+            workspace    = "${{ secrets.TFE_WORKSPACE }}"
           }
           EOF
 
@@ -496,7 +480,7 @@ jobs:
 
   private_tcp_active_active:
     name: Run tf-test on Private TCP Active/Active
-    if: ${{ contains(github.event.client_payload.slash_command.args.unnamed.all, 'all') || contains(github.event.client_payload.slash_command.args.unnamed.all, 'private-tcp-active-active') }}
+    if: ${{ contains(github.event.client_payload.slash_command.args.unnamed.all, 'all') || contains(github.event.client_payload.slash_command.args.unnamed.all, 'private-tcp-active-active')  || contains(fromJSON('["all", "private-tcp-active-active"]'), inputs.on_demand_scenario) }}
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -561,11 +545,9 @@ jobs:
       - name: Configure Terraform Backend
         id: backend-config
         working-directory: ${{ env.WORK_DIR_PATH }}
-        env:
-          TFC_ORGANIZATION: ${{ secrets.TFC_ORGANIZATION }}
         run: |
           cat <<EOF > backend-config.hcl
-            organization = "$TFC_ORGANIZATION"
+            organization = "${{ secrets.TFC_ORGANIZATION }}"
             workspaces {
               name = "google-private-tcp-active-active-${{ github.event.client_payload.github.payload.issue.number }}"
             }
@@ -578,20 +560,14 @@ jobs:
 
       - name: Write Terraform Variables
         working-directory: ${{ env.WORK_DIR_PATH }}
-        env:
-          GOOGLE_SERVICE_ACCOUNT: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
-          TFE_HOSTNAME: ${{ secrets.TFE_HOSTNAME }}
-          TFE_ORGANIZATION: ${{ secrets.TFE_ORGANIZATION }}
-          TFE_TOKEN: ${{ secrets.TFE_TOKEN }}
-          TFE_WORKSPACE: ${{ secrets.TFE_WORKSPACE }}
         run: |
           cat <<EOF > github.auto.tfvars
-          existing_service_account_id = "$GOOGLE_SERVICE_ACCOUNT"
+          existing_service_account_id = "${{ secrets.GOOGLE_SERVICE_ACCOUNT }}"
           tfe = {
-            hostname     = "$TFE_HOSTNAME"
-            organization = "$TFE_ORGANIZATION"
-            token        = "$TFE_TOKEN"
-            workspace    = "$TFE_WORKSPACE"
+            hostname     = "${{ secrets.TFE_HOSTNAME }}"
+            organization = "${{ secrets.TFE_ORGANIZATION }}"
+            token        = "${{ secrets.TFE_TOKEN }}"
+            workspace    = "${{ secrets.TFE_WORKSPACE }}"
           }
           EOF
 
