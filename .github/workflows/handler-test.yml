@@ -65,7 +65,7 @@ jobs:
         uses: hashicorp/setup-terraform@v2
         with:
           cli_config_credentials_hostname: 'app.terraform.io'
-          cli_config_credentials_token: ${{ secrets.TFC_TOKEN }}
+          cli_config_credentials_token: ${{ secrets.PUBLIC_ACTIVE_ACTIVE_TFC_TOKEN }}
           terraform_version: 1.1.7
           terraform_wrapper: true
 
@@ -76,28 +76,21 @@ jobs:
           service_account_key: ${{ secrets.GCP_SA_KEY }}
           export_default_credentials: true
 
-      - name: Configure Terraform Backend
-        id: backend-config
-        working-directory: ${{ env.WORK_DIR_PATH }}
-        run: |
-          cat <<EOF > backend-config.hcl
-            organization = "${{ secrets.TFC_ORGANIZATION }}"
-            workspaces {
-              name = "google-public-active-active-${{ github.event.client_payload.github.payload.issue.number }}"
-            }
-          EOF
-
       - name: Terraform Init
         id: init
         working-directory: ${{ env.WORK_DIR_PATH }}
-        run: terraform init -backend-config=backend-config.hcl -input=false -no-color
+        run: |
+          terraform init \
+            -backend-config="hostname=app.terraform.io" \
+            -backend-config="organization=${{ secrets.TFC_ORGANIZATION }}" \
+            -backend-config="workspace=google-public-active-active-${{ github.event.client_payload.github.payload.issue.number }}"
       
       - name: Write Terraform Variables
         working-directory: ${{ env.WORK_DIR_PATH }}
         run: |
           ip_address=$( dig +short @resolver1.opendns.com myip.opendns.com )
           cat <<EOF > github.auto.tfvars
-          iact_subnet_list = ["change_me/32"]
+          iact_subnet_list = ["( dig +short @resolver1.opendns.com myip.opendns.com )/32"]
           existing_service_account_id = "${{ secrets.GOOGLE_SERVICE_ACCOUNT }}"
           tfe = {
             hostname     = "${{ secrets.TFE_HOSTNAME }}"
@@ -146,10 +139,8 @@ jobs:
 
       - name: Retrieve IACT
         id: retrieve-iact
-        env:
-          IACT_URL: ${{ steps.retrieve-iact-url.outputs.stdout }}
         run: |
-          token=$(curl --fail --retry 5 --verbose "$IACT_URL")
+          token=$(curl --fail --retry 5 --verbose "${{ steps.retrieve-iact-url.outputs.stdout }}")
           echo "::set-output name=token::$token"
 
       - name: Retrieve Initial Admin User URL
@@ -281,7 +272,7 @@ jobs:
         uses: hashicorp/setup-terraform@v2
         with:
           cli_config_credentials_hostname: 'app.terraform.io'
-          cli_config_credentials_token: ${{ secrets.TFC_TOKEN }}
+          cli_config_credentials_token: ${{ secrets.PRIVATE_ACTIVE_ACTIVE_TFC_TOKEN }}
           terraform_version: 1.1.7
           terraform_wrapper: true
 
@@ -292,21 +283,14 @@ jobs:
           service_account_key: ${{ secrets.GCP_SA_KEY }}
           export_default_credentials: true
 
-      - name: Configure Terraform Backend
-        id: backend-config
-        working-directory: ${{ env.WORK_DIR_PATH }}
-        run: |
-          cat <<EOF > backend-config.hcl
-            organization = "${{ secrets.TFC_ORGANIZATION }}"
-            workspaces {
-              name = "google-private-active-active-${{ github.event.client_payload.github.payload.issue.number }}"
-            }
-          EOF
-
       - name: Terraform Init
         id: init
         working-directory: ${{ env.WORK_DIR_PATH }}
-        run: terraform init -backend-config=backend-config.hcl -input=false -no-color
+        run: |
+          terraform init \
+            -backend-config="hostname=app.terraform.io" \
+            -backend-config="organization=${{ secrets.TFC_ORGANIZATION }}" \
+            -backend-config="workspace=google-private-active-active-${{ github.event.client_payload.github.payload.issue.number }}"
       
       - name: Write Terraform Variables
         working-directory: ${{ env.WORK_DIR_PATH }}
@@ -531,7 +515,7 @@ jobs:
         uses: hashicorp/setup-terraform@v2
         with:
           cli_config_credentials_hostname: 'app.terraform.io'
-          cli_config_credentials_token: ${{ secrets.TFC_TOKEN }}
+          cli_config_credentials_token: ${{ secrets.PRIVATE_TCP_ACTIVE_ACTIVE_TFC_TOKEN }}
           terraform_version: 1.1.7
           terraform_wrapper: true
 
@@ -542,21 +526,14 @@ jobs:
           service_account_key: ${{ secrets.GCP_SA_KEY }}
           export_default_credentials: true
 
-      - name: Configure Terraform Backend
-        id: backend-config
-        working-directory: ${{ env.WORK_DIR_PATH }}
-        run: |
-          cat <<EOF > backend-config.hcl
-            organization = "${{ secrets.TFC_ORGANIZATION }}"
-            workspaces {
-              name = "google-private-tcp-active-active-${{ github.event.client_payload.github.payload.issue.number }}"
-            }
-          EOF
-
       - name: Terraform Init
         id: init
         working-directory: ${{ env.WORK_DIR_PATH }}
-        run: terraform init -backend-config=backend-config.hcl -input=false -no-color
+        run: |
+          terraform init \
+            -backend-config="hostname=app.terraform.io" \
+            -backend-config="organization=${{ secrets.TFC_ORGANIZATION }}" \
+            -backend-config="workspace=google-private-tcp-active-active-${{ github.event.client_payload.github.payload.issue.number }}"
 
       - name: Write Terraform Variables
         working-directory: ${{ env.WORK_DIR_PATH }}
@@ -795,43 +772,28 @@ jobs:
           service_account_key: ${{ secrets.GCP_SA_KEY }}
           export_default_credentials: true
 
-      - name: Configure Terraform Backend
-        id: backend-config
-        working-directory: ${{ env.WORK_DIR_PATH }}
-        env:
-          TFC_ORGANIZATION: ${{ secrets.TFC_ORGANIZATION }}
-        run: |
-          cat <<EOF > backend-config.hcl
-            organization = "$TFC_ORGANIZATION"
-            workspaces {
-              name = "google-standalone-external-rhel8-worker-${{ github.event.client_payload.github.payload.issue.number }}"
-            }
-          EOF
-
       - name: Terraform Init
         id: init
         working-directory: ${{ env.WORK_DIR_PATH }}
-        run: terraform init -backend-config=backend-config.hcl -input=false -no-color
+        run: |
+          terraform init \
+            -backend-config="hostname=app.terraform.io" \
+            -backend-config="organization=${{ secrets.TFC_ORGANIZATION }}" \
+            -backend-config="workspace=google-standalone-external-rhel8-worker-${{ github.event.client_payload.github.payload.issue.number }}"
       
       - name: Write Terraform Variables
         working-directory: ${{ env.WORK_DIR_PATH }}
-        env:
-          GOOGLE_SERVICE_ACCOUNT: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
-          TFE_HOSTNAME: ${{ secrets.TFE_HOSTNAME }}
-          TFE_ORGANIZATION: ${{ secrets.TFE_ORGANIZATION }}
-          TFE_TOKEN: ${{ secrets.TFE_TOKEN }}
-          TFE_WORKSPACE: ${{ secrets.TFE_WORKSPACE }}
         run: |
           ip_address=$( dig +short @resolver1.opendns.com myip.opendns.com )
           cat <<EOF > github.auto.tfvars
-          iact_subnet_list = ["change_me/32"]
+          iact_subnet_list = ["( dig +short @resolver1.opendns.com myip.opendns.com )/32"]
           license_file = ""
-          existing_service_account_id = "$GOOGLE_SERVICE_ACCOUNT"
+          existing_service_account_id = "${{ secrets.GOOGLE_SERVICE_ACCOUNT }}"
           tfe = {
-            hostname     = "$TFE_HOSTNAME"
-            organization = "$TFE_ORGANIZATION"
-            token        = "$TFE_TOKEN"
-            workspace    = "$TFE_WORKSPACE"
+            hostname     = "${{ secrets.TFE_HOSTNAME }}"
+            organization = "${{ secrets.TFE_ORGANIZATION }}"
+            token        = "${{ secrets.TFE_TOKEN }}"
+            workspace    = "${{ secrets.TFE_WORKSPACE }}"
           }
           EOF
 
@@ -874,10 +836,8 @@ jobs:
 
       - name: Retrieve IACT
         id: retrieve-iact
-        env:
-          IACT_URL: ${{ steps.retrieve-iact-url.outputs.stdout }}
         run: |
-          token=$(curl --fail --retry 5 --verbose "$IACT_URL")
+          token=$(curl --fail --retry 5 --verbose "${{ steps.retrieve-iact-url.outputs.stdout }}")
           echo "::set-output name=token::$token"
 
       - name: Retrieve Initial Admin User URL
@@ -1020,43 +980,28 @@ jobs:
           service_account_key: ${{ secrets.GCP_SA_KEY }}
           export_default_credentials: true
 
-      - name: Configure Terraform Backend
-        id: backend-config
-        working-directory: ${{ env.WORK_DIR_PATH }}
-        env:
-          TFC_ORGANIZATION: ${{ secrets.TFC_ORGANIZATION }}
-        run: |
-          cat <<EOF > backend-config.hcl
-            organization = "$TFC_ORGANIZATION"
-            workspaces {
-              name = "google-standalone-mounted-disk-${{ github.event.client_payload.github.payload.issue.number }}"
-            }
-          EOF
-
       - name: Terraform Init
         id: init
         working-directory: ${{ env.WORK_DIR_PATH }}
-        run: terraform init -backend-config=backend-config.hcl -input=false -no-color
+        run: |
+          terraform init \
+            -backend-config="hostname=app.terraform.io" \
+            -backend-config="organization=${{ secrets.TFC_ORGANIZATION }}" \
+            -backend-config="workspace=google-standalone-mounted-disk-${{ github.event.client_payload.github.payload.issue.number }}"
       
       - name: Write Terraform Variables
         working-directory: ${{ env.WORK_DIR_PATH }}
-        env:
-          GOOGLE_SERVICE_ACCOUNT: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
-          TFE_HOSTNAME: ${{ secrets.TFE_HOSTNAME }}
-          TFE_ORGANIZATION: ${{ secrets.TFE_ORGANIZATION }}
-          TFE_TOKEN: ${{ secrets.TFE_TOKEN }}
-          TFE_WORKSPACE: ${{ secrets.TFE_WORKSPACE }}
         run: |
           ip_address=$( dig +short @resolver1.opendns.com myip.opendns.com )
           cat <<EOF > github.auto.tfvars
-          iact_subnet_list = ["change_me/32"]
+          iact_subnet_list = ["( dig +short @resolver1.opendns.com myip.opendns.com )/32"]
           license_file = ""
-          existing_service_account_id = "$GOOGLE_SERVICE_ACCOUNT"
+          existing_service_account_id = "${{ secrets.GOOGLE_SERVICE_ACCOUNT }}"
           tfe = {
-            hostname     = "$TFE_HOSTNAME"
-            organization = "$TFE_ORGANIZATION"
-            token        = "$TFE_TOKEN"
-            workspace    = "$TFE_WORKSPACE"
+            hostname     = "${{ secrets.TFE_HOSTNAME }}"
+            organization = "${{ secrets.TFE_ORGANIZATION }}"
+            token        = "${{ secrets.TFE_TOKEN }}"
+            workspace    = "${{ secrets.TFE_WORKSPACE }}"
           }
           EOF
 
@@ -1099,10 +1044,8 @@ jobs:
 
       - name: Retrieve IACT
         id: retrieve-iact
-        env:
-          IACT_URL: ${{ steps.retrieve-iact-url.outputs.stdout }}
         run: |
-          token=$(curl --fail --retry 5 --verbose "$IACT_URL")
+          token=$(curl --fail --retry 5 --verbose "${{ steps.retrieve-iact-url.outputs.stdout }}")
           echo "::set-output name=token::$token"
 
       - name: Retrieve Initial Admin User URL
