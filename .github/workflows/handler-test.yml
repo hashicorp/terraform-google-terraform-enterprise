@@ -69,12 +69,24 @@ jobs:
           terraform_version: 1.1.7
           terraform_wrapper: true
 
+      - name: Log into gcloud
+        uses: google-github-actions/auth@v1
+        with:
+          credentials_json: ${{ secrets.GOOGLE_CREDENTIALS }}
+          
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@62d4898025f6041e16b1068643bfc5a696863587 # v1.1.0
         with:
           project_id: ${{ secrets.GOOGLE_PROJECT }}
           service_account_key: ${{ secrets.GCP_SA_KEY }}
           export_default_credentials: true
+
+      - name: Configure Google Cloud defaults
+        run: |
+          gcloud --quiet config set core/account ${{ secrets.GCP_SA_KEY }}
+          gcloud --quiet config set core/project ${{ secrets.GOOGLE_PROJECT }}
+          gcloud --quiet config set compute/region ${{ secrets.GOOGLE_REGION }}
+          gcloud --quiet config set compute/zone ${{ secrets.GOOGLE_ZONE }}
 
       - name: Terraform Init
         id: init
