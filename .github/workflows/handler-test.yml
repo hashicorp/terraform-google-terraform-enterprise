@@ -88,7 +88,6 @@ jobs:
       - name: Write Terraform Variables
         working-directory: ${{ env.WORK_DIR_PATH }}
         run: |
-          ip_address=$( dig +short @resolver1.opendns.com myip.opendns.com )
           cat <<EOF > github.auto.tfvars
           iact_subnet_list = ["( dig +short @resolver1.opendns.com myip.opendns.com )/32"]
           existing_service_account_id = "${{ secrets.GOOGLE_SERVICE_ACCOUNT }}"
@@ -784,7 +783,6 @@ jobs:
       - name: Write Terraform Variables
         working-directory: ${{ env.WORK_DIR_PATH }}
         run: |
-          ip_address=$( dig +short @resolver1.opendns.com myip.opendns.com )
           cat <<EOF > github.auto.tfvars
           iact_subnet_list = ["( dig +short @resolver1.opendns.com myip.opendns.com )/32"]
           license_file = ""
@@ -992,7 +990,6 @@ jobs:
       - name: Write Terraform Variables
         working-directory: ${{ env.WORK_DIR_PATH }}
         run: |
-          ip_address=$( dig +short @resolver1.opendns.com myip.opendns.com )
           cat <<EOF > github.auto.tfvars
           iact_subnet_list = ["( dig +short @resolver1.opendns.com myip.opendns.com )/32"]
           license_file = ""
