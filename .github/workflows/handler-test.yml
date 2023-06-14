@@ -83,7 +83,7 @@ jobs:
 
       - name: Configure Google Cloud defaults
         run: |
-          gcloud --quiet config set core/account ${{ secrets.GCP_SA_KEY }}
+          gcloud --quiet config set core/account ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
           gcloud --quiet config set core/project ${{ secrets.GOOGLE_PROJECT }}
           gcloud --quiet config set compute/region ${{ secrets.GOOGLE_REGION }}
           gcloud --quiet config set compute/zone ${{ secrets.GOOGLE_ZONE }}
