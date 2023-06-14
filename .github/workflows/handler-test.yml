@@ -97,7 +97,7 @@ jobs:
         run: |
           ip_address=$( dig +short @resolver1.opendns.com myip.opendns.com )
           cat <<EOF > github.auto.tfvars
-          iact_subnet_list = ["$ip_address/32"]
+          iact_subnet_list = ["change_me/32"]
           existing_service_account_id = "${{ secrets.GOOGLE_SERVICE_ACCOUNT }}"
           tfe = {
             hostname     = "${{ secrets.TFE_HOSTNAME }}"
@@ -824,7 +824,7 @@ jobs:
         run: |
           ip_address=$( dig +short @resolver1.opendns.com myip.opendns.com )
           cat <<EOF > github.auto.tfvars
-          iact_subnet_list = ["$ip_address/32"]
+          iact_subnet_list = ["change_me/32"]
           license_file = ""
           existing_service_account_id = "$GOOGLE_SERVICE_ACCOUNT"
           tfe = {
@@ -1049,7 +1049,7 @@ jobs:
         run: |
           ip_address=$( dig +short @resolver1.opendns.com myip.opendns.com )
           cat <<EOF > github.auto.tfvars
-          iact_subnet_list = ["$ip_address/32"]
+          iact_subnet_list = ["change_me/32"]
           license_file = ""
           existing_service_account_id = "$GOOGLE_SERVICE_ACCOUNT"
           tfe = {
