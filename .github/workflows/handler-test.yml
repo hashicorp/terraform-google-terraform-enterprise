@@ -83,7 +83,7 @@ jobs:
           terraform init \
             -backend-config="hostname=app.terraform.io" \
             -backend-config="organization=${{ secrets.TFC_ORGANIZATION }}" \
-            -backend-config="workspace=google-public-active-active-${{ github.event.client_payload.github.payload.issue.number }}"
+            -backend-config="workspace=google-public-active-active"
       
       - name: Write Terraform Variables
         working-directory: ${{ env.WORK_DIR_PATH }}
@@ -289,7 +289,7 @@ jobs:
           terraform init \
             -backend-config="hostname=app.terraform.io" \
             -backend-config="organization=${{ secrets.TFC_ORGANIZATION }}" \
-            -backend-config="workspace=google-private-active-active-${{ github.event.client_payload.github.payload.issue.number }}"
+            -backend-config="workspace=google-private-active-active"
       
       - name: Write Terraform Variables
         working-directory: ${{ env.WORK_DIR_PATH }}
@@ -532,7 +532,7 @@ jobs:
           terraform init \
             -backend-config="hostname=app.terraform.io" \
             -backend-config="organization=${{ secrets.TFC_ORGANIZATION }}" \
-            -backend-config="workspace=google-private-tcp-active-active-${{ github.event.client_payload.github.payload.issue.number }}"
+            -backend-config="workspace=google-private-tcp-active-active"
 
       - name: Write Terraform Variables
         working-directory: ${{ env.WORK_DIR_PATH }}
@@ -778,7 +778,7 @@ jobs:
           terraform init \
             -backend-config="hostname=app.terraform.io" \
             -backend-config="organization=${{ secrets.TFC_ORGANIZATION }}" \
-            -backend-config="workspace=google-standalone-external-rhel8-worker-${{ github.event.client_payload.github.payload.issue.number }}"
+            -backend-config="workspace=google-standalone-external-rhel8-worker"
       
       - name: Write Terraform Variables
         working-directory: ${{ env.WORK_DIR_PATH }}
@@ -985,7 +985,7 @@ jobs:
           terraform init \
             -backend-config="hostname=app.terraform.io" \
             -backend-config="organization=${{ secrets.TFC_ORGANIZATION }}" \
-            -backend-config="workspace=google-standalone-mounted-disk-${{ github.event.client_payload.github.payload.issue.number }}"
+            -backend-config="workspace=google-standalone-mounted-disk"
       
       - name: Write Terraform Variables
         working-directory: ${{ env.WORK_DIR_PATH }}
