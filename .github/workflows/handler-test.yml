@@ -128,7 +128,7 @@ jobs:
       - name: Retrieve IACT
         id: retrieve-iact
         run: |
-          token=$(curl --fail --retry 5 --verbose "${{ steps.retrieve-iact-url.outputs.stdout }}")
+          token=$(curl --fail --retry 15 --verbose "${{ steps.retrieve-iact-url.outputs.stdout }}")
           echo "::set-output name=token::$token"
 
       - name: Retrieve Initial Admin User URL
@@ -362,7 +362,7 @@ jobs:
       - name: Retrieve IACT
         id: retrieve-iact
         run: |
-          token=$(curl --fail --retry 5 --verbose --proxy socks5://localhost:5000 "${{ steps.retrieve-iact-url.outputs.stdout }}")
+          token=$(curl --fail --retry 15 --verbose --proxy socks5://localhost:5000 "${{ steps.retrieve-iact-url.outputs.stdout }}")
           echo "::set-output name=token::$token"
 
       - name: Retrieve Initial Admin User URL
@@ -597,7 +597,7 @@ jobs:
       - name: Retrieve IACT
         id: retrieve-iact
         run: |
-          token=$(curl --fail --retry 5 --verbose --proxy socks5://localhost:5000 "${{ steps.retrieve-iact-url.outputs.stdout }}")
+          token=$(curl --fail --retry 15 --verbose --proxy socks5://localhost:5000 "${{ steps.retrieve-iact-url.outputs.stdout }}")
           echo "::set-output name=token::$token"
 
       - name: Retrieve Initial Admin User URL
