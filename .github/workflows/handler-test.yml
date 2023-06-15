@@ -82,7 +82,6 @@ jobs:
         run: |
           cat <<EOF > github.auto.tfvars
           iact_subnet_list = ["( dig +short @resolver1.opendns.com myip.opendns.com )/32"]
-          existing_service_account_id = "${{ secrets.GOOGLE_SERVICE_ACCOUNT }}"
           tfe = {
             hostname     = "${{ secrets.TFE_HOSTNAME }}"
             organization = "${{ secrets.TFE_ORGANIZATION }}"
@@ -129,7 +128,7 @@ jobs:
       - name: Retrieve IACT
         id: retrieve-iact
         run: |
-          token=$(curl --fail --retry 5 --verbose "${{ steps.retrieve-iact-url.outputs.stdout }}")
+          token=$(curl --fail --retry 15 --verbose "${{ steps.retrieve-iact-url.outputs.stdout }}")
           echo "::set-output name=token::$token"
 
       - name: Retrieve Initial Admin User URL
@@ -282,7 +281,6 @@ jobs:
         run: |
           cat <<EOF > github.auto.tfvars
           iact_subnet_list = ["( dig +short @resolver1.opendns.com myip.opendns.com )/32"]
-          existing_service_account_id = "${{ secrets.GOOGLE_SERVICE_ACCOUNT }}"
           tfe = {
             hostname     = "${{ secrets.TFE_HOSTNAME }}"
             organization = "${{ secrets.TFE_ORGANIZATION }}"
@@ -364,7 +362,7 @@ jobs:
       - name: Retrieve IACT
         id: retrieve-iact
         run: |
-          token=$(curl --fail --retry 5 --verbose --proxy socks5://localhost:5000 "${{ steps.retrieve-iact-url.outputs.stdout }}")
+          token=$(curl --fail --retry 15 --verbose --proxy socks5://localhost:5000 "${{ steps.retrieve-iact-url.outputs.stdout }}")
           echo "::set-output name=token::$token"
 
       - name: Retrieve Initial Admin User URL
@@ -517,7 +515,6 @@ jobs:
         run: |
           cat <<EOF > github.auto.tfvars
           iact_subnet_list = ["( dig +short @resolver1.opendns.com myip.opendns.com )/32"]
-          existing_service_account_id = "${{ secrets.GOOGLE_SERVICE_ACCOUNT }}"
           tfe = {
             hostname     = "${{ secrets.TFE_HOSTNAME }}"
             organization = "${{ secrets.TFE_ORGANIZATION }}"
@@ -600,7 +597,7 @@ jobs:
       - name: Retrieve IACT
         id: retrieve-iact
         run: |
-          token=$(curl --fail --retry 5 --verbose --proxy socks5://localhost:5000 "${{ steps.retrieve-iact-url.outputs.stdout }}")
+          token=$(curl --fail --retry 15 --verbose --proxy socks5://localhost:5000 "${{ steps.retrieve-iact-url.outputs.stdout }}")
           echo "::set-output name=token::$token"
 
       - name: Retrieve Initial Admin User URL
