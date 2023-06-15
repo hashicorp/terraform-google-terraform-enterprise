@@ -80,8 +80,9 @@ jobs:
       - name: Write Terraform Variables
         working-directory: ${{ env.WORK_DIR_PATH }}
         run: |
+          iact_subnet_list=\"$( dig +short @resolver1.opendns.com myip.opendns.com )/32\"]"
           cat <<EOF > github.auto.tfvars
-          iact_subnet_list = ["( dig +short @resolver1.opendns.com myip.opendns.com )/32"]
+          iact_subnet_list = ["$iact_subnet_list"]
           tfe = {
             hostname     = "${{ secrets.TFE_HOSTNAME }}"
             organization = "${{ secrets.TFE_ORGANIZATION }}"
@@ -279,8 +280,9 @@ jobs:
       - name: Write Terraform Variables
         working-directory: ${{ env.WORK_DIR_PATH }}
         run: |
+          iact_subnet_list=\"$( dig +short @resolver1.opendns.com myip.opendns.com )/32\"]"
           cat <<EOF > github.auto.tfvars
-          iact_subnet_list = ["( dig +short @resolver1.opendns.com myip.opendns.com )/32"]
+          iact_subnet_list = ["$iact_subnet_list"]
           tfe = {
             hostname     = "${{ secrets.TFE_HOSTNAME }}"
             organization = "${{ secrets.TFE_ORGANIZATION }}"
@@ -513,8 +515,9 @@ jobs:
       - name: Write Terraform Variables
         working-directory: ${{ env.WORK_DIR_PATH }}
         run: |
+          iact_subnet_list=\"$( dig +short @resolver1.opendns.com myip.opendns.com )/32\"]"
           cat <<EOF > github.auto.tfvars
-          iact_subnet_list = ["( dig +short @resolver1.opendns.com myip.opendns.com )/32"]
+          iact_subnet_list = ["$iact_subnet_list"]
           tfe = {
             hostname     = "${{ secrets.TFE_HOSTNAME }}"
             organization = "${{ secrets.TFE_ORGANIZATION }}"
