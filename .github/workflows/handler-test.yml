@@ -82,7 +82,6 @@ jobs:
         run: |
           cat <<EOF > github.auto.tfvars
           iact_subnet_list = ["( dig +short @resolver1.opendns.com myip.opendns.com )/32"]
-          existing_service_account_id = "${{ secrets.GOOGLE_SERVICE_ACCOUNT }}"
           tfe = {
             hostname     = "${{ secrets.TFE_HOSTNAME }}"
             organization = "${{ secrets.TFE_ORGANIZATION }}"
@@ -282,7 +281,6 @@ jobs:
         run: |
           cat <<EOF > github.auto.tfvars
           iact_subnet_list = ["( dig +short @resolver1.opendns.com myip.opendns.com )/32"]
-          existing_service_account_id = "${{ secrets.GOOGLE_SERVICE_ACCOUNT }}"
           tfe = {
             hostname     = "${{ secrets.TFE_HOSTNAME }}"
             organization = "${{ secrets.TFE_ORGANIZATION }}"
@@ -517,7 +515,6 @@ jobs:
         run: |
           cat <<EOF > github.auto.tfvars
           iact_subnet_list = ["( dig +short @resolver1.opendns.com myip.opendns.com )/32"]
-          existing_service_account_id = "${{ secrets.GOOGLE_SERVICE_ACCOUNT }}"
           tfe = {
             hostname     = "${{ secrets.TFE_HOSTNAME }}"
             organization = "${{ secrets.TFE_ORGANIZATION }}"
