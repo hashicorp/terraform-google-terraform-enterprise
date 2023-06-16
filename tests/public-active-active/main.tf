@@ -37,7 +37,7 @@ module "tfe" {
   redis_auth_enabled          = false
   vm_disk_source_image        = data.google_compute_image.ubuntu.self_link
   vm_machine_type             = "n1-standard-4"
-  vm_mig_unhealthy_threshold  = 15
+  vm_mig_unhealthy_threshold  = 10
 
   labels = {
     oktodelete  = "true"
