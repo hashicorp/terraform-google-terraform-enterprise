@@ -160,8 +160,10 @@ jobs:
 
       - name: Retrieve Admin Token
         id: retrieve-admin-token
+        env:
+          RESPONSE: ${{ steps.create-admin.outputs.response }}
         run: |
-          token=$(echo "${{ steps.create-admin.outputs.response }}" | jq --raw-output '.token')
+          token=$(echo "$RESPONSE" | jq --raw-output '.token')
           echo "::set-output name=token::$token"
 
       - name: Run k6 Smoke Test
@@ -396,8 +398,10 @@ jobs:
 
       - name: Retrieve Admin Token
         id: retrieve-admin-token
+        env:
+          RESPONSE: ${{ steps.create-admin.outputs.response }}
         run: |
-          token=$(echo "${{ steps.create-admin.outputs.response }}" | jq --raw-output '.token')
+          token=$(echo "$RESPONSE" | jq --raw-output '.token')
           echo "::set-output name=token::$token"
 
       - name: Run k6 Smoke Test
@@ -632,8 +636,10 @@ jobs:
 
       - name: Retrieve Admin Token
         id: retrieve-admin-token
+        env:
+          RESPONSE: ${{ steps.create-admin.outputs.response }}
         run: |
-          token=$(echo "${{ steps.create-admin.outputs.response }}" | jq --raw-output '.token')
+          token=$(echo "$RESPONSE" | jq --raw-output '.token')
           echo "::set-output name=token::$token"
 
       - name: Run k6 Smoke Test
