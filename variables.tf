@@ -229,6 +229,12 @@ variable "vm_metadata" {
   type        = map(string)
 }
 
+variable "vm_mig_unhealthy_threshold" {
+  default     = 6
+  description = "The number of sequential failed health check probe results for a backend to be considered unhealthy."
+  type        = number
+}
+
 variable "vm_mounted_disk_size" {
   default     = 40
   description = <<-EOD

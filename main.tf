@@ -254,7 +254,7 @@ module "vm_mig" {
     response            = null
     timeout_sec         = 10
     type                = "https"
-    unhealthy_threshold = 6
+    unhealthy_threshold = var.vm_mig_unhealthy_threshold
   }
   health_check_name = "${var.namespace}-tfe-health-check"
   hostname          = "${var.namespace}-tfe"
