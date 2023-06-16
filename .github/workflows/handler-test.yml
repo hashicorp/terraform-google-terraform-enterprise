@@ -1096,7 +1096,7 @@ jobs:
           repository: ${{ github.event.client_payload.github.payload.repository.full_name }}
           comment-id: ${{ github.event.client_payload.github.payload.comment.id }}
           body: |
-            ${{ format('### {0} Terraform Standalone Mounted Disk Test Report', job.status == 'success' && ':white_check_mark:' || ':x:') }}
+            ${{ format('### {0} Terraform Standalone External RHEL8 Worker Test Report', job.status == 'success' && ':white_check_mark:' || ':x:') }}
 
             ${{ format(':link: [Action Summary Page]({0})', steps.vars.outputs.run-url) }}
 
