@@ -282,9 +282,7 @@ jobs:
       - name: Write Terraform Variables
         working-directory: ${{ env.WORK_DIR_PATH }}
         run: |
-          iact_subnet=$( dig +short @resolver1.opendns.com myip.opendns.com )
           cat <<EOF > github.auto.tfvars
-          iact_subnet_list = ["$iact_subnet/32"]
           tfe = {
             hostname     = "${{ secrets.TFE_HOSTNAME }}"
             organization = "${{ secrets.TFE_ORGANIZATION }}"
@@ -344,11 +342,13 @@ jobs:
       - name: Wait For TFE
         id: wait-for-tfe
         timeout-minutes: 25
+        env:
+          HEALTH_CHECK_URL: ${{ steps.retrieve-health-check-url.outputs.stdout }}
         run: |
           echo "Curling \`health_check_url\` for a return status of 200..."
           while ! curl \
             -sfS --max-time 5 --proxy socks5://localhost:5000 \
-             ${{ steps.retrieve-health-check-url.outputs.stdout }}; \
+            $HEALTH_CHECK_URL; \
             do sleep 5; done
 
       - name: Retrieve TFE URL
@@ -519,9 +519,7 @@ jobs:
       - name: Write Terraform Variables
         working-directory: ${{ env.WORK_DIR_PATH }}
         run: |
-          iact_subnet=$( dig +short @resolver1.opendns.com myip.opendns.com )
           cat <<EOF > github.auto.tfvars
-          iact_subnet_list = ["$iact_subnet/32"]
           tfe = {
             hostname     = "${{ secrets.TFE_HOSTNAME }}"
             organization = "${{ secrets.TFE_ORGANIZATION }}"
@@ -567,13 +565,16 @@ jobs:
           export CLOUDSDK_PYTHON_SITEPACKAGES=1
 
       - name: Start SOCKS5 Proxy
+        env:
+          INSTANCE_NAME: ${{ steps.retrieve-instance-name.outputs.stdout }}
+          INSTANCE_ZONE: ${{ steps.retrieve-instance-zone.outputs.stdout }}
         run: |
           gcloud compute ssh \
           --quiet \
           --ssh-key-expire-after="1440m" \
           --tunnel-through-iap \
-          --zone="${{ steps.retrieve-instance-zone.outputs.stdout }}" \
-          "${{ steps.retrieve-instance-name.outputs.stdout }}" \
+          --zone="$INSTANCE_ZONE" \
+          "$INSTANCE_NAME" \
           -- \
           -o 'ServerAliveInterval 5' \
           -o 'ServerAliveCountMax 3' \
@@ -582,11 +583,13 @@ jobs:
       - name: Wait For TFE
         id: wait-for-tfe
         timeout-minutes: 25
+        env:
+          HEALTH_CHECK_URL: ${{ steps.retrieve-health-check-url.outputs.stdout }}
         run: |
           echo "Curling \`health_check_url\` for a return status of 200..."
           while ! curl \
             -sfS --max-time 5 --proxy socks5://localhost:5000 \
-            ${{ steps.retrieve-health-check-url.outputs.stdout }}; \
+            $HEALTH_CHECK_URL; \
             do sleep 5; done
 
       - name: Retrieve TFE URL
