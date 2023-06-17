@@ -899,7 +899,7 @@ jobs:
             ${{ github.event.client_payload.slash_command.args.named.destroy != 'false' && format('- {0} Terraform Destroy', steps.destroy.outcome == 'success' && ':white_check_mark:' || ':x:') || '' }}
 
   standalone-external-rhel8-worker:
-    name: Run tf-test on Standalone Mounted Disk
+    name: Run tf-test on Standalone External RHEL8 Worker
     if: ${{ contains(github.event.client_payload.slash_command.args.unnamed.all, 'all') || contains(github.event.client_payload.slash_command.args.unnamed.all, 'standalone-external-rhel8-worker') }}
     runs-on: ubuntu-latest
     permissions:
