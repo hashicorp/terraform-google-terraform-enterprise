@@ -32,6 +32,7 @@ resource "local_file" "private_key_pem" {
 
 module "tfe" {
   source                      = "../.."
+  release_sequence            = 713
   consolidated_services       = var.consolidated_services
   disk_path                   = "/opt/hashicorp/data"
   distribution                = "ubuntu"
@@ -39,7 +40,7 @@ module "tfe" {
   fqdn                        = "${random_pet.main.id}.${trimsuffix(data.google_dns_managed_zone.main.dns_name, ".")}"
   namespace                   = random_pet.main.id
   node_count                  = 1
-  tfe_license_secret_id       = "projects/958021652142/secrets/release-testing"
+  tfe_license_secret_id       = "rc-license"
   ssl_certificate_name        = data.tfe_outputs.base.values.wildcard_ssl_certificate_name
   existing_service_account_id = var.existing_service_account_id
   iact_subnet_list            = ["0.0.0.0/0"]
