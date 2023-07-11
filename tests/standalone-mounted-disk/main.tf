@@ -32,6 +32,7 @@ resource "local_file" "private_key_pem" {
 
 module "tfe" {
   source                      = "../.."
+  consolidated_services       = var.consolidated_services
   disk_path                   = "/opt/hashicorp/data"
   distribution                = "ubuntu"
   dns_zone_name               = data.google_dns_managed_zone.main.name

@@ -36,6 +36,7 @@ module "secrets" {
 module "tfe" {
   source = "../.."
 
+  consolidated_services       = var.consolidated_services
   distribution                = "rhel"
   dns_zone_name               = data.google_dns_managed_zone.main.name
   fqdn                        = "${random_pet.main.id}.${data.google_dns_managed_zone.main.dns_name}"
@@ -57,5 +58,6 @@ module "tfe" {
   tls_bootstrap_key_pathname  = "/var/lib/terraform-enterprise/key.pem"
   vm_disk_source_image        = data.google_compute_image.rhel.self_link
   vm_machine_type             = "n1-standard-32"
+  vm_mig_unhealthy_threshold  = 10
   # enable_monitoring           = true
 }

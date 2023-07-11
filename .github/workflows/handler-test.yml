@@ -10,11 +10,11 @@ env:
   GOOGLE_PROJECT: ${{ secrets.GOOGLE_PROJECT }}
   GOOGLE_REGION: ${{ secrets.GOOGLE_REGION }}
   GOOGLE_ZONE: ${{ secrets.GOOGLE_ZONE }}
-  
+
 jobs:
   public_active_active:
     name: Run tf-test on Public Active/Active
-    if: ${{ contains(github.event.client_payload.slash_command.args.unnamed.all, 'all') || contains(github.event.client_payload.slash_command.args.unnamed.all, 'public-active-active') }}
+    if: ${{ contains(github.event.client_payload.slash_command.args.unnamed.all, 'all') || contains(github.event.client_payload.slash_command.args.unnamed.all, 'public-active-active')}}
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -28,7 +28,7 @@ jobs:
         run: echo ::set-output name=run-url::https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID
 
       - name: Checkout Pull Request Branch
-        uses: actions/checkout@v2
+        uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
         with:
           repository: ${{ github.event.client_payload.pull_request.head.repo.full_name }}
           ref: ${{ github.event.client_payload.pull_request.head.sha }}
@@ -46,7 +46,7 @@ jobs:
           sed --in-place "s/source = \"..\/..\/fixtures\/test_proxy\"/source = \"github.com\/$LOGIN\/$NAME\/\/fixtures\/test_proxy?ref=$SHA\"/" main.tf
 
       - name: Checkout TFE Load Test
-        uses: actions/checkout@v2
+        uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
         with:
           path: ${{ env.K6_WORK_DIR_PATH }}
           repository: hashicorp/tfe-load-test
@@ -65,53 +65,29 @@ jobs:
         uses: hashicorp/setup-terraform@v2
         with:
           cli_config_credentials_hostname: 'app.terraform.io'
-          cli_config_credentials_token: ${{ secrets.TFC_TOKEN }}
+          cli_config_credentials_token: ${{ secrets.PUBLIC_ACTIVE_ACTIVE_TFC_TOKEN }}
           terraform_version: 1.1.7
           terraform_wrapper: true
-
+   
       - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v0
-        with:
-          project_id: ${{ secrets.GOOGLE_PROJECT }}
-          service_account_key: ${{ secrets.GCP_SA_KEY }}
-          export_default_credentials: true
-
-      - name: Configure Terraform Backend
-        id: backend-config
-        working-directory: ${{ env.WORK_DIR_PATH }}
-        env:
-          TFC_ORGANIZATION: ${{ secrets.TFC_ORGANIZATION }}
-        run: |
-          cat <<EOF > backend-config.hcl
-            organization = "$TFC_ORGANIZATION"
-            workspaces {
-              name = "google-public-active-active-${{ github.event.client_payload.github.payload.issue.number }}"
-            }
-          EOF
+        uses: google-github-actions/setup-gcloud@62d4898025f6041e16b1068643bfc5a696863587 # v1.1.0
 
       - name: Terraform Init
         id: init
         working-directory: ${{ env.WORK_DIR_PATH }}
-        run: terraform init -backend-config=backend-config.hcl -input=false -no-color
-      
+        run: terraform init -input=false -no-color
+
       - name: Write Terraform Variables
         working-directory: ${{ env.WORK_DIR_PATH }}
-        env:
-          GOOGLE_SERVICE_ACCOUNT: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
-          TFE_HOSTNAME: ${{ secrets.TFE_HOSTNAME }}
-          TFE_ORGANIZATION: ${{ secrets.TFE_ORGANIZATION }}
-          TFE_TOKEN: ${{ secrets.TFE_TOKEN }}
-          TFE_WORKSPACE: ${{ secrets.TFE_WORKSPACE }}
         run: |
-          ip_address=$( dig +short @resolver1.opendns.com myip.opendns.com )
+          iact_subnet=$( dig +short @resolver1.opendns.com myip.opendns.com )
           cat <<EOF > github.auto.tfvars
-          iact_subnet_list = ["$ip_address/32"]
-          existing_service_account_id = "$GOOGLE_SERVICE_ACCOUNT"
+          iact_subnet_list = ["$iact_subnet/32"]
           tfe = {
-            hostname     = "$TFE_HOSTNAME"
-            organization = "$TFE_ORGANIZATION"
-            token        = "$TFE_TOKEN"
-            workspace    = "$TFE_WORKSPACE"
+            hostname     = "${{ secrets.TFE_HOSTNAME }}"
+            organization = "${{ secrets.TFE_ORGANIZATION }}"
+            token        = "${{ secrets.TFE_TOKEN }}"
+            workspace    = "${{ secrets.TFE_WORKSPACE }}"
           }
           EOF
 
@@ -134,11 +110,9 @@ jobs:
       - name: Wait For TFE
         id: wait-for-tfe
         timeout-minutes: 25
-        env:
-          HEALTH_CHECK_URL: ${{ steps.retrieve-health-check-url.outputs.stdout }}
         run: |
           echo "Curling \`health_check_url\` for a return status of 200..."
-          while ! curl -sfS --max-time 5 "$HEALTH_CHECK_URL"; do sleep 5; done
+          while ! curl -sfS --max-time 5 "${{ steps.retrieve-health-check-url.outputs.stdout }}"; do sleep 5; done
 
       - name: Retrieve TFE URL
         id: retrieve-tfe-url
@@ -154,10 +128,8 @@ jobs:
 
       - name: Retrieve IACT
         id: retrieve-iact
-        env:
-          IACT_URL: ${{ steps.retrieve-iact-url.outputs.stdout }}
         run: |
-          token=$(curl --fail --retry 5 --verbose "$IACT_URL")
+          token=$(curl --fail --retry 15 --verbose "${{ steps.retrieve-iact-url.outputs.stdout }}")
           echo "::set-output name=token::$token"
 
       - name: Retrieve Initial Admin User URL
@@ -179,7 +151,7 @@ jobs:
           response=$( \
             curl \
             --fail \
-            --retry 5 \
+            --retry 15 \
             --verbose \
             --header 'Content-Type: application/json' \
             --data @./payload.json \
@@ -216,7 +188,7 @@ jobs:
 
       - name: Update comment
         if: ${{ always() }}
-        uses: peter-evans/create-or-update-comment@v1
+        uses: peter-evans/create-or-update-comment@3383acd359705b10cb1eeef05c0e88c056ea4666 # v3.0.0
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           repository: ${{ github.event.client_payload.github.payload.repository.full_name }}
@@ -252,7 +224,7 @@ jobs:
         run: echo ::set-output name=run-url::https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID
 
       - name: Checkout Pull Request Branch
-        uses: actions/checkout@v2
+        uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
         with:
           repository: ${{ github.event.client_payload.pull_request.head.repo.full_name }}
           ref: ${{ github.event.client_payload.pull_request.head.sha }}
@@ -270,7 +242,7 @@ jobs:
           sed --in-place "s/source = \"..\/..\/fixtures\/test_proxy\"/source = \"github.com\/$LOGIN\/$NAME\/\/fixtures\/test_proxy?ref=$SHA\"/" main.tf
 
       - name: Checkout TFE Load Test
-        uses: actions/checkout@v2
+        uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
         with:
           path: ${{ env.K6_WORK_DIR_PATH }}
           repository: hashicorp/tfe-load-test
@@ -289,51 +261,33 @@ jobs:
         uses: hashicorp/setup-terraform@v2
         with:
           cli_config_credentials_hostname: 'app.terraform.io'
-          cli_config_credentials_token: ${{ secrets.TFC_TOKEN }}
+          cli_config_credentials_token: ${{ secrets.PRIVATE_ACTIVE_ACTIVE_TFC_TOKEN }}
           terraform_version: 1.1.7
           terraform_wrapper: true
 
+      - name: Authenticate to GCP
+        id: auth
+        uses: google-github-actions/auth@v1
+        with:
+          credentials_json: ${{ secrets.GCP_TUNNELING_CREDENTIALS }}
+
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v0
-        with:
-          project_id: ${{ secrets.GOOGLE_PROJECT }}
-          service_account_key: ${{ secrets.GCP_SA_KEY }}
-          export_default_credentials: true
-
-      - name: Configure Terraform Backend
-        id: backend-config
-        working-directory: ${{ env.WORK_DIR_PATH }}
-        env:
-          TFC_ORGANIZATION: ${{ secrets.TFC_ORGANIZATION }}
-        run: |
-          cat <<EOF > backend-config.hcl
-            organization = "$TFC_ORGANIZATION"
-            workspaces {
-              name = "google-private-active-active-${{ github.event.client_payload.github.payload.issue.number }}"
-            }
-          EOF
 
       - name: Terraform Init
         id: init
         working-directory: ${{ env.WORK_DIR_PATH }}
-        run: terraform init -backend-config=backend-config.hcl -input=false -no-color
-      
+        run: terraform init -input=false -no-color
+
       - name: Write Terraform Variables
         working-directory: ${{ env.WORK_DIR_PATH }}
-        env:
-          GOOGLE_SERVICE_ACCOUNT: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
-          TFE_HOSTNAME: ${{ secrets.TFE_HOSTNAME }}
-          TFE_ORGANIZATION: ${{ secrets.TFE_ORGANIZATION }}
-          TFE_TOKEN: ${{ secrets.TFE_TOKEN }}
-          TFE_WORKSPACE: ${{ secrets.TFE_WORKSPACE }}
         run: |
           cat <<EOF > github.auto.tfvars
-          existing_service_account_id = "$GOOGLE_SERVICE_ACCOUNT"
           tfe = {
-            hostname     = "$TFE_HOSTNAME"
-            organization = "$TFE_ORGANIZATION"
-            token        = "$TFE_TOKEN"
-            workspace    = "$TFE_WORKSPACE"
+            hostname     = "${{ secrets.TFE_HOSTNAME }}"
+            organization = "${{ secrets.TFE_ORGANIZATION }}"
+            token        = "${{ secrets.TFE_TOKEN }}"
+            workspace    = "${{ secrets.TFE_WORKSPACE }}"
           }
           EOF
 
@@ -364,7 +318,6 @@ jobs:
         working-directory: ${{ env.WORK_DIR_PATH }}
         run: |
           terraform output -no-color -raw proxy_instance_zone
-
 
       - name: Increasing the TCP Upload Bandwidth
         id: increasing-the-tcp-upload-bandwidth-paa
@@ -412,10 +365,8 @@ jobs:
 
       - name: Retrieve IACT
         id: retrieve-iact
-        env:
-          IACT_URL: ${{ steps.retrieve-iact-url.outputs.stdout }}
         run: |
-          token=$(curl --fail --retry 5 --verbose --proxy socks5://localhost:5000 "$IACT_URL")
+          token=$(curl --fail --retry 15 --verbose --proxy socks5://localhost:5000 "${{ steps.retrieve-iact-url.outputs.stdout }}")
           echo "::set-output name=token::$token"
 
       - name: Retrieve Initial Admin User URL
@@ -437,7 +388,7 @@ jobs:
           response=$( \
             curl \
             --fail \
-            --retry 5 \
+            --retry 15 \
             --verbose \
             --header 'Content-Type: application/json' \
             --data @./payload.json \
@@ -474,7 +425,7 @@ jobs:
 
       - name: Update comment
         if: ${{ always() }}
-        uses: peter-evans/create-or-update-comment@v1
+        uses: peter-evans/create-or-update-comment@3383acd359705b10cb1eeef05c0e88c056ea4666 # v3.0.0
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           repository: ${{ github.event.client_payload.github.payload.repository.full_name }}
@@ -510,7 +461,7 @@ jobs:
         run: echo ::set-output name=run-url::https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID
 
       - name: Checkout Pull Request Branch
-        uses: actions/checkout@v2
+        uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
         with:
           repository: ${{ github.event.client_payload.pull_request.head.repo.full_name }}
           ref: ${{ github.event.client_payload.pull_request.head.sha }}
@@ -528,7 +479,7 @@ jobs:
           sed --in-place "s/source = \"..\/..\/fixtures\/test_proxy\"/source = \"github.com\/$LOGIN\/$NAME\/\/fixtures\/test_proxy?ref=$SHA\"/" main.tf
 
       - name: Checkout TFE Load Test
-        uses: actions/checkout@v2
+        uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
         with:
           path: ${{ env.K6_WORK_DIR_PATH }}
           repository: hashicorp/tfe-load-test
@@ -547,51 +498,33 @@ jobs:
         uses: hashicorp/setup-terraform@v2
         with:
           cli_config_credentials_hostname: 'app.terraform.io'
-          cli_config_credentials_token: ${{ secrets.TFC_TOKEN }}
+          cli_config_credentials_token: ${{ secrets.PRIVATE_TCP_ACTIVE_ACTIVE_TFC_TOKEN }}
           terraform_version: 1.1.7
           terraform_wrapper: true
 
+      - name: Authenticate to GCP
+        id: auth
+        uses: google-github-actions/auth@v1
+        with:
+          credentials_json: ${{ secrets.GCP_TUNNELING_CREDENTIALS }}
+
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v0
-        with:
-          project_id: ${{ secrets.GOOGLE_PROJECT }}
-          service_account_key: ${{ secrets.GCP_SA_KEY }}
-          export_default_credentials: true
-
-      - name: Configure Terraform Backend
-        id: backend-config
-        working-directory: ${{ env.WORK_DIR_PATH }}
-        env:
-          TFC_ORGANIZATION: ${{ secrets.TFC_ORGANIZATION }}
-        run: |
-          cat <<EOF > backend-config.hcl
-            organization = "$TFC_ORGANIZATION"
-            workspaces {
-              name = "google-private-tcp-active-active-${{ github.event.client_payload.github.payload.issue.number }}"
-            }
-          EOF
 
       - name: Terraform Init
         id: init
         working-directory: ${{ env.WORK_DIR_PATH }}
-        run: terraform init -backend-config=backend-config.hcl -input=false -no-color
+        run: terraform init -input=false -no-color
 
       - name: Write Terraform Variables
         working-directory: ${{ env.WORK_DIR_PATH }}
-        env:
-          GOOGLE_SERVICE_ACCOUNT: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
-          TFE_HOSTNAME: ${{ secrets.TFE_HOSTNAME }}
-          TFE_ORGANIZATION: ${{ secrets.TFE_ORGANIZATION }}
-          TFE_TOKEN: ${{ secrets.TFE_TOKEN }}
-          TFE_WORKSPACE: ${{ secrets.TFE_WORKSPACE }}
         run: |
           cat <<EOF > github.auto.tfvars
-          existing_service_account_id = "$GOOGLE_SERVICE_ACCOUNT"
           tfe = {
-            hostname     = "$TFE_HOSTNAME"
-            organization = "$TFE_ORGANIZATION"
-            token        = "$TFE_TOKEN"
-            workspace    = "$TFE_WORKSPACE"
+            hostname     = "${{ secrets.TFE_HOSTNAME }}"
+            organization = "${{ secrets.TFE_ORGANIZATION }}"
+            token        = "${{ secrets.TFE_TOKEN }}"
+            workspace    = "${{ secrets.TFE_WORKSPACE }}"
           }
           EOF
 
@@ -673,10 +606,8 @@ jobs:
 
       - name: Retrieve IACT
         id: retrieve-iact
-        env:
-          IACT_URL: ${{ steps.retrieve-iact-url.outputs.stdout }}
         run: |
-          token=$(curl --fail --retry 5 --verbose --proxy socks5://localhost:5000 "$IACT_URL")
+          token=$(curl --fail --retry 15 --verbose --proxy socks5://localhost:5000 "${{ steps.retrieve-iact-url.outputs.stdout }}")
           echo "::set-output name=token::$token"
 
       - name: Retrieve Initial Admin User URL
@@ -735,7 +666,7 @@ jobs:
 
       - name: Update comment
         if: ${{ always() }}
-        uses: peter-evans/create-or-update-comment@v1
+        uses: peter-evans/create-or-update-comment@3383acd359705b10cb1eeef05c0e88c056ea4666 # v3.0.0
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           repository: ${{ github.event.client_payload.github.payload.repository.full_name }}
@@ -755,232 +686,7 @@ jobs:
 
             ${{ github.event.client_payload.slash_command.args.named.destroy != 'false' && format('- {0} Terraform Destroy', steps.destroy.outcome == 'success' && ':white_check_mark:' || ':x:') || '' }}
 
-  standalone_external_rhel8_worker:
-    name: Run tf-test on Standalone External Rhel8 Worker
-    if: ${{ contains(github.event.client_payload.slash_command.args.unnamed.all, 'all') || contains(github.event.client_payload.slash_command.args.unnamed.all, 'standalone-external-rhel8-worker') }}
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      pull-requests: write
-    env:
-      WORK_DIR_PATH: ./tests/standalone-external-rhel8-worker
-      K6_WORK_DIR_PATH: ./tests/tfe-load-test
-    steps:
-      - name: Create URL to the run output
-        id: vars
-        run: echo ::set-output name=run-url::https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID
-
-      - name: Checkout Pull Request Branch
-        uses: actions/checkout@v2
-        with:
-          repository: ${{ github.event.client_payload.pull_request.head.repo.full_name }}
-          ref: ${{ github.event.client_payload.pull_request.head.sha }}
-          token: ${{ secrets.GITHUB_TOKEN }}
-          persist-credentials: false
-
-      - name: Set Terraform Module Source
-        working-directory: ${{ env.WORK_DIR_PATH }}
-        env:
-          LOGIN: ${{ github.event.client_payload.pull_request.head.repo.owner.login }}
-          NAME: ${{ github.event.client_payload.pull_request.head.repo.name }}
-          SHA: ${{ github.event.client_payload.pull_request.head.sha }}
-        run: |
-          sed --in-place "s/source = \"..\/..\"/source = \"github.com\/$LOGIN\/$NAME?ref=$SHA\"/" main.tf
-          sed --in-place "s/source = \"..\/..\/fixtures\/test_proxy\"/source = \"github.com\/$LOGIN\/$NAME\/\/fixtures\/test_proxy?ref=$SHA\"/" main.tf
-
-      - name: Checkout TFE Load Test
-        uses: actions/checkout@v2
-        with:
-          path: ${{ env.K6_WORK_DIR_PATH }}
-          repository: hashicorp/tfe-load-test
-          token: ${{ secrets.GH_TFE_LOAD_TEST_TOKEN }}
-          persist-credentials: false
-
-      - name: Install required tools
-        working-directory: ${{ env.K6_WORK_DIR_PATH }}
-        env:
-          K6_URL: https://github.com/loadimpact/k6/releases/download/v0.31.1/k6-v0.31.1-linux64.tar.gz
-        run: |
-          sudo apt-get install jq
-          curl -L $K6_URL | tar -xz --strip-components=1
-
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v2
-        with:
-          cli_config_credentials_hostname: 'app.terraform.io'
-          cli_config_credentials_token: ${{ secrets.TFC_TOKEN }}
-          terraform_version: 1.1.7
-          terraform_wrapper: true
-
-      - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v0
-        with:
-          project_id: ${{ secrets.GOOGLE_PROJECT }}
-          service_account_key: ${{ secrets.GCP_SA_KEY }}
-          export_default_credentials: true
-
-      - name: Configure Terraform Backend
-        id: backend-config
-        working-directory: ${{ env.WORK_DIR_PATH }}
-        env:
-          TFC_ORGANIZATION: ${{ secrets.TFC_ORGANIZATION }}
-        run: |
-          cat <<EOF > backend-config.hcl
-            organization = "$TFC_ORGANIZATION"
-            workspaces {
-              name = "google-standalone-external-rhel8-worker-${{ github.event.client_payload.github.payload.issue.number }}"
-            }
-          EOF
-
-      - name: Terraform Init
-        id: init
-        working-directory: ${{ env.WORK_DIR_PATH }}
-        run: terraform init -backend-config=backend-config.hcl -input=false -no-color
-      
-      - name: Write Terraform Variables
-        working-directory: ${{ env.WORK_DIR_PATH }}
-        env:
-          GOOGLE_SERVICE_ACCOUNT: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
-          TFE_HOSTNAME: ${{ secrets.TFE_HOSTNAME }}
-          TFE_ORGANIZATION: ${{ secrets.TFE_ORGANIZATION }}
-          TFE_TOKEN: ${{ secrets.TFE_TOKEN }}
-          TFE_WORKSPACE: ${{ secrets.TFE_WORKSPACE }}
-        run: |
-          ip_address=$( dig +short @resolver1.opendns.com myip.opendns.com )
-          cat <<EOF > github.auto.tfvars
-          iact_subnet_list = ["$ip_address/32"]
-          license_file = ""
-          existing_service_account_id = "$GOOGLE_SERVICE_ACCOUNT"
-          tfe = {
-            hostname     = "$TFE_HOSTNAME"
-            organization = "$TFE_ORGANIZATION"
-            token        = "$TFE_TOKEN"
-            workspace    = "$TFE_WORKSPACE"
-          }
-          EOF
-
-      - name: Terraform Validate
-        id: validate
-        working-directory: ${{ env.WORK_DIR_PATH }}
-        run: terraform validate -no-color
-
-      - name: Terraform Apply
-        id: apply
-        working-directory: ${{ env.WORK_DIR_PATH }}
-        run: terraform apply -auto-approve -input=false -no-color
-
-      - name: Retrieve Health Check URL
-        id: retrieve-health-check-url
-        working-directory: ${{ env.WORK_DIR_PATH }}
-        run: |
-          terraform output -no-color -raw health_check_url
-
-      - name: Wait For TFE
-        id: wait-for-tfe
-        timeout-minutes: 25
-        env:
-          HEALTH_CHECK_URL: ${{ steps.retrieve-health-check-url.outputs.stdout }}
-        run: |
-          echo "Curling \`health_check_url\` for a return status of 200..."
-          while ! curl -sfS --max-time 5 "$HEALTH_CHECK_URL"; do sleep 5; done
-
-      - name: Retrieve TFE URL
-        id: retrieve-tfe-url
-        working-directory: ${{ env.WORK_DIR_PATH }}
-        run: |
-          terraform output -no-color -raw tfe_url
-
-      - name: Retrieve IACT URL
-        id: retrieve-iact-url
-        working-directory: ${{ env.WORK_DIR_PATH }}
-        run: |
-          terraform output -no-color -raw iact_url
-
-      - name: Retrieve IACT
-        id: retrieve-iact
-        env:
-          IACT_URL: ${{ steps.retrieve-iact-url.outputs.stdout }}
-        run: |
-          token=$(curl --fail --retry 5 --verbose "$IACT_URL")
-          echo "::set-output name=token::$token"
-
-      - name: Retrieve Initial Admin User URL
-        id: retrieve-initial-admin-user-url
-        working-directory: ${{ env.WORK_DIR_PATH }}
-        run: |
-          terraform output -no-color -raw initial_admin_user_url
-
-      - name: Create Admin in TFE
-        id: create-admin
-        env:
-          TFE_PASSWORD: ${{ secrets.TFE_PASSWORD }}
-          IAU_URL: ${{ steps.retrieve-initial-admin-user-url.outputs.stdout }}
-          IACT: ${{ steps.retrieve-iact.outputs.token }}
-        run: |
-          echo \
-            '{"username": "test", "email": "tf-onprem-team@hashicorp.com", "password": "$TFE_PASSWORD"}' \
-            > ./payload.json
-          response=$( \
-            curl \
-            --fail \
-            --retry 5 \
-            --verbose \
-            --header 'Content-Type: application/json' \
-            --data @./payload.json \
-            "$IAU_URL"?token="$IACT")
-          echo "::set-output name=response::$response"
-
-      - name: Retrieve Admin Token
-        id: retrieve-admin-token
-        env:
-          RESPONSE: ${{ steps.create-admin.outputs.response }}
-        run: |
-          token=$(echo "$RESPONSE" | jq --raw-output '.token')
-          echo "::set-output name=token::$token"
-
-      - name: Run k6 Smoke Test
-        id: run-smoke-test
-        working-directory: ${{ env.K6_WORK_DIR_PATH }}
-        env:
-          K6_PATHNAME: "./k6"
-          TFE_URL: "${{ steps.retrieve-tfe-url.outputs.stdout }}"
-          TFE_API_TOKEN: "${{ steps.retrieve-admin-token.outputs.token }}"
-          TFE_EMAIL: tf-onprem-team@hashicorp.com
-        run: |
-          make smoke-test
-
-      - name: Terraform Destroy
-        id: destroy
-        if: ${{ always() && github.event.client_payload.slash_command.args.named.destroy != 'false' }}
-        working-directory: ${{ env.WORK_DIR_PATH }}
-        env:
-          TFE_HOSTNAME: ${{ secrets.TFE_HOSTNAME }}
-          TFE_TOKEN: ${{ secrets.TFE_TOKEN }}
-        run: terraform destroy -auto-approve -input=false -no-color
-
-      - name: Update comment
-        if: ${{ always() }}
-        uses: peter-evans/create-or-update-comment@v1
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          repository: ${{ github.event.client_payload.github.payload.repository.full_name }}
-          comment-id: ${{ github.event.client_payload.github.payload.comment.id }}
-          body: |
-            ${{ format('### {0} Terraform Standalone External Rhel8 Worker Test Report', job.status == 'success' && ':white_check_mark:' || ':x:') }}
-
-            ${{ format(':link: [Action Summary Page]({0})', steps.vars.outputs.run-url) }}
-
-            ${{ format('- {0} Terraform Init', steps.init.outcome == 'success' && ':white_check_mark:' || ':x:') }}
-
-            ${{ format('- {0} Terraform Validate', steps.validate.outcome == 'success' && ':white_check_mark:' || ':x:') }}
-
-            ${{ format('- {0} Terraform Apply', steps.apply.outcome == 'success' && ':white_check_mark:' || ':x:') }}
-
-            ${{ format('- {0} Run k6 Smoke Test', steps.run-smoke-test.outcome == 'success' && ':white_check_mark:' || ':x:') }}
-
-            ${{ github.event.client_payload.slash_command.args.named.destroy != 'false' && format('- {0} Terraform Destroy', steps.destroy.outcome == 'success' && ':white_check_mark:' || ':x:') || '' }}
-
-  standalone_mounted_disk:
+  standalone-mounted-disk:
     name: Run tf-test on Standalone Mounted Disk
     if: ${{ contains(github.event.client_payload.slash_command.args.unnamed.all, 'all') || contains(github.event.client_payload.slash_command.args.unnamed.all, 'standalone-mounted-disk') }}
     runs-on: ubuntu-latest
@@ -996,7 +702,7 @@ jobs:
         run: echo ::set-output name=run-url::https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID
 
       - name: Checkout Pull Request Branch
-        uses: actions/checkout@v2
+        uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
         with:
           repository: ${{ github.event.client_payload.pull_request.head.repo.full_name }}
           ref: ${{ github.event.client_payload.pull_request.head.sha }}
@@ -1013,8 +719,24 @@ jobs:
           sed --in-place "s/source = \"..\/..\"/source = \"github.com\/$LOGIN\/$NAME?ref=$SHA\"/" main.tf
           sed --in-place "s/source = \"..\/..\/fixtures\/test_proxy\"/source = \"github.com\/$LOGIN\/$NAME\/\/fixtures\/test_proxy?ref=$SHA\"/" main.tf
 
+      - name: Create Terraform Backend to google-standalone-mounted-disk TFC Workspace
+        working-directory: ${{ env.WORK_DIR_PATH }}
+        env:
+          TFC_ORGANIZATION: ${{ secrets.TFC_ORGANIZATION }}
+        run: |
+          cat <<EOF > backend.tf
+            terraform {
+              backend "remote" {
+                organization = "$TFC_ORGANIZATION"
+                  workspaces {
+                    name = "google-standalone-mounted-disk"
+                             }
+                             }
+                             }
+          EOF
+
       - name: Checkout TFE Load Test
-        uses: actions/checkout@v2
+        uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
         with:
           path: ${{ env.K6_WORK_DIR_PATH }}
           repository: hashicorp/tfe-load-test
@@ -1033,54 +755,29 @@ jobs:
         uses: hashicorp/setup-terraform@v2
         with:
           cli_config_credentials_hostname: 'app.terraform.io'
-          cli_config_credentials_token: ${{ secrets.TFC_TOKEN }}
+          cli_config_credentials_token: ${{ secrets.STANDALONE_MOUNTED_DISK_TFC_TOKEN }}
           terraform_version: 1.1.7
           terraform_wrapper: true
-
+   
       - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v0
-        with:
-          project_id: ${{ secrets.GOOGLE_PROJECT }}
-          service_account_key: ${{ secrets.GCP_SA_KEY }}
-          export_default_credentials: true
-
-      - name: Configure Terraform Backend
-        id: backend-config
-        working-directory: ${{ env.WORK_DIR_PATH }}
-        env:
-          TFC_ORGANIZATION: ${{ secrets.TFC_ORGANIZATION }}
-        run: |
-          cat <<EOF > backend-config.hcl
-            organization = "$TFC_ORGANIZATION"
-            workspaces {
-              name = "google-standalone-mounted-disk-${{ github.event.client_payload.github.payload.issue.number }}"
-            }
-          EOF
+        uses: google-github-actions/setup-gcloud@62d4898025f6041e16b1068643bfc5a696863587 # v1.1.0
 
       - name: Terraform Init
         id: init
         working-directory: ${{ env.WORK_DIR_PATH }}
-        run: terraform init -backend-config=backend-config.hcl -input=false -no-color
-      
+        run: terraform init -input=false -no-color
+
       - name: Write Terraform Variables
         working-directory: ${{ env.WORK_DIR_PATH }}
-        env:
-          GOOGLE_SERVICE_ACCOUNT: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
-          TFE_HOSTNAME: ${{ secrets.TFE_HOSTNAME }}
-          TFE_ORGANIZATION: ${{ secrets.TFE_ORGANIZATION }}
-          TFE_TOKEN: ${{ secrets.TFE_TOKEN }}
-          TFE_WORKSPACE: ${{ secrets.TFE_WORKSPACE }}
         run: |
-          ip_address=$( dig +short @resolver1.opendns.com myip.opendns.com )
+          iact_subnet=$( dig +short @resolver1.opendns.com myip.opendns.com )
           cat <<EOF > github.auto.tfvars
-          iact_subnet_list = ["$ip_address/32"]
-          license_file = ""
-          existing_service_account_id = "$GOOGLE_SERVICE_ACCOUNT"
+          iact_subnet_list = ["$iact_subnet/32"]
           tfe = {
-            hostname     = "$TFE_HOSTNAME"
-            organization = "$TFE_ORGANIZATION"
-            token        = "$TFE_TOKEN"
-            workspace    = "$TFE_WORKSPACE"
+            hostname     = "${{ secrets.TFE_HOSTNAME }}"
+            organization = "${{ secrets.TFE_ORGANIZATION }}"
+            token        = "${{ secrets.TFE_TOKEN }}"
+            workspace    = "${{ secrets.TFE_WORKSPACE }}"
           }
           EOF
 
@@ -1103,11 +800,9 @@ jobs:
       - name: Wait For TFE
         id: wait-for-tfe
         timeout-minutes: 25
-        env:
-          HEALTH_CHECK_URL: ${{ steps.retrieve-health-check-url.outputs.stdout }}
         run: |
           echo "Curling \`health_check_url\` for a return status of 200..."
-          while ! curl -sfS --max-time 5 "$HEALTH_CHECK_URL"; do sleep 5; done
+          while ! curl -sfS --max-time 5 "${{ steps.retrieve-health-check-url.outputs.stdout }}"; do sleep 5; done
 
       - name: Retrieve TFE URL
         id: retrieve-tfe-url
@@ -1123,10 +818,8 @@ jobs:
 
       - name: Retrieve IACT
         id: retrieve-iact
-        env:
-          IACT_URL: ${{ steps.retrieve-iact-url.outputs.stdout }}
         run: |
-          token=$(curl --fail --retry 5 --verbose "$IACT_URL")
+          token=$(curl --fail --retry 15 --verbose "${{ steps.retrieve-iact-url.outputs.stdout }}")
           echo "::set-output name=token::$token"
 
       - name: Retrieve Initial Admin User URL
@@ -1148,7 +841,7 @@ jobs:
           response=$( \
             curl \
             --fail \
-            --retry 5 \
+            --retry 15 \
             --verbose \
             --header 'Content-Type: application/json' \
             --data @./payload.json \
@@ -1185,13 +878,225 @@ jobs:
 
       - name: Update comment
         if: ${{ always() }}
-        uses: peter-evans/create-or-update-comment@v1
+        uses: peter-evans/create-or-update-comment@3383acd359705b10cb1eeef05c0e88c056ea4666 # v3.0.0
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           repository: ${{ github.event.client_payload.github.payload.repository.full_name }}
           comment-id: ${{ github.event.client_payload.github.payload.comment.id }}
           body: |
             ${{ format('### {0} Terraform Standalone Mounted Disk Test Report', job.status == 'success' && ':white_check_mark:' || ':x:') }}
+
+            ${{ format(':link: [Action Summary Page]({0})', steps.vars.outputs.run-url) }}
+
+            ${{ format('- {0} Terraform Init', steps.init.outcome == 'success' && ':white_check_mark:' || ':x:') }}
+
+            ${{ format('- {0} Terraform Validate', steps.validate.outcome == 'success' && ':white_check_mark:' || ':x:') }}
+
+            ${{ format('- {0} Terraform Apply', steps.apply.outcome == 'success' && ':white_check_mark:' || ':x:') }}
+
+            ${{ format('- {0} Run k6 Smoke Test', steps.run-smoke-test.outcome == 'success' && ':white_check_mark:' || ':x:') }}
+
+            ${{ github.event.client_payload.slash_command.args.named.destroy != 'false' && format('- {0} Terraform Destroy', steps.destroy.outcome == 'success' && ':white_check_mark:' || ':x:') || '' }}
+
+  standalone-external-rhel8-worker:
+    name: Run tf-test on Standalone External RHEL8 Worker
+    if: ${{ contains(github.event.client_payload.slash_command.args.unnamed.all, 'all') || contains(github.event.client_payload.slash_command.args.unnamed.all, 'standalone-external-rhel8-worker') }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    env:
+      WORK_DIR_PATH: ./tests/standalone-external-rhel8-worker
+      K6_WORK_DIR_PATH: ./tests/tfe-load-test
+    steps:
+      - name: Create URL to the run output
+        id: vars
+        run: echo ::set-output name=run-url::https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID
+
+      - name: Checkout Pull Request Branch
+        uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
+        with:
+          repository: ${{ github.event.client_payload.pull_request.head.repo.full_name }}
+          ref: ${{ github.event.client_payload.pull_request.head.sha }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          persist-credentials: false
+
+      - name: Set Terraform Module Source
+        working-directory: ${{ env.WORK_DIR_PATH }}
+        env:
+          LOGIN: ${{ github.event.client_payload.pull_request.head.repo.owner.login }}
+          NAME: ${{ github.event.client_payload.pull_request.head.repo.name }}
+          SHA: ${{ github.event.client_payload.pull_request.head.sha }}
+        run: |
+          sed --in-place "s/source = \"..\/..\"/source = \"github.com\/$LOGIN\/$NAME?ref=$SHA\"/" main.tf
+          sed --in-place "s/source = \"..\/..\/fixtures\/test_proxy\"/source = \"github.com\/$LOGIN\/$NAME\/\/fixtures\/test_proxy?ref=$SHA\"/" main.tf
+
+      - name: Create Terraform Backend to google-standalone-external-rhel8-worker TFC Workspace
+        working-directory: ${{ env.WORK_DIR_PATH }}
+        env:
+          TFC_ORGANIZATION: ${{ secrets.TFC_ORGANIZATION }}
+        run: |
+          cat <<EOF > backend.tf
+            terraform {
+              backend "remote" {
+                organization = "$TFC_ORGANIZATION"
+                  workspaces {
+                    name = "google-standalone-external-rhel8-worker"
+                             }
+                             }
+                             }
+          EOF
+
+      - name: Checkout TFE Load Test
+        uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
+        with:
+          path: ${{ env.K6_WORK_DIR_PATH }}
+          repository: hashicorp/tfe-load-test
+          token: ${{ secrets.GH_TFE_LOAD_TEST_TOKEN }}
+          persist-credentials: false
+
+      - name: Install required tools
+        working-directory: ${{ env.K6_WORK_DIR_PATH }}
+        env:
+          K6_URL: https://github.com/loadimpact/k6/releases/download/v0.31.1/k6-v0.31.1-linux64.tar.gz
+        run: |
+          sudo apt-get install jq
+          curl -L $K6_URL | tar -xz --strip-components=1
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          cli_config_credentials_hostname: 'app.terraform.io'
+          cli_config_credentials_token: ${{ secrets.STANDALONE_EXTERNAL_RHEL8_WORKER_TFC_TOKEN }}
+          terraform_version: 1.1.7
+          terraform_wrapper: true
+   
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@62d4898025f6041e16b1068643bfc5a696863587 # v1.1.0
+
+      - name: Terraform Init
+        id: init
+        working-directory: ${{ env.WORK_DIR_PATH }}
+        run: terraform init -input=false -no-color
+
+      - name: Write Terraform Variables
+        working-directory: ${{ env.WORK_DIR_PATH }}
+        run: |
+          iact_subnet=$( dig +short @resolver1.opendns.com myip.opendns.com )
+          cat <<EOF > github.auto.tfvars
+          iact_subnet_list = ["$iact_subnet/32"]
+          tfe = {
+            hostname     = "${{ secrets.TFE_HOSTNAME }}"
+            organization = "${{ secrets.TFE_ORGANIZATION }}"
+            token        = "${{ secrets.TFE_TOKEN }}"
+            workspace    = "${{ secrets.TFE_WORKSPACE }}"
+          }
+          EOF
+
+      - name: Terraform Validate
+        id: validate
+        working-directory: ${{ env.WORK_DIR_PATH }}
+        run: terraform validate -no-color
+
+      - name: Terraform Apply
+        id: apply
+        working-directory: ${{ env.WORK_DIR_PATH }}
+        run: terraform apply -auto-approve -input=false -no-color
+
+      - name: Retrieve Health Check URL
+        id: retrieve-health-check-url
+        working-directory: ${{ env.WORK_DIR_PATH }}
+        run: |
+          terraform output -no-color -raw health_check_url
+
+      - name: Wait For TFE
+        id: wait-for-tfe
+        timeout-minutes: 25
+        run: |
+          echo "Curling \`health_check_url\` for a return status of 200..."
+          while ! curl -sfS --max-time 5 "${{ steps.retrieve-health-check-url.outputs.stdout }}"; do sleep 5; done
+
+      - name: Retrieve TFE URL
+        id: retrieve-tfe-url
+        working-directory: ${{ env.WORK_DIR_PATH }}
+        run: |
+          terraform output -no-color -raw tfe_url
+
+      - name: Retrieve IACT URL
+        id: retrieve-iact-url
+        working-directory: ${{ env.WORK_DIR_PATH }}
+        run: |
+          terraform output -no-color -raw iact_url
+
+      - name: Retrieve IACT
+        id: retrieve-iact
+        run: |
+          token=$(curl --fail --retry 15 --verbose "${{ steps.retrieve-iact-url.outputs.stdout }}")
+          echo "::set-output name=token::$token"
+
+      - name: Retrieve Initial Admin User URL
+        id: retrieve-initial-admin-user-url
+        working-directory: ${{ env.WORK_DIR_PATH }}
+        run: |
+          terraform output -no-color -raw initial_admin_user_url
+
+      - name: Create Admin in TFE
+        id: create-admin
+        env:
+          TFE_PASSWORD: ${{ secrets.TFE_PASSWORD }}
+          IAU_URL: ${{ steps.retrieve-initial-admin-user-url.outputs.stdout }}
+          IACT: ${{ steps.retrieve-iact.outputs.token }}
+        run: |
+          echo \
+            '{"username": "test", "email": "tf-onprem-team@hashicorp.com", "password": "$TFE_PASSWORD"}' \
+            > ./payload.json
+          response=$( \
+            curl \
+            --fail \
+            --retry 15 \
+            --verbose \
+            --header 'Content-Type: application/json' \
+            --data @./payload.json \
+            "$IAU_URL"?token="$IACT")
+          echo "::set-output name=response::$response"
+
+      - name: Retrieve Admin Token
+        id: retrieve-admin-token
+        env:
+          RESPONSE: ${{ steps.create-admin.outputs.response }}
+        run: |
+          token=$(echo "$RESPONSE" | jq --raw-output '.token')
+          echo "::set-output name=token::$token"
+
+      - name: Run k6 Smoke Test
+        id: run-smoke-test
+        working-directory: ${{ env.K6_WORK_DIR_PATH }}
+        env:
+          K6_PATHNAME: "./k6"
+          TFE_URL: "${{ steps.retrieve-tfe-url.outputs.stdout }}"
+          TFE_API_TOKEN: "${{ steps.retrieve-admin-token.outputs.token }}"
+          TFE_EMAIL: tf-onprem-team@hashicorp.com
+        run: |
+          make smoke-test
+
+      - name: Terraform Destroy
+        id: destroy
+        if: ${{ always() && github.event.client_payload.slash_command.args.named.destroy != 'false' }}
+        working-directory: ${{ env.WORK_DIR_PATH }}
+        env:
+          TFE_HOSTNAME: ${{ secrets.TFE_HOSTNAME }}
+          TFE_TOKEN: ${{ secrets.TFE_TOKEN }}
+        run: terraform destroy -auto-approve -input=false -no-color
+
+      - name: Update comment
+        if: ${{ always() }}
+        uses: peter-evans/create-or-update-comment@3383acd359705b10cb1eeef05c0e88c056ea4666 # v3.0.0
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          repository: ${{ github.event.client_payload.github.payload.repository.full_name }}
+          comment-id: ${{ github.event.client_payload.github.payload.comment.id }}
+          body: |
+            ${{ format('### {0} Terraform Standalone External RHEL8 Worker Test Report', job.status == 'success' && ':white_check_mark:' || ':x:') }}
 
             ${{ format(':link: [Action Summary Page]({0})', steps.vars.outputs.run-url) }}
 

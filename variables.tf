@@ -229,6 +229,12 @@ variable "vm_metadata" {
   type        = map(string)
 }
 
+variable "vm_mig_unhealthy_threshold" {
+  default     = 6
+  description = "The number of sequential failed health check probe results for a backend to be considered unhealthy."
+  type        = number
+}
+
 variable "vm_mounted_disk_size" {
   default     = 40
   description = <<-EOD
@@ -264,6 +270,12 @@ variable "capacity_memory" {
   The maximum amount of memory (in megabytes) that a Terraform plan or apply can use on the system;
   defaults to 512.
   EOD
+}
+
+variable "consolidated_services" {
+  default     = false
+  type        = bool
+  description = "(Required) True if TFE uses consolidated services."
 }
 
 variable "custom_agent_image_tag" {

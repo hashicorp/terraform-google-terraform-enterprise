@@ -6,12 +6,14 @@ data "tfe_outputs" "base" {
   workspace    = try(var.tfe.workspace, var.tfe_workspace)
 }
 
+data "google_project" "project" {}
+
 data "google_dns_managed_zone" "main" {
   name = data.tfe_outputs.base.values.cloud_dns_name
 }
 
 data "google_compute_image" "rhel" {
-  name    = "rhel-8-v20221206"
+  name    = "rhel-8-v20230306"
   project = "rhel-cloud"
 }
 

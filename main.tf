@@ -108,6 +108,7 @@ module "settings" {
   source = "git::https://github.com/hashicorp/terraform-random-tfe-utility//modules/settings?ref=main"
 
   # TFE Base Configuration
+  consolidated_services       = var.consolidated_services
   production_type             = var.operational_mode
   disk_path                   = var.disk_path
   iact_subnet_list            = var.iact_subnet_list
@@ -253,7 +254,7 @@ module "vm_mig" {
     response            = null
     timeout_sec         = 10
     type                = "https"
-    unhealthy_threshold = 6
+    unhealthy_threshold = var.vm_mig_unhealthy_threshold
   }
   health_check_name = "${var.namespace}-tfe-health-check"
   hostname          = "${var.namespace}-tfe"

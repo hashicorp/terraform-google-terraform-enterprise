@@ -3,7 +3,13 @@
 
 terraform {
   required_version = ">= 0.14"
+  backend "remote" {
+    organization = "terraform-enterprise-modules-test"
 
+    workspaces {
+      name = "google-private-active-active"
+    }
+  }
   required_providers {
     google = {
       source  = "hashicorp/google"

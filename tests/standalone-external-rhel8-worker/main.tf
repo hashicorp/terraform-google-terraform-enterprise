@@ -41,18 +41,18 @@ module "tfe" {
   tfe_license_secret_id       = try(module.secrets[0].license_secret, data.tfe_outputs.base.values.license_secret_id)
   ssl_certificate_name        = data.tfe_outputs.base.values.wildcard_ssl_certificate_name
   existing_service_account_id = var.existing_service_account_id
-  custom_image_tag            = "${local.repository_location}-docker.pkg.dev/ptfe-replicated-ci/${local.repository_name}/rhel-7.9:latest"
+  custom_image_tag            = "${local.repository_location}-docker.pkg.dev/${data.google_project.project.project_id}/${local.repository_name}/rhel-7.9:latest"
   iact_subnet_list            = ["0.0.0.0/0"]
   iact_subnet_time_limit      = 60
+  consolidated_services       = var.consolidated_services
   labels = {
     department  = "engineering"
-    description = "standalone-external-services-scenario-deployed-from-circleci"
+    description = "standalone-external-services-scenario-deployed-from-gha"
     environment = random_pet.main.id
     oktodelete  = "true"
     product     = "terraform-enterprise"
     repository  = "hashicorp-terraform-google-terraform-enterprise"
     team        = "terraform-enterprise-on-prem"
-    terraform   = "true"
   }
   load_balancer        = "PUBLIC"
   operational_mode     = "external"
