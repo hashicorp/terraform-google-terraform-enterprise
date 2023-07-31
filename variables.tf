@@ -79,12 +79,12 @@ variable "proxy_port" {
 # -----------
 variable "load_balancer" {
   default     = "PRIVATE"
-  description = "Load Balancing Scheme. Supported values are: \"PRIVATE\"; \"PRIVATE_TCP\"; \"PUBLIC\"."
+  description = "Load Balancing Scheme. Supported values are: \"PRIVATE\"; \"PRIVATE_TCP\"."
   type        = string
 
   validation {
-    condition     = contains(["PRIVATE", "PRIVATE_TCP", "PUBLIC"], var.load_balancer)
-    error_message = "The load_balancer value must be one of: \"PRIVATE\"; \"PRIVATE_TCP\"; \"PUBLIC\"."
+    condition     = contains(["PRIVATE", "PRIVATE_TCP"], var.load_balancer)
+    error_message = "The load_balancer value must be one of: \"PRIVATE\"; \"PRIVATE_TCP\"."
   }
 }
 
@@ -404,7 +404,7 @@ variable "release_sequence" {
 
 variable "ssl_certificate_name" {
   default     = null
-  description = "Name of the created managed SSL certificate. Required when load_balancer == \"PUBLIC\" or load_balancer == \"PRIVATE\"."
+  description = "Name of the created managed SSL certificate. Required when load_balancer == \"PRIVATE\"."
   type        = string
 }
 

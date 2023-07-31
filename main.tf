@@ -105,7 +105,7 @@ module "redis" {
 # TFE and Replicated settings to pass to the tfe_init module
 # -----------------------------------------------------------------------------
 module "settings" {
-  source = "git::https://github.com/hashicorp/terraform-random-tfe-utility//modules/settings?ref=main"
+  source = "./modules/settings"
 
   # TFE Base Configuration
   consolidated_services       = var.consolidated_services
@@ -176,7 +176,7 @@ module "settings" {
 # User data / cloud init used to install and configure TFE on instance(s)
 # -----------------------------------------------------------------------------
 module "tfe_init" {
-  source = "git::https://github.com/hashicorp/terraform-random-tfe-utility//modules/tfe_init?ref=main"
+  source = "./modules/tfe_init"
 
   # TFE & Replicated Configuration data
   cloud                    = "google"
@@ -274,8 +274,6 @@ module "vm_mig" {
 }
 
 resource "google_compute_address" "private" {
-  count = var.load_balancer != "PUBLIC" ? 1 : 0
-
   name         = "${var.namespace}-tfe-private-lb"
   subnetwork   = local.subnetwork.self_link
   address_type = "INTERNAL"
@@ -309,27 +307,4 @@ module "private_tcp_load_balancer" {
   subnetwork        = local.subnetwork
   dns_create_record = var.dns_create_record
   ip_address        = google_compute_address.private[0].address
-}
-
-
-resource "google_compute_global_address" "public" {
-  count = var.load_balancer == "PUBLIC" ? 1 : 0
-
-  name = "${var.namespace}-tfe-public-lb"
-
-  description = "The global address of the public load balancer for TFE."
-}
-
-module "load_balancer" {
-  count  = var.load_balancer == "PUBLIC" ? 1 : 0
-  source = "./modules/load_balancer"
-
-  labels               = var.labels
-  namespace            = var.namespace
-  fqdn                 = local.full_fqdn
-  instance_group       = module.vm_mig.instance_group
-  ssl_certificate_name = var.ssl_certificate_name
-  dns_zone_name        = var.dns_zone_name
-  dns_create_record    = var.dns_create_record
-  ip_address           = google_compute_global_address.public[0].address
 }
