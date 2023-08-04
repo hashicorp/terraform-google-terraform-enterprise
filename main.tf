@@ -2,8 +2,7 @@
 # SPDX-License-Identifier: MPL-2.0
 
 module "project_factory_project_services" {
-  source  = "terraform-google-modules/project-factory/google//modules/project_services"
-  version = "~> 11.2"
+  source = "./modules/project_services"
 
   project_id = null
 
@@ -200,8 +199,7 @@ module "tfe_init" {
 }
 
 module "vm_instance_template" {
-  source  = "terraform-google-modules/vm/google//modules/instance_template"
-  version = "~> 7.1"
+  source = "./modules/instance_template"
 
   name_prefix = "${var.namespace}-tfe-template-"
 
@@ -236,8 +234,7 @@ module "vm_instance_template" {
 }
 
 module "vm_mig" {
-  source  = "terraform-google-modules/vm/google//modules/mig"
-  version = "~> 7.1"
+  source = "./modules/mig"
 
   instance_template = module.vm_instance_template.self_link
   region            = null
