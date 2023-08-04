@@ -16,3 +16,11 @@ terraform {
     }
   }
 }
+
+provider "google" {
+  project = "prj-c-tfe-ba9a"
+}
+
+provider "google-beta" {
+  project = "prj-c-tfe-ba9a"
+}

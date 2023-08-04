@@ -289,7 +289,7 @@ module "private_load_balancer" {
   labels               = var.labels
   subnetwork           = local.subnetwork
   dns_create_record    = var.dns_create_record
-  ip_address           = google_compute_address.private[0].address
+  ip_address           = google_compute_address.private.address
 }
 
 module "private_tcp_load_balancer" {
@@ -303,5 +303,5 @@ module "private_tcp_load_balancer" {
   labels            = var.labels
   subnetwork        = local.subnetwork
   dns_create_record = var.dns_create_record
-  ip_address        = google_compute_address.private[0].address
+  ip_address        = google_compute_address.private.address
 }
