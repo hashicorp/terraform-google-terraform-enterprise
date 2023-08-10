@@ -291,6 +291,7 @@ module "private_load_balancer" {
   subnetwork           = local.subnetwork
   dns_create_record    = var.dns_create_record
   ip_address           = google_compute_address.private.address
+  dns_zone_project     = "prj-c-svpc-restricted-e061"
 }
 
 module "private_tcp_load_balancer" {
@@ -305,4 +306,5 @@ module "private_tcp_load_balancer" {
   subnetwork        = local.subnetwork
   dns_create_record = var.dns_create_record
   ip_address        = google_compute_address.private.address
+  dns_zone_project  = "prj-c-svpc-restricted-e061"
 }

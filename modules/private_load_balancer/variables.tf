@@ -49,3 +49,8 @@ variable "subnetwork" {
     self_link = string
   })
 }
+
+variable "dns_zone_project" {
+  type        = string
+  description = "Project that dns zone is in"
+}

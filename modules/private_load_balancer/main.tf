@@ -9,6 +9,7 @@ resource "google_dns_record_set" "main" {
   rrdatas = [var.ip_address]
   ttl     = 300
   type    = "A"
+  project = var.dns_zone_project
 }
 
 resource "google_compute_region_health_check" "lb" {
