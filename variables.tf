@@ -51,7 +51,7 @@ variable "node_count" {
   EOD
   type        = number
   validation {
-    condition     = var.node_count >= 0 && var.node_count <= 2
+    condition     = var.node_count >= 0 && var.node_count <= 5
     error_message = "The node_count value must be between 0 and 2, inclusively."
   }
 }
