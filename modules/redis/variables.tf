@@ -29,3 +29,8 @@ variable "labels" {
   type        = map(string)
   description = "Labels to apply to resources"
 }
+
+variable "redis_version" {
+  type        = string
+  description = "The version of Redis to install"
+}

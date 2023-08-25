@@ -93,6 +93,7 @@ module "redis" {
   auth_enabled                  = var.redis_auth_enabled
   namespace                     = var.namespace
   memory_size                   = var.redis_memory_size
+  redis_version                 = var.redis_version
   service_networking_connection = local.service_networking_connection
   labels                        = var.labels
 

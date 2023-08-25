@@ -51,7 +51,7 @@ variable "node_count" {
   EOD
   type        = number
   validation {
-    condition     = var.node_count >= 0 && var.node_count <= 2
+    condition     = var.node_count >= 0 && var.node_count <= 5
     error_message = "The node_count value must be between 0 and 2, inclusively."
   }
 }
@@ -195,6 +195,12 @@ variable "redis_memory_size" {
   default     = 6
   description = "Redis memory size in GiB"
   type        = number
+}
+
+variable "redis_version" {
+  type        = string
+  description = "The version of Redis to install"
+  default     = "REDIS_5_0"
 }
 
 # VM
