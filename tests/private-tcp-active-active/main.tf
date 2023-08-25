@@ -52,6 +52,7 @@ module "tfe" {
   proxy_ip                    = module.test_proxy.proxy_ip
   proxy_port                  = module.test_proxy.proxy_port
   redis_auth_enabled          = true
+  redis_version               = "REDIS_6_X"
   ssl_certificate_secret      = data.tfe_outputs.base.values.wildcard_ssl_certificate_secret_id
   ssl_private_key_secret      = data.tfe_outputs.base.values.wildcard_ssl_private_key_secret_id
   tls_bootstrap_cert_pathname = "/var/lib/terraform-enterprise/certificate.pem"
