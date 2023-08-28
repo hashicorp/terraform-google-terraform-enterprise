@@ -62,9 +62,10 @@ jobs:
       - name: Write Terraform Variables
         working-directory: ${{ env.WORK_DIR_PATH }}
         run: |
+          iact_subnet=$( dig +short @resolver1.opendns.com myip.opendns.com )
           cat <<EOF > github.auto.tfvars
-          iact_subnet_list = ["( dig +short @resolver1.opendns.com myip.opendns.com )/32"]
-          existing_service_account_id = "${{ secrets.GOOGLE_SERVICE_ACCOUNT }}"
+          iact_subnet_list = ["$iact_subnet/32"]
+          consolidated_services = true
           tfe = {
             hostname     = "${{ secrets.TFE_HOSTNAME }}"
             organization = "${{ secrets.TFE_ORGANIZATION }}"
@@ -76,6 +77,9 @@ jobs:
       - name: Terraform Destroy
         id: destroy
         working-directory: ${{ env.WORK_DIR_PATH }}
+        env:
+          TFE_HOSTNAME: ${{ secrets.TFE_HOSTNAME }}
+          TFE_TOKEN: ${{ secrets.TFE_TOKEN }}
         run: terraform destroy -auto-approve -input=false -no-color
 
       - name: Update comment
@@ -146,7 +150,6 @@ jobs:
         run: |
           cat <<EOF > github.auto.tfvars
           iact_subnet_list = ["( dig +short @resolver1.opendns.com myip.opendns.com )/32"]
-          existing_service_account_id = "${{ secrets.GOOGLE_SERVICE_ACCOUNT }}"
           tfe = {
             hostname     = "${{ secrets.TFE_HOSTNAME }}"
             organization = "${{ secrets.TFE_ORGANIZATION }}"
@@ -226,9 +229,10 @@ jobs:
       - name: Write Terraform Variables
         working-directory: ${{ env.WORK_DIR_PATH }}
         run: |
+          iact_subnet=$( dig +short @resolver1.opendns.com myip.opendns.com )
           cat <<EOF > github.auto.tfvars
-          iact_subnet_list = ["( dig +short @resolver1.opendns.com myip.opendns.com )/32"]
-          existing_service_account_id = "${{ secrets.GOOGLE_SERVICE_ACCOUNT }}"
+          iact_subnet_list = ["$iact_subnet/32"]
+          consolidated_services = true
           tfe = {
             hostname     = "${{ secrets.TFE_HOSTNAME }}"
             organization = "${{ secrets.TFE_ORGANIZATION }}"
@@ -324,9 +328,10 @@ jobs:
       - name: Write Terraform Variables
         working-directory: ${{ env.WORK_DIR_PATH }}
         run: |
+          iact_subnet=$( dig +short @resolver1.opendns.com myip.opendns.com )
           cat <<EOF > github.auto.tfvars
-          iact_subnet_list = ["( dig +short @resolver1.opendns.com myip.opendns.com )/32"]
-          existing_service_account_id = "${{ secrets.GOOGLE_SERVICE_ACCOUNT }}"
+          iact_subnet_list = ["$iact_subnet/32"]
+          consolidated_services = true
           tfe = {
             hostname     = "${{ secrets.TFE_HOSTNAME }}"
             organization = "${{ secrets.TFE_ORGANIZATION }}"
@@ -422,9 +427,10 @@ jobs:
       - name: Write Terraform Variables
         working-directory: ${{ env.WORK_DIR_PATH }}
         run: |
+          iact_subnet=$( dig +short @resolver1.opendns.com myip.opendns.com )
           cat <<EOF > github.auto.tfvars
-          iact_subnet_list = ["( dig +short @resolver1.opendns.com myip.opendns.com )/32"]
-          existing_service_account_id = "${{ secrets.GOOGLE_SERVICE_ACCOUNT }}"
+          iact_subnet_list = ["$iact_subnet/32"]
+          consolidated_services = true
           tfe = {
             hostname     = "${{ secrets.TFE_HOSTNAME }}"
             organization = "${{ secrets.TFE_ORGANIZATION }}"
