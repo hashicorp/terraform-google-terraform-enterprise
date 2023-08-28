@@ -200,7 +200,7 @@ variable "redis_memory_size" {
 variable "redis_version" {
   type        = string
   description = "The version of Redis to install"
-  default     = "REDIS_5_0"
+  default     = "REDIS_7_0"
 }
 
 # VM
