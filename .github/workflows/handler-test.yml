@@ -83,6 +83,7 @@ jobs:
           iact_subnet=$( dig +short @resolver1.opendns.com myip.opendns.com )
           cat <<EOF > github.auto.tfvars
           iact_subnet_list = ["$iact_subnet/32"]
+          consolidated_services = true
           tfe = {
             hostname     = "${{ secrets.TFE_HOSTNAME }}"
             organization = "${{ secrets.TFE_ORGANIZATION }}"
@@ -272,7 +273,7 @@ jobs:
           credentials_json: ${{ secrets.GCP_TUNNELING_CREDENTIALS }}
 
       - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v0
+        uses: google-github-actions/setup-gcloud@62d4898025f6041e16b1068643bfc5a696863587 # v1.1.0
 
       - name: Terraform Init
         id: init
@@ -283,6 +284,7 @@ jobs:
         working-directory: ${{ env.WORK_DIR_PATH }}
         run: |
           cat <<EOF > github.auto.tfvars
+          iact_subnet_list = ["( dig +short @resolver1.opendns.com myip.opendns.com )/32"]
           tfe = {
             hostname     = "${{ secrets.TFE_HOSTNAME }}"
             organization = "${{ secrets.TFE_ORGANIZATION }}"
@@ -509,7 +511,7 @@ jobs:
           credentials_json: ${{ secrets.GCP_TUNNELING_CREDENTIALS }}
 
       - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v0
+        uses: google-github-actions/setup-gcloud@62d4898025f6041e16b1068643bfc5a696863587 # v1.1.0
 
       - name: Terraform Init
         id: init
@@ -519,7 +521,10 @@ jobs:
       - name: Write Terraform Variables
         working-directory: ${{ env.WORK_DIR_PATH }}
         run: |
+          iact_subnet=$( dig +short @resolver1.opendns.com myip.opendns.com )
           cat <<EOF > github.auto.tfvars
+          iact_subnet_list = ["$iact_subnet/32"]
+          consolidated_services = true
           tfe = {
             hostname     = "${{ secrets.TFE_HOSTNAME }}"
             organization = "${{ secrets.TFE_ORGANIZATION }}"
@@ -773,6 +778,7 @@ jobs:
           iact_subnet=$( dig +short @resolver1.opendns.com myip.opendns.com )
           cat <<EOF > github.auto.tfvars
           iact_subnet_list = ["$iact_subnet/32"]
+          consolidated_services = true
           tfe = {
             hostname     = "${{ secrets.TFE_HOSTNAME }}"
             organization = "${{ secrets.TFE_ORGANIZATION }}"
@@ -985,6 +991,7 @@ jobs:
           iact_subnet=$( dig +short @resolver1.opendns.com myip.opendns.com )
           cat <<EOF > github.auto.tfvars
           iact_subnet_list = ["$iact_subnet/32"]
+          consolidated_services = true
           tfe = {
             hostname     = "${{ secrets.TFE_HOSTNAME }}"
             organization = "${{ secrets.TFE_ORGANIZATION }}"
