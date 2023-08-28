@@ -50,7 +50,7 @@ module "tfe" {
   proxy_ip                    = module.test_proxy.proxy_ip
   proxy_port                  = module.test_proxy.proxy_port
   redis_auth_enabled          = true
-  redis_version               = "REDIS_6_X"
+  redis_version               = "REDIS_6_2_13"
   vm_disk_source_image        = data.google_compute_image.rhel.self_link
   vm_machine_type             = "n1-standard-16"
   vm_mig_unhealthy_threshold  = 10

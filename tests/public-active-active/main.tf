@@ -35,7 +35,7 @@ module "tfe" {
   iact_subnet_time_limit      = 1440
   load_balancer               = "PUBLIC"
   redis_auth_enabled          = false
-  redis_version               = "REDIS_6_X"
+  redis_version               = "REDIS_6_2_13"
   vm_disk_source_image        = data.google_compute_image.ubuntu.self_link
   vm_machine_type             = "n1-standard-4"
   vm_mig_unhealthy_threshold  = 10
