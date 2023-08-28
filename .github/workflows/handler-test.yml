@@ -83,6 +83,7 @@ jobs:
           iact_subnet=$( dig +short @resolver1.opendns.com myip.opendns.com )
           cat <<EOF > github.auto.tfvars
           iact_subnet_list = ["$iact_subnet/32"]
+          consolidated_services = true
           tfe = {
             hostname     = "${{ secrets.TFE_HOSTNAME }}"
             organization = "${{ secrets.TFE_ORGANIZATION }}"
@@ -773,6 +774,7 @@ jobs:
           iact_subnet=$( dig +short @resolver1.opendns.com myip.opendns.com )
           cat <<EOF > github.auto.tfvars
           iact_subnet_list = ["$iact_subnet/32"]
+          consolidated_services = true
           tfe = {
             hostname     = "${{ secrets.TFE_HOSTNAME }}"
             organization = "${{ secrets.TFE_ORGANIZATION }}"
@@ -985,6 +987,7 @@ jobs:
           iact_subnet=$( dig +short @resolver1.opendns.com myip.opendns.com )
           cat <<EOF > github.auto.tfvars
           iact_subnet_list = ["$iact_subnet/32"]
+          consolidated_services = true
           tfe = {
             hostname     = "${{ secrets.TFE_HOSTNAME }}"
             organization = "${{ secrets.TFE_ORGANIZATION }}"
