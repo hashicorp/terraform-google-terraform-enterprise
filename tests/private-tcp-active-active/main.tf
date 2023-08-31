@@ -59,6 +59,9 @@ module "tfe" {
   tls_bootstrap_key_pathname  = "/var/lib/terraform-enterprise/key.pem"
   vm_disk_source_image        = data.google_compute_image.rhel.self_link
   vm_machine_type             = "n1-standard-32"
+  vm_mig_check_interval_sec   = 300
+  vm_mig_healthy_threshold    = 1
+  vm_mig_initial_delay_sec    = 3600
+  vm_mig_timeout_sec          = 300
   vm_mig_unhealthy_threshold  = 10
-  # enable_monitoring           = true
 }

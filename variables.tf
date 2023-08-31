@@ -235,10 +235,54 @@ variable "vm_metadata" {
   type        = map(string)
 }
 
+variable "vm_mig_check_interval_sec" {
+  default     = 60
+  description = "How often (in seconds) to send a health check."
+  type        = number
+  validation {
+    condition     = var.vm_mig_check_interval_sec >= 1 && var.vm_mig_check_interval_sec <= 300
+    error_message = "The vm_mig_check_interval_sec must be an integer between 1 and 300, inclusive."
+  }
+}
+
+variable "vm_mig_healthy_threshold" {
+  default     = 2
+  description = "The number of sequential successful health check probe results for a backend to be considered healthy."
+  type        = number
+  validation {
+    condition     = var.vm_mig_healthy_threshold >= 1 && var.vm_mig_healthy_threshold <= 10
+    error_message = "The vm_mig_healthy_threshold must be an integer between 1 and 10, inclusive."
+  }
+}
+
+variable "vm_mig_initial_delay_sec" {
+  default     = 600
+  description = "The number of seconds that the managed instance group waits before it applies autohealing policies to new instances or recently recreated instances."
+  type        = number
+  validation {
+    condition     = var.vm_mig_initial_delay_sec >= 1 && var.vm_mig_initial_delay_sec <= 3600
+    error_message = "The vm_mig_initial_delay_sec must be an integer between 1 and 3600, inclusive."
+  }
+}
+
+variable "vm_mig_timeout_sec" {
+  default     = 10
+  description = "How long to wait (in seconds) before a request is considered a failure."
+  type        = number
+  validation {
+    condition     = var.vm_mig_timeout_sec >= 1 && var.vm_mig_timeout_sec <= 300
+    error_message = "The vm_mig_timeout_sec must be an integer between 1 and 300 and must be lower than or equal to vm_mig_check_interval_sec."
+  }
+}
+
 variable "vm_mig_unhealthy_threshold" {
   default     = 6
   description = "The number of sequential failed health check probe results for a backend to be considered unhealthy."
   type        = number
+  validation {
+    condition     = var.vm_mig_unhealthy_threshold >= 1 && var.vm_mig_unhealthy_threshold <= 10
+    error_message = "The vm_mig_unhealthy_threshold must be an integer between 1 and 10, inclusive."
+  }
 }
 
 variable "vm_mounted_disk_size" {
