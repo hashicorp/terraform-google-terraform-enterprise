@@ -38,6 +38,10 @@ module "tfe" {
   redis_version               = "REDIS_7_0"
   vm_disk_source_image        = data.google_compute_image.ubuntu.self_link
   vm_machine_type             = "n1-standard-4"
+  vm_mig_check_interval_sec   = 300
+  vm_mig_healthy_threshold    = 1
+  vm_mig_initial_delay_sec    = 3600
+  vm_mig_timeout_sec          = 300
   vm_mig_unhealthy_threshold  = 10
 
   labels = {

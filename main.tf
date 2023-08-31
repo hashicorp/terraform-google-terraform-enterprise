@@ -244,16 +244,16 @@ module "vm_mig" {
   region            = null
 
   health_check = {
-    check_interval_sec  = 60
-    healthy_threshold   = 2
+    check_interval_sec  = var.vm_mig_check_interval_sec
+    healthy_threshold   = var.vm_mig_healthy_threshold
     host                = null
-    initial_delay_sec   = 600
+    initial_delay_sec   = var.vm_mig_initial_delay_sec
     port                = 443
     proxy_header        = null
     request             = null
     request_path        = "/_health_check"
     response            = null
-    timeout_sec         = 10
+    timeout_sec         = var.vm_mig_timeout_sec
     type                = "https"
     unhealthy_threshold = var.vm_mig_unhealthy_threshold
   }
