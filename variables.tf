@@ -271,14 +271,18 @@ variable "vm_mig_timeout_sec" {
   type        = number
   validation {
     condition     = var.vm_mig_timeout_sec >= 1 && var.vm_mig_timeout_sec <= 300
-    error_message = "The vm_mig_initial_delay_sec must be an integer between 1 and 300 and must be lower than or equal to vm_mig_check_interval_sec."
+    error_message = "The vm_mig_timeout_sec must be an integer between 1 and 300 and must be lower than or equal to vm_mig_check_interval_sec."
   }
 }
 
 variable "vm_mig_unhealthy_threshold" {
   default     = 6
-  description = "The number of sequential failed health check probe results for a backend to be considered unhealthy. Unhealthy threshold must be an integer between 1 and 10, inclusive."
+  description = "The number of sequential failed health check probe results for a backend to be considered unhealthy."
   type        = number
+  validation {
+    condition     = var.vm_mig_unhealthy_threshold >= 1 && var.vm_mig_unhealthy_threshold <= 10
+    error_message = "The vm_mig_unhealthy_threshold must be an integer between 1 and 10, inclusive."
+  }
 }
 
 variable "vm_mounted_disk_size" {
