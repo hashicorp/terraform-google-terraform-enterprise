@@ -178,14 +178,15 @@ module "tfe_init" {
   source = "./modules/tfe_init"
 
   # TFE & Replicated Configuration data
-  cloud                    = "google"
-  distribution             = var.distribution
-  disk_path                = var.disk_path
-  disk_device_name         = local.disk_device_name
-  tfe_configuration        = module.settings.tfe_configuration
-  replicated_configuration = module.settings.replicated_configuration
-  airgap_url               = var.airgap_url
-  enable_monitoring        = var.enable_monitoring
+  cloud                           = "google"
+  distribution                    = var.distribution
+  disk_path                       = var.disk_path
+  disk_device_name                = local.disk_device_name
+  tfe_configuration               = module.settings.tfe_configuration
+  replicated_configuration        = module.settings.replicated_configuration
+  airgap_url                      = var.airgap_url
+  tfe_airgap_file_bucket_location = var.tfe_airgap_file_bucket_location
+  enable_monitoring               = var.enable_monitoring
 
   # Secrets
   ca_certificate_secret_id = var.ca_certificate_secret_id == null ? null : var.ca_certificate_secret_id

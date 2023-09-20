@@ -198,6 +198,13 @@ echo $license | base64 -d > ${tfe_license_file_location}
 %{ endif ~}
 
 # -----------------------------------------------------------------------------
+# Retrieve Airgap package (if this is an airgapped environment)
+# -----------------------------------------------------------------------------
+echo "[$(date +"%FT%T")] [Terraform Enterprise] Retrieve Airgap package" | tee -a $log_pathname
+#gsutil cp gs://terraform-enterprise-artifacts/terraform_enterprise_725.airgap /var/lib/ptfe/ptfe.airgap
+gsutil cp ${tfe_airgap_file_bucket_location} ${airgap_pathname}
+
+# -----------------------------------------------------------------------------
 # Download Replicated
 # -----------------------------------------------------------------------------
 replicated_directory="/etc/replicated"
@@ -230,6 +237,7 @@ echo "[Terraform Enterprise] Installing Docker Engine from Repository for Bootst
 
 replicated_filename="replicated.tar.gz"
 replicated_url="https://s3.amazonaws.com/replicated-airgap-work/$replicated_filename"
+#replicated_url="https://install.terraform.io/airgap/latest.tar.gz"
 replicated_pathname="$replicated_directory/$replicated_filename"
 
 echo "[Terraform Enterprise] Downloading Replicated from '$replicated_url' to '$replicated_pathname'" | tee -a $log_pathname
@@ -237,8 +245,8 @@ curl --noproxy '*' --create-dirs --output "$replicated_pathname" "$replicated_ur
 echo "[Terraform Enterprise] Extracting Replicated in '$replicated_directory'" | tee -a $log_pathname
 tar --directory "$replicated_directory" --extract --file "$replicated_pathname"
 
-echo "[Terraform Enterprise] Copying airgap package '${airgap_url}' to '${airgap_pathname}'" | tee -a $log_pathname
-curl --noproxy '*' --create-dirs --output "${airgap_pathname}" "${airgap_url}"
+#echo "[Terraform Enterprise] Copying airgap package '${airgap_url}' to '${airgap_pathname}'" | tee -a $log_pathname
+#curl --noproxy '*' --create-dirs --output "${airgap_pathname}" "${airgap_url}"
 %{ else ~}
 echo "[Terraform Enterprise] Skipping Airgapped Replicated download" | tee -a $log_pathname
 %{ endif ~}

@@ -435,6 +435,13 @@ variable "tfe_license_bootstrap_airgap_package_path" {
   EOD
 }
 
+variable "tfe_airgap_file_bucket_location" {
+  type        = string
+  description = <<-EOD
+  Bucket location for airgap file
+  EOD
+}
+
 variable "tfe_license_file_location" {
   default     = "/etc/terraform-enterprise.rli"
   type        = string

@@ -31,6 +31,14 @@ variable "tfe_license_secret_id" {
   EOD
 }
 
+variable "tfe_airgap_file_bucket_location" {
+  default     = null
+  type        = string
+  description = <<-EOD
+  Bucket location for airgap file
+  EOD
+}
+
 variable "airgap_url" {
   description = <<-EOD
   The URL of a Replicated airgap package for Terraform Enterprise.
