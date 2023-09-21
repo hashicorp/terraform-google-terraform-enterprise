@@ -177,7 +177,7 @@ module "settings" {
 # User data / cloud init used to install and configure TFE on instance(s)
 # -----------------------------------------------------------------------------
 module "tfe_init" {
-  source = "git::https://github.com/hashicorp/terraform-random-tfe-utility//modules/tfe_init_legacy?ref=ah/tf-5370"
+  source = "git::https://github.com/hashicorp/terraform-random-tfe-utility//modules/tfe_init_legacy?ref=main"
 
   # TFE & Replicated Configuration data
   cloud                    = "google"
