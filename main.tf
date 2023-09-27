@@ -109,20 +109,20 @@ module "settings" {
   source = "git::https://github.com/hashicorp/terraform-random-tfe-utility//modules/settings?ref=main"
 
   # TFE Base Configuration
-  consolidated_services       = var.consolidated_services
-  production_type             = var.operational_mode
-  disk_path                   = var.disk_path
-  iact_subnet_list            = var.iact_subnet_list
-  iact_subnet_time_limit      = var.iact_subnet_time_limit
-  release_sequence            = var.release_sequence
-  tls_vers                    = var.tls_vers
-  metrics_endpoint_enabled    = var.metrics_endpoint_enabled
-  metrics_endpoint_port_http  = var.metrics_endpoint_port_http
-  metrics_endpoint_port_https = var.metrics_endpoint_port_https
-  custom_image_tag            = var.custom_image_tag
-  custom_agent_image_tag      = var.custom_agent_image_tag
-  capacity_concurrency        = var.capacity_concurrency
-  capacity_memory             = var.capacity_memory
+  consolidated_services_enabled = var.consolidated_services_enabled
+  production_type               = var.operational_mode
+  disk_path                     = var.disk_path
+  iact_subnet_list              = var.iact_subnet_list
+  iact_subnet_time_limit        = var.iact_subnet_time_limit
+  release_sequence              = var.release_sequence
+  tls_vers                      = var.tls_vers
+  metrics_endpoint_enabled      = var.metrics_endpoint_enabled
+  metrics_endpoint_port_http    = var.metrics_endpoint_port_http
+  metrics_endpoint_port_https   = var.metrics_endpoint_port_https
+  custom_image_tag              = var.custom_image_tag
+  custom_agent_image_tag        = var.custom_agent_image_tag
+  capacity_concurrency          = var.capacity_concurrency
+  capacity_memory               = var.capacity_memory
 
   extra_no_proxy = concat([
     local.common_fqdn,

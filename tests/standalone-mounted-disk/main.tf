@@ -31,24 +31,24 @@ resource "local_file" "private_key_pem" {
 }
 
 module "tfe" {
-  source                      = "../.."
-  consolidated_services       = var.consolidated_services
-  disk_path                   = "/opt/hashicorp/data"
-  distribution                = "ubuntu"
-  dns_zone_name               = data.google_dns_managed_zone.main.name
-  fqdn                        = "${random_pet.main.id}.${trimsuffix(data.google_dns_managed_zone.main.dns_name, ".")}"
-  namespace                   = random_pet.main.id
-  node_count                  = 1
-  tfe_license_secret_id       = try(module.secrets[0].license_secret, data.tfe_outputs.base.values.license_secret_id)
-  ssl_certificate_name        = data.tfe_outputs.base.values.wildcard_ssl_certificate_name
-  existing_service_account_id = var.existing_service_account_id
-  iact_subnet_list            = ["0.0.0.0/0"]
-  iact_subnet_time_limit      = 60
-  labels                      = local.labels
-  load_balancer               = "PUBLIC"
-  operational_mode            = "disk"
-  vm_disk_source_image        = data.google_compute_image.ubuntu.self_link
-  vm_machine_type             = "n1-standard-4"
+  source                        = "../.."
+  consolidated_services_enabled = var.consolidated_services_enabled
+  disk_path                     = "/opt/hashicorp/data"
+  distribution                  = "ubuntu"
+  dns_zone_name                 = data.google_dns_managed_zone.main.name
+  fqdn                          = "${random_pet.main.id}.${trimsuffix(data.google_dns_managed_zone.main.dns_name, ".")}"
+  namespace                     = random_pet.main.id
+  node_count                    = 1
+  tfe_license_secret_id         = try(module.secrets[0].license_secret, data.tfe_outputs.base.values.license_secret_id)
+  ssl_certificate_name          = data.tfe_outputs.base.values.wildcard_ssl_certificate_name
+  existing_service_account_id   = var.existing_service_account_id
+  iact_subnet_list              = ["0.0.0.0/0"]
+  iact_subnet_time_limit        = 60
+  labels                        = local.labels
+  load_balancer                 = "PUBLIC"
+  operational_mode              = "disk"
+  vm_disk_source_image          = data.google_compute_image.ubuntu.self_link
+  vm_machine_type               = "n1-standard-4"
   vm_metadata = {
     "ssh-keys" = "${local.ssh_user}:${tls_private_key.main.public_key_openssh} ${local.ssh_user}"
   }
