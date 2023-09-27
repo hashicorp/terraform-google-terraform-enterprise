@@ -322,7 +322,7 @@ variable "capacity_memory" {
   EOD
 }
 
-variable "consolidated_services" {
+variable "consolidated_services_enabled" {
   default     = false
   type        = bool
   description = "(Required) True if TFE uses consolidated services."
