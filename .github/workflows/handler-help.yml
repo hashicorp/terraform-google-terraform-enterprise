@@ -13,7 +13,7 @@ jobs:
       pull-requests: write
     steps:
       - name: Update comment
-        uses: peter-evans/create-or-update-comment@3383acd359705b10cb1eeef05c0e88c056ea4666 # v3.0.0
+        uses: peter-evans/create-or-update-comment@c6c9a1a66007646a28c153e2a8580a5bad27bcfa # v3.0.2
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           repository: ${{ github.event.client_payload.github.payload.repository.full_name }}

@@ -28,7 +28,7 @@ jobs:
         run: echo ::set-output name=run-url::https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID
 
       - name: Checkout Pull Request Branch
-        uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
+        uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
         with:
           repository: ${{ github.event.client_payload.pull_request.head.repo.full_name }}
           ref: ${{ github.event.client_payload.pull_request.head.sha }}
@@ -46,7 +46,7 @@ jobs:
           sed --in-place "s/source = \"..\/..\/fixtures\/test_proxy\"/source = \"github.com\/$LOGIN\/$NAME\/\/fixtures\/test_proxy?ref=$SHA\"/" main.tf
 
       - name: Checkout TFE Load Test
-        uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
+        uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
         with:
           path: ${{ env.K6_WORK_DIR_PATH }}
           repository: hashicorp/tfe-load-test
@@ -70,7 +70,7 @@ jobs:
           terraform_wrapper: true
    
       - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@62d4898025f6041e16b1068643bfc5a696863587 # v1.1.0
+        uses: google-github-actions/setup-gcloud@e30db14379863a8c79331b04a9969f4c1e225e0b # v1.1.1
 
       - name: Terraform Init
         id: init
@@ -189,7 +189,7 @@ jobs:
 
       - name: Update comment
         if: ${{ always() }}
-        uses: peter-evans/create-or-update-comment@3383acd359705b10cb1eeef05c0e88c056ea4666 # v3.0.0
+        uses: peter-evans/create-or-update-comment@c6c9a1a66007646a28c153e2a8580a5bad27bcfa # v3.0.2
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           repository: ${{ github.event.client_payload.github.payload.repository.full_name }}
@@ -225,7 +225,7 @@ jobs:
         run: echo ::set-output name=run-url::https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID
 
       - name: Checkout Pull Request Branch
-        uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
+        uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
         with:
           repository: ${{ github.event.client_payload.pull_request.head.repo.full_name }}
           ref: ${{ github.event.client_payload.pull_request.head.sha }}
@@ -243,7 +243,7 @@ jobs:
           sed --in-place "s/source = \"..\/..\/fixtures\/test_proxy\"/source = \"github.com\/$LOGIN\/$NAME\/\/fixtures\/test_proxy?ref=$SHA\"/" main.tf
 
       - name: Checkout TFE Load Test
-        uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
+        uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
         with:
           path: ${{ env.K6_WORK_DIR_PATH }}
           repository: hashicorp/tfe-load-test
@@ -268,12 +268,12 @@ jobs:
 
       - name: Authenticate to GCP
         id: auth
-        uses: google-github-actions/auth@v1
+        uses: google-github-actions/auth@35b0e87d162680511bf346c299f71c9c5c379033 # v1.1.1
         with:
           credentials_json: ${{ secrets.GCP_TUNNELING_CREDENTIALS }}
 
       - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@62d4898025f6041e16b1068643bfc5a696863587 # v1.1.0
+        uses: google-github-actions/setup-gcloud@e30db14379863a8c79331b04a9969f4c1e225e0b # v1.1.1
 
       - name: Terraform Init
         id: init
@@ -427,7 +427,7 @@ jobs:
 
       - name: Update comment
         if: ${{ always() }}
-        uses: peter-evans/create-or-update-comment@3383acd359705b10cb1eeef05c0e88c056ea4666 # v3.0.0
+        uses: peter-evans/create-or-update-comment@c6c9a1a66007646a28c153e2a8580a5bad27bcfa # v3.0.2
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           repository: ${{ github.event.client_payload.github.payload.repository.full_name }}
@@ -463,7 +463,7 @@ jobs:
         run: echo ::set-output name=run-url::https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID
 
       - name: Checkout Pull Request Branch
-        uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
+        uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
         with:
           repository: ${{ github.event.client_payload.pull_request.head.repo.full_name }}
           ref: ${{ github.event.client_payload.pull_request.head.sha }}
@@ -481,7 +481,7 @@ jobs:
           sed --in-place "s/source = \"..\/..\/fixtures\/test_proxy\"/source = \"github.com\/$LOGIN\/$NAME\/\/fixtures\/test_proxy?ref=$SHA\"/" main.tf
 
       - name: Checkout TFE Load Test
-        uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
+        uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
         with:
           path: ${{ env.K6_WORK_DIR_PATH }}
           repository: hashicorp/tfe-load-test
@@ -506,12 +506,12 @@ jobs:
 
       - name: Authenticate to GCP
         id: auth
-        uses: google-github-actions/auth@v1
+        uses: google-github-actions/auth@35b0e87d162680511bf346c299f71c9c5c379033 # v1.1.1
         with:
           credentials_json: ${{ secrets.GCP_TUNNELING_CREDENTIALS }}
 
       - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@62d4898025f6041e16b1068643bfc5a696863587 # v1.1.0
+        uses: google-github-actions/setup-gcloud@e30db14379863a8c79331b04a9969f4c1e225e0b # v1.1.1
 
       - name: Terraform Init
         id: init
@@ -671,7 +671,7 @@ jobs:
 
       - name: Update comment
         if: ${{ always() }}
-        uses: peter-evans/create-or-update-comment@3383acd359705b10cb1eeef05c0e88c056ea4666 # v3.0.0
+        uses: peter-evans/create-or-update-comment@c6c9a1a66007646a28c153e2a8580a5bad27bcfa # v3.0.2
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           repository: ${{ github.event.client_payload.github.payload.repository.full_name }}
@@ -707,7 +707,7 @@ jobs:
         run: echo ::set-output name=run-url::https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID
 
       - name: Checkout Pull Request Branch
-        uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
+        uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
         with:
           repository: ${{ github.event.client_payload.pull_request.head.repo.full_name }}
           ref: ${{ github.event.client_payload.pull_request.head.sha }}
@@ -741,7 +741,7 @@ jobs:
           EOF
 
       - name: Checkout TFE Load Test
-        uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
+        uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
         with:
           path: ${{ env.K6_WORK_DIR_PATH }}
           repository: hashicorp/tfe-load-test
@@ -765,7 +765,7 @@ jobs:
           terraform_wrapper: true
    
       - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@62d4898025f6041e16b1068643bfc5a696863587 # v1.1.0
+        uses: google-github-actions/setup-gcloud@e30db14379863a8c79331b04a9969f4c1e225e0b # v1.1.1
 
       - name: Terraform Init
         id: init
@@ -884,7 +884,7 @@ jobs:
 
       - name: Update comment
         if: ${{ always() }}
-        uses: peter-evans/create-or-update-comment@3383acd359705b10cb1eeef05c0e88c056ea4666 # v3.0.0
+        uses: peter-evans/create-or-update-comment@c6c9a1a66007646a28c153e2a8580a5bad27bcfa # v3.0.2
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           repository: ${{ github.event.client_payload.github.payload.repository.full_name }}
@@ -920,7 +920,7 @@ jobs:
         run: echo ::set-output name=run-url::https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID
 
       - name: Checkout Pull Request Branch
-        uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
+        uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
         with:
           repository: ${{ github.event.client_payload.pull_request.head.repo.full_name }}
           ref: ${{ github.event.client_payload.pull_request.head.sha }}
@@ -954,7 +954,7 @@ jobs:
           EOF
 
       - name: Checkout TFE Load Test
-        uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
+        uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
         with:
           path: ${{ env.K6_WORK_DIR_PATH }}
           repository: hashicorp/tfe-load-test
@@ -978,7 +978,7 @@ jobs:
           terraform_wrapper: true
    
       - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@62d4898025f6041e16b1068643bfc5a696863587 # v1.1.0
+        uses: google-github-actions/setup-gcloud@e30db14379863a8c79331b04a9969f4c1e225e0b # v1.1.1
 
       - name: Terraform Init
         id: init
@@ -1097,7 +1097,7 @@ jobs:
 
       - name: Update comment
         if: ${{ always() }}
-        uses: peter-evans/create-or-update-comment@3383acd359705b10cb1eeef05c0e88c056ea4666 # v3.0.0
+        uses: peter-evans/create-or-update-comment@c6c9a1a66007646a28c153e2a8580a5bad27bcfa # v3.0.2
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           repository: ${{ github.event.client_payload.github.payload.repository.full_name }}
