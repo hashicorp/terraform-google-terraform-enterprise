@@ -51,7 +51,8 @@ locals {
     ".rhel.updates.googlecloud.com",
     "metadata.google.internal",
     "metadata.google.internal.",
-    "rhui.googlecloud.com"
+    "rhui.googlecloud.com",
+    "packages.cloud.google.com"
   ] : []
 
   hostname               = var.dns_create_record ? local.common_fqdn : local.lb_address
