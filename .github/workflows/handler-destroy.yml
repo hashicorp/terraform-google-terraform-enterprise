@@ -413,7 +413,7 @@ jobs:
         uses: hashicorp/setup-terraform@v2
         with:
           cli_config_credentials_hostname: 'app.terraform.io'
-          cli_config_credentials_token: ${{ secrets.STANDALONE_EXTERNAL_RHL8_WORKER_TFC_TOKEN }}
+          cli_config_credentials_token: ${{ secrets.STANDALONE_EXTERNAL_RHEL8_WORKER_TFC_TOKEN }}
           terraform_version: 1.1.7
 
       - name: Set up Cloud SDK
