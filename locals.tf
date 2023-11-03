@@ -48,7 +48,13 @@ locals {
     ".subscription.rhn.redhat.com",
     ".cdn.redhat.com",
     ".akamaiedge.net",
-    ".rhel.updates.googlecloud.com"
+    ".rhel.updates.googlecloud.com",
+    "metadata.google.internal",
+    "metadata.google.internal.",
+    "rhui.googlecloud.com",
+    "packages.cloud.google.com",
+    "download.docker.com",
+    "centos.org",
   ] : []
 
   hostname               = var.dns_create_record ? local.common_fqdn : local.lb_address

@@ -11,7 +11,7 @@ data "google_dns_managed_zone" "main" {
 }
 
 data "google_compute_image" "rhel" {
-  name    = "rhel-7-v20220519"
+  name    = "rhel-8-v20231010"
   project = "rhel-cloud"
 }
 
