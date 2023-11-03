@@ -33,12 +33,6 @@ variable "existing_service_account_id" {
   default     = null
 }
 
-# variable "is_replicated_deployment" {
-#   type        = bool
-#   description = "TFE will be installed using a Replicated license and deployment method."
-#   default     = true
-# }
-
 variable "labels" {
   type        = map(string)
   description = "Labels to apply to resources"
