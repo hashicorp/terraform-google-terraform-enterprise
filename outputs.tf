@@ -2,12 +2,12 @@
 # SPDX-License-Identifier: MPL-2.0
 
 output "replicated_console_password" {
-  value       = module.settings.replicated_configuration.DaemonAuthenticationPassword
-  description = "Generated password for replicated dashboard"
+  value       = var.is_replicated_deployment ? module.settings[0].replicated_configuration.DaemonAuthenticationPassword : "This is only for Replicated deployments."
+  description = "Generated password for Replicated dashboard"
 }
 
 output "replicated_console_url" {
-  value       = local.replicated_console_url
+  value       = var.is_replicated_deployment ? "https://${local.hostname}:8800/" : "This is only used for Replicated deployments."
   description = "The URL of the Terraform Enterprise administration console."
 }
 
@@ -17,8 +17,7 @@ output "lb_address" {
 }
 
 output "health_check_url" {
-  value = "${local.base_url}_health_check"
-
+  value       = "${local.base_url}_health_check"
   description = "The URL of the Terraform Enterprise health check endpoint."
 }
 
@@ -35,8 +34,7 @@ output "initial_admin_user_url" {
 }
 
 output "url" {
-  value = local.base_url
-
+  value       = local.base_url
   description = "The URL of Terraform Enterprise."
 }
 
@@ -61,7 +59,6 @@ output "dns_configuration_notice" {
 }
 
 output "vm_mig" {
-  value = module.vm_mig
-
+  value       = module.vm_mig
   description = "The managed instance group module."
 }

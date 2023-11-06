@@ -6,6 +6,11 @@ variable "enable_active_active" {
   type        = bool
 }
 
+variable "is_replicated_deployment" {
+  type        = bool
+  description = "TFE will be installed using a Replicated license and deployment method."
+}
+
 variable "namespace" {
   description = "A prefix will be applied to all resource names."
   type        = string

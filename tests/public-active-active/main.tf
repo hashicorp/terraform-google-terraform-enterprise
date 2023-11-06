@@ -10,7 +10,7 @@ resource "random_pet" "main" {
 # Store TFE License as secret
 # ---------------------------
 module "secrets" {
-  count  = var.license_file != null ? 1 : 0
+  count  = var.license_file == null || !var.is_replicated_deployment ? 0 : 1
   source = "../../fixtures/secrets"
 
   license = {
@@ -54,4 +54,14 @@ module "tfe" {
     environment = "test"
     team        = "tf-on-prem"
   }
+
+  # FDO Specific Values
+  is_replicated_deployment  = var.is_replicated_deployment
+  hc_license                = var.hc_license
+  http_port                 = 8080
+  https_port                = 8443
+  license_reporting_opt_out = true
+  registry_password         = var.registry_password
+  registry_username         = var.registry_username
+  tfe_image                 = "quay.io/hashicorp/terraform-enterprise:${var.tfe_image_tag}"
 }

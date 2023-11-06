@@ -13,6 +13,12 @@ variable "existing_service_account_id" {
   description = "The id of the logging service account to use for compute resources deployed."
 }
 
+variable "hc_license" {
+  default     = null
+  type        = string
+  description = "(Not needed if is_replicated_deployment is true) The raw TFE license that is validated on application startup."
+}
+
 variable "iact_subnet_list" {
   default     = []
   description = <<-EOD
@@ -22,16 +28,39 @@ variable "iact_subnet_list" {
   type        = list(string)
 }
 
+variable "is_replicated_deployment" {
+  type        = bool
+  description = "TFE will be installed using a Replicated license and deployment method."
+  default     = true
+}
+
 variable "license_file" {
   default     = null
   type        = string
   description = "The local path to the Terraform Enterprise license to be provided by CI."
 }
 
+variable "registry_username" {
+  default     = null
+  type        = string
+  description = "(Not needed if is_replicated_deployment is true) The username for the docker registry from which to source the terraform_enterprise container images."
+}
+
+variable "registry_password" {
+  default     = null
+  type        = string
+  description = "(Not needed if is_replicated_deployment is true) The password for the docker registry from which to source the terraform_enterprise container images."
+}
+
 variable "tfe_hostname" {
   default     = null
   description = "Hostname of the Terraform Enterprise instance which manages the base infrastructure."
   type        = string
+}
+variable "tfe_image_tag" {
+  default     = "latest"
+  type        = string
+  description = "(Not needed if is_replicated_deployment is true) The image version of the terraform-enterprise image (e.g. \"1234567\")"
 }
 
 variable "tfe_organization" {

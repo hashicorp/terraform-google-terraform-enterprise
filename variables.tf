@@ -5,32 +5,32 @@
 # -------
 variable "ca_certificate_secret_id" {
   default     = null
-  description = <<-EOD
-  The Secret Manager secret which comprises the Base64 encoded PEM certificate file for a Certificate Authority. The
-  Terraform provider calls this value the secret_id and the GCP UI calls it the name.
-  EOD
+  description = "The Secret Manager secret which comprises the Base64 encoded PEM certificate file for a Certificate Authority. The Terraform provider calls this value the secret_id and the GCP UI calls it the name."
   type        = string
 }
 
 variable "dns_create_record" {
   default     = true
-  description = "If true, will create a DNS record. If false, no record will be created and IP of load balancer will instead be output"
+  description = "If true, will create a DNS record. If false, no record will be created and IP of load balancer will instead be output."
   type        = bool
 }
 
 variable "dns_zone_name" {
   default     = null
-  description = "Name of the DNS zone set up in GCP"
+  description = "Name of the DNS zone set up in GCP."
   type        = string
 }
 
 variable "existing_service_account_id" {
-  description = <<-EOD
-  An ID of an existing service account to use for log management. Setting this value prevents terraform from creating
-  a new user and assigning  a logWriter IAM role.
-  EOD
+  description = "An ID of an existing service account to use for log management. Setting this value prevents terraform from creating a new user and assigning  a logWriter IAM role."
   type        = string
   default     = null
+}
+
+variable "is_replicated_deployment" {
+  type        = bool
+  description = "TFE will be installed using a Replicated license and deployment method."
+  default     = true
 }
 
 variable "labels" {
@@ -45,10 +45,7 @@ variable "namespace" {
 }
 
 variable "node_count" {
-  description = <<-EOD
-  The number of Terraform Enterprise nodes to deploy. Setting this value greater than 1 will enable Active/Active,
-  forcing the Production installation type and the External production type.
-  EOD
+  description = "The number of Terraform Enterprise nodes to deploy. Setting this value greater than 1 will enable Active/Active, forcing the Production installation type and the External production type."
   type        = number
   validation {
     condition     = var.node_count >= 0 && var.node_count <= 5
@@ -56,21 +53,21 @@ variable "node_count" {
   }
 }
 
+variable "project" {
+  description = "The project id of the target project. This is not inferred from the provider. Required if var.existing_service_account_id is null."
+  type        = string
+  default     = null
+}
+
 variable "proxy_ip" {
   default     = null
-  description = <<-EOD
-  The host subcomponent of an HTTP proxy URI authority. This value will be used
-  to configure the HTTP and HTTPS proxy settings of the operating system and Terraform Enterprise.
-  EOD
+  description = "The host subcomponent of an HTTP proxy URI authority. This value will be used to configure the HTTP and HTTPS proxy settings of the operating system and Terraform Enterprise."
   type        = string
 }
 
 variable "proxy_port" {
   default     = null
-  description = <<-EOD
-  The port subcomponent of an HTTP proxy URI authority. This value will be used
-  to configure the HTTP and HTTPS proxy settings of the operating system and Terraform Enterprise.
-  EOD
+  description = "The port subcomponent of an HTTP proxy URI authority. This value will be used to configure the HTTP and HTTPS proxy settings of the operating system and Terraform Enterprise."
   type        = string
 }
 
@@ -79,12 +76,12 @@ variable "proxy_port" {
 # -----------
 variable "load_balancer" {
   default     = "PRIVATE"
-  description = "Load Balancing Scheme. Supported values are: \"PRIVATE\"; \"PRIVATE_TCP\"; \"PUBLIC\"."
+  description = "Load Balancing Scheme. Supported values are: 'PRIVATE'; 'PRIVATE_TCP'; 'PUBLIC'."
   type        = string
 
   validation {
     condition     = contains(["PRIVATE", "PRIVATE_TCP", "PUBLIC"], var.load_balancer)
-    error_message = "The load_balancer value must be one of: \"PRIVATE\"; \"PRIVATE_TCP\"; \"PUBLIC\"."
+    error_message = "The load_balancer value must be one of: 'PRIVATE'; 'PRIVATE_TCP'; 'PUBLIC'."
   }
 }
 
@@ -114,10 +111,7 @@ variable "networking_ip_allow_list" {
 
 variable "networking_reserve_subnet_range" {
   default     = "10.2.0.0/16"
-  description = <<-EOD
-  The range of IP addresses to reserve for the subnetwork dedicated to internal HTTPS load balancing, expressed in CIDR
-  format.
-  EOD
+  description = "The range of IP addresses to reserve for the subnetwork dedicated to internal HTTPS load balancing, expressed in CIDR format."
   type        = string
 }
 
@@ -287,9 +281,7 @@ variable "vm_mig_unhealthy_threshold" {
 
 variable "vm_mounted_disk_size" {
   default     = 40
-  description = <<-EOD
-  The size in gigabytes of the mounted disk to attach to the VM when the Operational Mode is Mounted Disk.
-  EOD
+  description = "The size in gigabytes of the mounted disk to attach to the VM when the Operational Mode is Mounted Disk.}"
   type        = number
 }
 
@@ -307,6 +299,12 @@ variable "bypass_preflight_checks" {
   description = "Allow the TFE application to start without preflight checks."
 }
 
+variable "capacity_cpu" {
+  default     = 0
+  description = "Maximum number of CPU cores a Terraform run is allowed to use. Set to `0` for no limit. Defaults to `0` if no value is given."
+  type        = number
+}
+
 variable "capacity_concurrency" {
   default     = "10"
   description = "The maximum number of Terraform runs that will be executed concurrently on each compute instance."
@@ -316,10 +314,7 @@ variable "capacity_concurrency" {
 variable "capacity_memory" {
   default     = null
   type        = number
-  description = <<-EOD
-  The maximum amount of memory (in megabytes) that a Terraform plan or apply can use on the system;
-  defaults to 512.
-  EOD
+  description = "The maximum amount of memory (in megabytes) that a Terraform plan or apply can use on the system; defaults to 512."
 }
 
 variable "consolidated_services_enabled" {
@@ -331,20 +326,13 @@ variable "consolidated_services_enabled" {
 variable "custom_agent_image_tag" {
   default     = null
   type        = string
-  description = <<-EOD
-  Configure the docker image for handling job execution within TFE. This can either be the
-  standard image that ships with TFE or a custom image that includes extra tools not present
-  in the default one. Should be in the format <name>:<tag>.
-  EOD
+  description = "Configure the docker image for handling job execution within TFE. This can either be the standard image that ships with TFE or a custom image that includes extra tools not present in the default one. Should be in the format <name>:<tag>."
 }
 
 variable "custom_image_tag" {
   default     = null
   type        = string
-  description = <<-EOD
-  The name and tag for your alternative Terraform build worker image in the format <name>:<tag>.
-  Default is 'hashicorp/build-worker:now'.
-  EOD
+  description = "The name and tag for your alternative Terraform build worker image in the format <name>:<tag>. Default is 'hashicorp/build-worker:now'."
 }
 
 variable "disk_path" {
@@ -379,64 +367,69 @@ variable "hairpin_addressing" {
   type        = bool
 }
 
+variable "hc_license" {
+  default     = null
+  type        = string
+  description = "(Not needed if is_replicated_deployment is true) The raw TFE license that is validated on application startup."
+}
+
+variable "http_port" {
+  default     = 80
+  type        = number
+  description = "(Optional if is_replicated_deployment is false) Port application listens on for HTTP. Default is 80."
+}
+
+variable "https_port" {
+  default     = 443
+  type        = number
+  description = "(Optional if is_replicated_deployment is false) Port application listens on for HTTPS. Default is 443."
+}
+
 variable "iact_subnet_list" {
   default     = []
-  description = <<-EOD
-  A list of IP address ranges which will be authorized to access the IACT. The ranges must be expressed
-  in CIDR notation.
-  EOD
+  description = "A list of IP address ranges which will be authorized to access the IACT. The ranges must be expressed in CIDR notation."
   type        = list(string)
 }
 
 variable "iact_subnet_time_limit" {
   default     = 60
-  description = <<-EOD
-  The time limit for IP addresses from iact_subnet_list to access the IACT. The value must be expressed in minutes.
-  EOD
+  description = "The time limit for IP addresses from iact_subnet_list to access the IACT. The value must be expressed in minutes."
   type        = number
+
 }
 
 variable "metrics_endpoint_enabled" {
   default     = null
   type        = bool
-  description = <<-EOD
-  (Optional) Metrics are used to understand the behavior of Terraform Enterprise and to
-  troubleshoot and tune performance. Enable an endpoint to expose container metrics.
-  Defaults to false.
-  EOD
+  description = "(Optional) Metrics are used to understand the behavior of Terraform Enterprise and to troubleshoot and tune performance. Enable an endpoint to expose container metrics. Defaults to false."
 }
 
 variable "metrics_endpoint_port_http" {
   default     = null
   type        = number
-  description = <<-EOD
-  (Optional when metrics_endpoint_enabled is true.) Defines the TCP port on which HTTP metrics
-  requests will be handled.
-  Defaults to 9090.
-  EOD
+  description = "(Optional when metrics_endpoint_enabled is true.) Defines the TCP port on which HTTP metrics requests will be handled. Defaults to 9090."
 }
 
 variable "metrics_endpoint_port_https" {
   default     = null
   type        = string
-  description = <<-EOD
-  (Optional when metrics_endpoint_enabled is true.) Defines the TCP port on which HTTPS metrics
-  requests will be handled.
-  Defaults to 9091.
-  EOD
+  description = "(Optional when metrics_endpoint_enabled is true.) Defines the TCP port on which HTTPS metrics requests will be handled. Defaults to 9091."
+}
+
+variable "license_reporting_opt_out" {
+  default     = false
+  type        = bool
+  description = "(Not needed if is_replicated_deployment is true) Whether to opt out of reporting licensing information to HashiCorp. Defaults to false."
 }
 
 variable "operational_mode" {
   default     = "external"
-  description = <<-EOD
-  A special string to control the operational mode of Terraform Enterprise. Valid values are: "external" for External
-  Services mode; "disk" for Mounted Disk mode;.
-  EOD
+  description = "A special string to control the operational mode of Terraform Enterprise. Valid values are: 'external' for External Services mode; 'disk' for Mounted Disk mode;."
   type        = string
 
   validation {
     condition     = contains(["external", "disk"], var.operational_mode)
-    error_message = "The operational_mode value must be one of: \"external\"; \"disk\";."
+    error_message = "The operational_mode value must be one of: 'external'; 'disk';."
   }
 }
 
@@ -446,43 +439,58 @@ variable "redis_use_tls" {
   type        = bool
 }
 
+variable "registry_username" {
+  default     = null
+  type        = string
+  description = "(Not needed if is_replicated_deployment is true) The username for the docker registry from which to source the terraform_enterprise container images."
+}
+
+variable "registry_password" {
+  default     = null
+  type        = string
+  description = "(Not needed if is_replicated_deployment is true) The password for the docker registry from which to source the terraform_enterprise container images."
+}
+
 variable "release_sequence" {
   default     = null
   description = "Release sequence of Terraform Enterprise to install."
   type        = number
 }
 
+variable "run_pipeline_image" {
+  default     = null
+  type        = string
+  description = "(Not needed if is_replicated_deployment is true) Container image used to execute Terraform runs. Leave blank to use the default image that comes with Terraform Enterprise. Defaults to ''."
+}
+
 variable "ssl_certificate_name" {
   default     = null
-  description = "Name of the created managed SSL certificate. Required when load_balancer == \"PUBLIC\" or load_balancer == \"PRIVATE\"."
+  description = "Name of the created managed SSL certificate. Required when load_balancer == 'PUBLIC' or load_balancer == 'PRIVATE'."
   type        = string
 }
 
 variable "ssl_certificate_secret" {
   default     = null
-  description = <<-EOD
-  The Secret Manager secret which comprises the Base64 encoded PEM certificate file. The Terraform provider calls this
-  value the secret_id and the GCP UI calls it the name. This value is only used when load_balancer == "PRIVATE_TCP".
-  EOD
+  description = "The Secret Manager secret which comprises the Base64 encoded PEM certificate file. The Terraform provider calls this value the secret_id and the GCP UI calls it the name. This value is only used when load_balancer == 'PRIVATE_TCP'."
   type        = string
 }
 
 variable "ssl_private_key_secret" {
   default     = null
-  description = <<-EOD
-  The Secret Manager secret which comprises the Base64 encoded PEM private key file. The Terraform provider calls this
-  value the secret_id and the GCP UI calls it the name. This value is only used when load_balancer == "PRIVATE_TCP".
-  EOD
+  description = "The Secret Manager secret which comprises the Base64 encoded PEM private key file. The Terraform provider calls this value the secret_id and the GCP UI calls it the name. This value is only used when load_balancer == 'PRIVATE_TCP'."
   type        = string
+}
+
+variable "tfe_image" {
+  default     = "quay.io/hashicorp/terraform-enterprise:latest"
+  type        = string
+  description = "(Not needed if is_replicated_deployment is true) The registry path, image name, and image version (e.g. \"quay.io/hashicorp/terraform-enterprise:1234567\")"
 }
 
 variable "tfe_license_bootstrap_airgap_package_path" {
   default     = null
   type        = string
-  description = <<-EOD
-  (Required if air-gapped installation) The URL of a Replicated airgap package for Terraform
-  Enterprise. The suggested path is "/var/lib/ptfe/ptfe.airgap".
-  EOD
+  description = "(Required if air-gapped installation) The URL of a Replicated airgap package for Terraform Enterprise. The suggested path is '/var/lib/ptfe/ptfe.airgap'."
 }
 
 variable "tfe_license_file_location" {
@@ -493,10 +501,7 @@ variable "tfe_license_file_location" {
 
 variable "tfe_license_secret_id" {
   default     = null
-  description = <<-EOD
-  The Secret Manager secret which comprises the Base64 encoded Replicated license file. The Terraform provider calls
-  this value the secret_id and the GCP UI calls it the name.
-  EOD
+  description = "The Secret Manager secret which comprises the Base64 encoded Replicated license file. The Terraform provider calls this value the secret_id and the GCP UI calls it the name."
   type        = string
 }
 
@@ -512,25 +517,25 @@ variable "tls_bootstrap_key_pathname" {
   description = "The path on the TFE instance to put the key. ex. '/var/lib/terraform-enterprise/key.pem'"
 }
 
+variable "tls_ciphers" {
+  default     = null
+  type        = string
+  description = "(Not needed if is_replicated_deployment is true) TLS ciphers to use for TLS. Must be valid OpenSSL format. Leave blank to use the default ciphers. Defaults to ''"
+}
+
 variable "tls_vers" {
   default     = "tls_1_2_tls_1_3"
-  description = <<-EOD
-  An indicator of the versions of TLS that will be supported by Terraform Enterprise. The value must be
-  one of: \"tls_1_2_tls_1_3\"; \"tls_1_2\"; \"tls_1_3\".
-  EOD
+  description = "An indicator of the versions of TLS that will be supported by Terraform Enterprise. The value must be one of: 'tls_1_2_tls_1_3'; 'tls_1_2'; 'tls_1_3'."
   type        = string
   validation {
     condition     = contains(["tls_1_2_tls_1_3", "tls_1_2", "tls_1_3"], var.tls_vers)
-    error_message = "The tls_vers value must be one of: \"tls_1_2_tls_1_3\"; \"tls_1_2\"; \"tls_1_3\"."
+    error_message = "The tls_vers value must be one of: 'tls_1_2_tls_1_3'; 'tls_1_2'; 'tls_1_3'."
   }
 }
 
 variable "trusted_proxies" {
   default     = []
-  description = <<-EOD
-  A list of IP address ranges which will be considered safe to ignore when evaluating the IP addresses of requests like
-  those made to the IACT endpoint.
-  EOD
+  description = "A list of IP address ranges which will be considered safe to ignore when evaluating the IP addresses of requests like those made to the IACT endpoint."
   type        = list(string)
 }
 
