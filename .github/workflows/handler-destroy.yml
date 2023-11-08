@@ -13,7 +13,7 @@ env:
 
 jobs:
   public_active_active:
-    uses: hashicorp/terraform-random-tfe-utility/.github/workflows/destroy.yml@ah/tf-8611-gcp-fdo-3
+    uses: hashicorp/terraform-random-tfe-utility/.github/workflows/destroy.yml@main
     secrets: inherit
     name: Public Active/Active
     if: ${{ github.event.client_payload.slash_command.args.unnamed.all == 'all' || github.event.client_payload.slash_command.args.unnamed.all == 'public-active-active' }}
@@ -30,7 +30,7 @@ jobs:
       TFC_token_secret_name: PUBLIC_ACTIVE_ACTIVE_TFC_TOKEN
 
   private_active_active:
-    uses: hashicorp/terraform-random-tfe-utility/.github/workflows/destroy.yml@ah/tf-8611-gcp-fdo-3
+    uses: hashicorp/terraform-random-tfe-utility/.github/workflows/destroy.yml@main
     secrets: inherit
     name: Private Active/Active
     if: ${{ github.event.client_payload.slash_command.args.unnamed.all == 'all' || github.event.client_payload.slash_command.args.unnamed.all == 'private-active-active' }}
@@ -47,7 +47,7 @@ jobs:
       TFC_token_secret_name: PRIVATE_ACTIVE_ACTIVE_TFC_TOKEN
 
   private_tcp_active_active:
-    uses: hashicorp/terraform-random-tfe-utility/.github/workflows/destroy.yml@ah/tf-8611-gcp-fdo-3
+    uses: hashicorp/terraform-random-tfe-utility/.github/workflows/destroy.yml@main
     secrets: inherit
     name: Private TCP Active/Active
     if: ${{ github.event.client_payload.slash_command.args.unnamed.all == 'all' || github.event.client_payload.slash_command.args.unnamed.all == 'private-tcp-active-active' }}
@@ -64,7 +64,7 @@ jobs:
       TFC_token_secret_name: PRIVATE_TCP_ACTIVE_ACTIVE_TFC_TOKEN
 
   standalone_external_rhel8_worker:
-    uses: hashicorp/terraform-random-tfe-utility/.github/workflows/destroy.yml@ah/tf-8611-gcp-fdo-3
+    uses: hashicorp/terraform-random-tfe-utility/.github/workflows/destroy.yml@main
     secrets: inherit
     name: Standalone External Rhel8 Worker
     if: ${{ github.event.client_payload.slash_command.args.unnamed.all == 'all' || github.event.client_payload.slash_command.args.unnamed.all == 'standalone-external-rhel8-worker' }}
@@ -88,7 +88,7 @@ jobs:
         }\n/'
 
   standalone_mounted_disk:
-    uses: hashicorp/terraform-random-tfe-utility/.github/workflows/destroy.yml@ah/tf-8611-gcp-fdo-3
+    uses: hashicorp/terraform-random-tfe-utility/.github/workflows/destroy.yml@main
     secrets: inherit
     name: Standalone Mounted Disk
     if: ${{ github.event.client_payload.slash_command.args.unnamed.all == 'all' || github.event.client_payload.slash_command.args.unnamed.all == 'standalone-mounted-disk' }}
@@ -112,7 +112,7 @@ jobs:
         }\n/'
 
   public_active_active_replicated:
-    uses: hashicorp/terraform-random-tfe-utility/.github/workflows/destroy.yml@ah/tf-8611-gcp-fdo-3
+    uses: hashicorp/terraform-random-tfe-utility/.github/workflows/destroy.yml@main
     secrets: inherit
     name: Public Active/Active
     if: ${{ github.event.client_payload.slash_command.args.unnamed.all == 'all' || github.event.client_payload.slash_command.args.unnamed.all == 'public-active-active-replicated' }}
@@ -130,7 +130,7 @@ jobs:
       TFC_workspace_substitution_pattern: s/google-public-active-active/google-public-active-active-replicated/
 
   private_active_active_replicated:
-    uses: hashicorp/terraform-random-tfe-utility/.github/workflows/destroy.yml@ah/tf-8611-gcp-fdo-3
+    uses: hashicorp/terraform-random-tfe-utility/.github/workflows/destroy.yml@main
     secrets: inherit
     name: Private Active/Active
     if: ${{ github.event.client_payload.slash_command.args.unnamed.all == 'all' || github.event.client_payload.slash_command.args.unnamed.all == 'private-active-active-replicated' }}
@@ -148,7 +148,7 @@ jobs:
       TFC_workspace_substitution_pattern: s/google-private-active-active/google-private-active-active-replicated/
 
   private_tcp_active_active_replicated:
-    uses: hashicorp/terraform-random-tfe-utility/.github/workflows/destroy.yml@ah/tf-8611-gcp-fdo-3
+    uses: hashicorp/terraform-random-tfe-utility/.github/workflows/destroy.yml@main
     secrets: inherit
     name: Private TCP Active/Active
     if: ${{ github.event.client_payload.slash_command.args.unnamed.all == 'all' || github.event.client_payload.slash_command.args.unnamed.all == 'private-tcp-active-active-replicated' }}
@@ -166,7 +166,7 @@ jobs:
       TFC_workspace_substitution_pattern: s/google-private-tcp-active-active/google-private-tcp-active-active-replicated/
 
   standalone_external_rhel8_worker_replicated:
-    uses: hashicorp/terraform-random-tfe-utility/.github/workflows/destroy.yml@ah/tf-8611-gcp-fdo-3
+    uses: hashicorp/terraform-random-tfe-utility/.github/workflows/destroy.yml@main
     secrets: inherit
     name: Standalone External Rhel8 Worker
     if: ${{ github.event.client_payload.slash_command.args.unnamed.all == 'all' || github.event.client_payload.slash_command.args.unnamed.all == 'standalone-external-rhel8-worker-replicated' }}
@@ -190,7 +190,7 @@ jobs:
         }\n/'
 
   standalone_mounted_disk_replicated:
-    uses: hashicorp/terraform-random-tfe-utility/.github/workflows/destroy.yml@ah/tf-8611-gcp-fdo-3
+    uses: hashicorp/terraform-random-tfe-utility/.github/workflows/destroy.yml@main
     secrets: inherit
     name: Standalone Mounted Disk
     if: ${{ github.event.client_payload.slash_command.args.unnamed.all == 'all' || github.event.client_payload.slash_command.args.unnamed.all == 'standalone-mounted-disk-replicated' }}
