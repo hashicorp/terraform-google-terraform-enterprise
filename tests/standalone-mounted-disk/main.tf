@@ -41,17 +41,17 @@ module "tfe" {
   node_count                    = 1
   tfe_license_secret_id         = try(module.secrets[0].license_secret, data.tfe_outputs.base.values.license_secret_id)
 
-  existing_service_account_id   = var.existing_service_account_id
-  iact_subnet_list              = ["0.0.0.0/0"]
-  iact_subnet_time_limit        = 60
-  labels                        = local.labels
-  load_balancer                 = "PUBLIC"
-  operational_mode              = "disk"
-  ssl_certificate_name          = data.tfe_outputs.base.values.wildcard_region_ssl_certificate_name
-  ssl_certificate_secret        = var.is_replicated_deployment ? null : data.tfe_outputs.base.values.wildcard_ssl_certificate_secret_id
-  ssl_private_key_secret        = var.is_replicated_deployment ? null : data.tfe_outputs.base.values.wildcard_ssl_private_key_secret_id
-  vm_disk_source_image          = data.google_compute_image.ubuntu.self_link
-  vm_machine_type               = "n1-standard-4"
+  existing_service_account_id = var.existing_service_account_id
+  iact_subnet_list            = ["0.0.0.0/0"]
+  iact_subnet_time_limit      = 60
+  labels                      = local.labels
+  load_balancer               = "PUBLIC"
+  operational_mode            = "disk"
+  ssl_certificate_name        = data.tfe_outputs.base.values.wildcard_region_ssl_certificate_name
+  ssl_certificate_secret      = var.is_replicated_deployment ? null : data.tfe_outputs.base.values.wildcard_ssl_certificate_secret_id
+  ssl_private_key_secret      = var.is_replicated_deployment ? null : data.tfe_outputs.base.values.wildcard_ssl_private_key_secret_id
+  vm_disk_source_image        = data.google_compute_image.ubuntu.self_link
+  vm_machine_type             = "n1-standard-4"
   vm_metadata = {
     "ssh-keys" = "${local.ssh_user}:${tls_private_key.main.public_key_openssh} ${local.ssh_user}"
   }
