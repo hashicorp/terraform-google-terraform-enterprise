@@ -36,8 +36,7 @@ module "tfe" {
   load_balancer              = "PUBLIC"
   redis_auth_enabled         = false
   redis_version              = "REDIS_7_0"
-  ssl_certificate_name       = data.tfe_outputs.base.values.wildcard_region_ssl_certificate_name
-  ssl_certificate_secret     = var.is_replicated_deployment ? null : data.tfe_outputs.base.values.wildcard_ssl_certificate_secret_id
+  ssl_certificate_name       = data.tfe_outputs.base.values.wildcard_ssl_certificate_name
   ssl_private_key_secret     = var.is_replicated_deployment ? null : data.tfe_outputs.base.values.wildcard_ssl_private_key_secret_id
   vm_disk_source_image       = data.google_compute_image.ubuntu.self_link
   vm_machine_type            = "n1-standard-4"

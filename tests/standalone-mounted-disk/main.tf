@@ -47,7 +47,7 @@ module "tfe" {
   labels                      = local.labels
   load_balancer               = "PUBLIC"
   operational_mode            = "disk"
-  ssl_certificate_name        = data.tfe_outputs.base.values.wildcard_region_ssl_certificate_name
+  ssl_certificate_name        = data.tfe_outputs.base.values.wildcard_ssl_certificate_name
   ssl_certificate_secret      = var.is_replicated_deployment ? null : data.tfe_outputs.base.values.wildcard_ssl_certificate_secret_id
   ssl_private_key_secret      = var.is_replicated_deployment ? null : data.tfe_outputs.base.values.wildcard_ssl_private_key_secret_id
   vm_disk_source_image        = data.google_compute_image.ubuntu.self_link
