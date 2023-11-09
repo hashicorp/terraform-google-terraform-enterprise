@@ -34,7 +34,7 @@ resource "google_project_iam_member" "log_writer" {
 }
 
 resource "google_secret_manager_secret_iam_member" "license_secret" {
-  count     = var.enable_airgap ? 0 : 1
+  count     = var.enable_airgap && !var.is_replicated_deployment ? 0 : 1
   member    = local.member
   role      = "roles/secretmanager.secretAccessor"
   secret_id = var.tfe_license_secret_id

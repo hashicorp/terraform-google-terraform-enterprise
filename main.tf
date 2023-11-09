@@ -35,6 +35,7 @@ module "service_accounts" {
 
   ca_certificate_secret_id    = var.ca_certificate_secret_id
   enable_airgap               = local.enable_airgap
+  is_replicated_deployment    = var.is_replicated_deployment
   tfe_license_secret_id       = var.tfe_license_secret_id
   namespace                   = var.namespace
   project                     = var.project
