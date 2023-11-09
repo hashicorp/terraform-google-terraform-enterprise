@@ -42,8 +42,8 @@ module "tfe" {
   existing_service_account_id   = var.existing_service_account_id
   node_count                    = 2
   tfe_license_secret_id         = try(module.secrets[0].license_secret, data.tfe_outputs.base.values.license_secret_id)
-  ssl_certificate_name          = data.tfe_outputs.base.values.wildcard_region_ssl_certificate_name
   labels                        = local.labels
+
   iact_subnet_list              = ["${module.test_proxy.compute_instance.network_interface[0].network_ip}/32"]
   iact_subnet_time_limit        = 1440
   load_balancer                 = "PRIVATE"
@@ -51,6 +51,9 @@ module "tfe" {
   proxy_port                    = module.test_proxy.proxy_port
   redis_auth_enabled            = true
   redis_version                 = "REDIS_7_0"
+  ssl_certificate_name          = data.tfe_outputs.base.values.wildcard_region_ssl_certificate_name
+  ssl_certificate_secret        = var.is_replicated_deployment ? null : data.tfe_outputs.base.values.wildcard_ssl_certificate_secret_id
+  ssl_private_key_secret        = var.is_replicated_deployment ? null : data.tfe_outputs.base.values.wildcard_ssl_private_key_secret_id
   vm_disk_source_image          = data.google_compute_image.rhel.self_link
   vm_machine_type               = "n1-standard-16"
   vm_mig_check_interval_sec     = 300
