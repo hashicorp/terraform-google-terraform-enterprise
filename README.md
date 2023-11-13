@@ -107,11 +107,9 @@ Notes:
 
 ### Required inputs
 
-`namespace` - Namespace to uniquely identify resources. Used in name prefixes
+`is_replicated_deployment` - If TFE will be installed using a Replicated license and deployment method
 
-`tfe_license_secret_id` - The Secret Manager secret which comprises the
-Base64 encoded Replicated license file. The Terraform provider calls
-this value the secret_id and the GCP UI calls it the name.
+`namespace` - Namespace to uniquely identify resources. Used in name prefixes
 
 `dns_zone_name` - Name of the DNS zone in which a record set will be created
 
@@ -120,6 +118,20 @@ this value the secret_id and the GCP UI calls it the name.
 `ssl_certificate_name` - Name of the SSL certificate provisioned in GCP
 
 `node_count` - Number of TFE nodes to provision. A number greater than 1 will enable Active/Active
+
+#### Replicated Deployment
+
+`tfe_license_secret_id` - The Secret Manager secret which comprises the
+Base64 encoded Replicated license file. The Terraform provider calls
+this value the secret_id and the GCP UI calls it the name.
+
+#### Flexible Deployment Options - Docker
+
+`hc_license` - The raw TFE license that is validated on application startup
+
+`registry_username` -  The username for the docker registry from which to source the terraform_enterprise container images
+
+`registry_password` - The password for the docker registry from which to source the terraform_enterprise container images
 
 ## Module Manifest
 
