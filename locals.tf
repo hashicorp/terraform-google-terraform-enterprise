@@ -54,6 +54,8 @@ locals {
     "packages.cloud.google.com",
     "download.docker.com",
     "index.docker.io",
+    "localhost",
+    "127.0.0.1",
     local.common_fqdn,
     var.networking_subnet_range],
     local.replicated_no_proxy,
