@@ -10,7 +10,7 @@ resource "random_pet" "main" {
 # Store TFE License as secret
 # ---------------------------
 module "secrets" {
-  count  = var.license_file != null ? 1 : 0
+  count  = var.license_file == null || !var.is_replicated_deployment ? 0 : 1
   source = "../../fixtures/secrets"
 
   license = {
@@ -29,20 +29,23 @@ module "tfe" {
   existing_service_account_id   = var.existing_service_account_id
   node_count                    = 2
   tfe_license_secret_id         = try(module.secrets[0].license_secret, data.tfe_outputs.base.values.license_secret_id)
-  ssl_certificate_name          = data.tfe_outputs.base.values.wildcard_ssl_certificate_name
-  distribution                  = "ubuntu"
-  iact_subnet_list              = var.iact_subnet_list
-  iact_subnet_time_limit        = 1440
-  load_balancer                 = "PUBLIC"
-  redis_auth_enabled            = false
-  redis_version                 = "REDIS_7_0"
-  vm_disk_source_image          = data.google_compute_image.ubuntu.self_link
-  vm_machine_type               = "n1-standard-4"
-  vm_mig_check_interval_sec     = 300
-  vm_mig_healthy_threshold      = 1
-  vm_mig_initial_delay_sec      = 3600
-  vm_mig_timeout_sec            = 300
-  vm_mig_unhealthy_threshold    = 10
+
+  distribution               = "ubuntu"
+  iact_subnet_list           = var.iact_subnet_list
+  iact_subnet_time_limit     = 1440
+  load_balancer              = "PUBLIC"
+  redis_auth_enabled         = false
+  redis_version              = "REDIS_7_0"
+  ssl_certificate_name       = data.tfe_outputs.base.values.wildcard_ssl_certificate_name
+  ssl_certificate_secret     = var.is_replicated_deployment ? null : data.tfe_outputs.base.values.wildcard_ssl_certificate_secret_id
+  ssl_private_key_secret     = var.is_replicated_deployment ? null : data.tfe_outputs.base.values.wildcard_ssl_private_key_secret_id
+  vm_disk_source_image       = data.google_compute_image.ubuntu.self_link
+  vm_machine_type            = "n1-standard-4"
+  vm_mig_check_interval_sec  = 300
+  vm_mig_healthy_threshold   = 1
+  vm_mig_initial_delay_sec   = 3600
+  vm_mig_timeout_sec         = 300
+  vm_mig_unhealthy_threshold = 10
 
   labels = {
     oktodelete  = "true"
@@ -54,4 +57,14 @@ module "tfe" {
     environment = "test"
     team        = "tf-on-prem"
   }
+
+  # FDO Specific Values
+  is_replicated_deployment  = var.is_replicated_deployment
+  hc_license                = var.hc_license
+  http_port                 = 8080
+  https_port                = 8443
+  license_reporting_opt_out = true
+  registry_password         = var.registry_password
+  registry_username         = var.registry_username
+  tfe_image                 = "quay.io/hashicorp/terraform-enterprise:${var.tfe_image_tag}"
 }

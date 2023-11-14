@@ -70,6 +70,8 @@ if [[ -z "$skip_init" ]]; then
             $HEALTHCHECK_URL; \
             do sleep 5; done
     echo " : TFE is healthy and listening."
+    echo "Sleeping for 3 minutes to ensure that both instances are ready."
+    sleep 180
 
     echo "Fetching iact token.."
     iact_token=$(curl --fail --retry 5 "$IACT_URL")
@@ -93,9 +95,6 @@ if [[ -z "$skip_init" ]]; then
           export TFE_URL=$TFE_URL
           export TFE_API_TOKEN=$tfe_token
           export TFE_EMAIL=tf-onprem-team@hashicorp.com" > .env.sh
-    echo "Sleeping for 3 minutes to ensure that both instances are ready."
-
-    sleep 180
 fi
 
 source .env.sh

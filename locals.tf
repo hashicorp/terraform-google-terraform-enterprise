@@ -44,22 +44,39 @@ locals {
     local.default_trusted_proxies
   )
 
-  extra_no_proxy = var.distribution == "rhel" ? [
+  extra_no_proxy = concat([
+    ".googleapis.com",
+    ".googleusercontent.com",
+    ".gstatic.com",
+    "169.254.169.254",
+    "metadata.google.internal",
+    "metadata.google.internal.",
+    "packages.cloud.google.com",
+    "download.docker.com",
+    "index.docker.io",
+    "localhost",
+    "127.0.0.1",
+    local.common_fqdn,
+    var.networking_subnet_range],
+    local.replicated_no_proxy,
+    local.rhel_no_proxy
+  )
+
+  replicated_no_proxy = var.is_replicated_deployment ? [
+    ".replicated.com"
+  ] : []
+
+  rhel_no_proxy = var.distribution == "rhel" ? [
+    "centos.org",
+    "rhui.googlecloud.com",
     ".subscription.rhn.redhat.com",
     ".cdn.redhat.com",
     ".akamaiedge.net",
-    ".rhel.updates.googlecloud.com",
-    "metadata.google.internal",
-    "metadata.google.internal.",
-    "rhui.googlecloud.com",
-    "packages.cloud.google.com",
-    "download.docker.com",
-    "centos.org",
+    ".rhel.updates.googlecloud.com"
   ] : []
 
-  hostname               = var.dns_create_record ? local.common_fqdn : local.lb_address
-  base_url               = "https://${local.hostname}/"
-  replicated_console_url = "https://${local.hostname}:8800/"
+  hostname = var.dns_create_record ? local.common_fqdn : local.lb_address
+  base_url = "https://${local.hostname}/"
 
   object_storage = try(
     module.object_storage[0],

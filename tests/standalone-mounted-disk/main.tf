@@ -10,7 +10,7 @@ resource "random_pet" "main" {
 # Store TFE License as secret
 # ---------------------------
 module "secrets" {
-  count  = length(var.license_file) > 0 ? 1 : 0
+  count  = var.license_file == null || !var.is_replicated_deployment ? 0 : 1
   source = "../../fixtures/secrets"
 
   license = {
@@ -40,19 +40,33 @@ module "tfe" {
   namespace                     = random_pet.main.id
   node_count                    = 1
   tfe_license_secret_id         = try(module.secrets[0].license_secret, data.tfe_outputs.base.values.license_secret_id)
-  ssl_certificate_name          = data.tfe_outputs.base.values.wildcard_ssl_certificate_name
-  existing_service_account_id   = var.existing_service_account_id
-  iact_subnet_list              = ["0.0.0.0/0"]
-  iact_subnet_time_limit        = 60
-  labels                        = local.labels
-  load_balancer                 = "PUBLIC"
-  operational_mode              = "disk"
-  vm_disk_source_image          = data.google_compute_image.ubuntu.self_link
-  vm_machine_type               = "n1-standard-4"
+
+  existing_service_account_id = var.existing_service_account_id
+  iact_subnet_list            = ["0.0.0.0/0"]
+  iact_subnet_time_limit      = 60
+  labels                      = local.labels
+  load_balancer               = "PUBLIC"
+  operational_mode            = "disk"
+  ssl_certificate_name        = data.tfe_outputs.base.values.wildcard_ssl_certificate_name
+  ssl_certificate_secret      = var.is_replicated_deployment ? null : data.tfe_outputs.base.values.wildcard_ssl_certificate_secret_id
+  ssl_private_key_secret      = var.is_replicated_deployment ? null : data.tfe_outputs.base.values.wildcard_ssl_private_key_secret_id
+  vm_disk_source_image        = data.google_compute_image.ubuntu.self_link
+  vm_machine_type             = "n1-standard-4"
   vm_metadata = {
     "ssh-keys" = "${local.ssh_user}:${tls_private_key.main.public_key_openssh} ${local.ssh_user}"
   }
+
+  # FDO Specific Values
+  is_replicated_deployment  = var.is_replicated_deployment
+  hc_license                = var.hc_license
+  http_port                 = 8080
+  https_port                = 8443
+  license_reporting_opt_out = true
+  registry_password         = var.registry_password
+  registry_username         = var.registry_username
+  tfe_image                 = "quay.io/hashicorp/terraform-enterprise:${var.tfe_image_tag}"
 }
+
 
 resource "null_resource" "wait_for_instances" {
   count = local.enable_ssh_config

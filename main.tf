@@ -35,8 +35,10 @@ module "service_accounts" {
 
   ca_certificate_secret_id    = var.ca_certificate_secret_id
   enable_airgap               = local.enable_airgap
+  is_replicated_deployment    = var.is_replicated_deployment
   tfe_license_secret_id       = var.tfe_license_secret_id
   namespace                   = var.namespace
+  project                     = var.project
   ssl_certificate_secret      = var.ssl_certificate_secret
   ssl_private_key_secret      = var.ssl_private_key_secret
   existing_service_account_id = var.existing_service_account_id
@@ -50,15 +52,16 @@ module "networking" {
 
   count = local.enable_networking_module ? 1 : 0
 
-  enable_active_active = local.enable_active_active
-  namespace            = var.namespace
-  subnet_range         = var.networking_subnet_range
-  reserve_subnet_range = var.networking_reserve_subnet_range
-  firewall_ports       = var.networking_firewall_ports
-  healthcheck_ips      = var.networking_healthcheck_ips
-  service_account      = module.service_accounts.service_account
-  ip_allow_list        = var.networking_ip_allow_list
-  ssh_source_ranges    = var.ssh_source_ranges
+  enable_active_active     = local.enable_active_active
+  is_replicated_deployment = var.is_replicated_deployment
+  namespace                = var.namespace
+  subnet_range             = var.networking_subnet_range
+  reserve_subnet_range     = var.networking_reserve_subnet_range
+  firewall_ports           = var.networking_firewall_ports
+  healthcheck_ips          = var.networking_healthcheck_ips
+  service_account          = module.service_accounts.service_account
+  ip_allow_list            = var.networking_ip_allow_list
+  ssh_source_ranges        = var.ssh_source_ranges
   depends_on = [
     module.project_factory_project_services
   ]
@@ -102,11 +105,96 @@ module "redis" {
   ]
 }
 
+# ------------------------------------------------------------------------------------
+# Docker Compose File Config for TFE on instance(s) using Flexible Deployment Options
+# ------------------------------------------------------------------------------------
+module "docker_compose_config" {
+  source = "git::https://github.com/hashicorp/terraform-random-tfe-utility//modules/docker_compose_config?ref=main"
+  count  = var.is_replicated_deployment ? 0 : 1
+
+  license_reporting_opt_out = var.license_reporting_opt_out
+  hostname                  = local.common_fqdn
+  capacity_concurrency      = var.capacity_concurrency
+  capacity_cpu              = var.capacity_cpu
+  capacity_memory           = var.capacity_memory
+  iact_subnets              = join(",", var.iact_subnet_list)
+  iact_time_limit           = var.iact_subnet_time_limit
+  operational_mode          = local.enable_active_active ? "active-active" : var.operational_mode
+  run_pipeline_image        = var.run_pipeline_image
+  tfe_image                 = var.tfe_image
+  tfe_license               = var.hc_license
+  tls_ciphers               = var.tls_ciphers
+  tls_version               = var.tls_vers
+
+  cert_file          = "/etc/ssl/private/terraform-enterprise/cert.pem"
+  key_file           = "/etc/ssl/private/terraform-enterprise/key.pem"
+  tls_ca_bundle_file = var.ca_certificate_secret_id != null ? "/etc/ssl/private/terraform-enterprise/bundle.pem" : null
+
+  database_user       = local.database.user
+  database_password   = local.database.password
+  database_host       = local.database.netloc
+  database_name       = local.database.dbname
+  database_parameters = "sslmode=require"
+
+  storage_type       = "google"
+  google_bucket      = local.object_storage.bucket
+  google_credentials = module.service_accounts.credentials
+  google_project     = local.object_storage.project
+
+  http_port       = var.http_port
+  https_port      = var.https_port
+  http_proxy      = var.proxy_ip != null ? "${var.proxy_ip}:${var.proxy_port}" : null
+  https_proxy     = var.proxy_ip != null ? "${var.proxy_ip}:${var.proxy_port}" : null
+  no_proxy        = local.extra_no_proxy
+  trusted_proxies = local.trusted_proxies
+
+  redis_host     = local.redis.host
+  redis_user     = ""
+  redis_password = local.redis.password
+  redis_use_tls  = var.redis_use_tls
+  redis_use_auth = var.redis_auth_enabled
+
+  vault_address   = var.extern_vault_addr
+  vault_namespace = var.extern_vault_namespace
+  vault_path      = var.extern_vault_path
+  vault_role_id   = var.extern_vault_role_id
+  vault_secret_id = var.extern_vault_secret_id
+}
+
+# ----------------------------------------------------------------------------------------------------------
+# User data / cloud init used to install and configure TFE on instance(s) using Flexible Deployment Options
+# ----------------------------------------------------------------------------------------------------------
+module "tfe_init_fdo" {
+  source = "git::https://github.com/hashicorp/terraform-random-tfe-utility//modules/tfe_init?ref=main"
+  count  = var.is_replicated_deployment ? 0 : 1
+
+  cloud             = "google"
+  distribution      = var.distribution
+  disk_path         = var.disk_path
+  disk_device_name  = local.disk_device_name
+  operational_mode  = local.enable_active_active ? "active-active" : var.operational_mode
+  custom_image_tag  = var.custom_image_tag
+  enable_monitoring = var.enable_monitoring
+
+  ca_certificate_secret_id = var.ca_certificate_secret_id == null ? null : var.ca_certificate_secret_id
+  certificate_secret_id    = var.ssl_certificate_secret == null ? null : var.ssl_certificate_secret
+  key_secret_id            = var.ssl_private_key_secret == null ? null : var.ssl_private_key_secret
+
+  proxy_ip       = var.proxy_ip
+  proxy_port     = var.proxy_port
+  extra_no_proxy = local.extra_no_proxy
+
+  registry_username   = var.registry_username
+  registry_password   = var.registry_password
+  docker_compose_yaml = module.docker_compose_config[0].docker_compose_yaml
+}
+
 # -----------------------------------------------------------------------------
-# TFE and Replicated settings to pass to the tfe_init module
+# TFE and Replicated settings to pass to the tfe_init_replicated module
 # -----------------------------------------------------------------------------
 module "settings" {
   source = "git::https://github.com/hashicorp/terraform-random-tfe-utility//modules/settings?ref=main"
+  count  = var.is_replicated_deployment ? 1 : 0
 
   # TFE Base Configuration
   consolidated_services_enabled = var.consolidated_services_enabled
@@ -124,11 +212,7 @@ module "settings" {
   capacity_concurrency          = var.capacity_concurrency
   capacity_memory               = var.capacity_memory
 
-  extra_no_proxy = concat([
-    local.common_fqdn,
-    var.networking_subnet_range],
-    local.extra_no_proxy
-  )
+  extra_no_proxy = local.extra_no_proxy
 
   trusted_proxies = concat(
     var.trusted_proxies,
@@ -173,19 +257,20 @@ module "settings" {
   extern_vault_namespace   = var.extern_vault_namespace
 }
 
-# -----------------------------------------------------------------------------
-# User data / cloud init used to install and configure TFE on instance(s)
-# -----------------------------------------------------------------------------
-module "tfe_init" {
+# ---------------------------------------------------------------------------------------
+# User data / cloud init used to install and configure TFE on instance(s) via Replicated
+# ---------------------------------------------------------------------------------------
+module "tfe_init_replicated" {
   source = "git::https://github.com/hashicorp/terraform-random-tfe-utility//modules/tfe_init_replicated?ref=main"
+  count  = var.is_replicated_deployment ? 1 : 0
 
   # TFE & Replicated Configuration data
   cloud                    = "google"
   distribution             = var.distribution
   disk_path                = var.disk_path
   disk_device_name         = local.disk_device_name
-  tfe_configuration        = module.settings.tfe_configuration
-  replicated_configuration = module.settings.replicated_configuration
+  tfe_configuration        = module.settings[0].tfe_configuration
+  replicated_configuration = module.settings[0].replicated_configuration
   airgap_url               = var.airgap_url
   enable_monitoring        = var.enable_monitoring
 
@@ -232,7 +317,7 @@ module "vm_instance_template" {
     email = module.service_accounts.service_account.email
   }
   source_image   = var.vm_disk_source_image
-  startup_script = base64decode(module.tfe_init.tfe_userdata_base64_encoded)
+  startup_script = base64decode(var.is_replicated_deployment ? module.tfe_init_replicated[0].tfe_userdata_base64_encoded : module.tfe_init_fdo[0].tfe_userdata_base64_encoded)
   subnetwork     = local.subnetwork.self_link
 }
 
@@ -264,12 +349,14 @@ module "vm_mig" {
       name = "https"
       port = 443
     }],
-    (
-      local.enable_active_active ? [] : [{
-        name = "console"
-        port = 8800
-      }]
-    )
+    local.enable_active_active && !var.is_replicated_deployment ? [{
+      name = "vault"
+      port = 8201
+    }] : [],
+    !local.enable_active_active && var.is_replicated_deployment ? [{
+      name = "console"
+      port = 8800
+    }] : []
   )
   target_size = var.node_count
 }
