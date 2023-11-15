@@ -109,7 +109,7 @@ module "redis" {
 # Docker Compose File Config for TFE on instance(s) using Flexible Deployment Options
 # ------------------------------------------------------------------------------------
 module "docker_compose_config" {
-  source = "git::https://github.com/hashicorp/terraform-random-tfe-utility//modules/docker_compose_config?ref=main"
+  source = "git::https://github.com/hashicorp/terraform-random-tfe-utility//modules/docker_compose_config?ref=ah/disk_path"
   count  = var.is_replicated_deployment ? 0 : 1
 
   license_reporting_opt_out = var.license_reporting_opt_out
@@ -117,6 +117,7 @@ module "docker_compose_config" {
   capacity_concurrency      = var.capacity_concurrency
   capacity_cpu              = var.capacity_cpu
   capacity_memory           = var.capacity_memory
+  disk_path                 = local.enable_disk ? var.disk_path : null
   iact_subnets              = join(",", var.iact_subnet_list)
   iact_time_limit           = var.iact_subnet_time_limit
   operational_mode          = local.enable_active_active ? "active-active" : var.operational_mode
@@ -165,7 +166,7 @@ module "docker_compose_config" {
 # User data / cloud init used to install and configure TFE on instance(s) using Flexible Deployment Options
 # ----------------------------------------------------------------------------------------------------------
 module "tfe_init_fdo" {
-  source = "git::https://github.com/hashicorp/terraform-random-tfe-utility//modules/tfe_init?ref=main"
+  source = "git::https://github.com/hashicorp/terraform-random-tfe-utility//modules/tfe_init?ref=ah/disk_path"
   count  = var.is_replicated_deployment ? 0 : 1
 
   cloud             = "google"
