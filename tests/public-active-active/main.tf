@@ -49,13 +49,12 @@ module "tfe" {
 
   labels = {
     oktodelete  = "true"
-    terraform   = "true"
     department  = "engineering"
     product     = "terraform-enterprise"
     repository  = "terraform-google-terraform-enterprise"
     description = "public-active-active"
     environment = "test"
-    team        = "tf-on-prem"
+    team        = "terraform-enterprise"
   }
 
   # FDO Specific Values
@@ -64,7 +63,8 @@ module "tfe" {
   http_port                 = 8080
   https_port                = 8443
   license_reporting_opt_out = true
+  registry                  = local.registry
   registry_password         = var.registry_password
   registry_username         = var.registry_username
-  tfe_image                 = "quay.io/hashicorp/terraform-enterprise:${var.tfe_image_tag}"
+  tfe_image                 = "${local.registry}/hashicorp/terraform-enterprise:${var.tfe_image_tag}"
 }

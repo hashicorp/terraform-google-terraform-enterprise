@@ -439,16 +439,22 @@ variable "redis_use_tls" {
   type        = bool
 }
 
-variable "registry_username" {
-  default     = null
+variable "registry" {
+  default     = "images.releases.hashicorp.com"
   type        = string
-  description = "(Not needed if is_replicated_deployment is true) The username for the docker registry from which to source the terraform_enterprise container images."
+  description = "(Not needed if is_replicated_deployment is true) The docker registry from which to source the terraform_enterprise container images."
 }
 
 variable "registry_password" {
   default     = null
   type        = string
   description = "(Not needed if is_replicated_deployment is true) The password for the docker registry from which to source the terraform_enterprise container images."
+}
+
+variable "registry_username" {
+  default     = null
+  type        = string
+  description = "(Not needed if is_replicated_deployment is true) The username for the docker registry from which to source the terraform_enterprise container images."
 }
 
 variable "release_sequence" {
@@ -482,9 +488,9 @@ variable "ssl_private_key_secret" {
 }
 
 variable "tfe_image" {
-  default     = "quay.io/hashicorp/terraform-enterprise:latest"
+  default     = "images.releases.hashicorp.com/hashicorp/terraform-enterprise:v202311-1"
   type        = string
-  description = "(Not needed if is_replicated_deployment is true) The registry path, image name, and image version (e.g. \"quay.io/hashicorp/terraform-enterprise:1234567\")"
+  description = "(Not needed if is_replicated_deployment is true) The registry path, image name, and image version."
 }
 
 variable "tfe_license_bootstrap_airgap_package_path" {
