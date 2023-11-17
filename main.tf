@@ -166,7 +166,7 @@ module "docker_compose_config" {
 # User data / cloud init used to install and configure TFE on instance(s) using Flexible Deployment Options
 # ----------------------------------------------------------------------------------------------------------
 module "tfe_init_fdo" {
-  source = "git::https://github.com/hashicorp/terraform-random-tfe-utility//modules/tfe_init?ref=main"
+  source = "git::https://github.com/hashicorp/terraform-random-tfe-utility//modules/tfe_init?ref=ah/TF-10844-registry"
   count  = var.is_replicated_deployment ? 0 : 1
 
   cloud             = "google"
@@ -185,8 +185,10 @@ module "tfe_init_fdo" {
   proxy_port     = var.proxy_port
   extra_no_proxy = local.extra_no_proxy
 
-  registry_username   = var.registry_username
-  registry_password   = var.registry_password
+  registry          = var.registry
+  registry_password = var.registry == "images.releases.hashicorp.com" ? var.hc_license : var.registry_password
+  registry_username = var.registry_username
+
   docker_compose_yaml = module.docker_compose_config[0].docker_compose_yaml
 }
 
