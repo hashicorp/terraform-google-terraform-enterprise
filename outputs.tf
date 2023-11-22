@@ -62,3 +62,9 @@ output "vm_mig" {
   value       = module.vm_mig
   description = "The managed instance group module."
 }
+
+output "database" {
+  value = module.database
+  description = "The database module output"
+  sensitive = true
+}
