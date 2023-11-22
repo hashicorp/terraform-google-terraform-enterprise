@@ -14,9 +14,10 @@ data "google_service_account" "proxy" {
 }
 
 resource "google_project_iam_member" "log_writer" {
-  count  = var.existing_service_account_id == null ? 1 : 0
-  member = local.service_account_member
-  role   = "roles/logging.logWriter"
+  project = var.gcp_project_id
+  count   = var.existing_service_account_id == null ? 1 : 0
+  member  = local.service_account_member
+  role    = "roles/logging.logWriter"
 }
 
 resource "google_secret_manager_secret_iam_member" "http_proxy_certificate" {

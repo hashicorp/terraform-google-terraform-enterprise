@@ -1,6 +1,11 @@
 # Copyright (c) HashiCorp, Inc.
 # SPDX-License-Identifier: MPL-2.0
 
+variable "gcp_project_id" {
+  description = "GCP Project ID to deploy resources into."
+  type = string
+}
+
 variable "consolidated_services_enabled" {
   default     = true
   type        = bool

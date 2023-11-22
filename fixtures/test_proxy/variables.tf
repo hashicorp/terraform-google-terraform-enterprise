@@ -1,6 +1,11 @@
 # Copyright (c) HashiCorp, Inc.
 # SPDX-License-Identifier: MPL-2.0
 
+variable "gcp_project_id" {
+  description = "GCP Project ID to deploy resources into."
+  type = string
+}
+
 variable "instance_image" {
   description = "The identifier of the image which will be used to initialize the boot disk."
   type        = string

@@ -10,6 +10,7 @@ resource "random_pet" "main" {
 module "test_proxy" {
   source = "../../fixtures/test_proxy"
 
+  gcp_project_id              = var.gcp_project_id
   instance_image              = data.google_compute_image.ubuntu.id
   name                        = local.name
   network                     = module.tfe.network
