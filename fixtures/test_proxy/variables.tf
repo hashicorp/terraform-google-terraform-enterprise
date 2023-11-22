@@ -3,7 +3,7 @@
 
 variable "gcp_project_id" {
   description = "GCP Project ID to deploy resources into."
-  type = string
+  type        = string
 }
 
 variable "instance_image" {
