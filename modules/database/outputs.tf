@@ -11,6 +11,13 @@ output "dbname" {
 
   description = "The name of the PostgreSQL database."
 }
+
+output "db_instance_name" {
+  value = google_sql_database_instance.tfe.name
+
+  description = "The name of the PostgreSQL database instance."
+}
+
 output "user" {
   value = google_sql_user.tfe.name
 
