@@ -35,7 +35,6 @@ module "secrets" {
 module "tfe" {
   source = "../.."
 
-  gcp_project_id                = var.gcp_project_id
   consolidated_services_enabled = var.consolidated_services_enabled
   distribution                  = "rhel"
   dns_zone_name                 = data.google_dns_managed_zone.main.name

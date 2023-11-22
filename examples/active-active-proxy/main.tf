@@ -36,7 +36,6 @@ module "test_proxy" {
 module "active_active_proxy" {
   source = "../../"
 
-  gcp_project_id              = var.gcp_project_id
   ca_certificate_secret_id    = var.ca_certificate_secret_id
   distribution                = "rhel"
   dns_zone_name               = var.dns_zone_name
