@@ -32,6 +32,7 @@ resource "local_file" "private_key_pem" {
 
 module "tfe" {
   source                        = "../.."
+  gcp_project_id                = var.gcp_project_id
   consolidated_services_enabled = var.consolidated_services_enabled
   disk_path                     = "/opt/hashicorp/data"
   distribution                  = "ubuntu"

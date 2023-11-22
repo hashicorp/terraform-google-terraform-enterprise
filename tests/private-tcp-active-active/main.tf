@@ -37,6 +37,7 @@ module "secrets" {
 module "tfe" {
   source = "../.."
 
+  gcp_project_id                = var.gcp_project_id
   bypass_preflight_checks       = true
   consolidated_services_enabled = var.consolidated_services_enabled
   distribution                  = "rhel"

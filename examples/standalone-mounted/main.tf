@@ -23,6 +23,7 @@ module "secrets" {
 module "tfe" {
   source = "../../"
 
+  gcp_project_id              = var.gcp_project_id
   distribution                = "ubuntu"
   dns_zone_name               = var.dns_zone_name
   existing_service_account_id = var.existing_service_account_id

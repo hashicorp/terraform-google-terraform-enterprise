@@ -1,6 +1,11 @@
 # Copyright (c) HashiCorp, Inc.
 # SPDX-License-Identifier: MPL-2.0
 
+variable "gcp_project_id" {
+  description = "GCP Project ID to deploy resources into."
+  type        = string
+}
+
 variable "ca_certificate_secret_id" {
   type        = string
   description = "The secrets manager secret name of the Base64 encoded CA certificate for mitm"

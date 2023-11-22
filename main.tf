@@ -3,7 +3,7 @@
 
 module "project_factory_project_services" {
   source  = "terraform-google-modules/project-factory/google//modules/project_services"
-  version = "~> 11.2"
+  version = "~> 14.4.0"
 
   project_id = null
 
@@ -290,7 +290,7 @@ module "tfe_init_replicated" {
 
 module "vm_instance_template" {
   source  = "terraform-google-modules/vm/google//modules/instance_template"
-  version = "~> 7.1"
+  version = "~> 10.1.0"
 
   name_prefix = "${var.namespace}-tfe-template-"
 
@@ -326,7 +326,7 @@ module "vm_instance_template" {
 
 module "vm_mig" {
   source  = "terraform-google-modules/vm/google//modules/mig"
-  version = "~> 7.1"
+  version = "~> 10.1.0"
 
   instance_template = module.vm_instance_template.self_link
   region            = null
