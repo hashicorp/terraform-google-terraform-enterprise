@@ -66,5 +66,5 @@ module "tfe" {
   registry                  = local.registry
   registry_password         = var.registry_password
   registry_username         = var.registry_username
-  tfe_image                 = "${local.registry}/hashicorp/terraform-enterprise:${var.tfe_image_tag}"
+  tfe_image                 = "${local.registry}/hashicorp/terraform-enterprise:dc2331d"
 }
