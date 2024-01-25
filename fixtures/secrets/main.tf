@@ -7,7 +7,9 @@ resource "google_secret_manager_secret" "ca_certificate" {
   secret_id = var.ca_certificate.id
 
   replication {
-    automatic = true
+    auto {
+
+    }
   }
 
   labels = var.labels
@@ -26,7 +28,9 @@ resource "google_secret_manager_secret" "ca_private_key" {
   secret_id = var.ca_private_key.id
 
   replication {
-    automatic = true
+    auto {
+
+    }
   }
 
   labels = var.labels
@@ -45,7 +49,9 @@ resource "google_secret_manager_secret" "license" {
   secret_id = var.license.id
 
   replication {
-    automatic = true
+    auto {
+
+    }
   }
 
   labels = var.labels
@@ -64,7 +70,9 @@ resource "google_secret_manager_secret" "ssl_certificate" {
   secret_id = var.ssl_certificate.id
 
   replication {
-    automatic = true
+    auto {
+
+    }
   }
 
   labels = var.labels
@@ -83,7 +91,9 @@ resource "google_secret_manager_secret" "ssl_private_key" {
   secret_id = var.ssl_private_key.id
 
   replication {
-    automatic = true
+    auto {
+
+    }
   }
 
   labels = var.labels
