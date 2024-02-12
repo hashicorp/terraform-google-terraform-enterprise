@@ -127,6 +127,11 @@ variable "ssh_source_ranges" {
   type        = list(string)
 }
 
+variable "enable_ssh" {
+  type = bool
+  default = false
+}
+
 variable "subnetwork" {
   default     = null
   description = "Pre-existing subnetwork self link"

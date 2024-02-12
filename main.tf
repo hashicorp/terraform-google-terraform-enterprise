@@ -323,13 +323,13 @@ module "vm_instance_template" {
   startup_script = base64decode(var.is_replicated_deployment ? module.tfe_init_replicated[0].tfe_userdata_base64_encoded : module.tfe_init_fdo[0].tfe_userdata_base64_encoded)
   subnetwork     = local.subnetwork.self_link
 
-  stateful_ips = [
+  stateful_ips = var.enable_ssh ? [
     {
       interface_name = "nic0"
       delete_rule    = "ON_PERMANENT_INSTANCE_DELETION"
       is_external    = true
     }
-  ]
+  ] : []
 }
 
 module "vm_mig" {
