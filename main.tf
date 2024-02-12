@@ -436,7 +436,7 @@ resource "google_compute_forwarding_rule" "ssh_forwarding_rule" {
   count      = var.enable_ssh ? 1 : 0
 
   name       = "${var.namespace}-tfe-ssh-forwarding-rule"
-  target     = google_compute_url_map.ssh_url_map.self_link
+  target     = google_compute_url_map.ssh_url_map[count.index].self_link
   port_range = 22
   ip_address = google_compute_address.static_ip[count.index].address
 }
