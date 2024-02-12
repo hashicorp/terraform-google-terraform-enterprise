@@ -411,6 +411,21 @@ resource "google_compute_global_address" "public" {
   description = "The global address of the public load balancer for TFE."
 }
 
+resource "google_compute_address" "static_ip" {
+  count = var.enable_ssh ? 1 : 0
+
+  name  = "${var.namespace}-public-ip"
+}
+
+resource "google_compute_forwarding_rule" "ssh_forwarding_rule" {
+  count      = var.enable_ssh ? 1 : 0
+
+  name       = "${var.namespace}-tfe-ssh-forwarding-rule"
+  target     = module.load_balancer.compute_backend_url_map_self_link
+  port_range = 22
+  ip_address = google_compute_address.static_ip[count.index].address
+}
+
 module "load_balancer" {
   count  = var.load_balancer == "PUBLIC" ? 1 : 0
   source = "./modules/load_balancer"

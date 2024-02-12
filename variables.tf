@@ -127,6 +127,12 @@ variable "ssh_source_ranges" {
   type        = list(string)
 }
 
+variable "enable_ssh" {
+  description = "The toggle to create resources enabling public SSH access"
+  type        = bool
+  default     = false
+}
+
 variable "subnetwork" {
   default     = null
   description = "Pre-existing subnetwork self link"

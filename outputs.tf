@@ -62,3 +62,9 @@ output "vm_mig" {
   value       = module.vm_mig
   description = "The managed instance group module."
 }
+
+output "ssh_public_ip" {
+  value       = var.enable_ssh ? google_compute_address.static_ip.address : null
+  description = "The public IP of the instance in the MIG"
+  sensitive   = true
+}
