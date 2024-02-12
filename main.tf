@@ -411,6 +411,20 @@ resource "google_compute_global_address" "public" {
   description = "The global address of the public load balancer for TFE."
 }
 
+resource "google_compute_health_check" "ssh" {
+  count = var.enable_ssh ? 1 : 0
+  name = "${var.namespace}-tfe-ssh-healthcheck"
+
+  check_interval_sec = 30
+  description        = "The health check of the public load balancer for TFE."
+  timeout_sec        = 4
+
+  https_health_check {
+    port         = 443
+    request_path = "/_health_check"
+  }
+}
+
 resource "google_compute_backend_service" "ssh_backend_service" {
   count = var.enable_ssh ? 1 : 0
 
@@ -418,6 +432,8 @@ resource "google_compute_backend_service" "ssh_backend_service" {
   backend {
     group = module.vm_mig.instance_group
   }
+
+  health_checks = [google_compute_health_check.ssh[count.index].self_link]
 }
 
 resource "google_compute_url_map" "ssh_url_map" {

@@ -22,7 +22,6 @@ resource "google_compute_health_check" "lb" {
     port         = 443
     request_path = "/_health_check"
   }
-
 }
 
 resource "google_compute_backend_service" "lb" {
