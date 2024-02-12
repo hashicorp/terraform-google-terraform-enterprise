@@ -64,7 +64,7 @@ output "vm_mig" {
 }
 
 output "ssh_public_ip" {
-  value       = var.enable_ssh ? google_compute_address.static_ip.address : null
+  value       = var.enable_ssh ? google_compute_address.static_ip[0].address : null
   description = "The public IP of the instance in the MIG"
   sensitive   = true
 }

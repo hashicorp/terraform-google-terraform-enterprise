@@ -421,7 +421,7 @@ resource "google_compute_forwarding_rule" "ssh_forwarding_rule" {
   count      = var.enable_ssh ? 1 : 0
 
   name       = "${var.namespace}-tfe-ssh-forwarding-rule"
-  target     = module.load_balancer.compute_backend_url_map_self_link
+  target     = module.load_balancer[count.index].compute_backend_url_map_self_link
   port_range = 22
   ip_address = google_compute_address.static_ip[count.index].address
 }
