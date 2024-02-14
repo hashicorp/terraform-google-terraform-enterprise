@@ -370,6 +370,13 @@ module "vm_mig" {
       is_external    = true
     }
   ] : []
+  update_policy = var.enable_ssh ? [
+    {
+      type = "OPPORTUNISTIC"
+      instance_redistribution_type = "NONE"
+      minimal_action = var.is_replicated_deployment ? "RESTART" : "REPLACE"
+    }
+  ] : []
 }
 
 resource "google_compute_address" "private" {
