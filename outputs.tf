@@ -63,7 +63,7 @@ output "vm_mig" {
   description = "The managed instance group module."
 }
 
-output "service_network_connection" {
-  value       = local.enable_networking_module ? module.networking[0].service_network_connection : null
-  description = "The service network connection module."
-}
+# output "service_network_connection" {
+#   value       = local.enable_networking_module ? module.networking[0].service_network_connection : null
+#   description = "The service network connection module."
+# }
