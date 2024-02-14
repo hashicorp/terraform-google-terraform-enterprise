@@ -374,8 +374,8 @@ module "vm_mig" {
     {
       type = "OPPORTUNISTIC"
       instance_redistribution_type = "NONE"
-      minimal_action = var.is_replicated_deployment ? "RESTART" : "REPLACE"
-      max_unavailable_fixed = var.is_replicated_deployment ? 1 : null
+      minimal_action = null
+      max_unavailable_fixed = null
       max_surge_fixed = null
       max_surge_percent = null
       max_unavailable_percent = null
