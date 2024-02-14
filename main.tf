@@ -363,14 +363,22 @@ module "vm_mig" {
     }] : []
   )
   target_size = var.node_count
-  stateful_ips = var.enable_ssh ? [
+  # When enabling public ssh access, the instances created by the mig will
+  # get a public IP address attached.
+  stateful_ips = var.enable_public_ssh_access ? [
     {
       interface_name = "nic0"
       delete_rule    = "ON_PERMANENT_INSTANCE_DELETION"
       is_external    = true
     }
   ] : []
-  update_policy = var.enable_ssh ? [
+
+  # When enabling stateful properties in a mig, the update_policy block is required.
+  # This block is used to specify how the mig should handle updates to the instances.
+  # In this case, we are using an opportunistic update policy to minimize the impact
+  # of updates to the instances when the mig is for replicated. When the mig is for
+  # FDO we use a replace update policy to ensure that the instances are replaced.
+  update_policy = var.enable_public_ssh_access ? [
     {
       type                         = "OPPORTUNISTIC"
       instance_redistribution_type = "NONE"
