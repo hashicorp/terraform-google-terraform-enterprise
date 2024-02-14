@@ -71,7 +71,7 @@ module "networking" {
 module "database" {
   source = "./modules/database"
 
-  count = local.enable_database_module ? 1 : 0
+  count = local.enable_database_module && !var.is_teardown_run ? 1 : 0
 
   dbname                        = var.database_name
   username                      = var.database_user
@@ -92,7 +92,7 @@ module "database" {
 module "redis" {
   source = "./modules/redis"
 
-  count = local.enable_redis_module ? 1 : 0
+  count = local.enable_redis_module && !var.is_teardown_run ? 1 : 0
 
   auth_enabled                  = var.redis_auth_enabled
   namespace                     = var.namespace
