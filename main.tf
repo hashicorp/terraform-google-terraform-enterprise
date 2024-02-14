@@ -3,7 +3,7 @@
 
 module "project_factory_project_services" {
   source  = "terraform-google-modules/project-factory/google//modules/project_services"
-  version = "~> 11.2"
+  version = "~> 14.0"
 
   project_id = null
 
@@ -290,7 +290,7 @@ module "tfe_init_replicated" {
 
 module "vm_instance_template" {
   source  = "terraform-google-modules/vm/google//modules/instance_template"
-  version = "~> 7.1"
+  version = "~> 10.0"
 
   name_prefix = "${var.namespace}-tfe-template-"
 
@@ -326,7 +326,7 @@ module "vm_instance_template" {
 
 module "vm_mig" {
   source  = "terraform-google-modules/vm/google//modules/mig"
-  version = "~> 7.1"
+  version = "~> 10.0"
 
   instance_template = module.vm_instance_template.self_link
   region            = null
@@ -344,6 +344,7 @@ module "vm_mig" {
     timeout_sec         = var.vm_mig_timeout_sec
     type                = "https"
     unhealthy_threshold = var.vm_mig_unhealthy_threshold
+    enable_logging      = false
   }
   health_check_name = "${var.namespace}-tfe-health-check"
   hostname          = "${var.namespace}-tfe"
@@ -362,6 +363,34 @@ module "vm_mig" {
     }] : []
   )
   target_size = var.node_count
+  # When enabling public ssh access, the instances created by the mig will
+  # get a public IP address attached.
+  stateful_ips = var.enable_public_ssh_access ? [
+    {
+      interface_name = "nic0"
+      delete_rule    = "ON_PERMANENT_INSTANCE_DELETION"
+      is_external    = true
+    }
+  ] : []
+
+  # When enabling stateful properties in a mig, the update_policy block is required.
+  # This block is used to specify how the mig should handle updates to the instances.
+  # In this case, we are using an opportunistic update policy to minimize the impact
+  # of updates to the instances when the mig is for replicated. When the mig is for
+  # FDO we use a replace update policy to ensure that the instances are replaced.
+  update_policy = var.enable_public_ssh_access ? [
+    {
+      type                         = "OPPORTUNISTIC"
+      instance_redistribution_type = "NONE"
+      minimal_action               = var.is_replicated_deployment ? "RESTART" : "REPLACE"
+      max_unavailable_fixed        = var.is_replicated_deployment ? 3 : null
+      max_surge_fixed              = null
+      max_surge_percent            = null
+      max_unavailable_percent      = null
+      min_ready_sec                = null
+      replacement_method           = null
+    }
+  ] : []
 }
 
 resource "google_compute_address" "private" {

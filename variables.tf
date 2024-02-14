@@ -127,6 +127,12 @@ variable "ssh_source_ranges" {
   type        = list(string)
 }
 
+variable "enable_public_ssh_access" {
+  type        = bool
+  default     = false
+  description = "A toggle to control the use of public SSH access to the compute instances. When enabled, the SSH port will be open to the public internet."
+}
+
 variable "subnetwork" {
   default     = null
   description = "Pre-existing subnetwork self link"
