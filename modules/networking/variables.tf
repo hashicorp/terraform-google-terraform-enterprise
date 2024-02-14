@@ -69,3 +69,8 @@ variable "ssh_source_ranges" {
   description = "The source IP address ranges from which SSH traffic will be permitted; these ranges must be expressed in CIDR notation."
   type        = list(string)
 }
+
+variable "is_teardown_run" {
+  default = false
+  type    = bool
+}
