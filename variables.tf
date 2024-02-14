@@ -595,3 +595,7 @@ variable "extern_vault_token_renew" {
   description = "(Optional if var.extern_vault_enable = true) How often (in seconds) to renew the Vault token."
 }
 
+variable "is_teardown_run" {
+  default = false
+  type = bool
+}

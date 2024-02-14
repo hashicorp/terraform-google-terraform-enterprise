@@ -54,6 +54,7 @@ module "networking" {
 
   enable_active_active     = local.enable_active_active
   is_replicated_deployment = var.is_replicated_deployment
+  is_teardown_run = var.is_teardown_run
   namespace                = var.namespace
   subnet_range             = var.networking_subnet_range
   reserve_subnet_range     = var.networking_reserve_subnet_range
