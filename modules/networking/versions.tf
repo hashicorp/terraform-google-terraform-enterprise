@@ -14,5 +14,10 @@ terraform {
       source  = "hashicorp/google-beta"
       version = "~> 5.0"
     }
+
+    google-beta-cuatro = {
+      source  = "hashicorp/google-beta"
+      version = "~> 4.0"
+    }
   }
 }
