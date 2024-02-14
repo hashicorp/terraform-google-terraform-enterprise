@@ -128,7 +128,7 @@ variable "ssh_source_ranges" {
 }
 
 variable "enable_ssh" {
-  type = bool
+  type    = bool
   default = false
 }
 

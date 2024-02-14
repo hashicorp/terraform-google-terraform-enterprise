@@ -372,15 +372,15 @@ module "vm_mig" {
   ] : []
   update_policy = var.enable_ssh ? [
     {
-      type = "OPPORTUNISTIC"
+      type                         = "OPPORTUNISTIC"
       instance_redistribution_type = "NONE"
-      minimal_action = var.is_replicated_deployment ? "RESTART" : "REPLACE"
-      max_unavailable_fixed = var.is_replicated_deployment ? 3 : null
-      max_surge_fixed = null
-      max_surge_percent = null
-      max_unavailable_percent = null
-      min_ready_sec = null
-      replacement_method = null
+      minimal_action               = var.is_replicated_deployment ? "RESTART" : "REPLACE"
+      max_unavailable_fixed        = var.is_replicated_deployment ? 3 : null
+      max_surge_fixed              = null
+      max_surge_percent            = null
+      max_unavailable_percent      = null
+      min_ready_sec                = null
+      replacement_method           = null
     }
   ] : []
 }
