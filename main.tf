@@ -108,24 +108,27 @@ module "redis" {
 # ------------------------------------------------------------------------------------
 # Docker Compose File Config for TFE on instance(s) using Flexible Deployment Options
 # ------------------------------------------------------------------------------------
-module "docker_compose_config" {
-  source = "git::https://github.com/hashicorp/terraform-random-tfe-utility//modules/docker_compose_config?ref=main"
+module "runtime_container_engine_config" {
+  source = "git::https://github.com/hashicorp/terraform-random-tfe-utility//modules/runtime_container_engine_config?ref=main"
   count  = var.is_replicated_deployment ? 0 : 1
 
-  license_reporting_opt_out = var.license_reporting_opt_out
-  hostname                  = local.common_fqdn
-  capacity_concurrency      = var.capacity_concurrency
-  capacity_cpu              = var.capacity_cpu
-  capacity_memory           = var.capacity_memory
-  disk_path                 = local.enable_disk ? var.disk_path : null
-  iact_subnets              = join(",", var.iact_subnet_list)
-  iact_time_limit           = var.iact_subnet_time_limit
-  operational_mode          = local.enable_active_active ? "active-active" : var.operational_mode
-  run_pipeline_image        = var.run_pipeline_image
-  tfe_image                 = var.tfe_image
-  tfe_license               = var.hc_license
-  tls_ciphers               = var.tls_ciphers
-  tls_version               = var.tls_vers
+  license_reporting_opt_out   = var.license_reporting_opt_out
+  hostname                    = local.common_fqdn
+  capacity_concurrency        = var.capacity_concurrency
+  capacity_cpu                = var.capacity_cpu
+  capacity_memory             = var.capacity_memory
+  disk_path                   = local.enable_disk ? var.disk_path : null
+  iact_subnets                = join(",", var.iact_subnet_list)
+  iact_time_limit             = var.iact_subnet_time_limit
+  operational_mode            = local.enable_active_active ? "active-active" : var.operational_mode
+  run_pipeline_image          = var.run_pipeline_image
+  tfe_image                   = var.tfe_image
+  tfe_license                 = var.hc_license
+  tls_ciphers                 = var.tls_ciphers
+  tls_version                 = var.tls_vers
+  metrics_endpoint_enabled    = var.metrics_endpoint_enabled
+  metrics_endpoint_port_http  = var.metrics_endpoint_port_http
+  metrics_endpoint_port_https = var.metrics_endpoint_port_https
 
   cert_file          = "/etc/ssl/private/terraform-enterprise/cert.pem"
   key_file           = "/etc/ssl/private/terraform-enterprise/key.pem"
@@ -189,7 +192,10 @@ module "tfe_init_fdo" {
   registry_password = var.registry == "images.releases.hashicorp.com" ? var.hc_license : var.registry_password
   registry_username = var.registry_username
 
-  docker_compose_yaml = module.docker_compose_config[0].docker_compose_yaml
+  container_runtime_engine = var.container_runtime_engine
+  tfe_image                = var.tfe_image
+  podman_kube_yaml         = module.runtime_container_engine_config[0].podman_kube_yaml
+  docker_compose_yaml      = module.runtime_container_engine_config[0].docker_compose_yaml
 }
 
 # -----------------------------------------------------------------------------

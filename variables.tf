@@ -9,6 +9,16 @@ variable "ca_certificate_secret_id" {
   type        = string
 }
 
+variable "container_runtime_engine" {
+  default     = "docker"
+  type        = string
+  description = "The container runtime engine to run the FDO container on. Default is docker."
+  validation {
+    condition     = contains(["docker", "podman"], var.container_runtime_engine)
+    error_message = "Supported values for container_runtime_enginer are docker and podman."
+  }
+}
+
 variable "dns_create_record" {
   default     = true
   description = "If true, will create a DNS record. If false, no record will be created and IP of load balancer will instead be output."
@@ -405,7 +415,7 @@ variable "iact_subnet_time_limit" {
 }
 
 variable "metrics_endpoint_enabled" {
-  default     = null
+  default     = false
   type        = bool
   description = "(Optional) Metrics are used to understand the behavior of Terraform Enterprise and to troubleshoot and tune performance. Enable an endpoint to expose container metrics. Defaults to false."
 }
@@ -594,4 +604,3 @@ variable "extern_vault_token_renew" {
   type        = number
   description = "(Optional if var.extern_vault_enable = true) How often (in seconds) to renew the Vault token."
 }
-
