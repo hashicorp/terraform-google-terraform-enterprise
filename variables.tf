@@ -438,6 +438,12 @@ variable "license_reporting_opt_out" {
   description = "(Not needed if is_replicated_deployment is true) Whether to opt out of reporting licensing information to HashiCorp. Defaults to false."
 }
 
+variable "usage_reporting_opt_out" {
+  default     = false
+  type        = bool
+  description = "(Not needed if is_replicated_deployment is true) Whether to opt out of reporting usage information to HashiCorp. Defaults to false."
+}
+
 variable "operational_mode" {
   default     = "external"
   description = "A special string to control the operational mode of Terraform Enterprise. Valid values are: 'external' for External Services mode; 'disk' for Mounted Disk mode;."

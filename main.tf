@@ -113,6 +113,7 @@ module "runtime_container_engine_config" {
   count  = var.is_replicated_deployment ? 0 : 1
 
   license_reporting_opt_out   = var.license_reporting_opt_out
+  usage_reporting_opt_out     = var.usage_reporting_opt_out
   hostname                    = local.common_fqdn
   capacity_concurrency        = var.capacity_concurrency
   capacity_cpu                = var.capacity_cpu
