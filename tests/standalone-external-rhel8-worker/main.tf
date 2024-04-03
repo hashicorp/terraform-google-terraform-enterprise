@@ -40,11 +40,10 @@ module "tfe" {
   node_count            = 1
   tfe_license_secret_id = try(module.secrets[0].license_secret, data.tfe_outputs.base.values.license_secret_id)
 
-  existing_service_account_id   = var.existing_service_account_id
-  custom_image_tag              = "${local.repository_location}-docker.pkg.dev/${data.google_project.project.project_id}/${local.repository_name}/rhel-7.9:latest"
-  iact_subnet_list              = ["0.0.0.0/0"]
-  iact_subnet_time_limit        = 60
-  consolidated_services_enabled = var.consolidated_services_enabled
+  existing_service_account_id = var.existing_service_account_id
+  custom_image_tag            = "${local.repository_location}-docker.pkg.dev/${data.google_project.project.project_id}/${local.repository_name}/rhel-7.9:latest"
+  iact_subnet_list            = ["0.0.0.0/0"]
+  iact_subnet_time_limit      = 60
   labels = {
     department  = "engineering"
     description = "standalone-external-services-scenario-deployed-from-gha"
