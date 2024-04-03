@@ -1,12 +1,6 @@
 # Copyright (c) HashiCorp, Inc.
 # SPDX-License-Identifier: MPL-2.0
 
-variable "consolidated_services_enabled" {
-  default     = true
-  type        = bool
-  description = "(Required) True if TFE uses consolidated services."
-}
-
 variable "existing_service_account_id" {
   default     = null
   type        = string
@@ -91,4 +85,3 @@ variable "tfe" {
     workspace    = string
   })
 }
-
