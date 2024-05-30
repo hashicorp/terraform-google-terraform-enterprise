@@ -30,8 +30,9 @@ resource "google_sql_database_instance" "tfe" {
 }
 
 resource "random_string" "postgres_password" {
-  length  = 20
-  special = false
+  length           = 20
+  special          = true
+  override_special = "!#$%&*()-_=+[]{}<>?"
 }
 
 resource "google_sql_database" "tfe" {
