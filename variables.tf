@@ -440,12 +440,12 @@ variable "usage_reporting_opt_out" {
 
 variable "operational_mode" {
   default     = "external"
-  description = "A special string to control the operational mode of Terraform Enterprise. Valid values are: 'external' for External Services mode; 'disk' for Mounted Disk mode;."
+  description = "A special string to control the operational mode of Terraform Enterprise. Valid values are: 'external', 'disk' and 'active-active'."
   type        = string
 
   validation {
-    condition     = contains(["external", "disk"], var.operational_mode)
-    error_message = "The operational_mode value must be one of: 'external'; 'disk';."
+    condition     = contains(["external", "disk", "active-active"], var.operational_mode)
+    error_message = "The operational_mode value must be one of: 'external', 'disk' or 'active-active'."
   }
 }
 
