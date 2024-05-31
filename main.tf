@@ -52,7 +52,7 @@ module "networking" {
 
   count = local.enable_networking_module ? 1 : 0
 
-  enable_active_active     = local.enable_active_active
+  enable_active_active     = var.operational_mode == "active-active"
   is_replicated_deployment = var.is_replicated_deployment
   namespace                = var.namespace
   subnet_range             = var.networking_subnet_range
@@ -121,7 +121,7 @@ module "runtime_container_engine_config" {
   disk_path                   = local.enable_disk ? var.disk_path : null
   iact_subnets                = join(",", var.iact_subnet_list)
   iact_time_limit             = var.iact_subnet_time_limit
-  operational_mode            = local.enable_active_active ? "active-active" : var.operational_mode
+  operational_mode            = var.operational_mode
   run_pipeline_image          = var.run_pipeline_image
   tfe_image                   = var.tfe_image
   tfe_license                 = var.hc_license
@@ -178,7 +178,7 @@ module "tfe_init_fdo" {
   distribution      = var.distribution
   disk_path         = var.disk_path
   disk_device_name  = local.disk_device_name
-  operational_mode  = local.enable_active_active ? "active-active" : var.operational_mode
+  operational_mode  = var.operational_mode
   custom_image_tag  = var.custom_image_tag
   enable_monitoring = var.enable_monitoring
 
@@ -231,7 +231,6 @@ module "settings" {
 
   # Replicated Base Configuration
   hostname                                  = local.common_fqdn
-  enable_active_active                      = local.enable_active_active
   tfe_license_bootstrap_airgap_package_path = var.tfe_license_bootstrap_airgap_package_path
   tfe_license_file_location                 = var.tfe_license_file_location
   tls_bootstrap_cert_pathname               = var.tls_bootstrap_cert_pathname
@@ -360,11 +359,11 @@ module "vm_mig" {
       name = "https"
       port = 443
     }],
-    local.enable_active_active && !var.is_replicated_deployment ? [{
+    var.operational_mode == "active-active" && !var.is_replicated_deployment ? [{
       name = "vault"
       port = 8201
     }] : [],
-    !local.enable_active_active && var.is_replicated_deployment ? [{
+    !(var.operational_mode == "active-active") && var.is_replicated_deployment ? [{
       name = "console"
       port = 8800
     }] : []
