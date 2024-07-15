@@ -5,7 +5,7 @@ locals {
   disk_device_name              = "sdb"
   enable_airgap                 = var.airgap_url == null && var.tfe_license_bootstrap_airgap_package_path != null
   enable_external               = var.operational_mode == "external" || var.operational_mode == "active-active"
-  enable_database_module        = local.enable_external
+  enable_database_module        = local.enable_external && var.database_host == null
   enable_disk                   = var.operational_mode == "disk"
   enable_networking_module      = var.network == null
   enable_object_storage_module  = local.enable_external
@@ -88,10 +88,10 @@ locals {
   database = try(
     module.database[0],
     {
-      dbname   = null
-      netloc   = null
-      password = null
-      user     = null
+      dbname   = var.database_name
+      netloc   = var.database_host
+      password = var.database_password
+      user     = var.database_user
     }
   )
 }
