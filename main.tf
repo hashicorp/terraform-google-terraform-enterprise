@@ -7,7 +7,7 @@ module "project_factory_project_services" {
 
   project_id = null
 
-  activate_apis = local.activate_apis
+  activate_apis               = local.activate_apis
   disable_dependent_services  = false
   disable_services_on_destroy = false
 }
