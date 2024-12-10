@@ -62,3 +62,11 @@ output "vm_mig" {
   value       = module.vm_mig
   description = "The managed instance group module."
 }
+
+output "object_store_details" {
+  description = "object store details"
+  value = {
+    bucket  = local.object_storage.bucket
+    project = local.object_storage.project
+  }
+}
