@@ -63,14 +63,9 @@ output "vm_mig" {
   description = "The managed instance group module."
 }
 
-
-output "bucket" {
-  value = local.object_storage.bucket
-
-  description = "The name of the storage bucket."
-}
-output "project" {
-  value = local.object_storage.project
-
-  description = "The ID of the project in which the storage bucket resides."
+output "object_store_details" {
+  value = {
+    bucket = local.object_storage.bucket
+    project= local.object_storage.project
+  }
 }
