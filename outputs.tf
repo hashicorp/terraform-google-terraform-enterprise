@@ -65,7 +65,7 @@ output "vm_mig" {
 
 output "object_store_details" {
   value = {
-    bucket = local.object_storage.bucket
-    project= local.object_storage.project
+    bucket  = local.object_storage.bucket
+    project = local.object_storage.project
   }
 }
