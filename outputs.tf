@@ -64,6 +64,7 @@ output "vm_mig" {
 }
 
 output "object_store_details" {
+  description = "object store details"
   value = {
     bucket  = local.object_storage.bucket
     project = local.object_storage.project
