@@ -153,13 +153,13 @@ variable "subnetwork" {
 # --------
 variable "database_host" {
   default     = null
-  description = "Database host"
+  description = "Optional: If you wish to connect TFE to an existing database, pass the host here."
   type        = string
 }
 
 variable "database_password" {
   default     = null
-  description = "Only needed if we provide a database host."
+  description = "Optional: If you wish to connect TFE to an existing database, pass the password here. Used together with database_host."
   type        = string
 }
 
