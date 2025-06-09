@@ -12,7 +12,9 @@ This is a Terraform module for provisioning a Terraform Enterprise Cluster on GC
 
 This module will install Terraform Enterprise on GCP according to the [HashiCorp Reference Architecture](https://www.terraform.io/docs/enterprise/before-installing/reference-architecture/gcp.html). This module is intended to be used by practitioners seeking a Terraform Enterprise installation which requires minimal configuration in the GCP cloud.
 
-As the goal for this main module is to provide a drop-in solution for installing Terraform Enterprise via the Golden Path, it leverages GCP native solutions such as Cloud DNS and runs a basic Ubuntu 20.04 image on Cloud Compute Engine. We have provided guidance and limited examples for other use cases.
+As the goal for this main module is to provide a drop-in solution for installing Terraform Enterprise via the Golden Path,
+it leverages GCP native solutions such as Cloud DNS and runs a basic Ubuntu 24.04 image on Cloud Compute Engine. We have
+provided guidance and limited examples for other use cases.
 
 ## Pre-requisites
 
@@ -135,7 +137,9 @@ this value the secret_id and the GCP UI calls it the name.
 
 ## Module Manifest
 
-This module will create all infrastructure resources required to install Terraform Enterprise in a Standalone or Active/Active configuration (depending on how many nodes you specify) on GCP in the designated region according to the Reference Architecture. The default base machine image used is Ubuntu 20.04 LTS.
+This module will create all infrastructure resources required to install Terraform Enterprise in a Standalone or
+Active/Active configuration (depending on how many nodes you specify) on GCP in the designated region according to the
+Reference Architecture. The default base machine image used is Ubuntu 24.04 LTS.
 
 The resources created are:
 
