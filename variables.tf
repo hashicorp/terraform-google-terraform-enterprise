@@ -234,7 +234,7 @@ variable "vm_disk_size" {
 }
 
 variable "vm_disk_source_image" {
-  default     = "projects/ubuntu-os-cloud/global/images/family/ubuntu-2404-lts"
+  default     = "projects/ubuntu-os-cloud/global/images/family/ubuntu-2404-lts-amd64"
   description = "VM Disk source image"
   type        = string
 }
