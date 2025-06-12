@@ -7,7 +7,7 @@ This example for Terraform Enterprise creates a TFE installation with the follow
 - Standalone
 - Mounted Disk production type
 - n1-standard-4 virtual machine type
-- Ubuntu 20.04
+- Ubuntu 24.04
 - A publicly accessible HTTP load balancer with TLS termination
 
 
@@ -15,11 +15,11 @@ This example for Terraform Enterprise creates a TFE installation with the follow
 
 This example assumes that the following resources exist:
 
-- TFE license is on a file path defined by `var.license_file` 
+- TFE license is on a file path defined by `var.license_file`
 - A DNS zone
 - Valid managed SSL certificate to use with load balancer:
   - Create/Import a managed SSL Certificate in Network Services -> Load Balancing to serve as the certificate for the DNS A Record.
-  
+
 ## How to Use This Module
 
 ### Deployment

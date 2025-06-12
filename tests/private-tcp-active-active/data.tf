@@ -16,6 +16,6 @@ data "google_compute_image" "rhel" {
 }
 
 data "google_compute_image" "ubuntu" {
-  name    = "ubuntu-2004-focal-v20220118"
+  name    = "ubuntu-2404-noble-amd64-v20250606"
   project = "ubuntu-os-cloud"
 }

@@ -7,19 +7,19 @@ This example for Terraform Enterprise creates a TFE installation with the follow
 - [Active/Active](https://www.terraform.io/enterprise/install/automated/active-active)
 - External Services production type
 - n1-standard-32 virtual machine type
-- Ubuntu 20.04
+- Ubuntu 24.04
 - A publicly accessible HTTPS load balancer with TLS pass-through
 
 ## Prerequisites
 
 This example assumes that the following resources exist:
 
-- TFE license is on a file path defined by `var.license_file` 
+- TFE license is on a file path defined by `var.license_file`
 - A DNS zone
 - Valid managed SSL certificate to use with load balancer:
   - Create/Import a managed SSL Certificate in Network Services -> Load Balancing to serve as the certificate for the DNS A Record.
 - An External DNS A record resolving to the load balancer IP address. If `dns_create_record` is true a DNS record will be created and if false, no record will be created and IP of load balancer will instead be output"
-  
+
 ## How to Use This Module
 
 ### Deployment
