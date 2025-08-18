@@ -4,6 +4,7 @@
 locals {
   disk_device_name         = "sdb"
   enable_airgap            = var.airgap_url == null && var.tfe_license_bootstrap_airgap_package_path != null
+  enable_alloydb           = var.enable_alloydb && var.operational_mode != "disk"
   enable_external          = var.operational_mode == "external" || var.operational_mode == "active-active"
   enable_database_module   = local.enable_external && var.database_host == null
   enable_disk              = var.operational_mode == "disk"

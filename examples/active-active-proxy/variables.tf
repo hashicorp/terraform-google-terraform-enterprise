@@ -57,3 +57,8 @@ variable "ssl_private_key_secret" {
   EOD
   type        = string
 }
+
+variable "project" {
+  description = "The project id of the target project. This is not inferred from the provider. Required if var.existing_service_account_id is null."
+  type        = string
+}
