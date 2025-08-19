@@ -18,9 +18,9 @@ resource "google_alloydb_instance" "default" {
 }
 
 resource "google_alloydb_cluster" "default" {
-  cluster_id = random_pet.alloydb.id
+  cluster_id       = random_pet.alloydb.id
   database_version = "POSTGRES_16"
-  location   = "us-central1"
+  location         = "us-central1"
   network_config {
     network = google_compute_network.default.id
   }
@@ -37,7 +37,7 @@ resource "google_compute_network" "default" {
 }
 
 resource "google_compute_global_address" "private_ip_alloc" {
-  name          =  "alloydb-cluster"
+  name          = "alloydb-cluster"
   address_type  = "INTERNAL"
   purpose       = "VPC_PEERING"
   prefix_length = 16
@@ -57,11 +57,11 @@ resource "random_string" "alloydb_password" {
 }
 
 resource "google_alloydb_user" "tfe" {
-  cluster = google_alloydb_cluster.default.name
-  user_id = "user1"
+  cluster   = google_alloydb_cluster.default.name
+  user_id   = "user1"
   user_type = "ALLOYDB_BUILT_IN"
 
-  password = "user_secret"
+  password       = "user_secret"
   database_roles = ["alloydbsuperuser"]
-  depends_on = [google_alloydb_instance.default]
+  depends_on     = [google_alloydb_instance.default]
 }
