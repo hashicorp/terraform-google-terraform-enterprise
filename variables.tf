@@ -617,8 +617,14 @@ variable "extern_vault_token_renew" {
   description = "(Optional if var.extern_vault_enable = true) How often (in seconds) to renew the Vault token."
 }
 
+variable "project" {
+  description = "The project id of the target project."
+  type        = string
+}
+
 variable "enable_alloydb" {
   default     = false
   type        = bool
   description = "A toggle to control the use of AlloyDB for the TFE database. Defaults to false."
 }
+
