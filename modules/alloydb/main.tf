@@ -30,8 +30,6 @@ resource "google_alloydb_cluster" "default" {
   }
 }
 
-data "google_project" "project" {}
-
 resource "google_compute_network" "default" {
   name = "alloydb-network"
 }
