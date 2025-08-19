@@ -18,7 +18,7 @@ resource "google_alloydb_instance" "default" {
 }
 
 resource "google_alloydb_cluster" "default" {
-  cluster_id       = "${var.namespace}-tfe-${random_pet.postgres.id}"
+  cluster_id       = "${var.namespace}-tfe-${random_pet.alloydb.id}"
 
   database_version = var.postgres_version
   location         = "us-central1"
