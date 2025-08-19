@@ -63,12 +63,6 @@ variable "node_count" {
   }
 }
 
-variable "project" {
-  description = "The project id of the target project. This is not inferred from the provider. Required if var.existing_service_account_id is null."
-  type        = string
-  default     = null
-}
-
 variable "proxy_ip" {
   default     = null
   description = "The host subcomponent of an HTTP proxy URI authority. This value will be used to configure the HTTP and HTTPS proxy settings of the operating system and Terraform Enterprise."

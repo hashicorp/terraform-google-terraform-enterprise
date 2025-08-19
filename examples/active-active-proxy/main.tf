@@ -28,7 +28,6 @@ module "test_proxy" {
   name                            = "${random_pet.main.id}-proxy"
   network                         = module.active_active_proxy.network
   subnetwork                      = module.active_active_proxy.subnetwork
-  project                         = var.project
 }
 
 # Active/Active TFE Architecture
@@ -41,7 +40,6 @@ module "active_active_proxy" {
   dns_zone_name               = var.dns_zone_name
   existing_service_account_id = var.existing_service_account_id
   fqdn                        = var.fqdn
-  project                     = var.project
   iact_subnet_list            = ["${module.test_proxy.compute_instance.network_interface[0].network_ip}/32"]
   iact_subnet_time_limit      = 1440
   labels                      = var.labels

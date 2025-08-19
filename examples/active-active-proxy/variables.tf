@@ -42,11 +42,6 @@ variable "license_file" {
   description = "The local path to the Terraform Enterprise license."
 }
 
-variable "project" {
-  description = "The project id of the target project. This is not inferred from the provider. Required if var.existing_service_account_id is null."
-  type        = string
-}
-
 variable "ssl_certificate_secret" {
   description = <<-EOD
   The Secret Manager secret which comprises the Base64 encoded PEM certificate file. The Terraform provider calls this

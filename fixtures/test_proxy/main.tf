@@ -16,7 +16,6 @@ data "google_service_account" "proxy" {
 resource "google_project_iam_member" "log_writer" {
   count   = var.existing_service_account_id == null ? 1 : 0
   member  = local.service_account_member
-  project = var.project
   role    = "roles/logging.logWriter"
 }
 
