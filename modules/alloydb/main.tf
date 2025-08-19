@@ -18,13 +18,13 @@ resource "google_alloydb_instance" "default" {
 }
 
 resource "google_alloydb_cluster" "default" {
-  cluster_id       = random_pet.alloydb.id
-  database_version = "POSTGRES_16"
+  cluster_id       = "${var.namespace}-tfe-${random_pet.postgres.id}"
+
+  database_version = var.postgres_version
   location         = "us-central1"
   network_config {
     network = google_compute_network.default.id
   }
-
   initial_user {
     password = random_string.alloydb_password.result
   }
@@ -56,7 +56,7 @@ resource "random_string" "alloydb_password" {
 
 resource "google_alloydb_user" "tfe" {
   cluster   = google_alloydb_cluster.default.name
-  user_id   = "user1"
+  user_id   = var.username
   user_type = "ALLOYDB_BUILT_IN"
 
   password       = "user_secret"
