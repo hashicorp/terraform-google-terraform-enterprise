@@ -42,6 +42,11 @@ variable "license_file" {
   description = "The local path to the Terraform Enterprise license."
 }
 
+variable "project" {
+  description = "The project id of the target project. This is not inferred from the provider. Required if var.existing_service_account_id is null."
+  type        = string
+}
+
 variable "ssl_certificate_secret" {
   description = <<-EOD
   The Secret Manager secret which comprises the Base64 encoded PEM certificate file. The Terraform provider calls this
@@ -55,10 +60,5 @@ variable "ssl_private_key_secret" {
   The Secret Manager secret which comprises the Base64 encoded PEM private key file. The Terraform provider calls this
   value the secret_id and the GCP UI calls it the name. This value is only used when load_balancer == "PRIVATE_TCP".
   EOD
-  type        = string
-}
-
-variable "project" {
-  description = "The project id of the target project. This is not inferred from the provider. Required if var.existing_service_account_id is null."
   type        = string
 }
