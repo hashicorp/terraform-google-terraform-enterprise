@@ -87,13 +87,7 @@ module "alloydb_database" {
 
   dbname                        = var.database_name
   username                      = var.database_user
-  machine_type                  = var.database_machine_type
-  disk_size                     = var.postgres_disk_size
-  availability_type             = var.database_availability_type
   namespace                     = var.namespace
-  backup_start_time             = var.database_backup_start_time
-  labels                        = var.labels
-  service_networking_connection = local.service_networking_connection
   postgres_version              = var.postgres_version
 
   depends_on = [
