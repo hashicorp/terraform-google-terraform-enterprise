@@ -21,7 +21,7 @@ resource "google_alloydb_cluster" "default" {
   database_version = var.postgres_version
   location         = "us-central1"
   network_config {
-    network = var.service_networking_connection.network
+    network = var.network.id
   }
   initial_user {
     password = random_string.alloydb_password.result

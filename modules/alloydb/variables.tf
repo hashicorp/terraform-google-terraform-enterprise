@@ -21,8 +21,15 @@ variable "namespace" {
   type        = string
 }
 
+variable "network" {
+  description = "The private service networking connection that will connect AlloyDB to the network."
+  type = object({
+    network = string
+  })
+}
+
 variable "service_networking_connection" {
-  description = "The private service networking connection that will connect PostgreSQL to the network."
+  description = "The private service networking connection that will connect AlloyDB to the network."
   type = object({
     network = string
   })
