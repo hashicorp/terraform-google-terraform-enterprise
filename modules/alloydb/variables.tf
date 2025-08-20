@@ -22,8 +22,8 @@ variable "namespace" {
 }
 
 variable "network" {
-  description = "The private service networking connection that will connect AlloyDB to the network."
+  description = "The network."
   type = object({
-    network = string
+    id = string
   })
 }
