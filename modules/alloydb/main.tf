@@ -30,24 +30,6 @@ resource "google_alloydb_cluster" "default" {
   }
 }
 
-resource "google_compute_network" "default" {
-  name = "alloydb-network"
-}
-
-resource "google_compute_global_address" "private_ip_alloc" {
-  name          = "alloydb-cluster"
-  address_type  = "INTERNAL"
-  purpose       = "VPC_PEERING"
-  prefix_length = 16
-  network       = google_compute_network.default.id
-}
-
-resource "google_service_networking_connection" "vpc_connection" {
-  network                 = google_compute_network.default.id
-  service                 = "servicenetworking.googleapis.com"
-  reserved_peering_ranges = [google_compute_global_address.private_ip_alloc.name]
-}
-
 resource "random_string" "alloydb_password" {
   length           = 20
   special          = true
