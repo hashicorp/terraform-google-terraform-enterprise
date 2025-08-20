@@ -20,3 +20,10 @@ variable "namespace" {
   description = "A prefix which will be applied to all resource names."
   type        = string
 }
+
+variable "service_networking_connection" {
+  description = "The private service networking connection that will connect PostgreSQL to the network."
+  type = object({
+    network = string
+  })
+}
