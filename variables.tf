@@ -63,6 +63,12 @@ variable "node_count" {
   }
 }
 
+variable "project" {
+  description = "The project id of the target project."
+  type        = string
+  default     = null
+}
+
 variable "proxy_ip" {
   default     = null
   description = "The host subcomponent of an HTTP proxy URI authority. This value will be used to configure the HTTP and HTTPS proxy settings of the operating system and Terraform Enterprise."
@@ -609,11 +615,6 @@ variable "extern_vault_token_renew" {
   default     = 3600
   type        = number
   description = "(Optional if var.extern_vault_enable = true) How often (in seconds) to renew the Vault token."
-}
-
-variable "project" {
-  description = "The project id of the target project."
-  type        = string
 }
 
 variable "enable_alloydb" {
