@@ -89,7 +89,7 @@ module "alloydb_database" {
   username                      = var.database_user
   namespace                     = var.namespace
   postgres_version              = var.postgres_version
-  service_networking_connection = local.service_networking_connection
+  network                       = local.network
 
   depends_on = [
     module.project_factory_project_services

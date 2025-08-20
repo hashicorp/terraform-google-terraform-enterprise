@@ -27,10 +27,3 @@ variable "network" {
     network = string
   })
 }
-
-variable "service_networking_connection" {
-  description = "The private service networking connection that will connect AlloyDB to the network."
-  type = object({
-    network = string
-  })
-}

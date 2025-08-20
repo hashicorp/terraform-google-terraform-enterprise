@@ -22,6 +22,7 @@ locals {
   enable_object_storage_module = local.enable_external
 
   service_networking_connection = try(module.networking[0].service_networking_connection, { network = var.network })
+  network                       = try(module.networking[0].network, var.network)
   subnetwork                    = try(module.networking[0].subnetwork, { self_link = var.subnetwork })
 
   redis = try(
