@@ -7,8 +7,9 @@ resource "random_pet" "alloydb" {
 
 resource "google_alloydb_instance" "default" {
   cluster       = google_alloydb_cluster.default.name
-  instance_id   = "alloydb-instance"
+  instance_id   = "${var.namespace}-tfe-${random_pet.alloydb.id}-1"
   instance_type = "PRIMARY"
+  availability_type = "ZONAL"
 
   machine_config {
     cpu_count = 2
