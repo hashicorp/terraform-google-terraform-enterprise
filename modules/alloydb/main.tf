@@ -6,9 +6,9 @@ resource "random_pet" "alloydb" {
 }
 
 resource "google_alloydb_instance" "default" {
-  cluster       = google_alloydb_cluster.default.name
-  instance_id   = "${var.namespace}-tfe-${random_pet.alloydb.id}-1"
-  instance_type = "PRIMARY"
+  cluster           = google_alloydb_cluster.default.name
+  instance_id       = "${var.namespace}-tfe-${random_pet.alloydb.id}-1"
+  instance_type     = "PRIMARY"
   availability_type = "ZONAL"
 
   machine_config {
@@ -18,7 +18,7 @@ resource "google_alloydb_instance" "default" {
 }
 
 resource "google_alloydb_cluster" "default" {
-  cluster_id       = "${var.namespace}-tfe-${random_pet.alloydb.id}"
+  cluster_id = "${var.namespace}-tfe-${random_pet.alloydb.id}"
 
   database_version = var.postgres_version
   location         = "us-east4"
