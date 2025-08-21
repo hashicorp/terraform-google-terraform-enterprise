@@ -72,7 +72,7 @@ module "database" {
   namespace                     = var.namespace
   backup_start_time             = var.database_backup_start_time
   labels                        = var.labels
-  # Removed invalid attribute: service_networking_connection
+  service_networking_connection = local.service_networking_connection
   postgres_version              = var.postgres_version
 
   depends_on = [
