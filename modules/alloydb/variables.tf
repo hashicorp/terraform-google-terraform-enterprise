@@ -1,6 +1,11 @@
 # Copyright (c) HashiCorp, Inc.
 # SPDX-License-Identifier: MPL-2.0
 
+variable "dbname" {
+  description = "The name of the AlloyDB database to be created."
+  type        = string
+}
+
 variable "username" {
   description = "The name of the SQL user to be created in the AlloyDB database."
   type        = string
