@@ -29,8 +29,8 @@ variable "network" {
 }
 
 variable "service_networking_connection" {
-  description = "The service networking connection."
+  description = "The private service networking connection that will connect PostgreSQL to the network."
   type = object({
-    vpc_connection = string
+    network = string
   })
 }
