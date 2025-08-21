@@ -64,7 +64,7 @@ variable "node_count" {
 }
 
 variable "project" {
-  description = "The project id of the target project."
+  description = "The project id of the target project. This is not inferred from the provider. Required if var.existing_service_account_id is null."
   type        = string
   default     = null
 }

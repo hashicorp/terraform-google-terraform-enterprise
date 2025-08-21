@@ -90,6 +90,7 @@ module "alloydb_database" {
   namespace                     = var.namespace
   postgres_version              = var.postgres_version
   network                       = local.network
+  service_networking_connection = local.service_networking_connection
 
   depends_on = [
     module.project_factory_project_services

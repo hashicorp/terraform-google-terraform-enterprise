@@ -27,3 +27,10 @@ variable "network" {
     id = string
   })
 }
+
+variable "service_networking_connection" {
+  description = "The service networking connection."
+  type = object({
+    vpc_connection = string
+  })
+}

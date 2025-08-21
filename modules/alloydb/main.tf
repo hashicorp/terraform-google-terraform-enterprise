@@ -14,6 +14,7 @@ resource "google_alloydb_instance" "default" {
   machine_config {
     cpu_count = 2
   }
+  depends_on = [var.service_networking_connection]
 }
 
 resource "google_alloydb_cluster" "default" {
