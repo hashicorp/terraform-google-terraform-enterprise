@@ -14,6 +14,7 @@ resource "google_alloydb_instance" "default" {
   machine_config {
     cpu_count = 2
   }
+  # You get a NETWORK_PEERING_DELETED error if you don't wait for the service networking connection to be created.
   depends_on = [var.service_networking_connection]
 }
 

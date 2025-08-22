@@ -7,7 +7,7 @@ output "netloc" {
   description = "The private IP address of the AlloyDB cluster."
 }
 output "dbname" {
-  value = "${var.dbname}"
+  value = var.dbname
 
   description = "The name of the AlloyDB cluster."
 }
