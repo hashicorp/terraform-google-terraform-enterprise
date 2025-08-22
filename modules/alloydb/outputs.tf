@@ -7,12 +7,12 @@ output "netloc" {
   description = "The private IP address of the AlloyDB cluster."
 }
 output "dbname" {
-  value = google_alloydb_cluster.default.name
+  value = "${var.dbname}"
 
   description = "The name of the AlloyDB cluster."
 }
 output "user" {
-  value = google_alloydb_user.tfe.name
+  value = google_alloydb_user.tfe.user_id
 
   description = "The name of the AlloyDB database user."
 }
