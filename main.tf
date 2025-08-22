@@ -87,10 +87,12 @@ module "alloydb_database" {
 
   dbname                        = var.database_name
   username                      = var.database_user
+  availability_type             = var.database_availability_type
   namespace                     = var.namespace
+  labels                        = var.labels
   postgres_version              = var.postgres_version
-  network                       = local.network
   service_networking_connection = local.service_networking_connection
+  network                       = local.network
 
   depends_on = [
     module.project_factory_project_services

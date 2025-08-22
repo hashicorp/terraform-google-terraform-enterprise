@@ -5,11 +5,12 @@ resource "random_pet" "alloydb" {
   length = 2
 }
 
-resource "google_alloydb_instance" "default" {
-  cluster           = google_alloydb_cluster.default.name
+resource "google_alloydb_instance" "tfe" {
+  cluster           = google_alloydb_cluster.tfe.name
   instance_id       = "${var.namespace}-tfe-${random_pet.alloydb.id}-1"
   instance_type     = "PRIMARY"
-  availability_type = "ZONAL"
+  availability_type = var.availability_type
+  labels            = var.labels
 
   machine_config {
     cpu_count = 2
@@ -18,7 +19,7 @@ resource "google_alloydb_instance" "default" {
   depends_on = [var.service_networking_connection]
 }
 
-resource "google_alloydb_cluster" "default" {
+resource "google_alloydb_cluster" "tfe" {
   cluster_id = "${var.namespace}-tfe-${random_pet.alloydb.id}"
 
   database_version = var.postgres_version
@@ -38,11 +39,11 @@ resource "random_string" "alloydb_password" {
 }
 
 resource "google_alloydb_user" "tfe" {
-  cluster   = google_alloydb_cluster.default.name
+  cluster   = google_alloydb_cluster.tfe.name
   user_id   = var.username
   user_type = "ALLOYDB_BUILT_IN"
 
-  password       = "user_secret"
+  password       = random_string.alloydb_password.result
   database_roles = ["alloydbsuperuser"]
-  depends_on     = [google_alloydb_instance.default]
+  depends_on     = [google_alloydb_instance.tfe]
 }

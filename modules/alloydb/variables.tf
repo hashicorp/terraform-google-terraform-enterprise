@@ -21,11 +21,21 @@ variable "namespace" {
   type        = string
 }
 
+variable "availability_type" {
+  description = "The availability type of the SQL database instance."
+  type        = string
+}
+
 variable "network" {
   description = "The network."
   type = object({
     id = string
   })
+}
+
+variable "labels" {
+  description = "Labels which will be applied to all applicable resources."
+  type        = map(string)
 }
 
 variable "service_networking_connection" {

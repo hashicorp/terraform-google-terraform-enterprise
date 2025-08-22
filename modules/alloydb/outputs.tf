@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: MPL-2.0
 
 output "netloc" {
-  value = google_alloydb_instance.default.ip_address
+  value = google_alloydb_instance.tfe.ip_address
 
   description = "The private IP address of the AlloyDB cluster."
 }
