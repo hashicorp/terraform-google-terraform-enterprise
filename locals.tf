@@ -99,6 +99,7 @@ locals {
 
   database = try(
     module.database[0],
+    module.alloydb_database[0],
     {
       dbname   = var.database_name
       netloc   = var.database_host
