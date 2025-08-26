@@ -80,6 +80,25 @@ module "database" {
   ]
 }
 
+module "alloydb_database" {
+  source = "./modules/alloydb"
+
+  count = local.enable_alloydb ? 1 : 0
+
+  dbname                        = var.database_name
+  username                      = var.database_user
+  availability_type             = var.database_availability_type
+  namespace                     = var.namespace
+  labels                        = var.labels
+  postgres_version              = var.postgres_version
+  service_networking_connection = local.service_networking_connection
+  network                       = local.network
+
+  depends_on = [
+    module.project_factory_project_services
+  ]
+}
+
 module "redis" {
   source = "./modules/redis"
 

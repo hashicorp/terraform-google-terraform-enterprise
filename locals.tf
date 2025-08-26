@@ -4,8 +4,9 @@
 locals {
   disk_device_name         = "sdb"
   enable_airgap            = var.airgap_url == null && var.tfe_license_bootstrap_airgap_package_path != null
+  enable_alloydb           = var.enable_alloydb && var.operational_mode != "disk"
   enable_external          = var.operational_mode == "external" || var.operational_mode == "active-active"
-  enable_database_module   = local.enable_external && var.database_host == null
+  enable_database_module   = local.enable_external && var.database_host == null && !local.enable_alloydb
   enable_disk              = var.operational_mode == "disk"
   enable_networking_module = var.network == null
   enable_redis_module      = var.operational_mode == "active-active"
@@ -21,6 +22,7 @@ locals {
   enable_object_storage_module = local.enable_external
 
   service_networking_connection = try(module.networking[0].service_networking_connection, { network = var.network })
+  network                       = try(module.networking[0].network, var.network)
   subnetwork                    = try(module.networking[0].subnetwork, { self_link = var.subnetwork })
 
   redis = try(
@@ -97,6 +99,7 @@ locals {
 
   database = try(
     module.database[0],
+    module.alloydb_database[0],
     {
       dbname   = var.database_name
       netloc   = var.database_host

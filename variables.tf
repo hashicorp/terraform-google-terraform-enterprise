@@ -365,7 +365,7 @@ variable "disk_path" {
 
 variable "distribution" {
   type        = string
-  description = "(Required) What is the OS distribution of the instance on which Terraoform Enterprise will be deployed?"
+  description = "(Required) What is the OS distribution of the instance on which Terraform Enterprise will be deployed?"
   validation {
     condition     = contains(["rhel", "ubuntu"], var.distribution)
     error_message = "Supported values for distribution are 'rhel' or 'ubuntu'."
@@ -616,3 +616,10 @@ variable "extern_vault_token_renew" {
   type        = number
   description = "(Optional if var.extern_vault_enable = true) How often (in seconds) to renew the Vault token."
 }
+
+variable "enable_alloydb" {
+  default     = false
+  type        = bool
+  description = "A toggle to control the use of AlloyDB for the TFE database. Defaults to false."
+}
+
