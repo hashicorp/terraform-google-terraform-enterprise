@@ -14,6 +14,7 @@ variable "username" {
 variable "postgres_version" {
   description = "The version of postgres to be installed on the SQL database instance."
   type        = string
+  default     = "POSTGRES_16"
 }
 
 variable "namespace" {
@@ -43,4 +44,10 @@ variable "service_networking_connection" {
   type = object({
     network = string
   })
+}
+
+variable "region" {
+  description = "The region in which the AlloyDB cluster will be created."
+  type        = string
+  default     = "us-east4"
 }

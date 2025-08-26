@@ -93,6 +93,7 @@ module "alloydb_database" {
   postgres_version              = var.postgres_version
   service_networking_connection = local.service_networking_connection
   network                       = local.network
+  region                        = var.region
 
   depends_on = [
     module.project_factory_project_services
