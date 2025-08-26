@@ -14,7 +14,7 @@ variable "username" {
 variable "postgres_version" {
   description = "The version of postgres to be installed on the SQL database instance."
   type        = string
-  default     = "POSTGRES_16" 
+  default     = "POSTGRES_16"
 }
 
 variable "namespace" {
