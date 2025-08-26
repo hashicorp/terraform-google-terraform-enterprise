@@ -44,3 +44,9 @@ variable "service_networking_connection" {
     network = string
   })
 }
+
+variable "region" {
+  description = "The region in which the AlloyDB cluster will be created."
+  type        = string
+  default     = "us-east4"
+}

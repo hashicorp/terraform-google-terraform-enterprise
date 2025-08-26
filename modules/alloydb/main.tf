@@ -23,7 +23,7 @@ resource "google_alloydb_cluster" "tfe" {
   cluster_id = "${var.namespace}-tfe-${random_pet.alloydb.id}"
 
   database_version = var.postgres_version
-  location         = "us-east4"
+  location         = var.region
   network_config {
     network = var.network.id
   }

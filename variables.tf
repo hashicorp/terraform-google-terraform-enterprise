@@ -205,6 +205,12 @@ variable "postgres_version" {
   type        = string
 }
 
+variable "region" {
+  default     = "us-east4"
+  description = "The region in which resources will be created."
+  type        = string
+}
+
 # REDIS
 # -----
 variable "redis_auth_enabled" {
