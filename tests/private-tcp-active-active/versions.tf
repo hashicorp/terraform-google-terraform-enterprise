@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: MPL-2.0
 
 terraform {
-  required_version = ">= 1.6"
+  required_version = ">= 0.14"
   backend "remote" {
     organization = "terraform-enterprise-modules-test"
 
