@@ -205,6 +205,18 @@ variable "postgres_version" {
   type        = string
 }
 
+variable "enable_iam_database_authentication" {
+  default     = false
+  description = "Enable IAM database authentication for PostgreSQL database"
+  type        = bool
+}
+
+variable "iam_database_user" {
+  default     = null
+  description = "The email address of the Google service account to use for IAM database authentication. If not provided, the default compute engine service account will be used."
+  type        = string
+}
+
 variable "region" {
   default     = "us-east4"
   description = "The region in which resources will be created."

@@ -1,0 +1,58 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
+# Random String for unique names
+# ------------------------------
+resource "random_pet" "main" {
+  length = 1
+}
+
+# Store TFE License as secret
+# ---------------------------
+module "secrets" {
+  source = "../../fixtures/secrets"
+
+  license = {
+    id   = random_pet.main.id
+    path = var.license_file
+  }
+}
+
+# Create IAM service account for database authentication
+# ------------------------------------------------------
+resource "google_service_account" "tfe_database" {
+  account_id   = "${random_pet.main.id}-tfe-db"
+  display_name = "TFE Database Service Account"
+  description  = "Service account for TFE PostgreSQL IAM authentication"
+}
+
+# Grant Cloud SQL Client role to the service account
+resource "google_project_iam_member" "cloudsql_client" {
+  project = var.project_id
+  role    = "roles/cloudsql.client"
+  member  = "serviceAccount:${google_service_account.tfe_database.email}"
+}
+
+# Standalone External with PostgreSQL IAM Authentication
+# -------------------------------------------------------
+module "tfe" {
+  source = "../../"
+
+  distribution                       = "ubuntu"
+  dns_zone_name                      = var.dns_zone_name
+  existing_service_account_id        = var.existing_service_account_id
+  namespace                          = random_pet.main.id
+  node_count                         = 1
+  fqdn                               = var.fqdn
+  load_balancer                      = "PUBLIC"
+  ssl_certificate_name               = var.ssl_certificate_name
+  tfe_license_secret_id              = module.secrets.license_secret
+  vm_machine_type                    = "n1-standard-4"
+  operational_mode                   = "external"
+  enable_iam_database_authentication = true
+  iam_database_user                  = google_service_account.tfe_database.email
+
+  depends_on = [
+    google_project_iam_member.cloudsql_client
+  ]
+}

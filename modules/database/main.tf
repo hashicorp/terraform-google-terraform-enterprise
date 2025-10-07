@@ -13,6 +13,7 @@ resource "google_sql_database_instance" "tfe" {
     tier              = var.machine_type
     availability_type = var.availability_type
     disk_size         = var.disk_size
+
     ip_configuration {
       ipv4_enabled    = false
       private_network = var.service_networking_connection.network
@@ -21,6 +22,11 @@ resource "google_sql_database_instance" "tfe" {
     backup_configuration {
       enabled    = var.backup_start_time == null ? false : true
       start_time = var.backup_start_time
+    }
+
+    database_flags {
+      name  = "cloudsql.iam_authentication"
+      value = var.enable_iam_authentication ? "on" : "off"
     }
 
     user_labels = var.labels
@@ -46,4 +52,15 @@ resource "google_sql_user" "tfe" {
 
   deletion_policy = "ABANDON"
   password        = random_string.postgres_password.result
+}
+
+# IAM database user for passwordless authentication
+resource "google_sql_user" "tfe_iam" {
+  count = var.enable_iam_authentication ? 1 : 0
+
+  name     = var.iam_user_email
+  instance = google_sql_database_instance.tfe.name
+  type     = "CLOUD_IAM_SERVICE_ACCOUNT"
+
+  deletion_policy = "ABANDON"
 }

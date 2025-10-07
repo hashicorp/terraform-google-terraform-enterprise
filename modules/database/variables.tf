@@ -52,3 +52,15 @@ variable "service_networking_connection" {
     network = string
   })
 }
+
+variable "enable_iam_authentication" {
+  default     = false
+  description = "Enable IAM database authentication for PostgreSQL database"
+  type        = bool
+}
+
+variable "iam_user_email" {
+  default     = null
+  description = "The email address of the Google service account to use for IAM database authentication. If not provided, the default compute engine service account will be used."
+  type        = string
+}

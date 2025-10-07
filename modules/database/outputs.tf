@@ -12,12 +12,24 @@ output "dbname" {
   description = "The name of the PostgreSQL database."
 }
 output "user" {
-  value = google_sql_user.tfe.name
+  value = var.enable_iam_authentication ? google_sql_user.tfe_iam[0].name : google_sql_user.tfe.name
 
   description = "The name of the PostgreSQL database user."
 }
 output "password" {
-  value = google_sql_user.tfe.password
+  value = var.enable_iam_authentication ? null : google_sql_user.tfe.password
 
   description = "The password of the PostgreSQL database user."
+}
+
+output "iam_user" {
+  value = var.enable_iam_authentication ? google_sql_user.tfe_iam[0].name : null
+
+  description = "The name of the IAM PostgreSQL database user."
+}
+
+output "enable_iam_authentication" {
+  value = var.enable_iam_authentication
+
+  description = "Whether IAM authentication is enabled for the database."
 }

@@ -74,6 +74,8 @@ module "database" {
   labels                        = var.labels
   service_networking_connection = local.service_networking_connection
   postgres_version              = var.postgres_version
+  enable_iam_authentication     = var.enable_iam_database_authentication
+  iam_user_email                = var.iam_database_user
 
   depends_on = [
     module.project_factory_project_services
@@ -148,10 +150,10 @@ module "runtime_container_engine_config" {
   tls_ca_bundle_file = var.ca_certificate_secret_id != null ? "/etc/ssl/private/terraform-enterprise/bundle.pem" : null
 
   database_user       = local.database.user
-  database_password   = local.database.password
+  database_password   = local.database.enable_iam_authentication ? null : local.database.password
   database_host       = local.database.netloc
   database_name       = local.database.dbname
-  database_parameters = "sslmode=require"
+  database_parameters = local.database.enable_iam_authentication ? "sslmode=require&authtype=gcp_iam" : "sslmode=require"
 
   storage_type       = "google"
   google_bucket      = local.object_storage.bucket
@@ -254,8 +256,8 @@ module "settings" {
   pg_dbname       = local.database.dbname
   pg_netloc       = local.database.netloc
   pg_user         = local.database.user
-  pg_password     = local.database.password
-  pg_extra_params = "sslmode=require"
+  pg_password     = local.database.enable_iam_authentication ? null : local.database.password
+  pg_extra_params = local.database.enable_iam_authentication ? "sslmode=require&authtype=gcp_iam" : "sslmode=require"
 
   # Redis
   redis_host              = local.redis.host

@@ -101,10 +101,12 @@ locals {
     module.database[0],
     module.alloydb_database[0],
     {
-      dbname   = var.database_name
-      netloc   = var.database_host
-      password = var.database_password
-      user     = var.database_user
+      dbname                    = var.database_name
+      netloc                    = var.database_host
+      password                  = var.database_password
+      user                      = var.database_user
+      enable_iam_authentication = false
+      iam_user                  = null
     }
   )
 }
