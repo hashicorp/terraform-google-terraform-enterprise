@@ -22,7 +22,11 @@ data "google_service_account" "main" {
   account_id = var.existing_service_account_id
 }
 
+# Only create a service account key if we're creating a new service account.
+# When using an existing service account (e.g., with Workload Identity Federation),
+# the VM instance uses the attached service account identity directly.
 resource "google_service_account_key" "key" {
+  count              = var.existing_service_account_id == null ? 1 : 0
   service_account_id = local.service_account.name
 }
 
