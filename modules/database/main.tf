@@ -58,7 +58,9 @@ resource "google_sql_user" "tfe" {
 resource "google_sql_user" "tfe_iam" {
   count = var.enable_iam_authentication ? 1 : 0
 
-  name     = var.iam_user_email
+  # Cloud SQL has a 63 character limit for usernames. For IAM service accounts,
+  # strip the .gserviceaccount.com suffix to create a shorter username
+  name     = replace(var.iam_user_email, ".gserviceaccount.com", "")
   instance = google_sql_database_instance.tfe.name
   type     = "CLOUD_IAM_SERVICE_ACCOUNT"
 
