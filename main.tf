@@ -403,7 +403,7 @@ module "vm_mig" {
       type                         = "OPPORTUNISTIC"
       instance_redistribution_type = "NONE"
       minimal_action               = var.is_replicated_deployment ? "RESTART" : "REPLACE"
-      max_unavailable_fixed        = 3
+      max_unavailable_fixed        = 4
       max_surge_fixed              = null
       max_surge_percent            = null
       max_unavailable_percent      = null
