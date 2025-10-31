@@ -104,9 +104,9 @@ locals {
       dbname                    = var.database_name
       netloc                    = var.database_host
       password                  = var.database_password
-      user                      = var.database_user
-      enable_iam_authentication = false
-      iam_user                  = null
+      user                      = var.enable_iam_database_authentication ? replace(var.iam_database_user, ".gserviceaccount.com", "") : var.database_user
+      enable_iam_authentication = var.enable_iam_database_authentication
+      iam_user                  = var.iam_database_user
     }
   )
 }
