@@ -154,6 +154,7 @@ module "runtime_container_engine_config" {
   database_host       = local.database.netloc
   database_name       = local.database.dbname
   database_parameters = local.database.enable_iam_authentication ? "sslmode=require&authtype=gcp_iam" : "sslmode=require"
+  database_passwordless_gcp_use_default_credentials = local.database.enable_iam_authentication
 
   storage_type       = "google"
   google_bucket      = local.object_storage.bucket
