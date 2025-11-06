@@ -121,7 +121,7 @@ module "redis" {
 # Docker Compose File Config for TFE on instance(s) using Flexible Deployment Options
 # ------------------------------------------------------------------------------------
 module "runtime_container_engine_config" {
-  source = "git::https://github.com/hashicorp/terraform-random-tfe-utility//modules/runtime_container_engine_config?ref=main"
+  source = "git::https://github.com/hashicorp/terraform-random-tfe-utility//modules/runtime_container_engine_config?ref=vanessa/admin-console"
   count  = var.is_replicated_deployment ? 0 : 1
 
   license_reporting_opt_out   = var.license_reporting_opt_out
@@ -183,7 +183,7 @@ module "runtime_container_engine_config" {
 # User data / cloud init used to install and configure TFE on instance(s) using Flexible Deployment Options
 # ----------------------------------------------------------------------------------------------------------
 module "tfe_init_fdo" {
-  source = "git::https://github.com/hashicorp/terraform-random-tfe-utility//modules/tfe_init?ref=main"
+  source = "git::https://github.com/hashicorp/terraform-random-tfe-utility//modules/tfe_init?ref=vanessa/admin-console"
   count  = var.is_replicated_deployment ? 0 : 1
 
   cloud             = "google"
