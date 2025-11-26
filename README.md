@@ -1,5 +1,14 @@
 # Terraform Enterprise GCP Module
 
+## Deprecation Notice
+
+This module is deprecated. For authoritative guidance, see the official deployment documentation: https://developer.hashicorp.com/terraform/enterprise/deploy. Customers should only use the HashiCorp Validated Design (HVD) modules published in the Terraform Registry:
+
+- GCP GCE reference: https://registry.terraform.io/modules/hashicorp/terraform-enterprise-hvd/google
+- GCP GKE reference: https://registry.terraform.io/modules/hashicorp/terraform-enterprise-gke-hvd/google
+
+No further updates will be made here. All new features, bug fixes, and security updates are delivered through the HVD modules.
+
 **IMPORTANT**: You are viewing a **beta version** of the official
 module to install Terraform Enterprise. This new version is
 **incompatible with earlier versions**, and it is not currently meant
